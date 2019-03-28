@@ -68,6 +68,7 @@ namespace SledovaniTVPlayer.ViewModels
                 var intent = new Intent(Intent.ActionView);
                 var uri = Android.Net.Uri.Parse(url);
                 intent.SetDataAndType(uri, "video/*");
+                intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask); // necessary for Android 5
                 _context.StartActivity(intent);
             }
             catch (Exception ex)

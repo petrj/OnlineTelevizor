@@ -325,3 +325,6 @@ Temporary Items
 # Excel Backup File
 *.xlk
 
+# Android apk
+*.apk
+*.apk
