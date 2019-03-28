@@ -172,6 +172,17 @@ namespace SledovaniTVAPI
             }
         }
 
+        private string ParsePHPSessionID(string result)
+        {
+            if (result.StartsWith("{\"status\":1,\"PHPSESSID\":\""))
+            {
+                result = result.Substring(25, result.Length - 27);
+                return result;
+            }
+            else throw new Exception("Invalid PHPSESSID");
+        }
+
+
         public async Task Login()
         {
             try
@@ -184,7 +195,13 @@ namespace SledovaniTVAPI
 
                 await Pair();
 
-                _session = await SendJSONRequest<Session>("device-login", ParamsForLogin);
+                // Using SendJSONRequest<Session> in real Android leads to Newtonsoft.Json.JsonSerializationException
+                //_session = await SendJSONRequest<Session>("device-login", ParamsForLogin);
+                var _sessionString = await SendRequest("device-login", ParamsForLogin);
+                _session = new Session()
+                {
+                    PHPSESSID = ParsePHPSessionID(_sessionString)
+                };
 
                 if (_session.status == "0" && _session.error == "bad login")
                 {
@@ -195,7 +212,11 @@ namespace SledovaniTVAPI
                     _deviceConnection.password = null;
                     await Pair();
 
-                    _session = await SendJSONRequest<Session>("device-login", ParamsForLogin);
+                    _sessionString = await SendRequest("device-login", ParamsForLogin);
+                    _session = new Session()
+                    {
+                        PHPSESSID = ParsePHPSessionID(_sessionString)
+                    };
 
                     if (_session.status == "0" && _session.error == "bad login")
                     {
@@ -232,17 +253,19 @@ namespace SledovaniTVAPI
                     { "PHPSESSID", _session.PHPSESSID }
                 };
 
-                Channels = await SendJSONRequest<Channels>("playlist", ps);
 
                 // running in Liveplayer?
                 // JSON deserializing does not work!
+                //Channels = await SendJSONRequest<Channels>("playlist", ps);
                 // https://docs.microsoft.com/cs-cz/xamarin/tools/live-player/limitations
                 // https://bugzilla.xamarin.com/show_bug.cgi?id=58912
+
+                Channels = new Channels();
+                Channels.channels = new List<Channel>();
 
                 var channelsString = await SendRequest("playlist", ps);
                 var matches = Regex.Matches(channelsString, "\"name\":\"(.*?\"),\"type\":\"(.*?\"),\"url\":\"(.*?\")");
 
-                var index = 0;
                 foreach (Match m in matches)
                 {
                     var value = m.Value;
@@ -250,10 +273,13 @@ namespace SledovaniTVAPI
                     var nameMatch = Regex.Match(value,"\"name\":\"(.*?\")");
                     var urlMatch = Regex.Match(value,"\"url\":\"(.*?\")");
 
-                    Channels.channels[index].name = nameMatch.Value.Substring(8, nameMatch.Value.Length-9);
-                    Channels.channels[index].url = urlMatch.Value.Substring(7, urlMatch.Value.Length - 8);
+                    var ch = new Channel()
+                    {
+                        name = nameMatch.Value.Substring(8, nameMatch.Value.Length - 9),
+                        url = urlMatch.Value.Substring(7, urlMatch.Value.Length - 8)
+                    };
 
-                    index++;
+                    Channels.channels.Add(ch);
                 }
 
                 _log.Info($"Received {Channels.channels.Count} channels");

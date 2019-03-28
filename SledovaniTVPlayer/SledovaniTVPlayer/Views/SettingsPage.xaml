@@ -35,18 +35,20 @@
 
                     <StackLayout>
                         <Label Text="Uživatelské jméno: " Style="{StaticResource CaptionStyle}" />
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}"  Text="{Binding Username, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="UsernameEntry"  Text="{Binding Username, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
 
                     <StackLayout>
                         <Label Text="Heslo: " Style="{StaticResource CaptionStyle}" />
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" IsPassword="True" Text="{Binding Password, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PasswordEntry"  IsPassword="True" Text="{Binding Password, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
 
                     <StackLayout>
                         <Label Text="PIN: " Style="{StaticResource CaptionStyle}" />
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}"  Text="{Binding ChildLockPIN, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
+
+                    <Button Clicked="Button_Clicked" Text="Uložit"/>
 
                 </StackLayout>
 
