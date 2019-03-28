@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SledovaniTVPlayer.Views.SettingsPage"
+             Title="SledováníTV Player - Nastavení">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="PageBackgroundStyle" TargetType="ScrollView">
+                <Setter Property="BackgroundColor" Value="White"/>
+            </Style>
+
+            <Style x:Key="CommonEntryTextStyle" TargetType="Entry">
+                <Setter Property="TextColor" Value="Black"/>
+                <Setter Property="FontSize" Value="18"/>
+                <!--<Setter Property="BackgroundColor" Value="LightGray"/>-->
+            </Style>
+
+            <Style x:Key="CaptionStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="Black"/>
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+
+        <ScrollView Style="{StaticResource PageBackgroundStyle}">
+
+            <StackLayout>
+
+                <StackLayout Margin="20,5,20,0">
+
+                    <StackLayout>
+                        <Label Text="Uživatelské jméno: " Style="{StaticResource CaptionStyle}" />
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}"  Text="{Binding Username, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
+                    </StackLayout>
+
+                    <StackLayout>
+                        <Label Text="Heslo: " Style="{StaticResource CaptionStyle}" />
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" IsPassword="True" Text="{Binding Password, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
+                    </StackLayout>
+
+                    <StackLayout>
+                        <Label Text="PIN: " Style="{StaticResource CaptionStyle}" />
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}"  Text="{Binding ChildLockPIN, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
+                    </StackLayout>
+
+                </StackLayout>
+
+            </StackLayout>
+
+        </ScrollView>
+
+    </ContentPage.Content>
+</ContentPage>

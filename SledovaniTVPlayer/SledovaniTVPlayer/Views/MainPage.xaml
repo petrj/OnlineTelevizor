@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SledovaniTVPlayer"
+             x:Class="SledovaniTVPlayer.MainPage"
+             BackgroundColor="Black"
+             Title="SledováníTV Player">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="ListItemTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout>
+
+        <ListView x:Name="ChannelsListView"
+                    ItemsSource="{Binding Channels}"
+                    ItemTapped="Channel_Tapped"
+                    CachingStrategy="RecycleElement"
+                    IsPullToRefreshEnabled="True"
+                    RefreshCommand="{Binding RefreshCommand}"
+                    IsRefreshing="{Binding IsBusy}">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell Height="70">
+                        <ViewCell.View>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Name}"  LineBreakMode="NoWrap" FontSize="16"  Style="{DynamicResource ListItemTextStyle}" />
+
+                            </Grid>
+
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+    </StackLayout>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Name="ToolbarItemSettings" Text="[Nastavení]" Clicked="ToolbarItemSettings_Clicked"  />
+    </ContentPage.ToolbarItems>
+
+</ContentPage>
