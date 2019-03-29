@@ -14,10 +14,10 @@ function Create-APK
        [Parameter(Mandatory=$true)]
        $msbuild,
 
-	   [ValidateSet("16","23", "25")]
+	   [ValidateSet("16", "25")]
        $MinSdkVersion,
 
-	   [ValidateSet("16","23", "25")]
+	   [ValidateSet("16", "25")]
 	   $TargetSdkVersion
     )   
     Process
@@ -55,6 +55,8 @@ function Create-APK
         $newName =  [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($defaultAPKName),$manifest.manifest.application.label+"-mapi" + $MinSdkVersion+"-tapi"+$TargetSdkVersion+"-"+ $dateTimeSuffix +".apk")
         
         Rename-Item -Path $defaultAPKName -NewName $newName -Verbose
+
+		Remove-Item -Path ($manifestFileName + ".backup") -Verbose
 		
         return Get-Item $newName
     }  

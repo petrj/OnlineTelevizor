@@ -13,6 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggerService", "LoggerServ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{05A38594-F724-48BC-A91F-9ACBEDE56696}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{E7015148-7B33-4CAF-8765-E61CF590757D}"
+	ProjectSection(SolutionItems) = preProject
+		BuildAPK.bat = BuildAPK.bat
+		BuildAPK.ps1 = BuildAPK.ps1
+		undo_pending_changes_and_get_latest_version.sh = undo_pending_changes_and_get_latest_version.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
