@@ -41,39 +41,52 @@ namespace SledovaniTVPlayer.Services
 
         public async Task<ObservableCollection<TVChannel>> GetChannels()
         {
+            var chs = new ObservableCollection<TVChannel>();
+
             try
             {
-                if (!_sledovaniTV.DevicePaired)
-                {
-                    await _sledovaniTV.Login();
+                await _sledovaniTV.ReloadChanels();
 
-                    if (_sledovaniTV.DevicePaired)
+                if (_sledovaniTV.Status == StatusEnum.Logged || _sledovaniTV.Status == StatusEnum.Paired)
+                {
+                    
+                    if (String.IsNullOrEmpty(_config.DeviceId))
                     {
+                        // saving device connection to configuration
                         _config.DeviceId = _sledovaniTV.Connection.deviceId;
                         _config.DevicePassword = _sledovaniTV.Connection.password;
                     }
-                }
 
-                await _sledovaniTV.ReloadChanels();
-
-                var chs = new ObservableCollection<TVChannel>();
-                int i = 1;
-                foreach (var ch in _sledovaniTV.Channels.channels)
-                {
-                    chs.Add(new TVChannel()
+                    int i = 1;
+                    foreach (var ch in _sledovaniTV.Channels.channels)
                     {
-                        Name = ch.name,
-                        Url = ch.url
-                    });
+                        chs.Add(new TVChannel()
+                        {
+                            Name = ch.name,
+                            Url = ch.url
+                        });
 
-                    i++;
+                        i++;
+                    }
                 }
-                return chs;
             } catch (Exception ex)
             {
                 _log.Error(ex, "Error getting channels");
+            }
 
-                return new ObservableCollection<TVChannel>();
+            return chs;
+        }
+
+        public void ResetStatus()
+        {
+            _sledovaniTV.ResetStatus();
+        }
+
+        public StatusEnum Status
+        {
+            get
+            {
+                return _sledovaniTV.Status;
             }
         }
     }

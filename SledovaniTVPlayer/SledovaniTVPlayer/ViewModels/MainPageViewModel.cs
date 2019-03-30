@@ -19,8 +19,26 @@ namespace SledovaniTVPlayer.ViewModels
         private IDialogService _dialogService;
         private ILoggingService _loggingService;
         private Context _context;
+        private string _statusLabel;
 
         public ObservableCollection<TVChannel> Channels { get; set; }
+
+        public string StatusLabel
+        {
+            get
+            {
+                switch (_service.Status)
+                {
+                    case StatusEnum.NotInitialized: return "Probiha nacitani kanalu ...";
+                    case StatusEnum.EmptyCredentials: return "Nevyplnene prihlasovaci udaje";
+                    case StatusEnum.Logged: return $"Nacteno {Channels.Count} kanalu";
+                    case StatusEnum.LoginFailed: return $"Chybne prihlasovaci udaje";
+                    case StatusEnum.Paired: return $"Zarizeni neni prihlaseno";
+                    case StatusEnum.PairingFailed: return $"Chybne prihlasovaci udaje";
+                    default: return String.Empty;
+                }
+            } 
+        }
 
         public Command RefreshCommand { get; set; }
 
@@ -34,7 +52,7 @@ namespace SledovaniTVPlayer.ViewModels
 
             Channels = new ObservableCollection<TVChannel>();
 
-            RefreshCommand = new Command(async () => await ReloadChannels());
+            RefreshCommand = new Command(async () => await ReloadChannels());  
 
             BackgroundCommandWorker.RunInBackground(RefreshCommand, 30, 0);
         }
@@ -42,15 +60,15 @@ namespace SledovaniTVPlayer.ViewModels
         private async Task ReloadChannels()
         {
             if (IsBusy)
-                return;
+                return;            
 
             IsBusy = true;
 
             try
             {
-                var channels = await _service.GetChannels();
-
                 Channels.Clear();
+
+                var channels = await _service.GetChannels();                
 
                 foreach (var ch in channels)
                     Channels.Add(ch);
@@ -58,7 +76,13 @@ namespace SledovaniTVPlayer.ViewModels
             } finally
             {
                 IsBusy = false;
+                OnPropertyChanged(nameof(StatusLabel));
             }
+        }
+
+        public void ResetStatus()
+        {
+            _service.ResetStatus();
         }
 
         public async Task PlayStream(string url, int resultKeyCode = 0)

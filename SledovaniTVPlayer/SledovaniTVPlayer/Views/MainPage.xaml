@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:SledovaniTVPlayer"
              x:Class="SledovaniTVPlayer.MainPage"
              BackgroundColor="Black"
-             Title="SledováníTV Player">
+             Title="SledováníTV">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -12,12 +12,21 @@
             <Style x:Key="ListItemTextStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Margin" Value="5,5,5,5"/>
+            </Style>
+
+            <Style x:Key="InfoLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="Yellow"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Margin" Value="20,0,0,0"/>
             </Style>
 
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <StackLayout>
+
+        <Label Text="{Binding StatusLabel}" x:Name="InfoLabelStyle" Style="{DynamicResource InfoLabelStyle}" />
 
         <ListView x:Name="ChannelsListView"
                     ItemsSource="{Binding Channels}"
@@ -54,7 +63,7 @@
     </StackLayout>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Name="ToolbarItemSettings" Text="[Nastavení]" Clicked="ToolbarItemSettings_Clicked"  />
+        <ToolbarItem Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked"  />
     </ContentPage.ToolbarItems>
 
 </ContentPage>

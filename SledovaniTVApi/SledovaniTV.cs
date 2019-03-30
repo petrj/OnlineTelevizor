@@ -1,4 +1,5 @@
 ﻿using LoggerService;
+using SledovaniTVAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,13 +19,22 @@ namespace SledovaniTVAPI
         private Credentials _credentials;
         private DeviceConnection _deviceConnection;
         private Session _session;
-
+        private StatusEnum _status = StatusEnum.NotInitialized;
+        
         public Channels Channels { get; set; }
 
         public SledovaniTV(Credentials credentials, ILoggingService loggingService)
         {
             _log = loggingService;
             _credentials = credentials;
+        }
+
+        public StatusEnum Status
+        {
+            get
+            {
+                return _status;
+            }
         }
 
         public DeviceConnection Connection
@@ -124,20 +134,14 @@ namespace SledovaniTVAPI
         }
 
         /// <summary>
-        /// Pairing user with service
+        /// Pairing device with user credentials (_credentials)
         /// </summary>
-        private async Task Pair()
+        private async Task CreatePairing()
         {
-            if (DevicePaired)
-            {
-                _log.Info($"User is already paired");
-                return;  // already paired
-            }
+            _log.Debug($"Pairing device with user credentials");
 
             try
             {
-                _log.Info($"Pairing user credentials");
-
                 var ps = new Dictionary<string, string>()
                 {
                     { "username", _credentials.Username },
@@ -150,18 +154,32 @@ namespace SledovaniTVAPI
                 _log.Info("Received User Connection:");
                 _log.Info(_deviceConnection.ToString());
 
+                if (String.IsNullOrEmpty(_deviceConnection.deviceId))
+                {
+                    _status = StatusEnum.PairingFailed;
+                }
+                else
+                {
+                    _status = StatusEnum.Paired;
+                }
+
             } catch (Exception ex)
             {
-                _log.Error(ex, "Error while pairing user with SledovaniTV service");
-                throw;
-            }
+                _log.Error(ex, "Error while pairing device");
+                _status = StatusEnum.PairingFailed;
+            }            
         }
 
-        private Dictionary<string, string> ParamsForLogin
+        /// <summary>
+        /// Login device to service
+        /// </summary>
+        private async Task DeviceLogin()
         {
-            get
+            _log.Debug("Login device to service");
+
+            try
             {
-                return new Dictionary<string, string>()
+               var ps = new Dictionary<string, string>()
                 {
                     { "deviceId", _deviceConnection.deviceId },
                     { "password", _deviceConnection.password },
@@ -169,81 +187,101 @@ namespace SledovaniTVAPI
                     { "lang", "cs" },
                     { "unit", "default" }
                 };
-            }
-        }
 
-        private string ParsePHPSessionID(string result)
+                // Using SendJSONRequest<Session> in real Android leads to Newtonsoft.Json.JsonSerializationException
+                //_session = await SendJSONRequest<Session>("device-login", ps);
+                var _sessionString = await SendRequest("device-login", ps);
+                _session = new Session();
+
+                if (_sessionString.StartsWith("{\"status\":1,\"PHPSESSID\":\""))
+                {
+                    _session.PHPSESSID = _sessionString.Substring(25, _sessionString.Length - 27);
+                }
+
+                if (_session.status == "0" ||
+                    _session.error == "bad login" ||
+                    String.IsNullOrEmpty(_session.PHPSESSID))
+                {
+                    _status = StatusEnum.LoginFailed;
+                }
+                else
+                {
+                    _status = StatusEnum.Logged;
+                }
+
+            }
+            catch (Exception ex)
+            {                
+                _status = StatusEnum.LoginFailed;
+            }
+        }    
+
+        public void ResetStatus()
         {
-            if (result.StartsWith("{\"status\":1,\"PHPSESSID\":\""))
-            {
-                result = result.Substring(25, result.Length - 27);
-                return result;
-            }
-            else throw new Exception("Invalid PHPSESSID");
+            _status = StatusEnum.NotInitialized;
         }
-
 
         public async Task Login()
         {
-            try
+            _log.Debug("Login device to service");
+
+            if (_session != null && !String.IsNullOrEmpty(_session.PHPSESSID))
             {
+                _status = StatusEnum.Logged;            
+            }
 
-                if (_session != null && !String.IsNullOrEmpty(_session.PHPSESSID))
-                    return; // PHPSESSID already exists
+            if (Status == StatusEnum.Logged)
+            {
+                _log.Debug("Device is already logged");
+                return;         
+            }
 
-                _log.Info($"Login user");
+            if (String.IsNullOrEmpty(_deviceConnection.deviceId) &&
+                String.IsNullOrEmpty(_deviceConnection.password))
+            {
+                _status = StatusEnum.EmptyCredentials;
+                return;
+            }
 
-                await Pair();
+           if (_deviceConnection != null && !String.IsNullOrEmpty(_deviceConnection.deviceId))
+            {             
+                _status = StatusEnum.Paired;
+            }
 
-                // Using SendJSONRequest<Session> in real Android leads to Newtonsoft.Json.JsonSerializationException
-                //_session = await SendJSONRequest<Session>("device-login", ParamsForLogin);
-                var _sessionString = await SendRequest("device-login", ParamsForLogin);
-                _session = new Session()
+            if (Status != StatusEnum.Paired)
+            {
+                await CreatePairing();
+
+                if (Status == StatusEnum.PairingFailed)
                 {
-                    PHPSESSID = ParsePHPSessionID(_sessionString)
-                };
+                    return; // bad credentials, no internet connection ?
+                }
+            }
 
-                if (_session.status == "0" && _session.error == "bad login")
+            // login
+
+            await DeviceLogin();
+
+            if (Status == StatusEnum.LoginFailed)
+            {
+                // bad device connection ? Pairing again
+                await CreatePairing();
+
+                if (Status == StatusEnum.PairingFailed)
                 {
-                    _log.Info($"Bad login, pairing and logging again");
-
-                    // pairing again
-                    _deviceConnection.deviceId = null;
-                    _deviceConnection.password = null;
-                    await Pair();
-
-                    _sessionString = await SendRequest("device-login", ParamsForLogin);
-                    _session = new Session()
-                    {
-                        PHPSESSID = ParsePHPSessionID(_sessionString)
-                    };
-
-                    if (_session.status == "0" && _session.error == "bad login")
-                    {
-                        throw new Exception("Login failed");
-                    }
+                    return; // bad credentials, no internet connection ?
                 }
 
-                _log.Info($"Received PHPSESSID: {_session.PHPSESSID}");
-            }
-             catch (Exception ex)
-            {
-                _log.Error(ex, "Error while login to SledovaniTV service");
-                throw;
-            }
-        }
-
-        public bool DevicePaired
-        {
-            get
-            {
-                return (_deviceConnection != null && !_deviceConnection.IsEmpty);
-            }
+                await DeviceLogin();
+            }       
         }
 
         public async Task ReloadChanels()
         {
             await Login();
+
+            if (_status != StatusEnum.Logged)
+                return;
 
             try
             {
@@ -294,6 +332,9 @@ namespace SledovaniTVAPI
         {
             await Login();
 
+            if (_status != StatusEnum.Logged)
+                return;
+
             var ps = new Dictionary<string, string>()
             {
                 { "pin", _credentials.ChildLockPIN },
@@ -302,8 +343,6 @@ namespace SledovaniTVAPI
             };
 
             Channels = await SendJSONRequest<Channels>("pin-unlock", ps);
-
-            _log.Info($"Received {Channels.channels.Count} channels");
         }
     }
 }

@@ -35,6 +35,8 @@ namespace SledovaniTVPlayer
         private async void ToolbarItemSettings_Clicked(object sender, EventArgs e)
         {
             await _viewModel.NavigateToPage(_settingsPage, Navigation);
+            _viewModel.ResetStatus();
+            _viewModel.RefreshCommand.Execute(null);
         }
 
         private async void Channel_Tapped(object sender, ItemTappedEventArgs e)
