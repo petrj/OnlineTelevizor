@@ -20,7 +20,7 @@ namespace SledovaniTVAPI
         private DeviceConnection _deviceConnection;
         private Session _session;
         private StatusEnum _status = StatusEnum.NotInitialized;
-        
+
         public Channels Channels { get; set; }
 
         public SledovaniTV(Credentials credentials, ILoggingService loggingService)
@@ -167,7 +167,7 @@ namespace SledovaniTVAPI
             {
                 _log.Error(ex, "Error while pairing device");
                 _status = StatusEnum.PairingFailed;
-            }            
+            }
         }
 
         /// <summary>
@@ -211,10 +211,10 @@ namespace SledovaniTVAPI
 
             }
             catch (Exception ex)
-            {                
+            {
                 _status = StatusEnum.LoginFailed;
             }
-        }    
+        }
 
         public void ResetStatus()
         {
@@ -227,24 +227,24 @@ namespace SledovaniTVAPI
 
             if (_session != null && !String.IsNullOrEmpty(_session.PHPSESSID))
             {
-                _status = StatusEnum.Logged;            
+                _status = StatusEnum.Logged;
             }
 
             if (Status == StatusEnum.Logged)
             {
                 _log.Debug("Device is already logged");
-                return;         
+                return;
             }
 
-            if (String.IsNullOrEmpty(_deviceConnection.deviceId) &&
-                String.IsNullOrEmpty(_deviceConnection.password))
+            if (String.IsNullOrEmpty(_credentials.Username) ||
+                String.IsNullOrEmpty(_credentials.Password))
             {
                 _status = StatusEnum.EmptyCredentials;
                 return;
             }
 
            if (_deviceConnection != null && !String.IsNullOrEmpty(_deviceConnection.deviceId))
-            {             
+            {
                 _status = StatusEnum.Paired;
             }
 
@@ -273,7 +273,7 @@ namespace SledovaniTVAPI
                 }
 
                 await DeviceLogin();
-            }       
+            }
         }
 
         public async Task ReloadChanels()

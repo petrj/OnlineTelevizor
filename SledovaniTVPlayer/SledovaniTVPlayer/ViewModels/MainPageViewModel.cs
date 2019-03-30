@@ -37,7 +37,7 @@ namespace SledovaniTVPlayer.ViewModels
                     case StatusEnum.PairingFailed: return $"Chybne prihlasovaci udaje";
                     default: return String.Empty;
                 }
-            } 
+            }
         }
 
         public Command RefreshCommand { get; set; }
@@ -52,7 +52,7 @@ namespace SledovaniTVPlayer.ViewModels
 
             Channels = new ObservableCollection<TVChannel>();
 
-            RefreshCommand = new Command(async () => await ReloadChannels());  
+            RefreshCommand = new Command(async () => await ReloadChannels());
 
             BackgroundCommandWorker.RunInBackground(RefreshCommand, 30, 0);
         }
@@ -60,7 +60,7 @@ namespace SledovaniTVPlayer.ViewModels
         private async Task ReloadChannels()
         {
             if (IsBusy)
-                return;            
+                return;
 
             IsBusy = true;
 
@@ -68,7 +68,7 @@ namespace SledovaniTVPlayer.ViewModels
             {
                 Channels.Clear();
 
-                var channels = await _service.GetChannels();                
+                var channels = await _service.GetChannels();
 
                 foreach (var ch in channels)
                     Channels.Add(ch);
@@ -77,6 +77,7 @@ namespace SledovaniTVPlayer.ViewModels
             {
                 IsBusy = false;
                 OnPropertyChanged(nameof(StatusLabel));
+
             }
         }
 

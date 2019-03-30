@@ -26,7 +26,7 @@
 
     <StackLayout>
 
-        <Label Text="{Binding StatusLabel}" x:Name="InfoLabelStyle" Style="{DynamicResource InfoLabelStyle}" />
+        <Label Text="{Binding StatusLabel}" x:Name="InfoLabel" Style="{DynamicResource InfoLabelStyle}" />
 
         <ListView x:Name="ChannelsListView"
                     ItemsSource="{Binding Channels}"
