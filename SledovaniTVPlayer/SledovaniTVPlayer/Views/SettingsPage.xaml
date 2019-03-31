@@ -8,17 +8,16 @@
         <ResourceDictionary>
 
             <Style x:Key="PageBackgroundStyle" TargetType="ScrollView">
-                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="BackgroundColor" Value="Black"/>
             </Style>
 
             <Style x:Key="CommonEntryTextStyle" TargetType="Entry">
-                <Setter Property="TextColor" Value="Black"/>
+                <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontSize" Value="18"/>
-                <!--<Setter Property="BackgroundColor" Value="LightGray"/>-->
             </Style>
 
             <Style x:Key="CaptionStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="Black"/>
+                <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontSize" Value="20"/>
             </Style>
 
@@ -47,8 +46,6 @@
                         <Label Text="PIN: " Style="{StaticResource CaptionStyle}" />
                         <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
-
-                    <Button Clicked="Button_Clicked" Text="Uložit"/>
 
                 </StackLayout>
 

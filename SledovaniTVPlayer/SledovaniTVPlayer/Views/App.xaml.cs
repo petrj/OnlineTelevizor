@@ -7,7 +7,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
-namespace SledovaniTVPlayer
+namespace SledovaniTVPlayer.Views
 {
     public partial class App : Application
     {

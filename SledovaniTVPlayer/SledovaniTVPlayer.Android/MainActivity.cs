@@ -8,6 +8,7 @@ using Android.Widget;
 using Android.OS;
 using NLog;
 using SledovaniTVPlayer.Services;
+using SledovaniTVPlayer.Views;
 
 namespace SledovaniTVPlayer.Droid
 {

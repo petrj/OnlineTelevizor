@@ -23,10 +23,18 @@ namespace SledovaniTVAPI
 
         public Channels Channels { get; set; }
 
-        public SledovaniTV(Credentials credentials, ILoggingService loggingService)
+        public SledovaniTV(ILoggingService loggingService)
         {
             _log = loggingService;
-            _credentials = credentials;
+        }
+
+        public void SetCredentials(string username, string password)
+        {
+            _credentials = new Credentials()
+            {
+                Username = username,
+                Password = password
+            };
         }
 
         public StatusEnum Status
@@ -216,9 +224,12 @@ namespace SledovaniTVAPI
             }
         }
 
-        public void ResetStatus()
+        public void ResetConnection()
         {
             _status = StatusEnum.NotInitialized;
+            _deviceConnection.deviceId = null;
+            _deviceConnection.password = null;
+            _session.PHPSESSID = null;
         }
 
         public async Task Login()

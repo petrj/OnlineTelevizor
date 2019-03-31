@@ -15,7 +15,8 @@ namespace TestConsole
             var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
             var loggingService = new NLogLoggingService();
 
-            var sledovaniTV = new SledovaniTV(credentials, loggingService );
+            var sledovaniTV = new SledovaniTV(loggingService );
+            sledovaniTV.SetCredentials(credentials.Username, credentials.Password);
 
             if (JSONObject.FileExists("connection.json"))
             {

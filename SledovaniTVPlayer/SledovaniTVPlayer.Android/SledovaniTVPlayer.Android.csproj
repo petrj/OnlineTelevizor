@@ -29,7 +29,7 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AndroidLinkMode>Full</AndroidLinkMode>
+    <AndroidLinkMode>None</AndroidLinkMode>
     <MandroidI18n>Other</MandroidI18n>
     <AndroidSupportedAbis />
     <IntermediateOutputPath>C:\Users\User\AppData\Local\Temp\vsABA.tmp\Debug\</IntermediateOutputPath>
@@ -78,6 +78,9 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\NLog.config">
@@ -112,6 +115,10 @@
     <Folder Include="Resources\drawable-xxxhdpi\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\LoggerService\LoggerService.csproj">
+      <Project>{3D9DD753-5E53-4316-992C-1BED899FE0E0}</Project>
+      <Name>LoggerService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SledovaniTVPlayer\SledovaniTVPlayer.csproj">
       <Project>{694683A0-F500-4ED1-AA3F-D54F0BB4C483}</Project>
       <Name>SledovaniTVPlayer</Name>
@@ -121,6 +128,11 @@
     <AndroidResource Include="Resources\drawable\Settings.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SettingsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

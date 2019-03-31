@@ -19,7 +19,6 @@ namespace SledovaniTVPlayer.ViewModels
         private IDialogService _dialogService;
         private ILoggingService _loggingService;
         private Context _context;
-        private string _statusLabel;
 
         public ObservableCollection<TVChannel> Channels { get; set; }
 
@@ -29,12 +28,12 @@ namespace SledovaniTVPlayer.ViewModels
             {
                 switch (_service.Status)
                 {
-                    case StatusEnum.NotInitialized: return "Probiha nacitani kanalu ...";
-                    case StatusEnum.EmptyCredentials: return "Nevyplnene prihlasovaci udaje";
-                    case StatusEnum.Logged: return $"Nacteno {Channels.Count} kanalu";
-                    case StatusEnum.LoginFailed: return $"Chybne prihlasovaci udaje";
-                    case StatusEnum.Paired: return $"Zarizeni neni prihlaseno";
-                    case StatusEnum.PairingFailed: return $"Chybne prihlasovaci udaje";
+                    case StatusEnum.NotInitialized: return "Probíhá načítání kanálů ...";
+                    case StatusEnum.EmptyCredentials: return "Nevyplněny přihlašovací údaje";
+                    case StatusEnum.Logged: return $"Načteno {Channels.Count} kanálů";
+                    case StatusEnum.LoginFailed: return $"Chybné přihlašovací údaje";
+                    case StatusEnum.Paired: return $"Probíhá přihlašování ...";
+                    case StatusEnum.PairingFailed: return $"Chybné přihlašovací údaje";
                     default: return String.Empty;
                 }
             }
@@ -54,7 +53,10 @@ namespace SledovaniTVPlayer.ViewModels
 
             RefreshCommand = new Command(async () => await ReloadChannels());
 
-            BackgroundCommandWorker.RunInBackground(RefreshCommand, 30, 0);
+            // refreshing every 30 s
+            //BackgroundCommandWorker.RunInBackground(RefreshCommand, 30, 0);
+
+            RefreshCommand.Execute(null);
         }
 
         private async Task ReloadChannels()
@@ -81,9 +83,12 @@ namespace SledovaniTVPlayer.ViewModels
             }
         }
 
-        public void ResetStatus()
+        public void ResetConnection()
         {
-            _service.ResetStatus();
+            _service.ResetConnection();
+            OnPropertyChanged(nameof(StatusLabel));
+
+            RefreshCommand.Execute(null);
         }
 
         public async Task PlayStream(string url, int resultKeyCode = 0)

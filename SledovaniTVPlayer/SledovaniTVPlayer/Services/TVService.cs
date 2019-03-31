@@ -24,13 +24,8 @@ namespace SledovaniTVPlayer.Services
             _log = loggingService;
             _config = config;
 
-            var credentials = new Credentials()
-            {
-                Username = _config.Username,
-                Password = _config.Password
-            };
-
-            _sledovaniTV = new SledovaniTV(credentials, loggingService);
+            _sledovaniTV = new SledovaniTV(loggingService);
+            _sledovaniTV.SetCredentials(_config.Username, _config.Password);
 
             _sledovaniTV.Connection = new DeviceConnection()
             {
@@ -49,7 +44,7 @@ namespace SledovaniTVPlayer.Services
 
                 if (_sledovaniTV.Status == StatusEnum.Logged || _sledovaniTV.Status == StatusEnum.Paired)
                 {
-                    
+
                     if (String.IsNullOrEmpty(_config.DeviceId))
                     {
                         // saving device connection to configuration
@@ -77,9 +72,12 @@ namespace SledovaniTVPlayer.Services
             return chs;
         }
 
-        public void ResetStatus()
+        public void ResetConnection()
         {
-            _sledovaniTV.ResetStatus();
+            _sledovaniTV.ResetConnection();
+            _config.DeviceId = null;
+            _config.DevicePassword = null;
+            _sledovaniTV.SetCredentials(_config.Username, _config.Password);
         }
 
         public StatusEnum Status
