@@ -7,7 +7,7 @@ function Create-APK
     [Alias()]
     [OutputType([int])]
     Param
-    (  
+    (
     [Parameter(Mandatory=$true,ValueFromPipeline=$true)]
 	   $ProjFileName,
 
@@ -19,7 +19,7 @@ function Create-APK
 
 	   [ValidateSet("16", "25")]
 	   $TargetSdkVersion
-    )   
+    )
     Process
     {
         Write-Host ("Generateing Android build API level Min: " + $MinSdkVersion + ", target API level: " + $TargetSdkVersion)
@@ -29,37 +29,40 @@ function Create-APK
 
         Write-Host ("ManifestFileName : $manifestFileName")
 
-        Copy-Item -Path $manifestFileName ($manifestFileName + ".backup") -Verbose
-	
-        [xml]$manifest = Get-content -Path $manifestFileName 
+		Copy-Item -Path $manifestFileName ($manifestFileName + ".backup") -Verbose
+		try
+		{
+			[xml]$manifest = Get-content -Path $manifestFileName
 
-        $dateTimeSuffix = [DateTime]::Now.ToString("yyyy-MM-dd--HHmm")
+			$dateTimeSuffix = [DateTime]::Now.ToString("yyyy-MM-dd--HHmm")
 
-        $manifest.manifest.'uses-sdk'.minSdkVersion = "$MinSdkVersion"
-        $manifest.manifest.'uses-sdk'.targetSdkVersion = "$TargetSdkVersion"
+			$manifest.manifest.'uses-sdk'.minSdkVersion = "$MinSdkVersion"
+			$manifest.manifest.'uses-sdk'.targetSdkVersion = "$TargetSdkVersion"
 
-        $manifest.Save($manifestFileName)
+			$manifest.Save($manifestFileName)
 
-        #Write-Host "Building APK $androidVersion ...  "
-        & $msbuild $ProjFileName /t:SignAndroidPackage /p:Configuration=Release /v:d | Out-Host
+			#Write-Host "Building APK $androidVersion ...  "
+			& $msbuild $ProjFileName /t:SignAndroidPackage /p:Configuration=Release /v:d | Out-Host
 
-        $defaultAPKName = [System.IO.Path]::Combine($projDir, "bin\Release\",$manifest.manifest.package + "-Signed.apk");
-    
-        Copy-Item -Path ($manifestFileName + ".backup") $manifestFileName -Verbose        
+			$defaultAPKName = [System.IO.Path]::Combine($projDir, "bin\Release\",$manifest.manifest.package + "-Signed.apk");
 
-        if (-not (Test-Path -Path $defaultAPKName))
-        {
-            throw "Build failed"
-        }
+			Copy-Item -Path ($manifestFileName + ".backup") $manifestFileName -Verbose
 
-        $newName =  [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($defaultAPKName),$manifest.manifest.application.label+"-mapi" + $MinSdkVersion+"-tapi"+$TargetSdkVersion+"-"+ $dateTimeSuffix +".apk")
-        
-        Rename-Item -Path $defaultAPKName -NewName $newName -Verbose
+			if (-not (Test-Path -Path $defaultAPKName))
+			{
+				throw "Build failed"
+			}
 
-		Remove-Item -Path ($manifestFileName + ".backup") -Verbose
-		
-        return Get-Item $newName
-    }  
+			$newName =  [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($defaultAPKName),$manifest.manifest.application.label+"-"+$dateTimeSuffix+"-mapi" + $MinSdkVersion+"-tapi"+$TargetSdkVersion+".apk")
+
+			Rename-Item -Path $defaultAPKName -NewName $newName -Verbose
+
+			return Get-Item $newName
+		} finally
+		{
+			Move-Item -Path ($manifestFileName + ".backup") $manifestFileName -Force -Verbose
+		}
+    }
 }
 
 $msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
@@ -70,8 +73,8 @@ if (-not (Test-Path $msbuild))
 
 #./Clean.ps1
 
-Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 16 -msbuild $msbuild | Move-Item -Destination  Z:\SledovaniTVPlayer\ -Verbose
-Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 25 -TargetSdkVersion 25 -msbuild $msbuild | Move-Item -Destination  Z:\SledovaniTVPlayer\ -Verbose
+Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 16 -msbuild $msbuild | Move-Item -Destination  . -Verbose
+Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 25 -TargetSdkVersion 25 -msbuild $msbuild | Move-Item -Destination  . -Verbose
 
 #./Clean.ps1
 

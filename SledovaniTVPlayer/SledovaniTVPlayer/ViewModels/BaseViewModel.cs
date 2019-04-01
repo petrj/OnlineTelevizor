@@ -31,7 +31,11 @@ namespace SledovaniTVPlayer.ViewModels
         public bool IsBusy
         {
             get { return isBusy; }
-            set { SetProperty(ref isBusy, value); }
+            set
+            {
+                SetProperty(ref isBusy, value);
+                OnPropertyChanged(nameof(IsBusy));
+            }
         }
 
         string title = string.Empty;
