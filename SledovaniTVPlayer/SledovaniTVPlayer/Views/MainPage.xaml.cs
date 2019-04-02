@@ -20,6 +20,7 @@ namespace SledovaniTVPlayer.Views
         private NavigationPage _settingsPage;
         private DialogService _dialogService;
         private Context _context;
+        private ISledovaniTVConfiguration _config;
 
         public MainPage(ILoggingService loggingService, ISledovaniTVConfiguration config, Context context)
         {
@@ -27,6 +28,7 @@ namespace SledovaniTVPlayer.Views
 
             _settingsPage = new NavigationPage(new SettingsPage(loggingService, config));
             _settingsPage.Disappearing += _settingsPage_Disappearing;
+            _config = config;
 
             _dialogService = new DialogService(this);
             _context = context;

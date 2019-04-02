@@ -43,10 +43,12 @@
                         <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PasswordEntry"  IsPassword="True" Text="{Binding Password, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
 
+                    <!--
                     <StackLayout>
                         <Label Text="PIN: " Style="{StaticResource CaptionStyle}" />
                         <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
+                    -->
 
                 </StackLayout>
 
