@@ -10,7 +10,9 @@ namespace SledovaniTVPlayer.Models
         string Password { get; set; }
         string ChildLockPIN { get; set; }
 
+        bool ShowLocked { get; set; }        
+
         string DeviceId { get; set; }
-        string DevicePassword { get; set; }
+        string DevicePassword { get; set; }        
     }
 }

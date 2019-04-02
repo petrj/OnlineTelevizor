@@ -52,16 +52,15 @@ namespace SledovaniTVPlayer.Services
                         _config.DevicePassword = _sledovaniTV.Connection.password;
                     }
 
-                    int i = 1;
-                    foreach (var ch in _sledovaniTV.Channels.channels)
+                    foreach (var ch in _sledovaniTV.Channels)
                     {
-                        chs.Add(new TVChannel()
+                        if (ch.Locked != "none")
                         {
-                            Name = ch.name,
-                            Url = ch.url
-                        });
+                            if (!_config.ShowLocked)
+                                continue;
+                        }
 
-                        i++;
+                        chs.Add(ch);
                     }
                 }
             } catch (Exception ex)

@@ -43,6 +43,11 @@
                         <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PasswordEntry"  IsPassword="True" Text="{Binding Password, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
 
+                    <StackLayout>
+                        <Label Text="Zobrazit zamcene kanaly" Style="{StaticResource CaptionStyle}" />
+                        <Switch x:Name="ShowLockedSwitch" IsToggled="{Binding Config.ShowLocked, Mode=TwoWay}" />
+                    </StackLayout>
+
                     <!--
                     <StackLayout>
                         <Label Text="PIN: " Style="{StaticResource CaptionStyle}" />

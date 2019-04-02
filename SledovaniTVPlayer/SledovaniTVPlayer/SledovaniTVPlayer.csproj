@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <Reference Include="Mono.Android">
-      <HintPath>..\..\..\Mono.Android.v8.1\Mono.Android.dll</HintPath>
+      <HintPath>C:\Mono.Android.v8.1\Mono.Android.dll</HintPath>
     </Reference>
   </ItemGroup>
 

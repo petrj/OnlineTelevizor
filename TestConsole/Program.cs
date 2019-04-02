@@ -35,9 +35,9 @@ namespace TestConsole
 
                     await sledovaniTV.ReloadChanels();
 
-                    foreach (var ch in sledovaniTV.Channels.channels)
+                    foreach (var ch in sledovaniTV.Channels)
                     {
-                        Console.WriteLine($"{ch.name}, {ch.url}");
+                        Console.WriteLine($"{ch.Name}, {ch.Url}");
                     }
                 });
 

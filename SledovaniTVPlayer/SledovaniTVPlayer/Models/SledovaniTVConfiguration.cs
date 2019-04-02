@@ -50,6 +50,18 @@ namespace SledovaniTVPlayer.Models
             }
         }
 
+        public bool ShowLocked
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("ShowLocked");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("ShowLocked", value);
+            }
+        }
+
         public string DeviceId
         {
             get { return GetPersistingSettingValue<string>("DeviceId"); } 

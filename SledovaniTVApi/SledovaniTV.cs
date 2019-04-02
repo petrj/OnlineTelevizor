@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace SledovaniTVAPI
 {
@@ -21,11 +22,12 @@ namespace SledovaniTVAPI
         private Session _session;
         private StatusEnum _status = StatusEnum.NotInitialized;
 
-        public Channels Channels { get; set; }
+        public List<TVChannel> Channels { get; set; }
 
         public SledovaniTV(ILoggingService loggingService)
         {
             _log = loggingService;
+            Channels = new List<TVChannel>();
         }
 
         public void SetCredentials(string username, string password)
@@ -302,36 +304,39 @@ namespace SledovaniTVAPI
                     { "PHPSESSID", _session.PHPSESSID }
                 };
 
-
                 // running in Liveplayer?
                 // JSON deserializing does not work!
                 //Channels = await SendJSONRequest<Channels>("playlist", ps);
                 // https://docs.microsoft.com/cs-cz/xamarin/tools/live-player/limitations
                 // https://bugzilla.xamarin.com/show_bug.cgi?id=58912
 
-                Channels = new Channels();
-                Channels.channels = new List<Channel>();
+                Channels.Clear();
+                //Channels.channels = new List<Channel>();
 
                 var channelsString = await SendRequest("playlist", ps);
-                var matches = Regex.Matches(channelsString, "\"name\":\"(.*?\"),\"type\":\"(.*?\"),\"url\":\"(.*?\")");
+                
+                var channelsJson = JObject.Parse(channelsString);
 
-                foreach (Match m in matches)
-                {
-                    var value = m.Value;
-
-                    var nameMatch = Regex.Match(value,"\"name\":\"(.*?\")");
-                    var urlMatch = Regex.Match(value,"\"url\":\"(.*?\")");
-
-                    var ch = new Channel()
+                var status = (string)channelsJson["status"];
+                foreach (JObject channelJson in channelsJson["channels"])
+                {                    
+                    var ch = new TVChannel()
                     {
-                        name = nameMatch.Value.Substring(8, nameMatch.Value.Length - 9),
-                        url = urlMatch.Value.Substring(7, urlMatch.Value.Length - 8)
+                        Id = channelJson["id"].ToString(),
+                        Name = channelJson["name"].ToString(),
+                        Url = channelJson["url"].ToString(),
+
+                        Type = channelJson["type"].ToString(),
+                        LogoUrl = channelJson["logoUrl"].ToString(),
+                        Locked = channelJson["locked"].ToString(),
+                        ParentLocked = channelJson["parentLocked"].ToString(),
+                        Group = channelJson["group"].ToString()
                     };
 
-                    Channels.channels.Add(ch);
+                    Channels.Add(ch);
                 }
-
-                _log.Info($"Received {Channels.channels.Count} channels");
+              
+                _log.Info($"Received {Channels.Count} channels");
             }
             catch (Exception ex)
             {
@@ -353,7 +358,7 @@ namespace SledovaniTVAPI
                 { "PHPSESSID", _session.PHPSESSID }
             };
 
-            Channels = await SendJSONRequest<Channels>("pin-unlock", ps);
+            // TODO: Parse Channels from "pin-unlock" request
         }
     }
 }
