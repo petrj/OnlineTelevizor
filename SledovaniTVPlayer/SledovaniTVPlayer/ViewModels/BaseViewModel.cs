@@ -19,8 +19,6 @@ namespace SledovaniTVPlayer.ViewModels
 
         bool isBusy = false;
 
-        // navigation.PushModalAsync enabled only 1 time per 3 seconds
-        private DateTime _lastNavigateTime = DateTime.MinValue;
 
         public BaseViewModel(ILoggingService loggingService, ISledovaniTVConfiguration config)
         {
@@ -34,7 +32,6 @@ namespace SledovaniTVPlayer.ViewModels
             set
             {
                 SetProperty(ref isBusy, value);
-                OnPropertyChanged(nameof(IsBusy));
             }
         }
 
@@ -56,17 +53,6 @@ namespace SledovaniTVPlayer.ViewModels
             onChanged?.Invoke();
             OnPropertyChanged(propertyName);
             return true;
-        }
-
-        public async Task NavigateToPage(Page page, INavigation navigation)
-        {
-            if ((DateTime.Now - _lastNavigateTime).TotalSeconds > 3)
-            {
-                _lastNavigateTime = DateTime.Now;
-
-                var navPage = new NavigationPage(page);
-                await navigation.PushModalAsync(navPage);
-            }
         }
 
         #region INotifyPropertyChanged

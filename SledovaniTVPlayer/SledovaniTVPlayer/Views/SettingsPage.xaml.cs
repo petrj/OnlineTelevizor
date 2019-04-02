@@ -28,5 +28,18 @@ namespace SledovaniTVPlayer.Views
 
             BindingContext = _viewModel = new SettingsViewModel(loggingService, config);
         }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            //NavigationPage.SetHasNavigationBar(this, true);
+            //NavigationPage.SetHasBackButton(this, true);
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            return base.OnBackButtonPressed();
+        }
     }
 }

@@ -17,16 +17,15 @@ namespace SledovaniTVPlayer.Views
     public partial class MainPage : ContentPage
     {
         private MainPageViewModel _viewModel;
-        private SettingsPage _settingsPage;
+        private NavigationPage _settingsPage;
         private DialogService _dialogService;
         private Context _context;
-        private string _credentialsTmp;
 
         public MainPage(ILoggingService loggingService, ISledovaniTVConfiguration config, Context context)
         {
             InitializeComponent();
 
-            _settingsPage = new SettingsPage(loggingService, config);
+            _settingsPage = new NavigationPage(new SettingsPage(loggingService, config));
             _settingsPage.Disappearing += _settingsPage_Disappearing;
 
             _dialogService = new DialogService(this);
@@ -37,13 +36,13 @@ namespace SledovaniTVPlayer.Views
 
         private void _settingsPage_Disappearing(object sender, EventArgs e)
         {
-            _viewModel.ResetConnection();
+            _viewModel.ResetConnectionCommand.Execute(null);
+            _viewModel.RefreshCommand.Execute(null);
         }
 
         private async void ToolbarItemSettings_Clicked(object sender, EventArgs e)
         {
-            await _viewModel.NavigateToPage(_settingsPage, Navigation);
-
+            await Navigation.PushAsync(_settingsPage);
         }
 
         private async void Channel_Tapped(object sender, ItemTappedEventArgs e)

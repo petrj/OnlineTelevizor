@@ -40,6 +40,7 @@ namespace SledovaniTVPlayer.ViewModels
         }
 
         public Command RefreshCommand { get; set; }
+        public Command ResetConnectionCommand { get; set; }
 
         public MainPageViewModel(ILoggingService loggingService, ISledovaniTVConfiguration config, IDialogService dialogService, Context context)
            : base(loggingService, config)
@@ -52,6 +53,7 @@ namespace SledovaniTVPlayer.ViewModels
             Channels = new ObservableCollection<TVChannel>();
 
             RefreshCommand = new Command(async () => await ReloadChannels());
+            ResetConnectionCommand = new Command(async () => await ResetConnection());
 
             // refreshing every 30 s
             //BackgroundCommandWorker.RunInBackground(RefreshCommand, 30, 0);
@@ -61,9 +63,6 @@ namespace SledovaniTVPlayer.ViewModels
 
         private async Task ReloadChannels()
         {
-            if (IsBusy)
-                return;
-
             IsBusy = true;
 
             try
@@ -79,16 +78,17 @@ namespace SledovaniTVPlayer.ViewModels
             {
                 IsBusy = false;
                 OnPropertyChanged(nameof(StatusLabel));
-
+                OnPropertyChanged(nameof(IsBusy));
             }
         }
 
-        public void ResetConnection()
+        private async Task ResetConnection()
         {
-            _service.ResetConnection();
-            OnPropertyChanged(nameof(StatusLabel));
-
-            RefreshCommand.Execute(null);
+            await Task.Run(delegate
+            {
+                _service.ResetConnection();
+                OnPropertyChanged(nameof(StatusLabel));
+            });
         }
 
         public async Task PlayStream(string url, int resultKeyCode = 0)
