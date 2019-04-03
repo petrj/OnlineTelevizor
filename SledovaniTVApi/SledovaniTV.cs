@@ -312,24 +312,18 @@ namespace SledovaniTVAPI
                     { "PHPSESSID", _session.PHPSESSID }
                 };
 
-                // running in Liveplayer?
-                // JSON deserializing does not work!
-                //Channels = await SendJSONRequest<Channels>("playlist", ps);
-                // https://docs.microsoft.com/cs-cz/xamarin/tools/live-player/limitations
-                // https://bugzilla.xamarin.com/show_bug.cgi?id=58912
-
                 Channels.Clear();
-                //Channels.channels = new List<Channel>();
 
                 var channelsString = await SendRequest("playlist", ps);
-
                 var channelsJson = JObject.Parse(channelsString);
 
-                var status = (string)channelsJson["status"];
+                var number = 1;
                 foreach (JObject channelJson in channelsJson["channels"])
                 {
                     var ch = new TVChannel()
                     {
+                        ChannelNumber = number.ToString(),
+
                         Id = channelJson["id"].ToString(),
                         Name = channelJson["name"].ToString(),
                         Url = channelJson["url"].ToString(),
@@ -341,6 +335,7 @@ namespace SledovaniTVAPI
                         Group = channelJson["group"].ToString()
                     };
 
+                    number++;
                     Channels.Add(ch);
                 }
 

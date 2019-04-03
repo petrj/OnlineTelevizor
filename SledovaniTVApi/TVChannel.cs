@@ -6,6 +6,8 @@ namespace SledovaniTVAPI
 {
     public class TVChannel : JSONObject
     {
+       public string ChannelNumber { get; set; }
+
        public string Name { get; set;  }
        public string Url { get; set; }
        public string Id { get; set; }
