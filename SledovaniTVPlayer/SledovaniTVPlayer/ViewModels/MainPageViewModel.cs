@@ -103,14 +103,8 @@ namespace SledovaniTVPlayer.ViewModels
 
         private async Task ResetConnection()
         {
-            await Task.Run(delegate
-            {
-                _service.ResetConnection();
-                OnPropertyChanged(nameof(StatusLabel));
-            });
+            await _service.ResetConnection();
+            OnPropertyChanged(nameof(StatusLabel));
         }
-
-
-
     }
 }

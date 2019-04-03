@@ -77,7 +77,8 @@
     </StackLayout>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked" Icon="Settings.png" />
+        <!--ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" /-->
+        <ToolbarItem Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked" Icon="Settings.png" />        
     </ContentPage.ToolbarItems>
 
 </ContentPage>

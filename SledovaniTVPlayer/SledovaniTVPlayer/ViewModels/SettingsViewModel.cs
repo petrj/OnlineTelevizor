@@ -37,11 +37,35 @@ namespace SledovaniTVPlayer.ViewModels
         {
             get
             {
-                return (int)_config.LoggingLevel;
+                switch (_config.LoggingLevel)
+                {
+                    case LoggingLevelEnum.Debug:
+                        return 0;
+                    case LoggingLevelEnum.Info:
+                        return 1;
+                    case LoggingLevelEnum.Error:
+                        return 2;
+                }
+
+                return 2;
             }
             set
             {
-                _config.LoggingLevel = (LoggingLevelEnum)value;
+                // 0 -> Debug
+                // 1 -> Info
+                // 3 -> Error
+
+                switch (value)
+                {
+                    case 0: _config.LoggingLevel = LoggingLevelEnum.Debug;
+                        break;
+                    case 1:
+                        _config.LoggingLevel = LoggingLevelEnum.Info;
+                        break;
+                    case 2:
+                        _config.LoggingLevel = LoggingLevelEnum.Error;
+                        break;
+                }  
                 OnPropertyChanged(nameof(LoggingLevelIndex));
             }
         }

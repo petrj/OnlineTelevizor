@@ -71,12 +71,13 @@ namespace SledovaniTVPlayer.Services
             return chs;
         }
 
-        public void ResetConnection()
+        public async Task ResetConnection()
         {
             _sledovaniTV.ResetConnection();
             _config.DeviceId = null;
             _config.DevicePassword = null;
             _sledovaniTV.SetCredentials(_config.Username, _config.Password);
+            await _sledovaniTV.Login();
         }
 
         public StatusEnum Status

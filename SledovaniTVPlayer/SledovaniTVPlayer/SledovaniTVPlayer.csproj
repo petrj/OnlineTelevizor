@@ -28,10 +28,10 @@
 
   <ItemGroup>
     <Reference Include="Java.Interop">
-      <HintPath>..\..\..\MonoAndroid\v1.0\Java.Interop.dll</HintPath>
+      <HintPath>C:\MonoAndroid\v1.0\Java.Interop.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android">
-      <HintPath>..\..\..\MonoAndroid\v8.1\Mono.Android.dll</HintPath>
+      <HintPath>C:\MonoAndroid\v8.1\Mono.Android.dll</HintPath>
     </Reference>
   </ItemGroup>
 
