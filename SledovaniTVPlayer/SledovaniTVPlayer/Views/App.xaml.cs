@@ -3,6 +3,7 @@ using NLog;
 using SledovaniTVPlayer.Models;
 using SledovaniTVPlayer.Services;
 using System;
+using System.IO;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,11 +16,24 @@ namespace SledovaniTVPlayer.Views
         {
             InitializeComponent();
 
-            var loggingService = new BasicLoggingService();
-            loggingService.LogFilename = "/storage/emulated/0/Download/SledovaniTV.txt";
+            ILoggingService loggingService;
+
             var context = Android.App.Application.Context;
 
             var config = new SledovaniTVConfiguration(context);
+            if (config.EnableLogging)
+            {
+                loggingService = new BasicLoggingService();
+
+                var logFolder = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.Path, "SledovaniTVPlayer");
+                if (!Directory.Exists(logFolder))
+                    Directory.CreateDirectory(logFolder);
+
+                (loggingService as BasicLoggingService).LogFilename = Path.Combine(logFolder, "SledovaniTV.log");
+            } else
+            {
+                loggingService = new DummyLoggingService();
+            }
 
             MainPage = new NavigationPage(new MainPage(loggingService, config, context));
         }

@@ -73,8 +73,8 @@ if (-not (Test-Path $msbuild))
 
 #./Clean.ps1
 
-Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 16 -msbuild $msbuild | Move-Item -Destination  . -Verbose
-Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 25 -TargetSdkVersion 25 -msbuild $msbuild | Move-Item -Destination  . -Verbose
+#Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 16 -msbuild $msbuild | Move-Item -Destination  . -Verbose
+Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 25 -msbuild $msbuild | Move-Item -Destination  . -Verbose
 
 #./Clean.ps1
 

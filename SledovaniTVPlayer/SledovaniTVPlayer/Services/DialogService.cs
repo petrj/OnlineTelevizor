@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace SledovaniTVPlayer.Services
 {
-    class DialogService : IDialogService
+    public class DialogService : IDialogService
     {
         public DialogService(Page page = null)
         {

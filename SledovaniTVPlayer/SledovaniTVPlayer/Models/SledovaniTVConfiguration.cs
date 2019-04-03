@@ -62,9 +62,21 @@ namespace SledovaniTVPlayer.Models
             }
         }
 
+        public bool EnableLogging
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("EnableLogging");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("EnableLogging", value);
+            }
+        }
+
         public string DeviceId
         {
-            get { return GetPersistingSettingValue<string>("DeviceId"); } 
+            get { return GetPersistingSettingValue<string>("DeviceId"); }
             set { SavePersistingSettingValue<string>("DeviceId", value); }
         }
 

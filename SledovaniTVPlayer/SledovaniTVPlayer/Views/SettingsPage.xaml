@@ -44,8 +44,13 @@
                     </StackLayout>
 
                     <StackLayout>
-                        <Label Text="Zobrazit zamcene kanaly" Style="{StaticResource CaptionStyle}" />
+                        <Label Text="Zobrazit zamčené kanály" Style="{StaticResource CaptionStyle}" />
                         <Switch x:Name="ShowLockedSwitch" IsToggled="{Binding Config.ShowLocked, Mode=TwoWay}" />
+                    </StackLayout>
+
+                    <StackLayout>
+                        <Label Text="Povolit logování (vyžaduje restart)" Style="{StaticResource CaptionStyle}" />
+                        <Switch x:Name="EnableLoggingSwitch" IsToggled="{Binding Config.EnableLogging, Mode=TwoWay}" />
                     </StackLayout>
 
                     <!--
@@ -54,6 +59,8 @@
                         <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
                     -->
+
+                    <Button Text="Sdílet log" Command="{Binding ShareLogCommand}" />
 
                 </StackLayout>
 

@@ -1,4 +1,5 @@
-﻿using LoggerService;
+﻿using Android.Content;
+using LoggerService;
 using NLog;
 using SledovaniTVPlayer.Models;
 using SledovaniTVPlayer.Services;
@@ -20,18 +21,18 @@ namespace SledovaniTVPlayer.Views
         private SettingsViewModel _viewModel;
         private ISledovaniTVConfiguration _config;
 
-        public SettingsPage(ILoggingService loggingService, ISledovaniTVConfiguration config)
+        public SettingsPage(ILoggingService loggingService, ISledovaniTVConfiguration config, Context context, IDialogService dialogService)
         {
             InitializeComponent();
 
             _config = config;
 
-            BindingContext = _viewModel = new SettingsViewModel(loggingService, config);
+            BindingContext = _viewModel = new SettingsViewModel(loggingService, config, context, dialogService);
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-        }     
+        }
     }
 }

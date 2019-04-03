@@ -17,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="NLog" Version="4.6.0" />
+    <PackageReference Include="Plugin.Permissions" Version="4.0.4-beta" />
     <PackageReference Include="Xamarin.Forms" Version="3.6.0.264807" />
   </ItemGroup>
 
@@ -26,8 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Java.Interop">
+      <HintPath>..\..\..\MonoAndroid\v1.0\Java.Interop.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Android">
-      <HintPath>C:\Mono.Android.v8.1\Mono.Android.dll</HintPath>
+      <HintPath>..\..\..\MonoAndroid\v8.1\Mono.Android.dll</HintPath>
     </Reference>
   </ItemGroup>
 

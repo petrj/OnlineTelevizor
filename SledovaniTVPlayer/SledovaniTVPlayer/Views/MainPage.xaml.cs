@@ -26,11 +26,12 @@ namespace SledovaniTVPlayer.Views
         {
             InitializeComponent();
 
-            _settingsPage = new NavigationPage(new SettingsPage(loggingService, config));
-            _settingsPage.Disappearing += _settingsPage_Disappearing;
-            _config = config;
-
             _dialogService = new DialogService(this);
+
+            _settingsPage = new NavigationPage(new SettingsPage(loggingService, config, context, _dialogService));
+            _settingsPage.Disappearing += _settingsPage_Disappearing;
+
+            _config = config;
             _context = context;
 
             BindingContext = _viewModel = new MainPageViewModel(loggingService, config, _dialogService, context);
