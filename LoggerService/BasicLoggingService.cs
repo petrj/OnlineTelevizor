@@ -60,11 +60,6 @@ namespace LoggerService
             WriteToLogFile(LoggingLevelEnum.Debug, message);
         }
 
-        public void Warn(string message)
-        {
-            WriteToLogFile(LoggingLevelEnum.Warning, message);
-        }
-
         public void Info(string message)
         {
             WriteToLogFile(LoggingLevelEnum.Info, message);

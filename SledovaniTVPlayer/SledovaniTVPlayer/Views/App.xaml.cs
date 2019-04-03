@@ -23,7 +23,7 @@ namespace SledovaniTVPlayer.Views
             var config = new SledovaniTVConfiguration(context);
             if (config.EnableLogging)
             {
-                loggingService = new BasicLoggingService();
+                loggingService = new BasicLoggingService(config.LoggingLevel);
 
                 var logFolder = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.Path, "SledovaniTVPlayer");
                 if (!Directory.Exists(logFolder))

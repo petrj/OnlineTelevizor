@@ -33,6 +33,19 @@ namespace SledovaniTVPlayer.ViewModels
             ShareLogCommand = new Command(async () => await ShareLogWithPermissionsRequest());
         }
 
+        public int LoggingLevelIndex
+        {
+            get
+            {
+                return (int)_config.LoggingLevel;
+            }
+            set
+            {
+                _config.LoggingLevel = (LoggingLevelEnum)value;
+                OnPropertyChanged(nameof(LoggingLevelIndex));
+            }
+        }
+
         private async Task ShareLogWithPermissionsRequest()
         {
             await RunWithPermission(Permission.Storage, async () => await ShareLog());

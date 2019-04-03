@@ -161,8 +161,8 @@ namespace SledovaniTVAPI
 
                 _deviceConnection = await SendJSONRequest<DeviceConnection>("create-pairing", ps);
 
-                _log.Info("Received User Connection:");
-                _log.Info(_deviceConnection.ToString());
+                _log.Debug("Received User Connection:");
+                _log.Debug(_deviceConnection.ToString());
 
                 if (String.IsNullOrEmpty(_deviceConnection.deviceId))
                 {
@@ -222,12 +222,15 @@ namespace SledovaniTVAPI
             }
             catch (Exception ex)
             {
+                _log.Error(ex, "Login failed");
                 _status = StatusEnum.LoginFailed;
             }
         }
 
         public void ResetConnection()
         {
+            _log.Debug("Resetting connection");
+
             _status = StatusEnum.NotInitialized;
             _deviceConnection.deviceId = null;
             _deviceConnection.password = null;
@@ -236,12 +239,12 @@ namespace SledovaniTVAPI
 
         public async Task Login()
         {
-            _log.Debug("Login device to service");
-
             if (_session != null && !String.IsNullOrEmpty(_session.PHPSESSID))
             {
                 _status = StatusEnum.Logged;
             }
+
+            _log.Info("Login");
 
             if (Status == StatusEnum.Logged)
             {
@@ -253,6 +256,7 @@ namespace SledovaniTVAPI
                 String.IsNullOrEmpty(_credentials.Password))
             {
                 _status = StatusEnum.EmptyCredentials;
+                _log.Debug("Empty credentials");
                 return;
             }
 
@@ -267,6 +271,7 @@ namespace SledovaniTVAPI
 
                 if (Status == StatusEnum.PairingFailed)
                 {
+                    _log.Debug("Pairing failed");
                     return; // bad credentials, no internet connection ?
                 }
             }
@@ -282,6 +287,7 @@ namespace SledovaniTVAPI
 
                 if (Status == StatusEnum.PairingFailed)
                 {
+                    _log.Debug("Pairing failed again");
                     return; // bad credentials, no internet connection ?
                 }
 
@@ -298,6 +304,8 @@ namespace SledovaniTVAPI
 
             try
             {
+                _log.Info($"Reloading channels");
+
                 var ps = new Dictionary<string, string>()
                 {
                     { "format", "androidtv" },
@@ -314,12 +322,12 @@ namespace SledovaniTVAPI
                 //Channels.channels = new List<Channel>();
 
                 var channelsString = await SendRequest("playlist", ps);
-                
+
                 var channelsJson = JObject.Parse(channelsString);
 
                 var status = (string)channelsJson["status"];
                 foreach (JObject channelJson in channelsJson["channels"])
-                {                    
+                {
                     var ch = new TVChannel()
                     {
                         Id = channelJson["id"].ToString(),
@@ -335,7 +343,7 @@ namespace SledovaniTVAPI
 
                     Channels.Add(ch);
                 }
-              
+
                 _log.Info($"Received {Channels.Count} channels");
             }
             catch (Exception ex)

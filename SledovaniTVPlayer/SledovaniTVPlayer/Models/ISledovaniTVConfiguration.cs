@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LoggerService;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,8 +13,10 @@ namespace SledovaniTVPlayer.Models
 
         bool ShowLocked { get; set; }
         bool EnableLogging { get; set; }
+        LoggingLevelEnum LoggingLevel { get; set; }
 
         string DeviceId { get; set; }
         string DevicePassword { get; set; }
+
     }
 }

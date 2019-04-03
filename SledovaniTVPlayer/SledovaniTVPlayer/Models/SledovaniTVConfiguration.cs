@@ -1,5 +1,6 @@
 ﻿using Android.Content;
 using Android.Preferences;
+using LoggerService;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -71,6 +72,21 @@ namespace SledovaniTVPlayer.Models
             set
             {
                 SavePersistingSettingValue<bool>("EnableLogging", value);
+            }
+        }
+
+        public LoggingLevelEnum LoggingLevel
+        {
+            get
+            {
+                var index = GetPersistingSettingValue<int>("LoggingLevel");
+                if (index == 0)
+                    index = 9; // default is error
+                return (LoggingLevelEnum)index;
+            }
+            set
+            {
+                SavePersistingSettingValue<int>("LoggingLevel", (int)value);
             }
         }
 
