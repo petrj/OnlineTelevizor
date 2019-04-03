@@ -28,6 +28,8 @@ namespace SledovaniTVAPI
         {
             _log = loggingService;
             Channels = new List<TVChannel>();
+            Connection = new DeviceConnection();
+            _session = new Session();
         }
 
         public void SetCredentials(string username, string password)
