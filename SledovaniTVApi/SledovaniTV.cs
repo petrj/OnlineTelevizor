@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -59,12 +58,6 @@ namespace SledovaniTVAPI
             {
                 _deviceConnection = value;
             }
-        }
-
-        private async Task<T> SendJSONRequest<T>(string functionName, Dictionary<string, string> pars)
-        {
-            var result = await SendRequest(functionName, pars);
-            return JsonConvert.DeserializeObject<T>(result);
         }
 
         private async Task<string> SendRequest(string functionName, Dictionary<string, string> parameters)
@@ -161,7 +154,14 @@ namespace SledovaniTVAPI
                     { "type", "samsungtv" }
                 };
 
-                _deviceConnection = await SendJSONRequest<DeviceConnection>("create-pairing", ps);
+                var deviceConnectionString = await SendRequest("create-pairing", ps);
+                var deviceConnectionJson = JObject.Parse(deviceConnectionString);
+
+                _deviceConnection = new DeviceConnection()
+                {
+                    deviceId = deviceConnectionJson["deviceId"].ToString(),
+                    password = deviceConnectionJson["password"].ToString()
+                };
 
                 _log.Debug("Received User Connection:");
                 _log.Debug(_deviceConnection.ToString());
@@ -200,24 +200,24 @@ namespace SledovaniTVAPI
                     { "unit", "default" }
                 };
 
-                // Using SendJSONRequest<Session> in real Android leads to Newtonsoft.Json.JsonSerializationException
-                //_session = await SendJSONRequest<Session>("device-login", ps);
                 var _sessionString = await SendRequest("device-login", ps);
-                _session = new Session();
+                var sessionStringJson = JObject.Parse(_sessionString);
 
-                if (_sessionString.StartsWith("{\"status\":1,\"PHPSESSID\":\""))
-                {
-                    _session.PHPSESSID = _sessionString.Substring(25, _sessionString.Length - 27);
-                }
-
-                if (_session.status == "0" ||
-                    _session.error == "bad login" ||
-                    String.IsNullOrEmpty(_session.PHPSESSID))
+                if (
+                    ((sessionStringJson.ContainsKey("status")) && (sessionStringJson["status"].ToString() == "0")) ||
+                    ((sessionStringJson.ContainsKey("error")) && (sessionStringJson["error"].ToString() == "bad login")) ||
+                    (!sessionStringJson.ContainsKey("PHPSESSID"))
+                   )
                 {
                     _status = StatusEnum.LoginFailed;
                 }
                 else
                 {
+                    _session = new Session()
+                    {
+                        PHPSESSID = sessionStringJson["PHPSESSID"].ToString()
+                    };
+
                     _status = StatusEnum.Logged;
                 }
 

@@ -27,7 +27,6 @@
 
             <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="18"/>
             </Style>
 
         </ResourceDictionary>
