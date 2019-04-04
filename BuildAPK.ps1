@@ -71,10 +71,5 @@ if (-not (Test-Path $msbuild))
     $msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe"
 }
 
-#./Clean.ps1
-
 #Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 16 -msbuild $msbuild | Move-Item -Destination  . -Verbose
 Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 25 -msbuild $msbuild | Move-Item -Destination  . -Verbose
-
-#./Clean.ps1
-
