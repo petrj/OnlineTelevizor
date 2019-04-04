@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 
 namespace SledovaniTVAPI
 {
@@ -226,6 +227,77 @@ namespace SledovaniTVAPI
             {
                 _log.Error(ex, "Login failed");
                 _status = StatusEnum.LoginFailed;
+            }
+        }
+
+        /// <summary>
+        /// Refresh EPG
+        /// </summary>
+        public async Task RefreshEPG()
+        {
+            _log.Debug($"Refreshing EPG");
+
+            try
+            {
+                var ps = new Dictionary<string, string>()
+                {
+                    { "PHPSESSID", _session.PHPSESSID },
+                    { "detail", "1" },
+                    { "duration", "60" }
+                };
+
+                var epgString = await SendRequest("epg", ps);
+
+                var epgJson = JObject.Parse(epgString);
+                if (epgJson.ContainsKey("status") &&
+                    epgJson["status"].ToString()=="1" &&
+                    epgJson.ContainsKey("channels"))
+                {
+                    foreach (var epgCh in epgJson["channels"])
+                    {
+                        // id from path (channels.ct1")
+                        var chId = epgCh.Path.Substring(9);
+                        TVChannel ch = null;
+
+                        // looking for channels;
+                        foreach(var c in Channels)
+                        {
+                            if (c.Id == chId)
+                            {
+                                ch = c;
+                                break;
+                            }
+                        }
+
+                        if (ch == null)
+                        {
+                            continue; // epg of missing channel
+                        }
+
+                        ch.EPGItems.Clear();
+
+                        foreach (var epg in epgJson["channels"][chId])
+                        {
+                            var title = epgCh.First[0]["title"].ToString();
+                            var times = epgCh.First[0]["startTime"].ToString();
+                            var timef = epgCh.First[0]["endTime"].ToString();
+
+                            var item = new EPGItem()
+                            {
+                                Title = title,
+                                Start = DateTime.ParseExact(times, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
+                                Finish = DateTime.ParseExact(timef, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
+                            };
+
+                            ch.EPGItems.Add(item);
+                        };                   
+                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Error while pairing device");
+                _status = StatusEnum.PairingFailed;
             }
         }
 
