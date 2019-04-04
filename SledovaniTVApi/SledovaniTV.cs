@@ -259,8 +259,10 @@ namespace SledovaniTVAPI
                         var chId = epgCh.Path.Substring(9);
                         TVChannel ch = null;
 
+                        _log.Debug($"Loading EPG of channel {chId}");
+
                         // looking for channels;
-                        foreach(var c in Channels)
+                        foreach (var c in Channels)
                         {
                             if (c.Id == chId)
                             {
@@ -271,6 +273,7 @@ namespace SledovaniTVAPI
 
                         if (ch == null)
                         {
+                            _log.Debug($"Channel {chId} not found");
                             continue; // epg of missing channel
                         }
 
@@ -289,6 +292,8 @@ namespace SledovaniTVAPI
                                 Finish = DateTime.ParseExact(timef, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
                             };
 
+                            _log.Debug($"Adding epg item {title}");
+
                             ch.EPGItems.Add(item);
                         };                   
                      }
@@ -296,8 +301,7 @@ namespace SledovaniTVAPI
             }
             catch (Exception ex)
             {
-                _log.Error(ex, "Error while pairing device");
-                _status = StatusEnum.PairingFailed;
+                _log.Error(ex, "EPG loading failed");
             }
         }
 
