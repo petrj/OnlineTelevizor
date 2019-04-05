@@ -13,7 +13,9 @@ namespace TestConsole
         static void Main(string[] args)
         {
             var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
-            var loggingService = new NLogLoggingService();
+            var loggingService = new BasicLoggingService();
+            loggingService.LogFilename = "TestConsole.log";
+            loggingService.MinLevel = LoggingLevelEnum.Debug;
 
             var sledovaniTV = new SledovaniTV(loggingService );
             sledovaniTV.SetCredentials(credentials.Username, credentials.Password);
@@ -34,14 +36,17 @@ namespace TestConsole
                     };
 
                     await sledovaniTV.ReloadChanels();
+                    await sledovaniTV.RefreshEPG();
 
                     foreach (var ch in sledovaniTV.Channels)
                     {
-                        Console.WriteLine($"{ch.Name}, {ch.Url}");
+                        Console.WriteLine(ch.Name);
+                        Console.WriteLine("  " + ch.CurrentEPGTitle);
                     }
                 });
 
-            Console.ReadLine();
+            Console.WriteLine("Press any key");
+            Console.ReadKey();
         }
     }
 }
