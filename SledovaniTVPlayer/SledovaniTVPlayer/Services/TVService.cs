@@ -41,6 +41,7 @@ namespace SledovaniTVPlayer.Services
             try
             {
                 await _sledovaniTV.ReloadChanels();
+                await _sledovaniTV.RefreshEPG();
 
                 if (_sledovaniTV.Status == StatusEnum.Logged || _sledovaniTV.Status == StatusEnum.Paired)
                 {

@@ -295,7 +295,7 @@ namespace SledovaniTVAPI
                             _log.Debug($"Adding epg item {title}");
 
                             ch.EPGItems.Add(item);
-                        };                   
+                        };
                      }
                 }
             }

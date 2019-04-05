@@ -16,6 +16,13 @@
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
             </Style>
 
+            <Style x:Key="ListItemEPGTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="FontAttributes" Value="Italic"/>
+            </Style>
+
             <Style x:Key="InfoLabelStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="Black"/>
                 <Setter Property="FontSize" Value="16"/>
@@ -50,6 +57,7 @@
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="40" />
@@ -57,9 +65,10 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding ChannelNumber}" Style="{DynamicResource ListItemTextStyle}"/>
-                                <Image Grid.Row="0" Grid.Column="1" Source="{Binding LogoUrl}" WidthRequest="40" />
+                                <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Text="{Binding ChannelNumber}" Style="{DynamicResource ListItemTextStyle}"/>
+                                <Image Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Source="{Binding LogoUrl}" WidthRequest="40" />
                                 <Label Grid.Row="0" Grid.Column="2" Margin="15,0,0,0" Text="{Binding Name}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" />
+                                <Label Grid.Row="1" Grid.Column="2" Margin="20,0,0,0" Text="{Binding CurrentEPGTitle}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemEPGTextStyle}" />
 
                             </Grid>
 
