@@ -328,3 +328,5 @@ Temporary Items
 # Android apk
 *.apk
 *.apk
+
+nuget.exe

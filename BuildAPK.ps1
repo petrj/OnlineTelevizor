@@ -71,5 +71,16 @@ if (-not (Test-Path $msbuild))
     $msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe"
 }
 
+# restore nuget packages
+
+$url = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+
+if (-not (Test-Path -Path "nuget.exe"))
+{
+    Invoke-WebRequest -Uri $url -OutFile "nuget.exe"
+}
+
+.\nuget.exe restore .\SledovaniTVPlayer.sln
+
 #Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 16 -msbuild $msbuild | Move-Item -Destination  . -Verbose
 Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 25 -msbuild $msbuild | Move-Item -Destination  . -Verbose
