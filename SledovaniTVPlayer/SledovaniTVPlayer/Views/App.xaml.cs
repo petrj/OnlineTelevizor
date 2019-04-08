@@ -1,4 +1,5 @@
-﻿using LoggerService;
+﻿using Android.Views;
+using LoggerService;
 using NLog;
 using SledovaniTVPlayer.Models;
 using SledovaniTVPlayer.Services;
@@ -12,6 +13,8 @@ namespace SledovaniTVPlayer.Views
 {
     public partial class App : Application
     {
+        SledovaniTVPlayer.Views.MainPage _mainPage;
+
         public App()
         {
             InitializeComponent();
@@ -35,7 +38,14 @@ namespace SledovaniTVPlayer.Views
                 loggingService = new DummyLoggingService();
             }
 
-            MainPage = new NavigationPage(new MainPage(loggingService, config, context));
+            _mainPage = new MainPage(loggingService, config, context);
+
+            MainPage = new NavigationPage(_mainPage);
+        }
+
+        public bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        {
+            return _mainPage.OnKeyDown(keyCode, e);
         }
 
         protected override void OnStart()

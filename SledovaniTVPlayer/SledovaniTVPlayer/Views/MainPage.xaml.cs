@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Android.Content;
+using Android.Views;
 
 namespace SledovaniTVPlayer.Views
 {
@@ -35,6 +36,12 @@ namespace SledovaniTVPlayer.Views
             _context = context;
 
             BindingContext = _viewModel = new MainPageViewModel(loggingService, config, _dialogService, context);
+        }
+
+        public bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        {
+            Task.Run(async () => await _dialogService.Information($"Key Code {keyCode.ToString()}, Key event: {e.ToString()}"));
+            return true;
         }
 
         private void _settingsPage_Disappearing(object sender, EventArgs e)

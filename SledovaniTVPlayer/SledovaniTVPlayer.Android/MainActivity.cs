@@ -16,6 +16,8 @@ namespace SledovaniTVPlayer.Droid
     [Activity(Label = "SledovaniTVPlayer", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+        private App _app;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
@@ -32,13 +34,20 @@ namespace SledovaniTVPlayer.Droid
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
-            LoadApplication(new App());
+            _app = new App();
+
+            LoadApplication(_app);
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
         {
             PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        {
+            return _app.OnKeyDown(keyCode, e);
         }
     }
 }
