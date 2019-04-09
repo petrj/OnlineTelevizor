@@ -3,6 +3,8 @@ namespace SledovaniTVAPI
 {
     public class EPGItem : JSONObject
     {
+        public string ChannelId { get; set; }
+
         public string Title { get; set; }
         public string Description { get; set; }
 

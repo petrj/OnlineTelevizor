@@ -34,6 +34,30 @@ namespace SledovaniTVPlayer.Services
             };
         }
 
+        public async Task<ObservableCollection<EPGItem>> GetEPG()
+        {
+            var result = new ObservableCollection<EPGItem>();
+
+            try
+            {
+                var epg = await _sledovaniTV.GetEPG();
+
+                if (_sledovaniTV.Status == StatusEnum.Logged || _sledovaniTV.Status == StatusEnum.Paired)
+                {                    
+                    foreach (var ei in epg)
+                    {
+                        result.Add(ei);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Error getting EPG");
+            }
+
+            return result;
+        }
+
         public async Task<ObservableCollection<TVChannel>> GetChannels()
         {
             var chs = new ObservableCollection<TVChannel>();
@@ -41,7 +65,7 @@ namespace SledovaniTVPlayer.Services
             try
             {
                 await _sledovaniTV.ReloadChanels();
-                await _sledovaniTV.RefreshEPG();
+                //await _sledovaniTV.RefreshEPG();
 
                 if (_sledovaniTV.Status == StatusEnum.Logged || _sledovaniTV.Status == StatusEnum.Paired)
                 {

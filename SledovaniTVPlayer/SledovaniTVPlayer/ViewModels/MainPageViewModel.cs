@@ -23,6 +23,8 @@ namespace SledovaniTVPlayer.ViewModels
 
         public ObservableCollection<TVChannel> Channels { get; set; }
 
+        private Dictionary<string, TVChannel> _channelById { get; set; } = new Dictionary<string, TVChannel>();
+
         public string StatusLabel
         {
             get
@@ -41,6 +43,10 @@ namespace SledovaniTVPlayer.ViewModels
         }
 
         public Command RefreshCommand { get; set; }
+
+        public Command RefreshChannlesCommand { get; set; }
+        public Command RefreshEPGCommand { get; set; }
+
         public Command ResetConnectionCommand { get; set; }
 
         public Command RequestWriteLogsPermissionsCommand { get; set; }
@@ -56,17 +62,31 @@ namespace SledovaniTVPlayer.ViewModels
 
             Channels = new ObservableCollection<TVChannel>();
 
-            RefreshCommand = new Command(async () => await ReloadChannels());
+            RefreshCommand = new Command(async () => await Refresh());
+
+            RefreshEPGCommand = new Command(async () => await RefreshEPG());
+            RefreshChannlesCommand = new Command(async () => await RefreshChannels());
+
             ResetConnectionCommand = new Command(async () => await ResetConnection());
 
             RequestWriteLogsPermissionsCommand = new Command(async () => await RequestWriteLogsPermissions());
 
             RequestWriteLogsPermissionsCommand.Execute(null);
 
-            // refreshing every 30 s
-            //BackgroundCommandWorker.RunInBackground(RefreshCommand, 30, 0);
-
             RefreshCommand.Execute(null);
+
+            //RefreshChannlesCommand.Execute(null);
+
+            // refreshing every min with 2 s start delay
+            //BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 2);
+        }
+
+        public Dictionary<string, TVChannel> ChannelById
+        {
+            get
+            {
+                return _channelById;
+            }
         }
 
         private async Task RequestWriteLogsPermissions()
@@ -77,22 +97,64 @@ namespace SledovaniTVPlayer.ViewModels
             await RequestPermission(Permission.Storage);
         }
 
-        private async Task ReloadChannels()
+        private async Task Refresh()
+        {
+            await RefreshChannels(false);
+            await RefreshEPG();
+        }
+
+        private async Task RefreshEPG(bool SetFinallyNotBusy = true)
+        {
+            IsBusy = true;
+
+            try
+            {   
+                foreach (var ei in await _service.GetEPG())
+                {
+                    if (ChannelById.ContainsKey(ei.ChannelId))
+                    {     
+                        // updating channel EPG
+
+                        var ch = ChannelById[ei.ChannelId];
+                        ch.EPGItems.Add(ei);
+                    }
+                }
+            }
+            finally
+            {
+                if (SetFinallyNotBusy)
+                {
+                    IsBusy = false;
+                }
+                
+                OnPropertyChanged(nameof(StatusLabel));
+                OnPropertyChanged(nameof(IsBusy));
+            }
+        }
+
+        private async Task RefreshChannels(bool SetFinallyNotBusy = true)
         {
             IsBusy = true;
 
             try
             {
                 Channels.Clear();
+                _channelById.Clear();
 
                 var channels = await _service.GetChannels();
 
                 foreach (var ch in channels)
+                {
                     Channels.Add(ch);
+                    _channelById.Add(ch.Id, ch); // for faster EPG refreesh
+                }
 
             } finally
             {
-                IsBusy = false;
+                if (SetFinallyNotBusy)
+                {
+                    IsBusy = false;
+                }
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
             }

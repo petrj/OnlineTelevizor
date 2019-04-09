@@ -235,9 +235,16 @@ namespace SledovaniTVAPI
         /// <summary>
         /// Refresh EPG
         /// </summary>
-        public async Task RefreshEPG()
+        public async Task<List<EPGItem>>GetEPG()
         {
             _log.Debug($"Refreshing EPG");
+
+            var result = new List<EPGItem>();
+
+            await Login();
+
+            if (_status != StatusEnum.Logged)
+                return result;
 
             try
             {
@@ -258,28 +265,7 @@ namespace SledovaniTVAPI
                     foreach (var epgCh in epgJson.GetValue("channels"))
                     {
                         // id from path (channels.ct1")
-                        var chId = epgCh.Path.Substring(9);
-                        TVChannel ch = null;
-
-                        _log.Debug($"Loading EPG of channel {chId}");
-
-                        // looking for channels;
-                        foreach (var c in Channels)
-                        {
-                            if (c.Id == chId)
-                            {
-                                ch = c;
-                                break;
-                            }
-                        }
-
-                        if (ch == null)
-                        {
-                            _log.Debug($"Channel {chId} not found");
-                            continue; // epg of missing channel
-                        }
-
-                        ch.EPGItems.Clear();
+                        var chId = epgCh.Path.Substring(9);                     
 
                         foreach (var epg in epgJson.GetValue("channels")[chId])
                         {
@@ -289,6 +275,7 @@ namespace SledovaniTVAPI
 
                             var item = new EPGItem()
                             {
+                                ChannelId = chId,
                                 Title = title,
                                 Start = DateTime.ParseExact(times, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
                                 Finish = DateTime.ParseExact(timef, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
@@ -296,15 +283,17 @@ namespace SledovaniTVAPI
 
                             _log.Debug($"Adding epg item {title}");
 
-                            ch.EPGItems.Add(item);
+                            result.Add(item);
                         };
                      }
-                }
+                }                
             }
             catch (Exception ex)
             {
                 _log.Error(ex, "EPG loading failed");
             }
+
+            return result;
         }
 
         public void ResetConnection()

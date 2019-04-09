@@ -36,12 +36,11 @@ namespace TestConsole
                     };
 
                     await sledovaniTV.ReloadChanels();
-                    await sledovaniTV.RefreshEPG();
+                    var epg = await sledovaniTV.GetEPG();
 
                     foreach (var ch in sledovaniTV.Channels)
                     {
                         Console.WriteLine(ch.Name);
-                        Console.WriteLine("  " + ch.CurrentEPGTitle);
                     }
                 });
 
