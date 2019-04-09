@@ -15,9 +15,6 @@ namespace SledovaniTVPlayer.ViewModels
 {
     public class SettingsViewModel : BaseViewModel
     {
-        private ILoggingService _loggingService;
-        private Context _context;
-        private IDialogService _dialogService;
         private ISledovaniTVConfiguration _config;
 
         public Command ShareLogCommand { get; set; }

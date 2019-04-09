@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Configurations>Debug;Release;Debug - Live Player</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - Live Player|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;LP</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

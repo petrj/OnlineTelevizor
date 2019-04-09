@@ -19,10 +19,7 @@ namespace SledovaniTVPlayer.ViewModels
     public class MainPageViewModel : BaseViewModel
     {
         private TVService _service;
-        private IDialogService _dialogService;
-        private ILoggingService _loggingService;
         private ISledovaniTVConfiguration _config;
-        private Context _context;
 
         public ObservableCollection<TVChannel> Channels { get; set; }
 

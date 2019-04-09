@@ -45,9 +45,13 @@ namespace SledovaniTVPlayer.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
+#if LivePlayer
+#else        
+        [Android.Runtime.Register("onKeyDown", "(ILandroid/view/KeyEvent;)Z", "GetOnKeyDown_ILandroid_view_KeyEvent_Handler")]
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
             return _app.OnKeyDown(keyCode, e);
-        }
+        }        
+#endif
     }
 }

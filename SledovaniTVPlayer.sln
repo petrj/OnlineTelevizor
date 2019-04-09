@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SledovaniTVPlayer.Android", "SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj", "{F79AAAAB-198D-4168-9DB3-95FF0B9C77FF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{95468A7C-4400-4101-9A39-166F058B5B0B} = {95468A7C-4400-4101-9A39-166F058B5B0B}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SledovaniTVPlayer", "SledovaniTVPlayer\SledovaniTVPlayer\SledovaniTVPlayer.csproj", "{09F67F34-745E-4D9A-BC6E-FD4C36F406FB}"
 EndProject
@@ -24,30 +27,42 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{E7015148
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug - Live Player|Any CPU = Debug - Live Player|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F79AAAAB-198D-4168-9DB3-95FF0B9C77FF}.Debug - Live Player|Any CPU.ActiveCfg = Debug - Live Player|Any CPU
+		{F79AAAAB-198D-4168-9DB3-95FF0B9C77FF}.Debug - Live Player|Any CPU.Build.0 = Debug - Live Player|Any CPU
+		{F79AAAAB-198D-4168-9DB3-95FF0B9C77FF}.Debug - Live Player|Any CPU.Deploy.0 = Debug - Live Player|Any CPU
 		{F79AAAAB-198D-4168-9DB3-95FF0B9C77FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F79AAAAB-198D-4168-9DB3-95FF0B9C77FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F79AAAAB-198D-4168-9DB3-95FF0B9C77FF}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{F79AAAAB-198D-4168-9DB3-95FF0B9C77FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F79AAAAB-198D-4168-9DB3-95FF0B9C77FF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F79AAAAB-198D-4168-9DB3-95FF0B9C77FF}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{09F67F34-745E-4D9A-BC6E-FD4C36F406FB}.Debug - Live Player|Any CPU.ActiveCfg = Debug - Live Player|Any CPU
+		{09F67F34-745E-4D9A-BC6E-FD4C36F406FB}.Debug - Live Player|Any CPU.Build.0 = Debug - Live Player|Any CPU
 		{09F67F34-745E-4D9A-BC6E-FD4C36F406FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{09F67F34-745E-4D9A-BC6E-FD4C36F406FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09F67F34-745E-4D9A-BC6E-FD4C36F406FB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{09F67F34-745E-4D9A-BC6E-FD4C36F406FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09F67F34-745E-4D9A-BC6E-FD4C36F406FB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{09F67F34-745E-4D9A-BC6E-FD4C36F406FB}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{95468A7C-4400-4101-9A39-166F058B5B0B}.Debug - Live Player|Any CPU.ActiveCfg = Debug - Live Player|Any CPU
+		{95468A7C-4400-4101-9A39-166F058B5B0B}.Debug - Live Player|Any CPU.Build.0 = Debug - Live Player|Any CPU
 		{95468A7C-4400-4101-9A39-166F058B5B0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{95468A7C-4400-4101-9A39-166F058B5B0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95468A7C-4400-4101-9A39-166F058B5B0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95468A7C-4400-4101-9A39-166F058B5B0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D9DD753-5E53-4316-992C-1BED899FE0E0}.Debug - Live Player|Any CPU.ActiveCfg = Debug - Live Player|Any CPU
+		{3D9DD753-5E53-4316-992C-1BED899FE0E0}.Debug - Live Player|Any CPU.Build.0 = Debug - Live Player|Any CPU
 		{3D9DD753-5E53-4316-992C-1BED899FE0E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3D9DD753-5E53-4316-992C-1BED899FE0E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D9DD753-5E53-4316-992C-1BED899FE0E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D9DD753-5E53-4316-992C-1BED899FE0E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05A38594-F724-48BC-A91F-9ACBEDE56696}.Debug - Live Player|Any CPU.ActiveCfg = Debug - Live Player|Any CPU
+		{05A38594-F724-48BC-A91F-9ACBEDE56696}.Debug - Live Player|Any CPU.Build.0 = Debug - Live Player|Any CPU
 		{05A38594-F724-48BC-A91F-9ACBEDE56696}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{05A38594-F724-48BC-A91F-9ACBEDE56696}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05A38594-F724-48BC-A91F-9ACBEDE56696}.Release|Any CPU.ActiveCfg = Release|Any CPU

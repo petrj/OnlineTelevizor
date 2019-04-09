@@ -156,26 +156,28 @@ namespace SledovaniTVAPI
                 };
 
                 var deviceConnectionString = await SendRequest("create-pairing", ps);
-                var deviceConnectionJson = JObject.Parse(deviceConnectionString);
+                var devConnJson = new LPJObject(deviceConnectionString);
 
-                _deviceConnection = new DeviceConnection()
-                {
-                    deviceId = deviceConnectionJson["deviceId"].ToString(),
-                    password = deviceConnectionJson["password"].ToString()
-                };
-
-                _log.Debug("Received User Connection:");
-                _log.Debug(_deviceConnection.ToString());
-
-                if (String.IsNullOrEmpty(_deviceConnection.deviceId))
+                if (
+                    ((devConnJson.HasValue("status") && (devConnJson.GetStringValue("status") == "0"))) ||
+                    ((devConnJson.HasValue("error")) && (devConnJson.GetStringValue("error") == "bad login")) ||
+                    (!devConnJson.HasValue("deviceId"))
+                   )
                 {
                     _status = StatusEnum.PairingFailed;
-                }
-                else
+                } else
                 {
                     _status = StatusEnum.Paired;
-                }
 
+                    _deviceConnection = new DeviceConnection()
+                    {
+                        deviceId = devConnJson.GetStringValue("deviceId").ToString(),
+                        password = devConnJson.GetStringValue("password").ToString()
+                    };
+
+                    _log.Debug("Received User Connection:");
+                    _log.Debug(_deviceConnection.ToString());
+                }             
             } catch (Exception ex)
             {
                 _log.Error(ex, "Error while pairing device");
@@ -201,13 +203,13 @@ namespace SledovaniTVAPI
                     { "unit", "default" }
                 };
 
-                var _sessionString = await SendRequest("device-login", ps);
-                var sessionStringJson = JObject.Parse(_sessionString);
+                var sessionString = await SendRequest("device-login", ps);
+                var sessionJson = new LPJObject(sessionString);
 
                 if (
-                    ((sessionStringJson.ContainsKey("status")) && (sessionStringJson["status"].ToString() == "0")) ||
-                    ((sessionStringJson.ContainsKey("error")) && (sessionStringJson["error"].ToString() == "bad login")) ||
-                    (!sessionStringJson.ContainsKey("PHPSESSID"))
+                    ((sessionJson.HasValue("status") && (sessionJson.GetStringValue("status") == "0"))) ||
+                    ((sessionJson.HasValue("error")) && (sessionJson.GetStringValue("error") == "bad login")) ||
+                    (!sessionJson.HasValue("PHPSESSID"))
                    )
                 {
                     _status = StatusEnum.LoginFailed;
@@ -216,7 +218,7 @@ namespace SledovaniTVAPI
                 {
                     _session = new Session()
                     {
-                        PHPSESSID = sessionStringJson["PHPSESSID"].ToString()
+                        PHPSESSID = sessionJson.GetStringValue("PHPSESSID")
                     };
 
                     _status = StatusEnum.Logged;
@@ -247,13 +249,13 @@ namespace SledovaniTVAPI
                 };
 
                 var epgString = await SendRequest("epg", ps);
+                var epgJson = new LPJObject(epgString);
 
-                var epgJson = JObject.Parse(epgString);
-                if (epgJson.ContainsKey("status") &&
-                    epgJson["status"].ToString()=="1" &&
-                    epgJson.ContainsKey("channels"))
+                if (epgJson.HasValue("status") &&
+                    epgJson.GetStringValue("status")=="1" &&
+                    epgJson.HasValue("channels"))
                 {
-                    foreach (var epgCh in epgJson["channels"])
+                    foreach (var epgCh in epgJson.GetValue("channels"))
                     {
                         // id from path (channels.ct1")
                         var chId = epgCh.Path.Substring(9);
@@ -279,7 +281,7 @@ namespace SledovaniTVAPI
 
                         ch.EPGItems.Clear();
 
-                        foreach (var epg in epgJson["channels"][chId])
+                        foreach (var epg in epgJson.GetValue("channels")[chId])
                         {
                             var title = epgCh.First[0]["title"].ToString();
                             var times = epgCh.First[0]["startTime"].ToString();

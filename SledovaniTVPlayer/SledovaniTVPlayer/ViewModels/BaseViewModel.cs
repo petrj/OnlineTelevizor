@@ -16,8 +16,8 @@ namespace SledovaniTVPlayer.ViewModels
     public class BaseViewModel : INotifyPropertyChanged
     {
         protected ILoggingService _loggingService;
-        private IDialogService _dialogService;
-        private Context _context;
+        protected IDialogService _dialogService;
+        protected Context _context;
 
         public ISledovaniTVConfiguration Config { get; set; }
 
