@@ -64,7 +64,7 @@ namespace SledovaniTVPlayer.Services
 
             try
             {
-                await _sledovaniTV.ReloadChanels();
+                var channels = await _sledovaniTV.GetChanels();
 
                 if (_sledovaniTV.Status == StatusEnum.Logged || _sledovaniTV.Status == StatusEnum.Paired)
                 {
@@ -75,7 +75,7 @@ namespace SledovaniTVPlayer.Services
                         _config.DevicePassword = _sledovaniTV.Connection.password;
                     }
 
-                    foreach (var ch in _sledovaniTV.Channels)
+                    foreach (var ch in channels)
                     {
                         if (ch.Locked != "none")
                         {

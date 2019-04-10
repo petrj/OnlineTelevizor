@@ -35,10 +35,10 @@ namespace TestConsole
                         sledovaniTV.Connection.SaveToFile("connection.json");
                     };
 
-                    await sledovaniTV.ReloadChanels();
+                    var channels = await sledovaniTV.GetChanels();
                     var epg = await sledovaniTV.GetEPG();
 
-                    foreach (var ch in sledovaniTV.Channels)
+                    foreach (var ch in channels)
                     {
                         Console.WriteLine(ch.Name);
                     }

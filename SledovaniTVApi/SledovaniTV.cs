@@ -22,12 +22,9 @@ namespace SledovaniTVAPI
         private Session _session;
         private StatusEnum _status = StatusEnum.NotInitialized;
 
-        public List<Channel> Channels { get; set; }
-
         public SledovaniTV(ILoggingService loggingService)
         {
             _log = loggingService;
-            Channels = new List<Channel>();
             Connection = new DeviceConnection();
             _session = new Session();
         }
@@ -364,12 +361,14 @@ namespace SledovaniTVAPI
             }
         }
 
-        public async Task ReloadChanels()
+        public async Task<List<Channel>> GetChanels()
         {
+            var result = new List<Channel>();
+
             await Login();
 
             if (_status != StatusEnum.Logged)
-                return;
+                return result;
 
             try
             {
@@ -380,8 +379,6 @@ namespace SledovaniTVAPI
                     { "format", "androidtv" },
                     { "PHPSESSID", _session.PHPSESSID }
                 };
-
-                Channels.Clear();
 
                 var channelsString = await SendRequest("playlist", ps);
                 var channelsJson = JObject.Parse(channelsString);
@@ -405,15 +402,17 @@ namespace SledovaniTVAPI
                     };
 
                     number++;
-                    Channels.Add(ch);
+                    result.Add(ch);
                 }
 
-                _log.Info($"Received {Channels.Count} channels");
+                _log.Info($"Received {result.Count} channels");
             }
             catch (Exception ex)
             {
                 _log.Error(ex, "Error while refreshing channels");
             }
+
+            return result;
         }
 
         public async Task Unlock()
