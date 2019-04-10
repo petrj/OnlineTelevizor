@@ -4,7 +4,8 @@
              xmlns:local="clr-namespace:SledovaniTVPlayer.Views"
              x:Class="SledovaniTVPlayer.Views.MainPage"
              BackgroundColor="Black"
-             Title="SledováníTV">
+             Title="SledováníTV"
+             NavigationPage.TitleIcon="SledovaniTVPlayer.png">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -15,6 +16,14 @@
                 <Setter Property="Margin" Value="5,5,5,5"/>
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
             </Style>
+
+            <Style x:Key="ListItemCenterTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Margin" Value="5,5,5,5"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            </Style>            
 
             <Style x:Key="ListItemEPGTextStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
@@ -29,6 +38,10 @@
                 <Setter Property="Margin" Value="20,0,0,0"/>
             </Style>
 
+            <Style x:Key="IconStyle" TargetType="Image">
+                <Setter Property="BackgroundColor" Value="Black"/>
+            </Style>
+
             <Style x:Key="ListViewStyle" TargetType="ListView">
                 <Setter Property="SeparatorVisibility" Value="Default"/>
                 <Setter Property="SeparatorColor" Value="White"/>
@@ -41,7 +54,7 @@
 
     <StackLayout>
 
-            <ListView x:Name="ChannelsListView"
+        <ListView x:Name="ChannelsListView"
                     ItemsSource="{Binding Channels}"
                     ItemTapped="Channel_Tapped"
                     CachingStrategy="RecycleElement"
@@ -61,12 +74,12 @@
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="40" />
-                                    <ColumnDefinition Width="60" />
+                                    <ColumnDefinition Width="70" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Text="{Binding ChannelNumber}" Style="{DynamicResource ListItemTextStyle}"/>
-                                <Image Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Source="{Binding LogoUrl}" WidthRequest="40" />
+                                <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Text="{Binding ChannelNumber}" Style="{DynamicResource ListItemCenterTextStyle}"/>
+                                <Image Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Source="{Binding LogoUrl}" WidthRequest="40" Style="{DynamicResource IconStyle}"/>
                                 <Label Grid.Row="0" Grid.Column="2" Margin="15,0,0,0" Text="{Binding Name}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" />
                                 <Label Grid.Row="1" Grid.Column="2" Margin="20,0,0,0" Text="{Binding CurrentEPGTitle}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemEPGTextStyle}" />
 
@@ -89,5 +102,4 @@
         <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="Refresh.png"/>
         <ToolbarItem Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked" Icon="Settings.png" />
     </ContentPage.ToolbarItems>
-
-</ContentPage>
+</ContentPage >
