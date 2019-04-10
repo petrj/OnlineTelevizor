@@ -22,12 +22,12 @@ namespace SledovaniTVAPI
         private Session _session;
         private StatusEnum _status = StatusEnum.NotInitialized;
 
-        public List<TVChannel> Channels { get; set; }
+        public List<Channel> Channels { get; set; }
 
         public SledovaniTV(ILoggingService loggingService)
         {
             _log = loggingService;
-            Channels = new List<TVChannel>();
+            Channels = new List<Channel>();
             Connection = new DeviceConnection();
             _session = new Session();
         }
@@ -156,7 +156,7 @@ namespace SledovaniTVAPI
                 };
 
                 var deviceConnectionString = await SendRequest("create-pairing", ps);
-                var devConnJson = new LPJObject(deviceConnectionString);
+                var devConnJson = JObject.Parse(deviceConnectionString);
 
                 if (
                     ((devConnJson.HasValue("status") && (devConnJson.GetStringValue("status") == "0"))) ||
@@ -177,7 +177,7 @@ namespace SledovaniTVAPI
 
                     _log.Debug("Received User Connection:");
                     _log.Debug(_deviceConnection.ToString());
-                }             
+                }
             } catch (Exception ex)
             {
                 _log.Error(ex, "Error while pairing device");
@@ -204,7 +204,7 @@ namespace SledovaniTVAPI
                 };
 
                 var sessionString = await SendRequest("device-login", ps);
-                var sessionJson = new LPJObject(sessionString);
+                var sessionJson = JObject.Parse(sessionString);
 
                 if (
                     ((sessionJson.HasValue("status") && (sessionJson.GetStringValue("status") == "0"))) ||
@@ -256,7 +256,7 @@ namespace SledovaniTVAPI
                 };
 
                 var epgString = await SendRequest("epg", ps);
-                var epgJson = new LPJObject(epgString);
+                var epgJson = JObject.Parse(epgString);
 
                 if (epgJson.HasValue("status") &&
                     epgJson.GetStringValue("status")=="1" &&
@@ -265,7 +265,7 @@ namespace SledovaniTVAPI
                     foreach (var epgCh in epgJson.GetValue("channels"))
                     {
                         // id from path (channels.ct1")
-                        var chId = epgCh.Path.Substring(9);                     
+                        var chId = epgCh.Path.Substring(9);
 
                         foreach (var epg in epgJson.GetValue("channels")[chId])
                         {
@@ -286,7 +286,7 @@ namespace SledovaniTVAPI
                             result.Add(item);
                         };
                      }
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -389,7 +389,7 @@ namespace SledovaniTVAPI
                 var number = 1;
                 foreach (JObject channelJson in channelsJson["channels"])
                 {
-                    var ch = new TVChannel()
+                    var ch = new Channel()
                     {
                         ChannelNumber = number.ToString(),
 

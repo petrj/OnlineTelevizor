@@ -1,1 +1,2 @@
-git fetch origin; git reset --hard origin/master
+git fetch origin
+git reset --hard origin/master

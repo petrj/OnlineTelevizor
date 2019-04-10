@@ -21,9 +21,9 @@ namespace SledovaniTVPlayer.ViewModels
         private TVService _service;
         private ISledovaniTVConfiguration _config;
 
-        public ObservableCollection<TVChannel> Channels { get; set; }
+        public ObservableCollection<ChannelItem> Channels { get; set; } = new ObservableCollection<ChannelItem>();
 
-        private Dictionary<string, TVChannel> _channelById { get; set; } = new Dictionary<string, TVChannel>();
+        private Dictionary<string, ChannelItem> _channelById { get; set; } = new Dictionary<string, ChannelItem>();
 
         public string StatusLabel
         {
@@ -60,8 +60,6 @@ namespace SledovaniTVPlayer.ViewModels
             _context = context;
             _config = config;
 
-            Channels = new ObservableCollection<TVChannel>();
-
             RefreshCommand = new Command(async () => await Refresh());
 
             RefreshEPGCommand = new Command(async () => await RefreshEPG());
@@ -73,15 +71,13 @@ namespace SledovaniTVPlayer.ViewModels
 
             RequestWriteLogsPermissionsCommand.Execute(null);
 
-            RefreshCommand.Execute(null);
-
-            //RefreshChannlesCommand.Execute(null);
+            RefreshChannlesCommand.Execute(null);
 
             // refreshing every min with 2 s start delay
-            //BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 2);
+            BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 2);
         }
 
-        public Dictionary<string, TVChannel> ChannelById
+        public Dictionary<string, ChannelItem> ChannelById
         {
             get
             {
@@ -108,15 +104,21 @@ namespace SledovaniTVPlayer.ViewModels
             IsBusy = true;
 
             try
-            {   
-                foreach (var ei in await _service.GetEPG())
+            {
+                foreach (var channelItem in Channels)
+                {
+                    channelItem.ClearEPG();
+                }
+
+                var epg = await _service.GetEPG();
+                foreach (var ei in epg)
                 {
                     if (ChannelById.ContainsKey(ei.ChannelId))
-                    {     
+                    {
                         // updating channel EPG
 
                         var ch = ChannelById[ei.ChannelId];
-                        ch.EPGItems.Add(ei);
+                        ch.AddEPGItem(ei);
                     }
                 }
             }
@@ -126,7 +128,7 @@ namespace SledovaniTVPlayer.ViewModels
                 {
                     IsBusy = false;
                 }
-                
+
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
             }

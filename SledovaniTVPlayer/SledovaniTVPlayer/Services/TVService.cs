@@ -43,7 +43,7 @@ namespace SledovaniTVPlayer.Services
                 var epg = await _sledovaniTV.GetEPG();
 
                 if (_sledovaniTV.Status == StatusEnum.Logged || _sledovaniTV.Status == StatusEnum.Paired)
-                {                    
+                {
                     foreach (var ei in epg)
                     {
                         result.Add(ei);
@@ -58,18 +58,16 @@ namespace SledovaniTVPlayer.Services
             return result;
         }
 
-        public async Task<ObservableCollection<TVChannel>> GetChannels()
+        public async Task<ObservableCollection<ChannelItem>> GetChannels()
         {
-            var chs = new ObservableCollection<TVChannel>();
+            var chs = new ObservableCollection<ChannelItem>();
 
             try
             {
                 await _sledovaniTV.ReloadChanels();
-                //await _sledovaniTV.RefreshEPG();
 
                 if (_sledovaniTV.Status == StatusEnum.Logged || _sledovaniTV.Status == StatusEnum.Paired)
                 {
-
                     if (String.IsNullOrEmpty(_config.DeviceId))
                     {
                         // saving device connection to configuration
@@ -85,7 +83,7 @@ namespace SledovaniTVPlayer.Services
                                 continue;
                         }
 
-                        chs.Add(ch);
+                        chs.Add(ChannelItem.CreateFromChannel(ch));
                     }
                 }
             } catch (Exception ex)

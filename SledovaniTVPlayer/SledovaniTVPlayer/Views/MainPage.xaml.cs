@@ -57,7 +57,7 @@ namespace SledovaniTVPlayer.Views
 
         private async void Channel_Tapped(object sender, ItemTappedEventArgs e)
         {
-            var channel = e.Item as TVChannel;
+            var channelItem = e.Item as ChannelItem;
 
             //var dlgResult = await _dialogService.Confirm($"Stream {channel.Name}?");
             //if (dlgResult)
@@ -66,7 +66,7 @@ namespace SledovaniTVPlayer.Views
             //    await _viewModel.PlayStream(channel.Url);
             //}
 
-            await _viewModel.PlayStream(channel.Url);
+            await _viewModel.PlayStream(channelItem.Url);
         }
     }
 }
