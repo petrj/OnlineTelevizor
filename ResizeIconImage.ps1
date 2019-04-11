@@ -4,6 +4,11 @@ $convert = "C:\Program Files (x86)\ImageMagick\convert.exe"
 $ResourcesFolder = "SledovaniTVPlayer\SledovaniTVPlayer.Android\Resources"
 $SourceImage = "Icon.png"  # image in mipmap-xxxhdpi folder (192x192)
 
+if ($SourceImage -eq "Icon.png")
+{
+    & $convert -size 144x144 $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 128x128 $ResourcesFolder\drawable\SledovaniTVPlayer.png
+}
+
 & $convert -size 144x144 $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 144x144 $ResourcesFolder\mipmap-xxhdpi\$SourceImage
 & $convert -size 96x96   $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 96x96   $ResourcesFolder\mipmap-xhdpi\$SourceImage
 & $convert -size 72x72   $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 72x72   $ResourcesFolder\mipmap-hdpi\$SourceImage
