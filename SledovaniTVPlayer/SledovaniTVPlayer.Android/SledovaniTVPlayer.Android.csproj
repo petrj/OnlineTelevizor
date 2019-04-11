@@ -139,12 +139,12 @@
     <AndroidResource Include="Resources\drawable\Settings.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\SledovaniTVPlayer.png">
+    <AndroidResource Include="Resources\drawable\Refresh.png">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\Refresh.png">
+    <AndroidResource Include="Resources\drawable\SledovaniTVPlayer.png">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>

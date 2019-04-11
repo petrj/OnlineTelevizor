@@ -4,8 +4,7 @@
              xmlns:local="clr-namespace:SledovaniTVPlayer.Views"
              x:Class="SledovaniTVPlayer.Views.MainPage"
              BackgroundColor="Black"
-             Title="SledováníTV"
-             NavigationPage.TitleIcon="SledovaniTVPlayer.png">
+             Title="SledováníTV">    <!-- both title and icon cannot be set: NavigationPage.TitleIcon="SledovaniTVPlayer.png"-->
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -23,7 +22,7 @@
                 <Setter Property="Margin" Value="5,5,5,5"/>
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
                 <Setter Property="HorizontalTextAlignment" Value="Center"/>
-            </Style>            
+            </Style>
 
             <Style x:Key="ListItemEPGTextStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
