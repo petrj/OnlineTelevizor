@@ -1,5 +1,8 @@
 # SledovaniTVPlayer
 
+![Icon](https://raw.github.com/petrj/SledovaniTVPlayer/master/Screens/Icon.png)
+
+
 #### CZ
 Neoficiální Android aplikace pro českou IPTV SledovaniTV.
 - používá externí přehrávač
