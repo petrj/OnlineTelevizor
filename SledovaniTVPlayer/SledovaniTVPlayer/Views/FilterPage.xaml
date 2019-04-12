@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SledovaniTVPlayer.Views.FilterPage"
+             BackgroundColor="Black"
+             Title="SledováníTV - Filtr">>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="ListItemLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Margin" Value="15,5,5,5"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="ListItemRightLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Margin" Value="15,5,5,5"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="HorizontalTextAlignment" Value="End"/>
+            </Style>
+
+            <Style x:Key="CaptionLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="Yellow"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Margin" Value="5,5,5,5"/>
+            </Style>
+
+            <Style x:Key="ListViewStyle" TargetType="ListView">
+                <Setter Property="SeparatorVisibility" Value="Default"/>
+                <Setter Property="SeparatorColor" Value="White"/>
+                <Setter Property="HasUnevenRows" Value="True"/>
+                <Setter Property="IsPullToRefreshEnabled" Value="True"/>
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+  
+        <StackLayout>
+
+        <Label Text="Skupina:"  Style="{DynamicResource CaptionLabelStyle}"/>
+
+        <ListView x:Name="GroupListView" 
+                    ItemsSource="{Binding Groups}"
+                    ItemTapped="Group_Tapped"
+                    CachingStrategy="RecycleElement"
+                    IsPullToRefreshEnabled="True"                      
+                    RefreshCommand="{Binding RefreshCommand}"
+                    IsRefreshing="{Binding IsBusy}"
+                    Style="{StaticResource ListViewStyle}">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.View>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80*" />
+                                    <ColumnDefinition Width="20*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding GUIName}" Style="{DynamicResource ListItemLabelStyle}"/>
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding CountAsString}" Style="{DynamicResource ListItemRightLabelStyle}"/>
+
+                            </Grid>
+
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+        <Label Text="Typ:"  Style="{DynamicResource CaptionLabelStyle}"/>
+
+        <ListView x:Name="TypeListView" 
+                    ItemsSource="{Binding Types}"
+                    ItemTapped="Type_Tapped"
+                    CachingStrategy="RecycleElement"
+                    IsPullToRefreshEnabled="True"                      
+                    RefreshCommand="{Binding RefreshCommand}"
+                    IsRefreshing="{Binding IsBusy}"
+                    Style="{StaticResource ListViewStyle}">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.View>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80*" />
+                                    <ColumnDefinition Width="20*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding GUIName}" Style="{DynamicResource ListItemLabelStyle}"/>
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding CountAsString}" Style="{DynamicResource ListItemRightLabelStyle}"/>
+
+                            </Grid>
+
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+    </StackLayout>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="Refresh.png"/>
+    </ContentPage.ToolbarItems>
+
+</ContentPage>

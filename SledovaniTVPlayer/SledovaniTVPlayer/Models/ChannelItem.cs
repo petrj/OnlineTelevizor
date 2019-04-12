@@ -17,7 +17,9 @@ namespace SledovaniTVPlayer.Models
                 Name = channel.Name,
                 Url = channel.Url,
                 Id = channel.Id,
-                LogoUrl = channel.LogoUrl
+                LogoUrl = channel.LogoUrl,
+                Type = channel.Type,
+                Group = channel.Group
             };
         }
 
@@ -27,6 +29,9 @@ namespace SledovaniTVPlayer.Models
         public string Url { get; set; }
         public string Id { get; set; }
         public string LogoUrl { get; set; }
+
+        public string Type { get; set; }
+        public string Group { get; set; }
 
         public void AddEPGItem(EPGItem epgItem)
         {

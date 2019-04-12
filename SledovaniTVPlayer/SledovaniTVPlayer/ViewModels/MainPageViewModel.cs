@@ -25,6 +25,17 @@ namespace SledovaniTVPlayer.ViewModels
 
         private Dictionary<string, ChannelItem> _channelById { get; set; } = new Dictionary<string, ChannelItem>();
 
+        public string FilterForGroup { get; set; } = null;
+        public string FilterForType { get; set; } = null;
+
+        public TVService TVService
+        {
+            get
+            {
+                return _service;
+            }
+        }
+
         public string StatusLabel
         {
             get
@@ -147,6 +158,14 @@ namespace SledovaniTVPlayer.ViewModels
 
                 foreach (var ch in channels)
                 {
+                    if (FilterForGroup != null &&
+                        FilterForGroup != ch.Group)
+                        continue;
+
+                    if (FilterForType != null &&
+                        FilterForType != ch.Type)
+                        continue;
+
                     Channels.Add(ch);
                     _channelById.Add(ch.Id, ch); // for faster EPG refreesh
                 }
