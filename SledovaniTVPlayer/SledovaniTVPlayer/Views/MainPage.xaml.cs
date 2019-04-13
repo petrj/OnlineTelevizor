@@ -56,14 +56,19 @@ namespace SledovaniTVPlayer.Views
             await Navigation.PushAsync(_settingsPage);
         }
 
+        private async void ToolbarItemQuality_Clicked(object sender, EventArgs e)
+        {
+            var qualitiesPage = new QualitiesPage(_loggingService, _config, _context, _viewModel.TVService);
+            await Navigation.PushAsync(qualitiesPage);
+        }
+        
+
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
         {
             var filterPage = new FilterPage(_loggingService, _config, _context, _viewModel.TVService);
 
             filterPage.Disappearing += delegate
-            {
-                _viewModel.FilterForGroup = filterPage.FilterForGroup;
-                _viewModel.FilterForType = filterPage.FilterForType;
+            {     
                 _viewModel.RefreshCommand.Execute(null);
             };
             await Navigation.PushAsync(filterPage);

@@ -58,6 +58,38 @@ namespace SledovaniTVPlayer.Services
             return result;
         }
 
+        public async Task<List<QualityItem>> GetStreamQualities()
+        {
+            var result = new List<QualityItem>();
+
+            try
+            {
+                var qualities = await _sledovaniTV.GetStreamQualities();
+
+                if (_sledovaniTV.Status != StatusEnum.Logged)
+                    return result;
+                
+                foreach (var q in qualities)
+                {
+                    if (q.Allowed == "0")
+                        continue;
+
+                    result.Add(new QualityItem()
+                    {
+                        Name = q.Name,
+                        Id = q.Id
+                    });
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Error getting stream qualities");
+            }
+
+            return result;
+        }
+
         public async Task<ObservableCollection<ChannelItem>> GetChannels()
         {
             var chs = new ObservableCollection<ChannelItem>();

@@ -18,14 +18,13 @@ namespace SledovaniTVPlayer.Views
     public partial class FilterPage : ContentPage
     {
         private FilterPageViewModel _viewModel;
-
-        public string FilterForGroup { get; set; } = null;
-        public string FilterForType { get; set; } = null;
+        private ISledovaniTVConfiguration _config;
 
         public FilterPage(ILoggingService loggingService, ISledovaniTVConfiguration config, Context context, TVService service)
         {
             InitializeComponent();
 
+            _config = config;
             var dialogService = new DialogService(this);
 
             BindingContext = _viewModel = new FilterPageViewModel(loggingService, config, dialogService, context, service);            
@@ -34,13 +33,27 @@ namespace SledovaniTVPlayer.Views
         private async void Group_Tapped(object sender, ItemTappedEventArgs e)
         {
             var filterItem = e.Item as FilterItem;
-            FilterForGroup = filterItem.Name;
+            if (filterItem == _viewModel.Groups[0])
+            {
+                _config.ChannelGroup = null;
+            } else
+            {
+                _config.ChannelGroup = filterItem.Name;
+            }            
         }
 
         private async void Type_Tapped(object sender, ItemTappedEventArgs e)
         {
             var filterItem = e.Item as FilterItem;
-            FilterForType = filterItem.Name;
+
+            if (filterItem == _viewModel.Types[0])
+            {
+                _config.ChannelType = null;
+            }
+            else
+            {
+                _config.ChannelType = filterItem.Name;
+            }
         }
 
         protected override void OnAppearing()
@@ -48,17 +61,6 @@ namespace SledovaniTVPlayer.Views
             base.OnAppearing();
 
             _viewModel.RefreshCommand.Execute(null);
-
-            // selecting all groups and types
-            GroupListView.ItemAppearing+=
-                delegate
-                {
-                    GroupListView.SelectedItem = _viewModel.Groups[0];
-                    TypeListView.SelectedItem = _viewModel.Types[0];
-                };
-
-            FilterForGroup = null;
-            FilterForType = null;
         }
     }
 }

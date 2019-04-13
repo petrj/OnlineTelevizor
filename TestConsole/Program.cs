@@ -17,6 +17,8 @@ namespace TestConsole
             loggingService.LogFilename = "TestConsole.log";
             loggingService.MinLevel = LoggingLevelEnum.Debug;
 
+            Console.WriteLine("...");
+
             var sledovaniTV = new SledovaniTV(loggingService );
             sledovaniTV.SetCredentials(credentials.Username, credentials.Password);
 
@@ -35,16 +37,25 @@ namespace TestConsole
                         sledovaniTV.Connection.SaveToFile("connection.json");
                     };
 
+                    var qualities = await sledovaniTV.GetStreamQualities();
+                    foreach (var q in qualities)
+                    {
+                        Console.WriteLine(q.Name.PadRight(20) + "  " + q.Id.PadLeft(10) + "  " + q.Allowed);
+                    }
+                    
                     var channels = await sledovaniTV.GetChanels();
                     var epg = await sledovaniTV.GetEPG();
 
                     foreach (var ch in channels)
                     {
-                        Console.WriteLine(ch.Name);
-                    }
+                        Console.WriteLine(ch.Name.PadRight(20)+" "+ch.Url);
+                    }                    
+
+                    Console.WriteLine();
+                    Console.WriteLine("Press any key");
                 });
 
-            Console.WriteLine("Press any key");
+
             Console.ReadKey();
         }
     }

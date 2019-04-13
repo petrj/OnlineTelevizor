@@ -59,6 +59,7 @@
                             CachingStrategy="RecycleElement"
                             IsPullToRefreshEnabled="True"                      
                             RefreshCommand="{Binding RefreshCommand}"
+                            SelectedItem="{Binding SelectedGroupItem, Mode=TwoWay}"
                             IsRefreshing="{Binding IsBusy}"
                             Style="{StaticResource ListViewStyle}">
 
@@ -98,6 +99,7 @@
                                 CachingStrategy="RecycleElement"
                                 IsPullToRefreshEnabled="True"                      
                                 RefreshCommand="{Binding RefreshCommand}"
+                                SelectedItem="{Binding SelectedTypeItem, Mode=TwoWay}"
                                 IsRefreshing="{Binding IsBusy}"
                                 Style="{StaticResource ListViewStyle}">
 

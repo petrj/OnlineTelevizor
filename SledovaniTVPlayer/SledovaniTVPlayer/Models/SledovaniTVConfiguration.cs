@@ -90,6 +90,42 @@ namespace SledovaniTVPlayer.Models
             }
         }
 
+        public string StreamQuality
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("StreamQuality");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("StreamQuality", value);
+            }
+        }
+
+        public string ChannelGroup
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("ChannelGroup");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("ChannelGroup", value);
+            }
+        }
+
+        public string ChannelType
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("ChannelType");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("ChannelType", value);
+            }
+        }
+
         public string DeviceId
         {
             get { return GetPersistingSettingValue<string>("DeviceId"); }

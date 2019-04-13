@@ -230,7 +230,7 @@ namespace SledovaniTVAPI
         }
 
         /// <summary>
-        /// Refresh EPG
+        /// Getting actual EPG
         /// </summary>
         public async Task<List<EPGItem>>GetEPG()
         {
@@ -292,6 +292,59 @@ namespace SledovaniTVAPI
 
             return result;
         }
+
+        /// <summary>
+        /// Getting stream qualities
+        /// </summary>
+        public async Task<List<Quality>> GetStreamQualities()
+        {
+            _log.Debug($"Getting stream qualities");
+
+            var result = new List<Quality>();
+
+            await Login();
+
+            if (_status != StatusEnum.Logged)
+                return result;
+
+            try
+            {
+                var ps = new Dictionary<string, string>()
+                {
+                    { "PHPSESSID", _session.PHPSESSID }
+                };
+
+                var streamQualityResponseString = await SendRequest("get-stream-qualities", ps);
+                var StreamQualityJson = JObject.Parse(streamQualityResponseString);
+
+                if (StreamQualityJson.HasValue("status") &&
+                   StreamQualityJson.GetStringValue("status") == "1" &&
+                   StreamQualityJson.HasValue("qualities"))
+                {
+                    foreach (var qToken in StreamQualityJson.GetValue("qualities"))
+                    {
+                        var q = JObject.Parse(qToken.ToString());
+                        var id = q["id"];
+
+                        var quality = new Quality()
+                        {
+                            Id = q["id"].ToString(),
+                            Name = q["name"].ToString(),
+                            Allowed = q["allowed"].ToString()
+                        };
+
+                        result.Add(quality);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Getting stream qualities failed");
+            }
+
+            return result;
+        }
+
 
         public void ResetConnection()
         {

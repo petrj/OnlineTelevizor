@@ -27,21 +27,8 @@ namespace SledovaniTVPlayer.ViewModels
 
         public Command RefreshCommand { get; set; }
 
-        public FilterItem GetGroupByName(string name)
-        {
-            if (_groupToItem.ContainsKey(name))
-                return _groupToItem[name];
-
-            return null;
-        }
-
-        public FilterItem GetTypeByName(string name)
-        {
-            if (_typeToItem.ContainsKey(name))
-                return _typeToItem[name];
-
-            return null;
-        }
+        public FilterItem SelectedGroupItem { get; set; }
+        public FilterItem SelectedTypeItem { get; set; }
 
         public FilterPageViewModel(ILoggingService loggingService, ISledovaniTVConfiguration config, IDialogService dialogService, Context context, TVService service)
            : base(loggingService, config, dialogService, context)
@@ -52,8 +39,7 @@ namespace SledovaniTVPlayer.ViewModels
             _context = context;
             _config = config;        
 
-            RefreshCommand = new Command(async () => await Refresh());            
-            
+            RefreshCommand = new Command(async () => await Refresh());
             // SomeCommand = new Command(async () => await Task.Run(delegate { }));            
         }
 
@@ -63,6 +49,9 @@ namespace SledovaniTVPlayer.ViewModels
 
             var firstGroup = new FilterItem() { Name = "Vsechny skupiny" };
             var firstType = new FilterItem() { Name = "Vsechny typy" };
+
+            SelectedTypeItem = firstType;
+            SelectedGroupItem = firstGroup;
 
             try
             {
@@ -92,6 +81,11 @@ namespace SledovaniTVPlayer.ViewModels
 
                         Groups.Add(g);
 
+                        if ((!String.IsNullOrEmpty(_config.ChannelGroup)) && (ch.Group == _config.ChannelGroup))
+                        {
+                            SelectedGroupItem = g;
+                        }
+
                         _groupToItem.Add(ch.Group,g);
                     } else
                     {
@@ -108,6 +102,11 @@ namespace SledovaniTVPlayer.ViewModels
 
                         Types.Add(tp);
 
+                        if ((!String.IsNullOrEmpty(_config.ChannelType)) && (ch.Type == _config.ChannelType))
+                        {
+                            SelectedTypeItem = tp;
+                        }
+
                         _typeToItem.Add(ch.Type, tp);
                     }
                     else
@@ -119,7 +118,8 @@ namespace SledovaniTVPlayer.ViewModels
             {   
                 IsBusy = false;             
                 OnPropertyChanged(nameof(IsBusy));
-                //OnPropertyChanged(nameof(Groups));
+                OnPropertyChanged(nameof(SelectedGroupItem));
+                OnPropertyChanged(nameof(SelectedTypeItem));                
             }            
         }
     }
