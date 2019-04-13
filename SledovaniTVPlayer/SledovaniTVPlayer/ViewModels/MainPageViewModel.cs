@@ -155,11 +155,13 @@ namespace SledovaniTVPlayer.ViewModels
 
                 foreach (var ch in channels)
                 {
-                    if (_config.ChannelGroup != null &&
+                    if (_config.ChannelGroup != "*" &&
+                        _config.ChannelGroup != null &&
                         _config.ChannelGroup != ch.Group)
                         continue;
 
-                    if (_config.ChannelType != null &&
+                    if (_config.ChannelType != "*" &&
+                        _config.ChannelType != null &&
                         _config.ChannelType != ch.Type)
                         continue;
 

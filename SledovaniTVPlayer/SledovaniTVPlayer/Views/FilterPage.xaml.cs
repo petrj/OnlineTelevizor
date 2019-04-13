@@ -35,7 +35,7 @@ namespace SledovaniTVPlayer.Views
             var filterItem = e.Item as FilterItem;
             if (filterItem == _viewModel.Groups[0])
             {
-                _config.ChannelGroup = null;
+                _config.ChannelGroup = "*";
             } else
             {
                 _config.ChannelGroup = filterItem.Name;
@@ -48,7 +48,7 @@ namespace SledovaniTVPlayer.Views
 
             if (filterItem == _viewModel.Types[0])
             {
-                _config.ChannelType = null;
+                _config.ChannelType = "*";
             }
             else
             {
