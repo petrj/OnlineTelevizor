@@ -18,7 +18,7 @@ namespace SledovaniTVPlayer.Views
     public partial class MainPage : ContentPage
     {
         private MainPageViewModel _viewModel;
-        private NavigationPage _settingsPage;
+        private SettingsPage _settingsPage;
         private DialogService _dialogService;
         private Context _context;
         private ISledovaniTVConfiguration _config;
@@ -30,7 +30,7 @@ namespace SledovaniTVPlayer.Views
 
             _dialogService = new DialogService(this);
 
-            _settingsPage = new NavigationPage(new SettingsPage(loggingService, config, context, _dialogService));
+            _settingsPage = new SettingsPage(loggingService, config, context, _dialogService);
             _settingsPage.Disappearing += _settingsPage_Disappearing;
 
             _config = config;

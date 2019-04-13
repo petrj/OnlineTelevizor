@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:SledovaniTVPlayer.Views"
              x:Class="SledovaniTVPlayer.Views.MainPage"
              BackgroundColor="Black"
-             Title="SledováníTV">    <!-- both title and icon cannot be set: NavigationPage.TitleIcon="SledovaniTVPlayer.png"-->
+             Title="SledováníTV">    <!--NavigationPage.TitleIcon="SledovaniTVPlayer.png"-->
 
     <ContentPage.Resources>
         <ResourceDictionary>

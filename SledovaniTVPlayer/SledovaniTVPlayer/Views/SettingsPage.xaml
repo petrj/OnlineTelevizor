@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SledovaniTVPlayer.Views.SettingsPage"
-             Title="SledováníTV Player - Nastavení">
+             Title="Nastavení">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -13,20 +13,30 @@
 
             <Style x:Key="CommonEntryTextStyle" TargetType="Entry">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontSize" Value="14"/>
                 <Setter Property="BackgroundColor" Value="#333333"/>
             </Style>
 
             <Style x:Key="CaptionStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="FontSize" Value="16"/>                
+            </Style>
+
+            <Style x:Key="GroupCaptionStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="Yellow"/>
+                <Setter Property="FontSize" Value="18"/>                
             </Style>
 
             <Style x:Key="CommonSwitchTextStyle" TargetType="Switch">
+                <!--Setter Property="BackgroundColor" Value="#333333"/-->
+                <Setter Property="WidthRequest" Value="70"/>
+                <Setter Property="HorizontalOptions" Value="End"/>
             </Style>
 
             <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
                 <Setter Property="TextColor" Value="White"/>
+                <!--Setter Property="BackgroundColor" Value="#333333"/-->
+                <Setter Property="HorizontalOptions" Value="End"/>
             </Style>
 
         </ResourceDictionary>
@@ -38,22 +48,24 @@
 
             <StackLayout>
 
-                <StackLayout Margin="20,5,20,0">
+                <StackLayout Margin="20,10,20,0">
 
-                    <StackLayout>
+                    <Label Text="Pristupove udaje: " Style="{StaticResource GroupCaptionStyle}" />
+
+                    <StackLayout Margin="20,20,0,0">
                         <Label Text="Uživatelské jméno: " Style="{StaticResource CaptionStyle}" />
                         <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="UsernameEntry"  Text="{Binding Username, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
 
-                    <StackLayout>
+                    <StackLayout Margin="20,0,0,0">
                         <Label Text="Heslo: " Style="{StaticResource CaptionStyle}" />
                         <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PasswordEntry"  IsPassword="True" Text="{Binding Password, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
 
-                    <StackLayout Margin="0,20,0,0">
-                        <Label Text="Zobrazit zamčené kanály" Style="{StaticResource CaptionStyle}" />
-                        <Switch x:Name="ShowLockedSwitch" IsToggled="{Binding Config.ShowLocked, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}"/>
-                    </StackLayout>
+                </StackLayout>
+                <StackLayout Margin="20,30,20,0">
+
+                    <Label Text="Ostatni nastaveni: " Style="{StaticResource GroupCaptionStyle}" />
 
                     <!--
                     <StackLayout>
@@ -62,26 +74,35 @@
                     </StackLayout>
                     -->
 
-                    <StackLayout Margin="0,20,0,0">
-                        <Label Text="Povolit logování (vyžaduje restart)" Style="{StaticResource CaptionStyle}" />
-                        <Switch x:Name="EnableLoggingSwitch" IsToggled="{Binding Config.EnableLogging, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}"/>
-                    </StackLayout>
+                    <Grid Margin="20,20,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />                            
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="70*" />
+                            <ColumnDefinition Width="30*" />
+                        </Grid.ColumnDefinitions>
 
-                    <StackLayout>
-                        <Label Text="Úroveň logování:" LineBreakMode="NoWrap"  Style="{StaticResource CaptionStyle}" />
-                        <Picker Margin="20,0,0,0"  x:Name="LoggingLevelPicker" SelectedIndex="{Binding LoggingLevelIndex, Mode=TwoWay}" Style="{StaticResource CommonPickerTextStyle}">
+                        <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit nedostupne kanály" Style="{StaticResource CaptionStyle}" />
+                        <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowLockedSwitch" IsToggled="{Binding Config.ShowLocked, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+
+                        <Label  Grid.Row="1" Grid.Column="0" Text="Povolit logování (vyžaduje restart)" Style="{StaticResource CaptionStyle}" />
+                        <Switch Grid.Row="1" Grid.Column="1" x:Name="EnableLoggingSwitch" IsToggled="{Binding Config.EnableLogging, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+
+                        <Label  Grid.Row="2" Grid.Column="0" IsVisible="{Binding Config.EnableLogging}" Text="Úroveň logování:" LineBreakMode="NoWrap"  Style="{StaticResource CaptionStyle}" />
+                        <Picker Grid.Row="2" Grid.Column="1" IsVisible="{Binding Config.EnableLogging}" WidthRequest="120" x:Name="LoggingLevelPicker" SelectedIndex="{Binding LoggingLevelIndex, Mode=TwoWay}" Style="{StaticResource CommonPickerTextStyle}">
                             <Picker.Items>
                                 <x:String>Debug</x:String>
                                 <x:String>Info</x:String>
                                 <x:String>Error</x:String>
                             </Picker.Items>
                         </Picker>
-                    </StackLayout>
 
-                    <Button Margin="20,0,0,0" Text="Sdílet log" Command="{Binding ShareLogCommand}" />
-
+                        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"  IsVisible="{Binding Config.EnableLogging}" Text="Sdílet log" Command="{Binding ShareLogCommand}" />
+                        
+                    </Grid>                
+                    
                 </StackLayout>
-
             </StackLayout>
 
         </ScrollView>

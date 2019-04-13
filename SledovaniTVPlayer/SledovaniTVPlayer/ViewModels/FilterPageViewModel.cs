@@ -115,7 +115,6 @@ namespace SledovaniTVPlayer.ViewModels
                         _typeToItem[ch.Type].Count++;                        
                     }
                 }
-
             } finally
             {   
                 IsBusy = false;             
