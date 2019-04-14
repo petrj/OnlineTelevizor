@@ -66,9 +66,11 @@ namespace SledovaniTVPlayer.Views
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
         {
             var filterPage = new FilterPage(_loggingService, _config, _context, _viewModel.TVService);
+            filterPage.ChannelNameFilter = _viewModel.ChannelNameFilter;
 
             filterPage.Disappearing += delegate
-            {     
+            {
+                _viewModel.ChannelNameFilter = filterPage.ChannelNameFilter;
                 _viewModel.RefreshCommand.Execute(null);
             };
             await Navigation.PushAsync(filterPage);

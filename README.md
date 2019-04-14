@@ -14,3 +14,5 @@ Unofficial Android client for czech IPTV SledovaniTV
 - for Android 5.0 and higher
 
 ![ScreenShot](https://raw.github.com/petrj/SledovaniTVPlayer/master/Screens/Screenshot.png)
+![ScreenShot2](https://raw.github.com/petrj/SledovaniTVPlayer/master/Screens/Screenshot2.png)
+![ScreenShot3](https://raw.github.com/petrj/SledovaniTVPlayer/master/Screens/Screenshot3.png)

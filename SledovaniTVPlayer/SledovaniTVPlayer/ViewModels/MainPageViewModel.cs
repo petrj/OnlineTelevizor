@@ -25,6 +25,8 @@ namespace SledovaniTVPlayer.ViewModels
 
         private Dictionary<string, ChannelItem> _channelById { get; set; } = new Dictionary<string, ChannelItem>();
 
+        public string ChannelNameFilter { get; set; }
+
         public TVService TVService
         {
             get
@@ -163,6 +165,11 @@ namespace SledovaniTVPlayer.ViewModels
                     if (_config.ChannelType != "*" &&
                         _config.ChannelType != null &&
                         _config.ChannelType != ch.Type)
+                        continue;
+
+                    if ((!String.IsNullOrEmpty(ChannelNameFilter)) &&
+                        (ChannelNameFilter != "*") &&
+                        !ch.Name.ToLower().Contains(ChannelNameFilter.ToLower()))
                         continue;
 
                     Channels.Add(ch);

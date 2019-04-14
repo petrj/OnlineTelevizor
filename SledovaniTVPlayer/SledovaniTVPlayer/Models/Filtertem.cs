@@ -15,13 +15,13 @@ namespace SledovaniTVPlayer.Models
             {
                 switch (Name)
                 {
-                    case "general": return "Obecne";
-                    case "": return "Nepojmenovana skupina";
-                    case "news": return "Zpravodajstvi";
-                    case "children": return "Pro deti";
+                    case "general": return "Obecné";
+                    case "": return "Nepojmenovaná skupina";
+                    case "news": return "Zpravodajství";
+                    case "children": return "Pro děti";
                     case "documentary": return "Dokumenty";
-                    case "foreign": return "Zahranicni";
-                    case "regional": return "Regionalni";
+                    case "foreign": return "Zahraniční";
+                    case "regional": return "Regionální";
                     case "movie": return "Filmy";
 
                     default: return Name;

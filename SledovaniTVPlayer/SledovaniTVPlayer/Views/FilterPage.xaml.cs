@@ -30,6 +30,18 @@ namespace SledovaniTVPlayer.Views
             BindingContext = _viewModel = new FilterPageViewModel(loggingService, config, dialogService, context, service);            
         }
 
+        public string ChannelNameFilter
+        {
+            get
+            {
+                return _viewModel.ChannelNameFilter;
+            }
+            set
+            {
+                _viewModel.ChannelNameFilter = value;
+            }
+        }
+
         private async void Group_Tapped(object sender, ItemTappedEventArgs e)
         {
             var filterItem = e.Item as FilterItem;

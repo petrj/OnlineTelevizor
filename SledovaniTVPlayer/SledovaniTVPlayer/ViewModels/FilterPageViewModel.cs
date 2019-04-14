@@ -21,6 +21,7 @@ namespace SledovaniTVPlayer.ViewModels
         private ISledovaniTVConfiguration _config;
         private Dictionary<string, FilterItem> _groupToItem = new Dictionary<string, FilterItem>();
         private Dictionary<string, FilterItem> _typeToItem = new Dictionary<string, FilterItem>();
+        private string _channelNameFilter { get; set; }
 
         public ObservableCollection<FilterItem> Groups { get; set; } = new ObservableCollection<FilterItem>();
         public ObservableCollection<FilterItem> Types { get; set; } = new ObservableCollection<FilterItem>();
@@ -29,6 +30,19 @@ namespace SledovaniTVPlayer.ViewModels
 
         public FilterItem SelectedGroupItem { get; set; }
         public FilterItem SelectedTypeItem { get; set; }
+
+        public string ChannelNameFilter
+        {
+            get
+            {
+                return _channelNameFilter;
+            }
+            set
+            {
+                _channelNameFilter = value;
+                OnPropertyChanged(nameof(ChannelNameFilter));
+            }
+        }
 
         public FilterPageViewModel(ILoggingService loggingService, ISledovaniTVConfiguration config, IDialogService dialogService, Context context, TVService service)
            : base(loggingService, config, dialogService, context)
@@ -47,8 +61,8 @@ namespace SledovaniTVPlayer.ViewModels
         {
             IsBusy = true;
 
-            var firstGroup = new FilterItem() { Name = "Vsechny skupiny" };
-            var firstType = new FilterItem() { Name = "Vsechny typy" };
+            var firstGroup = new FilterItem() { Name = "Všechny skupiny" };
+            var firstType = new FilterItem() { Name = "Všechny typy" };
 
             SelectedTypeItem = firstType;
             SelectedGroupItem = firstGroup;
