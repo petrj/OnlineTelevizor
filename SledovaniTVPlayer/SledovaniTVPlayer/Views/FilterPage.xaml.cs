@@ -44,28 +44,35 @@ namespace SledovaniTVPlayer.Views
 
         private async void Group_Tapped(object sender, ItemTappedEventArgs e)
         {
-            var filterItem = e.Item as FilterItem;
-            if (filterItem == _viewModel.Groups[0])
+            await Task.Run(() =>           
             {
-                _config.ChannelGroup = "*";
-            } else
-            {
-                _config.ChannelGroup = filterItem.Name;
-            }            
+                var filterItem = e.Item as FilterItem;
+                if (filterItem == _viewModel.Groups[0])
+                {
+                    _config.ChannelGroup = "*";
+                }
+                else
+                {
+                    _config.ChannelGroup = filterItem.Name;
+                }
+            });            
         }
 
         private async void Type_Tapped(object sender, ItemTappedEventArgs e)
         {
-            var filterItem = e.Item as FilterItem;
+            await Task.Run(() =>
+            {
+                var filterItem = e.Item as FilterItem;
 
-            if (filterItem == _viewModel.Types[0])
-            {
-                _config.ChannelType = "*";
-            }
-            else
-            {
-                _config.ChannelType = filterItem.Name;
-            }
+                if (filterItem == _viewModel.Types[0])
+                {
+                    _config.ChannelType = "*";
+                }
+                else
+                {
+                    _config.ChannelType = filterItem.Name;
+                }
+            });
         }
 
         protected override void OnAppearing()

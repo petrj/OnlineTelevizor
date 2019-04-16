@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:SledovaniTVPlayer.Views"
              x:Class="SledovaniTVPlayer.Views.MainPage"
              BackgroundColor="Black"
-             Title="SledováníTV">    <!--NavigationPage.TitleIcon="SledovaniTVPlayer.png"-->
+             NavigationPage.TitleIcon="SledovaniTVPlayer.png">  <!--Title="SledováníTV"-->
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -32,8 +32,8 @@
             </Style>
 
             <Style x:Key="InfoLabelStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="Black"/>
-                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="TextColor" Value="White"/>                
+                <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Margin" Value="20,0,0,0"/>
             </Style>
 
@@ -91,7 +91,7 @@
 
         </ListView>
 
-        <StackLayout Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="40" HorizontalOptions="Fill"  BackgroundColor="LightBlue">
+        <StackLayout Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="40" HorizontalOptions="Fill"  BackgroundColor="#262626">
             <Label Text="{Binding StatusLabel}"  x:Name="StatusLabel" Style="{DynamicResource InfoLabelStyle}"></Label>
         </StackLayout>
 

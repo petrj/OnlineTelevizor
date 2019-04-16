@@ -39,13 +39,18 @@ namespace SledovaniTVPlayer.ViewModels
         {
             get
             {
+                if (IsBusy)
+                {
+                    return "Aktualizují se kanály...";
+                }
+
                 switch (_service.Status)
                 {
-                    case StatusEnum.NotInitialized: return "Probíhá načítání kanálů ...";
+                    case StatusEnum.NotInitialized: return "";
                     case StatusEnum.EmptyCredentials: return "Nevyplněny přihlašovací údaje";
                     case StatusEnum.Logged: return $"Načteno {Channels.Count} kanálů";
                     case StatusEnum.LoginFailed: return $"Chybné přihlašovací údaje";
-                    case StatusEnum.Paired: return $"Probíhá přihlašování ...";
+                    case StatusEnum.Paired: return $"Uživatel přihlášen";
                     case StatusEnum.PairingFailed: return $"Chybné přihlašovací údaje";
                     default: return String.Empty;
                 }
@@ -115,6 +120,8 @@ namespace SledovaniTVPlayer.ViewModels
 
             try
             {
+                OnPropertyChanged(nameof(StatusLabel));
+
                 foreach (var channelItem in Channels)
                 {
                     channelItem.ClearEPG();
@@ -150,6 +157,8 @@ namespace SledovaniTVPlayer.ViewModels
 
             try
             {
+                OnPropertyChanged(nameof(StatusLabel));
+
                 Channels.Clear();
                 _channelById.Clear();
 

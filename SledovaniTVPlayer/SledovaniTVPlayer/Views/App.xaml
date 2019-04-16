@@ -6,7 +6,7 @@
         <ResourceDictionary >
 
             <Color x:Key="primary-back-title-color">#262626</Color>
-            <Color x:Key="primary-title-color">#FFFF00</Color>
+            <Color x:Key="primary-title-color">#FFFFFF</Color>
 
             <!-- Pallete-end -->
             <Style ApplyToDerivedTypes="true" TargetType="NavigationPage">
