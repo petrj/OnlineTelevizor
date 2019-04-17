@@ -80,7 +80,7 @@ if (-not (Test-Path -Path "nuget.exe"))
     Invoke-WebRequest -Uri $url -OutFile "nuget.exe"
 }
 
-.\nuget.exe restore .\SledovaniTVPlayer.sln
+.\nuget.exe restore .\SledovaniTVLive.sln
 
-#Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 16 -msbuild $msbuild | Move-Item -Destination  . -Verbose
-Create-APK -ProjFileName "$scriptPath\SledovaniTVPlayer\SledovaniTVPlayer.Android\SledovaniTVPlayer.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 25 -msbuild $msbuild | Move-Item -Destination  . -Verbose
+#Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 16 -msbuild $msbuild | Move-Item -Destination  . -Verbose
+Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 25 -msbuild $msbuild | Move-Item -Destination  . -Verbose

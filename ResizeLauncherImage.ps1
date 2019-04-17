@@ -1,7 +1,7 @@
 ﻿cd $PSScriptRoot
 
 $convert = "C:\Program Files (x86)\ImageMagick\convert.exe"
-$ResourcesFolder = "SledovaniTVPlayer\SledovaniTVPlayer.Android\Resources"
+$ResourcesFolder = "SledovaniTVLive\SledovaniTVLive.Android\Resources"
 $SourceImage = "launcher_foreground.png"  # image in mipmap-xxxhdpi folder (432x432 with image cca 220x220 in center)
 
 & $convert -size 324x324 $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 324x324 $ResourcesFolder\mipmap-xxhdpi\$SourceImage

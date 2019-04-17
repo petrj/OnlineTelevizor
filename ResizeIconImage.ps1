@@ -1,20 +1,20 @@
 ﻿cd $PSScriptRoot
 
 $convert = "C:\Program Files (x86)\ImageMagick\convert.exe"
-$ResourcesFolder = "SledovaniTVPlayer\SledovaniTVPlayer.Android\Resources"
-$SourceImage = "Icon.png"  # image in mipmap-xxxhdpi folder (192x192)
+$ResourcesFolder = "SledovaniTVLive\SledovaniTVLive.Android\Resources"
+$SourceImage = "Screens\Icon.png"
 
-if ($SourceImage -eq "Icon.png")
-{
-    Copy-Item -Path $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -Destination $ResourcesFolder\drawable-xxxhdpi\Icon.png
-    
-    & $convert -size 128x128 $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 128x128 $ResourcesFolder\drawable\$SourceImage
-    & $convert -size 144x144 $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 144x144 $ResourcesFolder\drawable-xxhdpi\$SourceImage
-    & $convert -size 96x96   $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 96x96   $ResourcesFolder\drawable-xhdpi\$SourceImage
-    & $convert -size 72x72   $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 72x72   $ResourcesFolder\drawable-hdpi\$SourceImage
-}
 
-& $convert -size 144x144 $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 144x144 $ResourcesFolder\mipmap-xxhdpi\$SourceImage
-& $convert -size 96x96   $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 96x96   $ResourcesFolder\mipmap-xhdpi\$SourceImage
-& $convert -size 72x72   $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 72x72   $ResourcesFolder\mipmap-hdpi\$SourceImage
-& $convert -size 48x48   $ResourcesFolder\mipmap-xxxhdpi\$SourceImage -resize 48x48   $ResourcesFolder\mipmap-mdpi\$SourceImage
+$SourceImageName = [System.IO.Path]::GetFileName($SourceImage)
+
+& $convert -size 128x128 $SourceImage -resize 128x128 $ResourcesFolder\drawable\$SourceImageName
+& $convert -size 192x192 $SourceImage -resize 192x192 $ResourcesFolder\drawable-xxxhdpi\$SourceImageName
+& $convert -size 144x144 $SourceImage -resize 144x144 $ResourcesFolder\drawable-xxhdpi\$SourceImageName
+& $convert -size 96x96   $SourceImage -resize 96x96   $ResourcesFolder\drawable-xhdpi\$SourceImageName
+& $convert -size 72x72   $SourceImage -resize 72x72   $ResourcesFolder\drawable-hdpi\$SourceImageName
+
+& $convert -size 192x192 $SourceImage -resize 192x192 $ResourcesFolder\mipmap-xxxhdpi\$SourceImageName
+& $convert -size 144x144 $SourceImage -resize 144x144 $ResourcesFolder\mipmap-xxhdpi\$SourceImageName
+& $convert -size 96x96   $SourceImage -resize 96x96   $ResourcesFolder\mipmap-xhdpi\$SourceImageName
+& $convert -size 72x72   $SourceImage -resize 72x72   $ResourcesFolder\mipmap-hdpi\$SourceImageName
+& $convert -size 48x48   $SourceImage -resize 48x48   $ResourcesFolder\mipmap-mdpi\$SourceImageName
