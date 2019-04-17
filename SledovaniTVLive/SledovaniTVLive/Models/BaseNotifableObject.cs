@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace SledovaniTVPlayer.Models
+namespace SledovaniTVLive.Models
 {
     public class BaseNotifableObject : INotifyPropertyChanged
     {

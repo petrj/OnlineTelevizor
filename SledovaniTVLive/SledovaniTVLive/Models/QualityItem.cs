@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SledovaniTVPlayer.Models
+namespace SledovaniTVLive.Models
 {
     public class QualityItem : BaseNotifableObject
     {

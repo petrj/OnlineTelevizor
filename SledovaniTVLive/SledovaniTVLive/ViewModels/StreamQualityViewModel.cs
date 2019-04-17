@@ -1,7 +1,7 @@
 ﻿using Android.Content;
 using LoggerService;
-using SledovaniTVPlayer.Models;
-using SledovaniTVPlayer.Services;
+using SledovaniTVLive.Models;
+using SledovaniTVLive.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace SledovaniTVPlayer.ViewModels
+namespace SledovaniTVLive.ViewModels
 {
     class StreamQualityViewModel : BaseViewModel
     {

@@ -7,13 +7,13 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using NLog;
-using SledovaniTVPlayer.Services;
-using SledovaniTVPlayer.Views;
+using SledovaniTVLive.Services;
+using SledovaniTVLive.Views;
 using Plugin.Permissions;
 
-namespace SledovaniTVPlayer.Droid
+namespace SledovaniTVLive.Droid
 {
-    [Activity(Label = "SledovaniTVPlayer", Icon = "@drawable/Icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "SledovaniTVLive", Icon = "@drawable/Icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         private App _app;

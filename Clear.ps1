@@ -11,9 +11,10 @@ foreach ($folder in `
         "SledovaniTVApi\obj",
         "SledovaniTVLive\SledovaniTVLive\bin",
         "SledovaniTVLive\SledovaniTVLive\obj",
+        "SledovaniTVLive\SledovaniTVLive.Android\bin",
         "SledovaniTVLive\SledovaniTVLive.Android\obj",
-        "SledovaniTVLive\SledovaniTVLive.Android\obj",
-        ".\TestConsole\bin"
+        ".\TestConsole\bin",
+		".\TestConsole\obj"
      ))
 {
     $fullPath = [System.IO.Path]::Combine($scriptPath,$folder)

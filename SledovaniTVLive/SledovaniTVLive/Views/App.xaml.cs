@@ -1,19 +1,19 @@
 ﻿using Android.Views;
 using LoggerService;
 using NLog;
-using SledovaniTVPlayer.Models;
-using SledovaniTVPlayer.Services;
+using SledovaniTVLive.Models;
+using SledovaniTVLive.Services;
 using System;
 using System.IO;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
-namespace SledovaniTVPlayer.Views
+namespace SledovaniTVLive.Views
 {
     public partial class App : Application
     {
-        SledovaniTVPlayer.Views.MainPage _mainPage;
+        SledovaniTVLive.Views.MainPage _mainPage;
 
         public App()
         {
@@ -28,11 +28,11 @@ namespace SledovaniTVPlayer.Views
             {
                 loggingService = new BasicLoggingService(config.LoggingLevel);
 
-                var logFolder = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.Path, "SledovaniTVPlayer");
+                var logFolder = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.Path, "SledovaniTVLive");
                 if (!Directory.Exists(logFolder))
                     Directory.CreateDirectory(logFolder);
 
-                (loggingService as BasicLoggingService).LogFilename = Path.Combine(logFolder, "SledovaniTV.log");
+                (loggingService as BasicLoggingService).LogFilename = Path.Combine(logFolder, "SledovaniTVLive.log");
             } else
             {
                 loggingService = new DummyLoggingService();

@@ -1,9 +1,9 @@
 ﻿using LoggerService;
 using SledovaniTVAPI;
-using SledovaniTVPlayer.Models;
-using SledovaniTVPlayer.Services;
-using SledovaniTVPlayer.ViewModels;
-using SledovaniTVPlayer.Views;
+using SledovaniTVLive.Models;
+using SledovaniTVLive.Services;
+using SledovaniTVLive.ViewModels;
+using SledovaniTVLive.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using Xamarin.Forms;
 using Android.Content;
 using Android.Views;
 
-namespace SledovaniTVPlayer.Views
+namespace SledovaniTVLive.Views
 {
     public partial class MainPage : ContentPage
     {

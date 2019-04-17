@@ -1,7 +1,7 @@
 ﻿using LoggerService;
 using Newtonsoft.Json;
 using SledovaniTVAPI;
-using SledovaniTVPlayer.Models;
+using SledovaniTVLive.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +10,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SledovaniTVPlayer.Services
+namespace SledovaniTVLive.Services
 {
     public class TVService
     {

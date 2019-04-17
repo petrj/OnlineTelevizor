@@ -41,11 +41,6 @@
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Views\SettingsPage.xaml.cs">
-      <DependentUpon>SettingsPage.xaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Views\FilterPage.xaml">

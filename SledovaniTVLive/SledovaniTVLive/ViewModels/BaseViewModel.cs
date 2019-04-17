@@ -1,6 +1,6 @@
 ﻿using LoggerService;
-using SledovaniTVPlayer.Models;
-using SledovaniTVPlayer.Services;
+using SledovaniTVLive.Models;
+using SledovaniTVLive.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +12,7 @@ using Plugin.Permissions.Abstractions;
 using Android.Content;
 using System.Text.RegularExpressions;
 
-namespace SledovaniTVPlayer.ViewModels
+namespace SledovaniTVLive.ViewModels
 {
     public class BaseViewModel : BaseNotifableObject
     {

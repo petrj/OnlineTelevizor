@@ -8,7 +8,7 @@ using System.IO;
 using System.Text;
 using Xamarin.Forms;
 
-namespace SledovaniTVPlayer.Models
+namespace SledovaniTVLive.Models
 {
     public class SledovaniTVConfiguration : CustomSharedPreferencesObject, ISledovaniTVConfiguration
     {

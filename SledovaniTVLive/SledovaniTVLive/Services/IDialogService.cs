@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 
 
-namespace SledovaniTVPlayer.Services
+namespace SledovaniTVLive.Services
 {
     public interface IDialogService
     {

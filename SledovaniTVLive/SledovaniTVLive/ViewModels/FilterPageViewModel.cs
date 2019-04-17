@@ -2,8 +2,8 @@
 using Android.Content;
 using LoggerService;
 using SledovaniTVAPI;
-using SledovaniTVPlayer.Models;
-using SledovaniTVPlayer.Services;
+using SledovaniTVLive.Models;
+using SledovaniTVLive.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +13,7 @@ using Xamarin.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 
-namespace SledovaniTVPlayer.ViewModels
+namespace SledovaniTVLive.ViewModels
 {
     public class FilterPageViewModel : BaseViewModel
     {
