@@ -75,6 +75,18 @@ namespace SledovaniTVLive.Models
             }
         }
 
+        public bool Purchased
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("Purchased");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("Purchased", value);
+            }
+        }
+
         public LoggingLevelEnum LoggingLevel
         {
             get

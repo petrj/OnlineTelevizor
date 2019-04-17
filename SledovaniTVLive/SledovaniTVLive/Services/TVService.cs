@@ -115,6 +115,13 @@ namespace SledovaniTVLive.Services
                                 continue;
                         }
 
+                        if ( !_config.Purchased && (!(
+                                                        (ch.Id == "ct24") || 
+                                                        (ch.Id == "radio_country") ||
+                                                        (ch.Id == "fireplace")
+                                                      )))
+                           continue;
+
                         chs.Add(ChannelItem.CreateFromChannel(ch));
                     }
                 }

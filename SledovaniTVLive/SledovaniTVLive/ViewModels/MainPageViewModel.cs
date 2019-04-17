@@ -48,11 +48,33 @@ namespace SledovaniTVLive.ViewModels
                 {
                     case StatusEnum.NotInitialized: return "";
                     case StatusEnum.EmptyCredentials: return "Nevyplněny přihlašovací údaje";
-                    case StatusEnum.Logged: return $"Načteno {Channels.Count} kanálů";
+                    case StatusEnum.Logged: return GetChannelsStatus;
                     case StatusEnum.LoginFailed: return $"Chybné přihlašovací údaje";
                     case StatusEnum.Paired: return $"Uživatel přihlášen";
                     case StatusEnum.PairingFailed: return $"Chybné přihlašovací údaje";
                     default: return String.Empty;
+                }
+            }
+        }
+
+        private string GetChannelsStatus
+        {
+            get
+            {
+                if (Channels.Count == 0)
+                {
+                    return "Není k dispozici žádný kanál";
+                } else
+                if (Channels.Count == 1)
+                {
+                    return "1 kanál";
+                } else
+                if ((Channels.Count >= 2) && (Channels.Count <= 4))
+                {
+                    return $"{Channels.Count} kanály";
+                } else
+                {
+                    return $"{Channels.Count} kanálů";
                 }
             }
         }
@@ -88,8 +110,8 @@ namespace SledovaniTVLive.ViewModels
 
             RefreshChannlesCommand.Execute(null);
 
-            // refreshing every min with 2 s start delay
-            BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 2);
+            // refreshing every min with 3s start delay
+            BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 3);
         }
 
         public Dictionary<string, ChannelItem> ChannelById
@@ -182,7 +204,7 @@ namespace SledovaniTVLive.ViewModels
                         continue;
 
                     Channels.Add(ch);
-                    _channelById.Add(ch.Id, ch); // for faster EPG refreesh
+                    _channelById.Add(ch.Id, ch); // for faster EPG refresh
                 }
 
             } finally

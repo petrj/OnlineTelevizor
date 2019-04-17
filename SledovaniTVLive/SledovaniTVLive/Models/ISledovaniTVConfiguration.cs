@@ -21,6 +21,8 @@ namespace SledovaniTVLive.Models
         bool EnableLogging { get; set; }
         LoggingLevelEnum LoggingLevel { get; set; }
 
+        bool Purchased { get; set; }
+
         // private cached login credentailes
         string DeviceId { get; set; }
         string DevicePassword { get; set; }
