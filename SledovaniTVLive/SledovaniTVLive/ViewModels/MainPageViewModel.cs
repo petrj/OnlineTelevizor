@@ -132,7 +132,7 @@ namespace SledovaniTVLive.ViewModels
             if (!_config.EnableLogging)
               return;
 
-            await RequestPermission(Permission.Storage);
+            await RequestPermission(Permission.Storage);            
         }
 
         private async Task Refresh()

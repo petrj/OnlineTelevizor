@@ -23,6 +23,7 @@ namespace SledovaniTVLive.Models
                     case "foreign": return "Zahraniční";
                     case "regional": return "Regionální";
                     case "movie": return "Filmy";
+                    case "other": return "Ostatní";
 
                     default: return Name;
                 }

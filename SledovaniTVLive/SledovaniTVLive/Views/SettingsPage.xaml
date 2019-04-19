@@ -65,7 +65,7 @@
                 </StackLayout>
                 <StackLayout Margin="20,30,20,0">
 
-                    <Label Text="Ostatní nastavení: " Style="{StaticResource GroupCaptionStyle}" />
+                    <Label Text="Další nastavení: " Style="{StaticResource GroupCaptionStyle}" />
 
                     <!--
                     <StackLayout>
@@ -86,6 +86,7 @@
                         <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit nedostupné kanály" Style="{StaticResource CaptionStyle}" />
                         <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowLockedSwitch" IsToggled="{Binding Config.ShowLocked, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
 
+                     
                         <Label  Grid.Row="1" Grid.Column="0" Text="Povolit logování (vyžaduje restart)" Style="{StaticResource CaptionStyle}" />
                         <Switch Grid.Row="1" Grid.Column="1" x:Name="EnableLoggingSwitch" IsToggled="{Binding Config.EnableLogging, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />                        
 
@@ -100,6 +101,7 @@
 
                         <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"  IsVisible="{Binding Config.EnableLogging}" Text="Sdílet log" Command="{Binding ShareLogCommand}" />
 
+                      
                         <Label  Grid.Row="4" Grid.Column="0" Text="Zakoupena plná verze" Style="{StaticResource CaptionStyle}" />
                         <Switch Grid.Row="4" Grid.Column="1" x:Name="PurchaseSwitch" IsToggled="{Binding Config.Purchased, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
 

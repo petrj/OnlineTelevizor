@@ -6,4 +6,5 @@
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<application android:label="SledovaniTVLive" android:icon="@drawable/Icon"></application>
 	<uses-feature android:name="android.hardware.usb.host" />
+  <uses-permissin android:name="com.android.vending.BILLING" />
 </manifest>
