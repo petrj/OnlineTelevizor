@@ -61,20 +61,25 @@ namespace SledovaniTVLive.ViewModels
         {
             get
             {
+                string status = String.Empty;
+
+                if (!_config.Purchased)
+                    status = "Verze zdarma. ";
+
                 if (Channels.Count == 0)
                 {
-                    return "Není k dispozici žádný kanál";
+                    return $"{status}Není k dispozici žádný kanál";
                 } else
                 if (Channels.Count == 1)
                 {
-                    return "1 kanál";
+                    return $"{status}Načten 1 kanál";
                 } else
                 if ((Channels.Count >= 2) && (Channels.Count <= 4))
                 {
-                    return $"{Channels.Count} kanály";
+                    return $"{status}Načteny {Channels.Count} kanály";
                 } else
                 {
-                    return $"{Channels.Count} kanálů";
+                    return $"{status}Načteno {Channels.Count} kanálů";
                 }
             }
         }

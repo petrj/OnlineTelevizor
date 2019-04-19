@@ -107,6 +107,7 @@ namespace SledovaniTVLive.Services
                         _config.DevicePassword = _sledovaniTV.Connection.password;
                     }
 
+                    var channelIndex = 0; 
                     foreach (var ch in channels)
                     {
                         if (ch.Locked != "none")
@@ -118,11 +119,17 @@ namespace SledovaniTVLive.Services
                         if ( !_config.Purchased && (!(
                                                         (ch.Id == "ct24") || 
                                                         (ch.Id == "radio_country") ||
-                                                        (ch.Id == "fireplace")
+                                                        (ch.Id == "fireplace") ||
+                                                        (ch.Id == "retro") ||
+                                                        (ch.Id == "nasatv")
                                                       )))
                            continue;
 
-                        chs.Add(ChannelItem.CreateFromChannel(ch));
+                        channelIndex++;
+
+                        var channelItem = ChannelItem.CreateFromChannel(ch);
+                        channelItem.ChannelNumber = channelIndex.ToString();
+                        chs.Add(channelItem);
                     }
                 }
             } catch (Exception ex)
