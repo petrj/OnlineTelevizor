@@ -9,24 +9,11 @@ namespace SledovaniTVLive.Models
         private int _count = 0;
 
         public string Name { get; set; }
-        public string GUIName
+        public virtual string GUIName
         {
             get
             {
-                switch (Name)
-                {
-                    case "general": return "Obecné";
-                    case "": return "Nepojmenovaná skupina";
-                    case "news": return "Zpravodajství";
-                    case "children": return "Pro děti";
-                    case "documentary": return "Dokumenty";
-                    case "foreign": return "Zahraniční";
-                    case "regional": return "Regionální";
-                    case "movie": return "Filmy";
-                    case "other": return "Ostatní";
-
-                    default: return Name;
-                }
+                return Name;
             }
         }
 

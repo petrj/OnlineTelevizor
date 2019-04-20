@@ -87,6 +87,14 @@ namespace SledovaniTVLive.Models
             }
         }
 
+        public bool DebugMode
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public LoggingLevelEnum LoggingLevel
         {
             get

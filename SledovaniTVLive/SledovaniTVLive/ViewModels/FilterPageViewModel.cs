@@ -19,7 +19,7 @@ namespace SledovaniTVLive.ViewModels
     {
         private TVService _service;
         private ISledovaniTVConfiguration _config;
-        private Dictionary<string, FilterItem> _groupToItem = new Dictionary<string, FilterItem>();
+        private Dictionary<string, GroupFilterItem> _groupToItem = new Dictionary<string, GroupFilterItem>();
         private Dictionary<string, FilterItem> _typeToItem = new Dictionary<string, FilterItem>();
         private string _channelNameFilter { get; set; }
 
@@ -27,9 +27,13 @@ namespace SledovaniTVLive.ViewModels
         public ObservableCollection<FilterItem> Types { get; set; } = new ObservableCollection<FilterItem>();
 
         public Command RefreshCommand { get; set; }
+        public Command ClearFilterCommand { get; set; }
 
         public FilterItem SelectedGroupItem { get; set; }
         public FilterItem SelectedTypeItem { get; set; }
+
+        public FilterItem FirstGroup { get; private set; } = new FilterItem() { Name = "Všechny skupiny" };
+        public FilterItem FirstType { get; private set; } = new FilterItem() { Name = "Všechny typy" };
 
         public string ChannelNameFilter
         {
@@ -51,43 +55,55 @@ namespace SledovaniTVLive.ViewModels
             _loggingService = loggingService;
             _dialogService = dialogService;
             _context = context;
-            _config = config;        
+            _config = config;
 
+            ClearFilterCommand = new Command(async () => await ClearFilter());
             RefreshCommand = new Command(async () => await Refresh());
             // SomeCommand = new Command(async () => await Task.Run(delegate { }));            
+        }
+
+        private async Task ClearFilter()
+        {
+            SelectedTypeItem = FirstType;
+            SelectedGroupItem = FirstGroup;            
+            _config.ChannelGroup = "*";
+            _config.ChannelType = "*";
+            ChannelNameFilter = "";
+
+            await Refresh();
         }
 
         private async Task Refresh()
         {
             IsBusy = true;
-
-            var firstGroup = new FilterItem() { Name = "Všechny skupiny" };
-            var firstType = new FilterItem() { Name = "Všechny typy" };
-
-            SelectedTypeItem = firstType;
-            SelectedGroupItem = firstGroup;
-
+          
+            SelectedTypeItem = FirstType;
+            SelectedGroupItem = FirstGroup;
+            
             try
             {
                 Groups.Clear();
                 Types.Clear();
 
+                FirstGroup.Count = 0;
+                FirstType.Count = 0;
+
                 _groupToItem.Clear();
                 _typeToItem.Clear();
 
-                Groups.Add(firstGroup);
-                Types.Add(firstType);
+                Groups.Add(FirstGroup);
+                Types.Add(FirstType);
 
                 var channels = await _service.GetChannels();
 
                 foreach (var ch in channels)
                 {
-                    firstGroup.Count++;
-                    firstType.Count++;
+                    FirstGroup.Count++;
+                    FirstType.Count++;
 
                     if (!_groupToItem.ContainsKey(ch.Group))
                     {              
-                        var g = new FilterItem()
+                        var g = new GroupFilterItem()
                         {
                             Name = ch.Group,
                             Count = 1
