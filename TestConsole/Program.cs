@@ -37,26 +37,22 @@ namespace TestConsole
                         sledovaniTV.Connection.SaveToFile("connection.json");
                     };
 
-                    /*
                     var qualities = await sledovaniTV.GetStreamQualities();
                     foreach (var q in qualities)
                     {
                         Console.WriteLine(q.Name.PadRight(20) + "  " + q.Id.PadLeft(10) + "  " + q.Allowed);
                     }
 
-*/
-
-                    await sledovaniTV.Unlock();
+                    //await sledovaniTV.Unlock();
                     //await sledovaniTV.Lock();
 
                     var channels = await sledovaniTV.GetChanels();
-                    //var epg = await sledovaniTV.GetEPG();
+                    var epg = await sledovaniTV.GetEPG();
 
                     foreach (var ch in channels)
                     {
-                        Console.WriteLine(ch.Name.PadRight(20)+" "+ch.Url);
+                        Console.WriteLine(ch.Name.PadRight(20)+" "+ch.ParentLocked+" "+ch.Url);
                     }
-
 
                     Console.WriteLine();
                     Console.WriteLine("Press any key");
@@ -67,4 +63,3 @@ namespace TestConsole
         }
     }
 }
-

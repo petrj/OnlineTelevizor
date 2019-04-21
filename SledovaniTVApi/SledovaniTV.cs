@@ -475,16 +475,23 @@ namespace SledovaniTVAPI
             if (_status != StatusEnum.Logged)
                 return;
 
-            var ps = new Dictionary<string, string>()
+            _log.Debug("Unlocking adult channels");
+
+            try
             {
-                { "pin", _credentials.ChildLockPIN },
-                { "whitelogo", "1" },
-                { "PHPSESSID", _session.PHPSESSID }
-            };
+                var ps = new Dictionary<string, string>()
+                {
+                    { "pin", _credentials.ChildLockPIN },
+                    { "whitelogo", "1" },
+                    { "PHPSESSID", _session.PHPSESSID }
+                };
 
-            var unlockString = await SendRequest("pin-unlock", ps);
-            var unlockJson = JObject.Parse(unlockString);
-
+                await SendRequest("pin-unlock", ps);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Error while unlocking adult channels");
+            }
         }
 
         public async Task Lock()
@@ -494,16 +501,21 @@ namespace SledovaniTVAPI
             if (_status != StatusEnum.Logged)
                 return;
 
-            var ps = new Dictionary<string, string>()
+            _log.Debug("Locking adult channels");
+
+            try
             {
-                { "pin", _credentials.ChildLockPIN },
-                { "whitelogo", "1" },
-                { "PHPSESSID", _session.PHPSESSID }
-            };
+                var ps = new Dictionary<string, string>()
+                {
+                    { "PHPSESSID", _session.PHPSESSID }
+                };
 
-            var lockString = await SendRequest("pin-lock", ps);
-            var lockJson = JObject.Parse(lockString);
-
+                await SendRequest("pin-lock", ps);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Error while locking adult channels");
+            }
         }
     }
 }
