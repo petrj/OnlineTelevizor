@@ -4,11 +4,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SledovaniTVLive.Android", "SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj", "{F79AAAAB-198D-4168-9DB3-95FF0B9C77FF}"
-	ProjectSection(ProjectDependencies) = postProject
-		{95468A7C-4400-4101-9A39-166F058B5B0B} = {95468A7C-4400-4101-9A39-166F058B5B0B}
-	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SledovaniTVLive", "SledovaniTVLive\SledovaniTVLive\SledovaniTVLive.csproj", "{09F67F34-745E-4D9A-BC6E-FD4C36F406FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SledovaniTVLive", "SledovaniTVLive\SledovaniTVLive\SledovaniTVLive.csproj", "{09F67F34-745E-4D9A-BC6E-FD4C36F406FB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SledovaniTVAPI", "SledovaniTVApi\SledovaniTVAPI.csproj", "{95468A7C-4400-4101-9A39-166F058B5B0B}"
 EndProject

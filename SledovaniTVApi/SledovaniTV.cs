@@ -29,12 +29,13 @@ namespace SledovaniTVAPI
             _session = new Session();
         }
 
-        public void SetCredentials(string username, string password)
+        public void SetCredentials(string username, string password, string childLockPIN = null)
         {
             _credentials = new Credentials()
             {
                 Username = username,
-                Password = password
+                Password = password,
+                ChildLockPIN = childLockPIN
             };
         }
 
@@ -345,7 +346,6 @@ namespace SledovaniTVAPI
             return result;
         }
 
-
         public void ResetConnection()
         {
             _log.Debug("Resetting connection");
@@ -482,7 +482,28 @@ namespace SledovaniTVAPI
                 { "PHPSESSID", _session.PHPSESSID }
             };
 
-            // TODO: Parse Channels from "pin-unlock" request
+            var unlockString = await SendRequest("pin-unlock", ps);
+            var unlockJson = JObject.Parse(unlockString);
+
+        }
+
+        public async Task Lock()
+        {
+            await Login();
+
+            if (_status != StatusEnum.Logged)
+                return;
+
+            var ps = new Dictionary<string, string>()
+            {
+                { "pin", _credentials.ChildLockPIN },
+                { "whitelogo", "1" },
+                { "PHPSESSID", _session.PHPSESSID }
+            };
+
+            var lockString = await SendRequest("pin-lock", ps);
+            var lockJson = JObject.Parse(lockString);
+
         }
     }
 }
