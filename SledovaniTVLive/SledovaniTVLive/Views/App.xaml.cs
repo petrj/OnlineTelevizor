@@ -41,10 +41,10 @@ namespace SledovaniTVLive.Views
             MainPage = new NavigationPage(_mainPage);
         }
 
-        //public bool OnKeyDown(Keycode keyCode, KeyEvent e)
-        //{
-        //    return _mainPage.OnKeyDown(keyCode, e);
-        //}
+        public bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        {
+            return _mainPage.OnKeyDown(keyCode, e);
+        }
 
         protected override void OnStart()
         {

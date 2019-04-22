@@ -165,6 +165,7 @@ namespace SledovaniTVLive.Services
 
         public async Task ResetConnection()
         {
+            _adultChannelsUnlocked = false;
             _sledovaniTV.ResetConnection();
             _config.DeviceId = null;
             _config.DevicePassword = null;

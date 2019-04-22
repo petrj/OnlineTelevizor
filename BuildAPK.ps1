@@ -64,7 +64,7 @@ function Create-APK
 				throw "Build failed"
 			}
 
-			$newName =  [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($defaultAPKName),$manifest.manifest.application.label+"-"+$dateTimeSuffix+"-mapi" + $MinSdkVersion+"-tapi"+$TargetSdkVersion+".apk")
+			$newName =  [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($defaultAPKName),$manifest.manifest.application.label+"-"+$dateTimeSuffix+"-mapi" + $MinSdkVersion+"-tapi"+$TargetSdkVersion+"-"+$Target+".apk")
 
 			Rename-Item -Path $defaultAPKName -NewName $newName -Verbose
 
@@ -96,4 +96,4 @@ if (-not (Test-Path -Path "nuget.exe"))
 #Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 16 -msbuild $msbuild | Move-Item -Destination  . -Verbose
 Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 25 -msbuild $msbuild | Move-Item -Destination  . -Verbose
 
-Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 25 -msbuild $msbuild -Target Debug | Move-Item -Destination  . -Verbose
+Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 25 -msbuild $msbuild -Target "Debug" | Move-Item -Destination  . -Verbose
