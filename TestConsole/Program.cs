@@ -43,9 +43,10 @@ namespace TestConsole
                         Console.WriteLine(q.Name.PadRight(20) + "  " + q.Id.PadLeft(10) + "  " + q.Allowed);
                     }
 
-                    //await sledovaniTV.Unlock();
+                    await sledovaniTV.Unlock();
                     //await sledovaniTV.Lock();
 
+                    /*
                     var channels = await sledovaniTV.GetChanels();
                     var epg = await sledovaniTV.GetEPG();
 
@@ -53,7 +54,9 @@ namespace TestConsole
                     {
                         Console.WriteLine(ch.Name.PadRight(20)+" "+ch.ParentLocked+" "+ch.Url);
                     }
-
+                    */
+                    Console.WriteLine();
+                    Console.WriteLine($"Status: {sledovaniTV.Status.ToString()}");
                     Console.WriteLine();
                     Console.WriteLine("Press any key");
                 });

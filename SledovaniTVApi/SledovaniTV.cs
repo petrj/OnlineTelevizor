@@ -163,7 +163,8 @@ namespace SledovaniTVAPI
                    )
                 {
                     _status = StatusEnum.PairingFailed;
-                } else
+                }
+                else
                 {
                     _status = StatusEnum.Paired;
 
@@ -176,10 +177,16 @@ namespace SledovaniTVAPI
                     _log.Debug("Received User Connection:");
                     _log.Debug(_deviceConnection.ToString());
                 }
-            } catch (Exception ex)
+            }
+            catch (WebException wex)
+            {
+                _log.Error(wex, "Error while pairing device");
+                _status = StatusEnum.ConnectionNotAvailable;
+            }
+            catch (Exception ex)
             {
                 _log.Error(ex, "Error while pairing device");
-                _status = StatusEnum.PairingFailed;
+                _status = StatusEnum.GeneralError;
             }
         }
 
@@ -223,10 +230,73 @@ namespace SledovaniTVAPI
                 }
 
             }
+            catch (WebException wex)
+            {
+                _log.Error(wex, "Login failed");
+                _status = StatusEnum.ConnectionNotAvailable;
+            }
             catch (Exception ex)
             {
                 _log.Error(ex, "Login failed");
-                _status = StatusEnum.LoginFailed;
+                _status = StatusEnum.ConnectionNotAvailable;
+            }
+        }
+
+        public async Task Login()
+        {
+            if (_session != null && !String.IsNullOrEmpty(_session.PHPSESSID))
+            {
+                _status = StatusEnum.Logged;
+            }
+
+            _log.Info("Login");
+
+            if (Status == StatusEnum.Logged)
+            {
+                _log.Debug("Device is already logged");
+                return;
+            }
+
+            if (String.IsNullOrEmpty(_credentials.Username) ||
+                String.IsNullOrEmpty(_credentials.Password))
+            {
+                _status = StatusEnum.EmptyCredentials;
+                _log.Debug("Empty credentials");
+                return;
+            }
+
+            if (_deviceConnection != null && !String.IsNullOrEmpty(_deviceConnection.deviceId))
+            {
+                _status = StatusEnum.Paired;
+            }
+
+            if (Status != StatusEnum.Paired)
+            {
+                await CreatePairing();
+
+                if (Status != StatusEnum.Paired)
+                {
+                    _log.Debug("Pairing failed");
+                    return; // bad credentials, no internet connection ?
+                }
+            }
+
+            // login
+
+            await DeviceLogin();
+
+            if (Status == StatusEnum.LoginFailed)
+            {
+                // bad device connection ? Pairing again
+                await CreatePairing();
+
+                if (Status != StatusEnum.Paired)
+                {
+                    _log.Debug("Pairing failed again");
+                    return; // bad credentials, no internet connection ?
+                }
+
+                await DeviceLogin();
             }
         }
 
@@ -286,9 +356,15 @@ namespace SledovaniTVAPI
                      }
                 }
             }
+            catch (WebException wex)
+            {
+                _log.Error(wex, "EPG loading failed");
+                _status = StatusEnum.ConnectionNotAvailable;
+            }
             catch (Exception ex)
             {
                 _log.Error(ex, "EPG loading failed");
+                _status = StatusEnum.GeneralError;
             }
 
             return result;
@@ -338,9 +414,15 @@ namespace SledovaniTVAPI
                     }
                 }
             }
+            catch (WebException wex)
+            {
+                _log.Error(wex, "EPG loading failed");
+                _status = StatusEnum.ConnectionNotAvailable;
+            }
             catch (Exception ex)
             {
                 _log.Error(ex, "Getting stream qualities failed");
+                _status = StatusEnum.GeneralError;
             }
 
             return result;
@@ -354,64 +436,6 @@ namespace SledovaniTVAPI
             _deviceConnection.deviceId = null;
             _deviceConnection.password = null;
             _session.PHPSESSID = null;
-        }
-
-        public async Task Login()
-        {
-            if (_session != null && !String.IsNullOrEmpty(_session.PHPSESSID))
-            {
-                _status = StatusEnum.Logged;
-            }
-
-            _log.Info("Login");
-
-            if (Status == StatusEnum.Logged)
-            {
-                _log.Debug("Device is already logged");
-                return;
-            }
-
-            if (String.IsNullOrEmpty(_credentials.Username) ||
-                String.IsNullOrEmpty(_credentials.Password))
-            {
-                _status = StatusEnum.EmptyCredentials;
-                _log.Debug("Empty credentials");
-                return;
-            }
-
-           if (_deviceConnection != null && !String.IsNullOrEmpty(_deviceConnection.deviceId))
-            {
-                _status = StatusEnum.Paired;
-            }
-
-            if (Status != StatusEnum.Paired)
-            {
-                await CreatePairing();
-
-                if (Status == StatusEnum.PairingFailed)
-                {
-                    _log.Debug("Pairing failed");
-                    return; // bad credentials, no internet connection ?
-                }
-            }
-
-            // login
-
-            await DeviceLogin();
-
-            if (Status == StatusEnum.LoginFailed)
-            {
-                // bad device connection ? Pairing again
-                await CreatePairing();
-
-                if (Status == StatusEnum.PairingFailed)
-                {
-                    _log.Debug("Pairing failed again");
-                    return; // bad credentials, no internet connection ?
-                }
-
-                await DeviceLogin();
-            }
         }
 
         public async Task<List<Channel>> GetChanels()
@@ -460,9 +484,15 @@ namespace SledovaniTVAPI
 
                 _log.Info($"Received {result.Count} channels");
             }
+            catch (WebException wex)
+            {
+                _log.Error(wex, "Error while getting channels");
+                _status = StatusEnum.ConnectionNotAvailable;
+            }
             catch (Exception ex)
             {
-                _log.Error(ex, "Error while refreshing channels");
+                _log.Error(ex, "Error while getting channels");
+                _status = StatusEnum.GeneralError;
             }
 
             return result;
@@ -486,11 +516,35 @@ namespace SledovaniTVAPI
                     { "PHPSESSID", _session.PHPSESSID }
                 };
 
-                await SendRequest("pin-unlock", ps);
+                var unlockResponseString = await SendRequest("pin-unlock", ps);
+                var unlockResponseJson = JObject.Parse(unlockResponseString);
+
+                if ((unlockResponseJson.HasValue("status")) &&
+                    (unlockResponseJson.GetStringValue("status") == "1")
+                   )
+                {
+                    // unlocked
+                }
+                else
+                if ((unlockResponseJson.HasValue("error")) &&
+                    (unlockResponseJson.GetStringValue("error") == "bad pin"))
+                {
+                    _status = StatusEnum.BadPin;
+                }
+                else
+                {
+                    throw new Exception("Unknown error");
+                }
+            }
+            catch (WebException wex)
+            {
+                _log.Error(wex, "Error while unlocking adult channels");
+                _status = StatusEnum.ConnectionNotAvailable;
             }
             catch (Exception ex)
             {
                 _log.Error(ex, "Error while unlocking adult channels");
+                _status = StatusEnum.GeneralError;
             }
         }
 
@@ -512,9 +566,15 @@ namespace SledovaniTVAPI
 
                 await SendRequest("pin-lock", ps);
             }
+            catch (WebException wex)
+            {
+                _log.Error(wex, "Error while locking adult channels");
+                _status = StatusEnum.ConnectionNotAvailable;
+            }
             catch (Exception ex)
             {
                 _log.Error(ex, "Error while locking adult channels");
+                _status = StatusEnum.GeneralError;
             }
         }
     }
