@@ -12,6 +12,8 @@ namespace SledovaniTVLive.Models
 {
     public class SledovaniTVConfiguration : CustomSharedPreferencesObject, ISledovaniTVConfiguration
     {
+        private bool _debugMode = true;
+
         public SledovaniTVConfiguration(Context context) : base(context)
         {}
 
@@ -63,6 +65,19 @@ namespace SledovaniTVLive.Models
             }
         }
 
+        public bool ShowAdultChannels
+        {
+            get
+            {
+                var shw = GetPersistingSettingValue<bool>("ShowAdultChannels");
+                return shw;
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("ShowAdultChannels", value);
+            }
+        }
+
         public bool EnableLogging
         {
             get
@@ -91,7 +106,11 @@ namespace SledovaniTVLive.Models
         {
             get
             {
-                return true;
+                return _debugMode;
+            }
+            set
+            {
+                _debugMode = value;
             }
         }
 

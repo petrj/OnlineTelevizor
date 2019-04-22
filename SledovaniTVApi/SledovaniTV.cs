@@ -512,7 +512,7 @@ namespace SledovaniTVAPI
                 var ps = new Dictionary<string, string>()
                 {
                     { "pin", _credentials.ChildLockPIN },
-                    { "whitelogo", "1" },
+                    { "whitelogo", "0" },
                     { "PHPSESSID", _session.PHPSESSID }
                 };
 

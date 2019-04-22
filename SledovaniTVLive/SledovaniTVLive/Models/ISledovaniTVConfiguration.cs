@@ -18,11 +18,13 @@ namespace SledovaniTVLive.Models
         string ChannelType { get; set; }
 
         bool ShowLocked { get; set; }
+        bool ShowAdultChannels { get; set; }
+
         bool EnableLogging { get; set; }
         LoggingLevelEnum LoggingLevel { get; set; }
 
         bool Purchased { get; set; }
-        bool DebugMode { get; }
+        bool DebugMode { get; set; }
 
         // private cached login credentailes
         string DeviceId { get; set; }

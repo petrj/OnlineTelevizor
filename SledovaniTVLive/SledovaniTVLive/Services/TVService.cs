@@ -16,6 +16,7 @@ namespace SledovaniTVLive.Services
     {
         private ILoggingService _log;
         ISledovaniTVConfiguration _config;
+        private bool _adultChannelsUnlocked = false;
 
         private SledovaniTV _sledovaniTV;
 
@@ -25,7 +26,7 @@ namespace SledovaniTVLive.Services
             _config = config;
 
             _sledovaniTV = new SledovaniTV(loggingService);
-            _sledovaniTV.SetCredentials(_config.Username, _config.Password);
+            _sledovaniTV.SetCredentials(_config.Username, _config.Password, _config.ChildLockPIN);
 
             _sledovaniTV.Connection = new DeviceConnection()
             {
@@ -96,6 +97,21 @@ namespace SledovaniTVLive.Services
 
             try
             {
+                if (_config.ShowAdultChannels && 
+                    !String.IsNullOrEmpty(_config.ChildLockPIN) &&
+                    !_adultChannelsUnlocked)
+                {
+                    _adultChannelsUnlocked = true;
+                    await _sledovaniTV.Unlock();
+                }
+
+                if (!_config.ShowAdultChannels &&
+                    _adultChannelsUnlocked)
+                {
+                    _adultChannelsUnlocked = false;
+                    await _sledovaniTV.Lock();
+                }
+
                 var channels = await _sledovaniTV.GetChanels();
 
                 if (_sledovaniTV.Status == StatusEnum.Logged || _sledovaniTV.Status == StatusEnum.Paired)
@@ -112,8 +128,15 @@ namespace SledovaniTVLive.Services
                     {
                         if (ch.Locked != "none")
                         {
-                            if (!_config.ShowLocked)
+                            // locked or unavailable channels
+
+                            if (ch.Locked == "noAccess" && !_config.ShowLocked)
                                 continue;
+
+                            if (ch.Locked == "pin" && !_config.ShowAdultChannels)
+                                continue; // adult channels 
+
+                            // unknown Locked state
                         }
 
                         if ( !_config.Purchased && (!(
@@ -145,7 +168,7 @@ namespace SledovaniTVLive.Services
             _sledovaniTV.ResetConnection();
             _config.DeviceId = null;
             _config.DevicePassword = null;
-            _sledovaniTV.SetCredentials(_config.Username, _config.Password);
+            _sledovaniTV.SetCredentials(_config.Username, _config.Password, _config.ChildLockPIN);
             await _sledovaniTV.Login();
         }
 

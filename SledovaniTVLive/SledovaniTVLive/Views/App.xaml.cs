@@ -28,9 +28,7 @@ namespace SledovaniTVLive.Views
             {
                 loggingService = new BasicLoggingService(config.LoggingLevel);
 
-                var logFolder = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.Path, "SledovaniTVLive");
-                if (!Directory.Exists(logFolder))
-                    Directory.CreateDirectory(logFolder);
+                var logFolder = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.Path, "SledovaniTVLive");                
 
                 (loggingService as BasicLoggingService).LogFilename = Path.Combine(logFolder, "SledovaniTVLive.log");
             } else

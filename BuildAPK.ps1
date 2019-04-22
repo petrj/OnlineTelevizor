@@ -18,7 +18,11 @@ function Create-APK
        $MinSdkVersion,
 
 	   [ValidateSet("16", "25")]
-	   $TargetSdkVersion
+	   $TargetSdkVersion,
+
+
+	   [ValidateSet("Release", "Debug")]
+	   $Target = "Release"
     )
     Process
     {
@@ -42,9 +46,16 @@ function Create-APK
 			$manifest.Save($manifestFileName)
 
 			#Write-Host "Building APK $androidVersion ...  "
-			& $msbuild $ProjFileName /t:SignAndroidPackage /p:Configuration=Release /v:d | Out-Host
 
-			$defaultAPKName = [System.IO.Path]::Combine($projDir, "bin\Release\",$manifest.manifest.package + "-Signed.apk");
+			if ($Target -eq "Release")
+			{
+				& $msbuild $ProjFileName /t:SignAndroidPackage /p:Configuration=Release /v:d | Out-Host
+				$defaultAPKName = [System.IO.Path]::Combine($projDir, "bin\Release\",$manifest.manifest.package + "-Signed.apk");
+			} else
+			{
+				& $msbuild $ProjFileName /t:SignAndroidPackage /p:Configuration=Debug /v:d | Out-Host
+				$defaultAPKName = [System.IO.Path]::Combine($projDir, "bin\Debug\",$manifest.manifest.package + "-Signed.apk");
+			}
 
 			Copy-Item -Path ($manifestFileName + ".backup") $manifestFileName -Verbose
 
@@ -84,3 +95,5 @@ if (-not (Test-Path -Path "nuget.exe"))
 
 #Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 16 -msbuild $msbuild | Move-Item -Destination  . -Verbose
 Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 25 -msbuild $msbuild | Move-Item -Destination  . -Verbose
+
+Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 25 -msbuild $msbuild -Target Debug | Move-Item -Destination  . -Verbose

@@ -46,12 +46,15 @@ namespace SledovaniTVLive.ViewModels
 
                 switch (_service.Status)
                 {
+                    case StatusEnum.GeneralError: return $"Chyba";
+                    case StatusEnum.ConnectionNotAvailable: return $"Chyba připojení";
                     case StatusEnum.NotInitialized: return "";
                     case StatusEnum.EmptyCredentials: return "Nevyplněny přihlašovací údaje";
                     case StatusEnum.Logged: return GetChannelsStatus;
                     case StatusEnum.LoginFailed: return $"Chybné přihlašovací údaje";
                     case StatusEnum.Paired: return $"Uživatel přihlášen";
                     case StatusEnum.PairingFailed: return $"Chybné přihlašovací údaje";
+                    case StatusEnum.BadPin: return $"Chybný PIN";
                     default: return String.Empty;
                 }
             }

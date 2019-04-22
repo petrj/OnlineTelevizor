@@ -36,6 +36,10 @@ namespace LoggerService
         {
             try
             {
+                var logFolder = System.IO.Path.GetDirectoryName(LogFilename);
+                if (!Directory.Exists(logFolder))
+                    Directory.CreateDirectory(logFolder);
+
                 if ((int)level < (int)MinLevel)
                     return;
 

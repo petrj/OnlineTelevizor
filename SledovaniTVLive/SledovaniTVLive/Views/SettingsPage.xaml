@@ -62,17 +62,15 @@
                         <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PasswordEntry"  IsPassword="True" Text="{Binding Password, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
 
+                    <StackLayout Margin="20,0,0,0">
+                        <Label Text="Rodičovský zámek (PIN:)" Style="{StaticResource CaptionStyle}" />
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}"></Entry>
+                    </StackLayout>
+
                 </StackLayout>
                 <StackLayout Margin="20,30,20,0">
 
                     <Label Text="Další nastavení: " Style="{StaticResource GroupCaptionStyle}" />
-
-                    <!--
-                    <StackLayout>
-                        <Label Text="PIN: " Style="{StaticResource CaptionStyle}" />
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}"></Entry>
-                    </StackLayout>
-                    -->
 
                     <Grid Margin="20,20,0,0">
                         <Grid.RowDefinitions>
@@ -83,14 +81,17 @@
                             <ColumnDefinition Width="30*" />
                         </Grid.ColumnDefinitions>
 
-                        <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit nedostupné kanály" Style="{StaticResource CaptionStyle}" />
-                        <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowLockedSwitch" IsToggled="{Binding Config.ShowLocked, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                        <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit kanály pro dospělé (nutný PIN)" Style="{StaticResource CaptionStyle}" />
+                        <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowAdultChannelsSwitch" IsToggled="{Binding Config.ShowAdultChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
 
-                        <Label  Grid.Row="1" Grid.Column="0" Text="Povolit logování (vyžaduje restart)" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.DebugMode}"/>
-                        <Switch Grid.Row="1" Grid.Column="1" x:Name="EnableLoggingSwitch" IsToggled="{Binding Config.EnableLogging, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.DebugMode}" />                        
+                        <Label  Grid.Row="1" Grid.Column="0" Text="Zobrazit nedostupné kanály" Style="{StaticResource CaptionStyle}" />
+                        <Switch Grid.Row="1" Grid.Column="1" x:Name="ShowLockedSwitch" IsToggled="{Binding Config.ShowLocked, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
 
-                        <Label  Grid.Row="2" Grid.Column="0" IsVisible="{Binding Config.EnableLogging}" Text="Úroveň logování:" LineBreakMode="NoWrap"  Style="{StaticResource CaptionStyle}" />
-                        <Picker Grid.Row="2" Grid.Column="1" IsVisible="{Binding Config.EnableLogging}" WidthRequest="120" x:Name="LoggingLevelPicker" SelectedIndex="{Binding LoggingLevelIndex, Mode=TwoWay}" Style="{StaticResource CommonPickerTextStyle}">
+                        <Label  Grid.Row="2" Grid.Column="0" Text="Povolit logování (vyžaduje restart)" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.DebugMode}"/>
+                        <Switch Grid.Row="2" Grid.Column="1" x:Name="EnableLoggingSwitch" IsToggled="{Binding Config.EnableLogging, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.DebugMode}" />                        
+
+                        <Label  Grid.Row="3" Grid.Column="0" IsVisible="{Binding Config.EnableLogging}" Text="Úroveň logování:" LineBreakMode="NoWrap"  Style="{StaticResource CaptionStyle}" />
+                        <Picker Grid.Row="3" Grid.Column="1" IsVisible="{Binding Config.EnableLogging}" WidthRequest="120" x:Name="LoggingLevelPicker" SelectedIndex="{Binding LoggingLevelIndex, Mode=TwoWay}" Style="{StaticResource CommonPickerTextStyle}">
                             <Picker.Items>
                                 <x:String>Debug</x:String>
                                 <x:String>Info</x:String>
@@ -98,10 +99,10 @@
                             </Picker.Items>
                         </Picker>
 
-                        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"  IsVisible="{Binding Config.EnableLogging}" Text="Sdílet log" Command="{Binding ShareLogCommand}" />
+                        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"  IsVisible="{Binding Config.EnableLogging}" Text="Sdílet log" Command="{Binding ShareLogCommand}" />
 
-                        <Label  Grid.Row="4" Grid.Column="0" Text="Zakoupena plná verze" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.DebugMode}"/>
-                        <Switch Grid.Row="4" Grid.Column="1" x:Name="PurchaseSwitch" IsToggled="{Binding Config.Purchased, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.DebugMode}" />
+                        <Label  Grid.Row="5" Grid.Column="0" Text="Zakoupena plná verze" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.DebugMode}"/>
+                        <Switch Grid.Row="5" Grid.Column="1" x:Name="PurchaseSwitch" IsToggled="{Binding Config.Purchased, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.DebugMode}" />
 
                     </Grid>                
                     
