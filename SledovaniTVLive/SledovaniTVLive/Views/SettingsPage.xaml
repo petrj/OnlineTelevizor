@@ -53,7 +53,7 @@
                     <Label Text="Přístupové údaje: " Style="{StaticResource GroupCaptionStyle}" />
 
                     <StackLayout Margin="20,20,0,0">
-                        <Label Text="Uživatelské jméno: " Style="{StaticResource CaptionStyle}" />
+                        <Label Text="Uživatelské jméno (email): " Style="{StaticResource CaptionStyle}" />
                         <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="UsernameEntry"  Text="{Binding Username, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
 
@@ -64,7 +64,7 @@
 
                     <StackLayout Margin="20,0,0,0">
                         <Label Text="Rodičovský zámek (PIN:)" Style="{StaticResource CaptionStyle}" />
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}"></Entry>
+                        <Entry Margin="20,0,0,0" WidthRequest="100" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
 
                 </StackLayout>

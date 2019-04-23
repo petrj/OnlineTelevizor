@@ -21,6 +21,7 @@ namespace SledovaniTVLive.ViewModels
         private ISledovaniTVConfiguration _config;
         private Dictionary<string, GroupFilterItem> _groupToItem = new Dictionary<string, GroupFilterItem>();
         private Dictionary<string, FilterItem> _typeToItem = new Dictionary<string, FilterItem>();
+
         private string _channelNameFilter { get; set; }
 
         public ObservableCollection<FilterItem> Groups { get; set; } = new ObservableCollection<FilterItem>();
@@ -32,8 +33,8 @@ namespace SledovaniTVLive.ViewModels
         public FilterItem SelectedGroupItem { get; set; }
         public FilterItem SelectedTypeItem { get; set; }
 
-        public FilterItem FirstGroup { get; private set; } = new FilterItem() { Name = "Všechny skupiny" };
-        public FilterItem FirstType { get; private set; } = new FilterItem() { Name = "Všechny typy" };
+        public FilterItem FirstGroup { get; private set; } = new FilterItem() { Name = "*" };
+        public FilterItem FirstType { get; private set; } = new FilterItem() { Name = "*" };
 
         public string ChannelNameFilter
         {

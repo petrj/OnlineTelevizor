@@ -12,6 +12,7 @@ namespace SledovaniTVLive.Models
             {
                 switch (Name)
                 {
+                    case "*": return "Všechny skupiny";
                     case "general": return "Obecné";
                     case "": return "Ostatní";
                     case "news": return "Zpravodajství";
@@ -27,6 +28,5 @@ namespace SledovaniTVLive.Models
                 }
             }
         }
-
     }
 }

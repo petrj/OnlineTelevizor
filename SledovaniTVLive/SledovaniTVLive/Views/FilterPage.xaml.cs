@@ -27,7 +27,19 @@ namespace SledovaniTVLive.Views
             _config = config;
             var dialogService = new DialogService(this);
 
+            GroupPicker.SelectedIndexChanged += GroupPicker_SelectedIndexChanged;            
+
             BindingContext = _viewModel = new FilterPageViewModel(loggingService, config, dialogService, context, service);            
+
+        }
+
+        private void GroupPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (GroupPicker.SelectedItem != null &&
+                GroupPicker.SelectedItem is FilterItem)
+                {
+                    _config.ChannelGroup = (GroupPicker.SelectedItem as FilterItem).Name;
+                }
         }
 
         public string ChannelNameFilter
@@ -41,6 +53,21 @@ namespace SledovaniTVLive.Views
                 _viewModel.ChannelNameFilter = value;
             }
         }
+
+
+        public FilterItem SelectedGroupItem
+        {
+            get
+            {
+                return _viewModel.SelectedGroupItem;
+            }
+            set
+            {
+                _viewModel.SelectedGroupItem = value;
+            }
+        }
+
+        
 
         private async void Group_Tapped(object sender, ItemTappedEventArgs e)
         {

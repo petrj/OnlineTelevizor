@@ -53,15 +53,15 @@ namespace SledovaniTVLive.Views
 
         private async void ToolbarItemSettings_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(_settingsPage);
+            //await Navigation.PushModalAsync(_settingsPage);
+            await _viewModel.NavigateToPage(_settingsPage, Navigation);
         }
 
         private async void ToolbarItemQuality_Clicked(object sender, EventArgs e)
         {
             var qualitiesPage = new QualitiesPage(_loggingService, _config, _context, _viewModel.TVService);
-            await Navigation.PushAsync(qualitiesPage);
-        }
-        
+            await _viewModel.NavigateToPage(qualitiesPage, Navigation);
+        }        
 
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
         {
@@ -73,7 +73,8 @@ namespace SledovaniTVLive.Views
                 _viewModel.ChannelNameFilter = filterPage.ChannelNameFilter;
                 _viewModel.RefreshCommand.Execute(null);
             };
-            await Navigation.PushAsync(filterPage);
+
+            await _viewModel.NavigateToPage(filterPage, Navigation);
         }        
 
         private async void Channel_Tapped(object sender, ItemTappedEventArgs e)

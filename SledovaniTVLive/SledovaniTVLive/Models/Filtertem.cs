@@ -17,6 +17,11 @@ namespace SledovaniTVLive.Models
             }
         }
 
+        public override string ToString()
+        {
+            return GUIName;
+        }
+
         public int Count
         {
             get

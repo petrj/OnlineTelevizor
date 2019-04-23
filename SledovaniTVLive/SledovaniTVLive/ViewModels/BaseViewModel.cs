@@ -22,6 +22,9 @@ namespace SledovaniTVLive.ViewModels
 
         public ISledovaniTVConfiguration Config { get; set; }
 
+        // navigation.PushModalAsync enabled only 1 time per 3 seconds
+        private DateTime _lastNavigateTime = DateTime.MinValue;
+
         bool isBusy = false;
 
         public BaseViewModel(ILoggingService loggingService, ISledovaniTVConfiguration config, IDialogService dialogService, Context context)
@@ -109,6 +112,17 @@ namespace SledovaniTVLive.ViewModels
         }
 
         #endregion
+        
+        public async Task NavigateToPage(Page page, INavigation navigation)
+        {
+            if ((DateTime.Now - _lastNavigateTime).TotalSeconds > 3)
+            {
+                _lastNavigateTime = DateTime.Now;
+
+                var navPage = new NavigationPage(page);
+                await navigation.PushModalAsync(navPage);
+            }
+        }
 
         protected async Task ShareFile(string fileName)
         {
