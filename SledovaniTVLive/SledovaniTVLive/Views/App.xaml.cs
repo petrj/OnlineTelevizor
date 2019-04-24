@@ -24,11 +24,14 @@ namespace SledovaniTVLive.Views
             var context = Android.App.Application.Context;
 
             var config = new SledovaniTVConfiguration(context);
+#if DEBUG            
+            config.DebugMode = true;
+#endif
             if (config.EnableLogging)
             {
                 loggingService = new BasicLoggingService(config.LoggingLevel);
 
-                var logFolder = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.Path, "SledovaniTVLive");                
+                var logFolder = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.Path, "SledovaniTVLive");
 
                 (loggingService as BasicLoggingService).LogFilename = Path.Combine(logFolder, "SledovaniTVLive.log");
             } else

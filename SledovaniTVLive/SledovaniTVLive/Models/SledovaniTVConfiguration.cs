@@ -12,7 +12,7 @@ namespace SledovaniTVLive.Models
 {
     public class SledovaniTVConfiguration : CustomSharedPreferencesObject, ISledovaniTVConfiguration
     {
-        private bool _debugMode = true;
+        private bool _debugMode = false;
 
         public SledovaniTVConfiguration(Context context) : base(context)
         {}

@@ -18,7 +18,6 @@ namespace SledovaniTVLive.Views
     public partial class MainPage : ContentPage
     {
         private MainPageViewModel _viewModel;
-        private SettingsPage _settingsPage;
         private DialogService _dialogService;
         private Context _context;
         private ISledovaniTVConfiguration _config;
@@ -29,9 +28,6 @@ namespace SledovaniTVLive.Views
             InitializeComponent();
 
             _dialogService = new DialogService(this);
-
-            _settingsPage = new SettingsPage(loggingService, config, context, _dialogService);
-            _settingsPage.Disappearing += _settingsPage_Disappearing;
 
             _config = config;
             _context = context;
@@ -45,23 +41,26 @@ namespace SledovaniTVLive.Views
             return true;
         }
 
-        private void _settingsPage_Disappearing(object sender, EventArgs e)
-        {
-            _viewModel.ResetConnectionCommand.Execute(null);
-            _viewModel.RefreshCommand.Execute(null);
-        }
-
         private async void ToolbarItemSettings_Clicked(object sender, EventArgs e)
         {
-            //await Navigation.PushModalAsync(_settingsPage);
-            await _viewModel.NavigateToPage(_settingsPage, Navigation);
+            var settingsPage = new SettingsPage(_loggingService, _config, _context, _dialogService);
+            settingsPage.Disappearing += delegate
+            {
+                _viewModel.ResetConnectionCommand.Execute(null);
+                _viewModel.RefreshCommand.Execute(null);
+            };
+
+            //await _viewModel.NavigateToPage(settingsPage, Navigation);
+            await Navigation.PushAsync(settingsPage);
         }
 
         private async void ToolbarItemQuality_Clicked(object sender, EventArgs e)
         {
             var qualitiesPage = new QualitiesPage(_loggingService, _config, _context, _viewModel.TVService);
-            await _viewModel.NavigateToPage(qualitiesPage, Navigation);
-        }        
+            
+            //await _viewModel.NavigateToPage(qualitiesPage, Navigation);
+            await Navigation.PushAsync(qualitiesPage);
+        }
 
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
         {
@@ -74,8 +73,9 @@ namespace SledovaniTVLive.Views
                 _viewModel.RefreshCommand.Execute(null);
             };
 
-            await _viewModel.NavigateToPage(filterPage, Navigation);
-        }        
+            //await _viewModel.NavigateToPage(filterPage, Navigation);
+            await Navigation.PushAsync(filterPage);
+        }
 
         private async void Channel_Tapped(object sender, ItemTappedEventArgs e)
         {

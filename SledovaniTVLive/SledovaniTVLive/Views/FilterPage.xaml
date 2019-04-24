@@ -44,8 +44,8 @@
             </Style>
 
             <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
-                <Setter Property="TextColor" Value="White"/>                
-                <Setter Property="BackgroundColor" Value="#222222"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="BackgroundColor" Value="#333333"/>
             </Style>
 
 
@@ -56,7 +56,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="40" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20*" />
@@ -74,90 +74,13 @@
                 ItemsSource="{Binding Groups}"
                 />
 
-
-        <!--
-        <StackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" >
-
-            <Label Text="Skupina:" Style="{DynamicResource CaptionLabelStyle}"/>
-
-            <ListView x:Name="GroupListView" 
-                            ItemsSource="{Binding Groups}"
-                            ItemTapped="Group_Tapped"
-                            CachingStrategy="RecycleElement"
-                            IsPullToRefreshEnabled="True"                      
-                            RefreshCommand="{Binding RefreshCommand}"
-                            SelectedItem="{Binding SelectedGroupItem, Mode=TwoWay}"
-                            IsRefreshing="{Binding IsBusy}"
-                            Style="{StaticResource ListViewStyle}">
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell Height="35">
-                            <ViewCell.View>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="35" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="80*" />
-                                        <ColumnDefinition Width="20*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding GUIName}" Style="{DynamicResource ListItemLabelStyle}"/>
-                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding CountAsString}" Style="{DynamicResource ListItemRightLabelStyle}"/>
-
-                                </Grid>
-
-                            </ViewCell.View>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-
-            </ListView>
-
-        </StackLayout>
-        -->
-        <StackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
-
-            <Label  Text="Typ:" Style="{DynamicResource CaptionLabelStyle}"/>
-
-            <ListView x:Name="TypeListView" 
-                                ItemsSource="{Binding Types}"
-                                ItemTapped="Type_Tapped"
-                                CachingStrategy="RecycleElement"
-                                IsPullToRefreshEnabled="True"                      
-                                RefreshCommand="{Binding RefreshCommand}"
-                                SelectedItem="{Binding SelectedTypeItem, Mode=TwoWay}"
-                                IsRefreshing="{Binding IsBusy}"
-                                Style="{StaticResource ListViewStyle}">
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell Height="35">
-                            <ViewCell.View>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="35" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="80*" />
-                                        <ColumnDefinition Width="20*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding GUIName}" Style="{DynamicResource ListItemLabelStyle}"/>
-                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding CountAsString}" Style="{DynamicResource ListItemRightLabelStyle}"/>
-
-                                </Grid>
-
-                            </ViewCell.View>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-
-            </ListView>
-
-        </StackLayout>
-
+        <Label Grid.Row="2" Grid.Column="0" Text="Typ:" Style="{DynamicResource CaptionLabelStyle}"/>
+        <Picker Grid.Row="2" Grid.Column="1" 
+                x:Name="TypePicker" 
+                SelectedItem="{Binding SelectedTypeItem, Mode=TwoWay}"  
+                Style="{StaticResource CommonPickerTextStyle}"  
+                ItemsSource="{Binding Types}"
+                />
     </Grid>
 
     <ContentPage.ToolbarItems>

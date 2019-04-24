@@ -34,5 +34,10 @@ namespace SledovaniTVLive.Views
         {
             base.OnAppearing();
         }
+
+        protected override bool OnBackButtonPressed()
+        {
+            return base.OnBackButtonPressed();
+        }
     }
 }

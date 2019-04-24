@@ -39,11 +39,11 @@
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell Height="35">
+                        <ViewCell Height="50">
                             <ViewCell.View>
                                 <Grid>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="35" />
+                                        <RowDefinition Height="50" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />

@@ -140,7 +140,8 @@ namespace SledovaniTVLive.Services
                         }
 
                         if ( !_config.Purchased && (!(
-                                                        (ch.Id == "ct24") || 
+                                                        (ch.Id == "ct24") ||
+                                                        (ch.Id == "ct2") ||
                                                         (ch.Id == "radio_country") ||
                                                         (ch.Id == "fireplace") ||
                                                         (ch.Id == "retro") ||

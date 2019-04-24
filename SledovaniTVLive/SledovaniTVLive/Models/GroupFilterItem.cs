@@ -14,7 +14,7 @@ namespace SledovaniTVLive.Models
                 {
                     case "*": return "Všechny skupiny";
                     case "general": return "Obecné";
-                    case "": return "Ostatní";
+                    case "": return "Nepojmenovaná skupina";
                     case "news": return "Zpravodajství";
                     case "children": return "Pro děti";
                     case "documentary": return "Dokumenty";

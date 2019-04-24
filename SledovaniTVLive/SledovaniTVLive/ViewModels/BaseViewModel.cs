@@ -120,7 +120,8 @@ namespace SledovaniTVLive.ViewModels
                 _lastNavigateTime = DateTime.Now;
 
                 var navPage = new NavigationPage(page);
-                await navigation.PushModalAsync(navPage);
+                //NavigationPage.SetHasBackButton(page, true);
+                await navigation.PushAsync(page);
             }
         }
 
