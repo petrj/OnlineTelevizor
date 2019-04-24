@@ -141,7 +141,7 @@ namespace SledovaniTVLive.ViewModels
             catch (Exception ex)
             {
                 _loggingService.Error(ex);
-                await _dialogService.Information($"Při sdílení logu došlo k chybě: {ex.Message}");
+                await _dialogService.Information($"Při sdílení logu došlo k chybě");
             }
         }
 

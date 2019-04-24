@@ -31,6 +31,7 @@ namespace SledovaniTVLive.Views
 
             _config = config;
             _context = context;
+            _loggingService = loggingService;
 
             BindingContext = _viewModel = new MainPageViewModel(loggingService, config, _dialogService, context);
         }

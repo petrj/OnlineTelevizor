@@ -10,6 +10,7 @@ using NLog;
 using SledovaniTVLive.Services;
 using SledovaniTVLive.Views;
 using Plugin.Permissions;
+using Plugin.InAppBilling;
 
 namespace SledovaniTVLive.Droid
 {
@@ -43,6 +44,12 @@ namespace SledovaniTVLive.Droid
         {
             PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            InAppBillingImplementation.HandleActivityResult(requestCode, resultCode, data);
         }
 
         /* when uncommented, HW BackButton is not working when navigating with PushAsync!

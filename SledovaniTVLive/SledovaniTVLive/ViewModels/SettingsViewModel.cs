@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
+using Plugin.InAppBilling;
+using Plugin.InAppBilling.Abstractions;
 
 namespace SledovaniTVLive.ViewModels
 {
@@ -18,6 +20,7 @@ namespace SledovaniTVLive.ViewModels
         private ISledovaniTVConfiguration _config;
 
         public Command ShareLogCommand { get; set; }
+        public Command PayCommand { get; set; }
 
         public SettingsViewModel(ILoggingService loggingService, ISledovaniTVConfiguration config, Context context, IDialogService dialogService)
             : base(loggingService, config, dialogService, context)
@@ -28,7 +31,61 @@ namespace SledovaniTVLive.ViewModels
             _config = config;
 
             ShareLogCommand = new Command(async () => await ShareLogWithPermissionsRequest());
+            PayCommand = new Command(async () => await Pay());
         }
+
+        private async Task Pay()
+        {
+            try
+            {
+                var productId = "11111";
+
+                _loggingService.Debug($"Paying product id: {productId}");
+
+                var connected = await CrossInAppBilling.Current.ConnectAsync();
+
+                if (!connected)
+                {
+                    _loggingService.Info($"Connection to AppBilling service failed");
+                    await _dialogService.Information("Připojení k platební bráně selhalo.");
+                    return;
+                }
+                
+                var purchase = await CrossInAppBilling.Current.PurchaseAsync(productId, ItemType.InAppPurchase, "apppayload");
+                if (purchase == null)
+                {
+                    _loggingService.Info($"Not purchased");
+                    await _dialogService.Information("Platba nebyla uskutečněna.");
+                }
+                else
+                {
+                    _loggingService.Info($"Purchase OK");
+
+                    _loggingService.Info($"Purchase Id: {purchase.Id}");
+                    _loggingService.Info($"Purchase Token: {purchase.PurchaseToken}");
+                    _loggingService.Info($"Purchase State: {purchase.State.ToString()}");
+                    _loggingService.Info($"Purchase Date: {purchase.TransactionDateUtc.ToString()}");
+                    _loggingService.Info($"Purchase Payload: {purchase.Payload}");
+                    _loggingService.Info($"Purchase ConsumptionState: {purchase.ConsumptionState.ToString()}");
+                    _loggingService.Info($"Purchase AutoRenewing: {purchase.AutoRenewing}");                    
+
+                    _config.PurchaseToken = purchase.PurchaseToken;
+                    _config.PurchaseId = purchase.Id;
+
+                    await _dialogService.Information("Platba byla úspěšně provedena.");
+                }
+            }
+            catch (Exception ex)
+            {                
+                await _dialogService.Information("Platba se nezdařila.");
+                _loggingService.Error(ex, "Payment failed");
+            }
+            finally
+            {
+                await CrossInAppBilling.Current.DisconnectAsync();
+            }
+        }
+
 
         public int LoggingLevelIndex
         {

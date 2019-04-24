@@ -102,6 +102,14 @@ namespace SledovaniTVLive.Models
             }
         }
 
+        public bool NotPurchased
+        {
+            get
+            {
+                return !Purchased;
+            }
+        }
+
         public bool DebugMode
         {
             get
@@ -138,6 +146,30 @@ namespace SledovaniTVLive.Models
             set
             {
                 SavePersistingSettingValue<string>("StreamQuality", value);
+            }
+        }
+
+        public string PurchaseId
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("PurchaseId");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("PurchaseId", value);
+            }
+        }
+
+        public string PurchaseToken
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("PurchaseToken");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("PurchaseToken", value);
             }
         }
 

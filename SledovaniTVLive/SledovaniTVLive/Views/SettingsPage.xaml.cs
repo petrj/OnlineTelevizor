@@ -1,6 +1,8 @@
 ﻿using Android.Content;
 using LoggerService;
 using NLog;
+using Plugin.InAppBilling;
+using Plugin.InAppBilling.Abstractions;
 using SledovaniTVLive.Models;
 using SledovaniTVLive.Services;
 using SledovaniTVLive.ViewModels;
@@ -20,12 +22,16 @@ namespace SledovaniTVLive.Views
     {
         private SettingsViewModel _viewModel;
         private ISledovaniTVConfiguration _config;
+        private ILoggingService _loggingService;
+        IDialogService _dialogService;
 
         public SettingsPage(ILoggingService loggingService, ISledovaniTVConfiguration config, Context context, IDialogService dialogService)
         {
             InitializeComponent();
 
             _config = config;
+            _loggingService = loggingService;
+            _dialogService = dialogService;
 
             BindingContext = _viewModel = new SettingsViewModel(loggingService, config, context, dialogService);
         }
@@ -33,6 +39,6 @@ namespace SledovaniTVLive.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-        }
+        }  
     }
 }
