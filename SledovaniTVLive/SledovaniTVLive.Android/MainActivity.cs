@@ -45,7 +45,8 @@ namespace SledovaniTVLive.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
-
+        /* when uncommented, HW BackButton is not working when navigating with PushAsync!
+         
         [Android.Runtime.Register("onKeyDown", "(ILandroid/view/KeyEvent;)Z", "GetOnKeyDown_ILandroid_view_KeyEvent_Handler")]
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
@@ -56,6 +57,6 @@ namespace SledovaniTVLive.Droid
         public override bool OnKeyUp(Keycode keyCode, KeyEvent e)
         {
             return _app.OnKeyDown(keyCode, e);
-        }
+        }*/
     }
 }
