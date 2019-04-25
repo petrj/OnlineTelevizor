@@ -46,15 +46,16 @@ namespace TestConsole
                     await sledovaniTV.Unlock();
                     //await sledovaniTV.Lock();
 
-                    /*
                     var channels = await sledovaniTV.GetChanels();
                     var epg = await sledovaniTV.GetEPG();
 
                     foreach (var ch in channels)
                     {
-                        Console.WriteLine(ch.Name.PadRight(20)+" "+ch.ParentLocked+" "+ch.Url);
+                        Console.WriteLine(ch.Name);
+                        Console.WriteLine("  " + ch.Locked);
+                        Console.WriteLine("  " + ch.Url);
                     }
-                    */
+                    
                     Console.WriteLine();
                     Console.WriteLine($"Status: {sledovaniTV.Status.ToString()}");
                     Console.WriteLine();

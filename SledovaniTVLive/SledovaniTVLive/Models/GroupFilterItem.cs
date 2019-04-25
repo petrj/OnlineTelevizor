@@ -10,22 +10,24 @@ namespace SledovaniTVLive.Models
         {
             get
             {
+                var res = Name;
+
                 switch (Name)
                 {
-                    case "*": return "Všechny skupiny";
-                    case "general": return "Obecné";
-                    case "": return "Nepojmenovaná skupina";
-                    case "news": return "Zpravodajství";
-                    case "children": return "Pro děti";
-                    case "documentary": return "Dokumenty";
-                    case "foreign": return "Zahraniční";
-                    case "regional": return "Regionální";
-                    case "movie": return "Filmy";
-                    case "other": return "Ostatní";
-                    case "music": return "Hudební";
-
-                    default: return Name;
+                    case "*": res= "Všechny skupiny"; break;
+                    case "general": res = "Obecné"; break;
+                    case "": res = "Nepojmenovaná skupina"; break;
+                    case "news": res = "Zpravodajství"; break;
+                    case "children": res = "Pro děti"; break;
+                    case "documentary": res = "Dokumenty"; break;
+                    case "foreign": res = "Zahraniční"; break;
+                    case "regional": res = "Regionální"; break;
+                    case "movie": res = "Filmy"; break;
+                    case "other": res = "Ostatní"; break;
+                    case "music": res = "Hudební"; break;                    
                 }
+
+                return $"{res} {CountAsString}";
             }
         }
     }

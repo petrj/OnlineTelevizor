@@ -25,8 +25,6 @@ namespace SledovaniTVLive.ViewModels
 
         private Dictionary<string, ChannelItem> _channelById { get; set; } = new Dictionary<string, ChannelItem>();
 
-        public string ChannelNameFilter { get; set; }
-
         public TVService TVService
         {
             get
@@ -196,19 +194,19 @@ namespace SledovaniTVLive.ViewModels
 
                 foreach (var ch in channels)
                 {
-                    if (_config.ChannelGroup != "*" &&
-                        _config.ChannelGroup != null &&
-                        _config.ChannelGroup != ch.Group)
+                    if (_config.ChannelFilterGroup != "*" &&
+                        _config.ChannelFilterGroup != null &&
+                        _config.ChannelFilterGroup != ch.Group)
                         continue;
 
-                    if (_config.ChannelType != "*" &&
-                        _config.ChannelType != null &&
-                        _config.ChannelType != ch.Type)
+                    if (_config.ChannelFilterType != "*" &&
+                        _config.ChannelFilterType != null &&
+                        _config.ChannelFilterType != ch.Type)
                         continue;
 
-                    if ((!String.IsNullOrEmpty(ChannelNameFilter)) &&
-                        (ChannelNameFilter != "*") &&
-                        !ch.Name.ToLower().Contains(ChannelNameFilter.ToLower()))
+                    if ((!String.IsNullOrEmpty(_config.ChannelFilterName)) &&
+                        (_config.ChannelFilterName != "*") &&                        
+                        !ch.Name.ToLower().Contains(_config.ChannelFilterName.ToLower()))
                         continue;
 
                     Channels.Add(ch);

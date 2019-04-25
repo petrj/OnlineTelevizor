@@ -10,13 +10,16 @@ namespace SledovaniTVLive.Models
         {
             get
             {
+                var res = Name;
+
                 switch (Name)
                 {
-                    case "*": return "Všechny typy";
-                    case "tv": return "Televizní kanály";
-                    case "radio": return "Rádia";
-                    default: return Name;
+                    case "*": res = "Všechny typy"; break;
+                    case "tv": res = "Televizní kanály"; break;
+                    case "radio": res = "Rádia"; break;                    
                 }
+
+                return $"{res} {CountAsString}";
             }
         }
     }

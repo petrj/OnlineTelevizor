@@ -32,9 +32,10 @@
             </Style>
 
             <Style x:Key="InfoLabelStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="White"/>                
-                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="FontSize" Value="12"/>
                 <Setter Property="Margin" Value="20,0,0,0"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
             </Style>
 
             <Style x:Key="IconStyle" TargetType="Image">
@@ -91,7 +92,7 @@
 
         </ListView>
 
-        <StackLayout Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="40" HorizontalOptions="Fill"  BackgroundColor="#262626">
+        <StackLayout Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="45" HorizontalOptions="Fill"  BackgroundColor="#262626">
             <Label Text="{Binding StatusLabel}"  x:Name="StatusLabel" Style="{DynamicResource InfoLabelStyle}"></Label>
         </StackLayout>
 

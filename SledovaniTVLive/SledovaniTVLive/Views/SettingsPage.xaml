@@ -13,29 +13,27 @@
 
             <Style x:Key="CommonEntryTextStyle" TargetType="Entry">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="BackgroundColor" Value="#333333"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="PlaceholderColor" Value="Gray"/>
             </Style>
 
             <Style x:Key="CaptionStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="16"/>                
+                <Setter Property="FontSize" Value="14"/>                
             </Style>
 
             <Style x:Key="GroupCaptionStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="Yellow"/>
-                <Setter Property="FontSize" Value="18"/>                
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="FontSize" Value="16"/>                
             </Style>
 
             <Style x:Key="CommonSwitchTextStyle" TargetType="Switch">
-                <!--Setter Property="BackgroundColor" Value="#333333"/-->
                 <Setter Property="WidthRequest" Value="70"/>
                 <Setter Property="HorizontalOptions" Value="End"/>
             </Style>
 
             <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
                 <Setter Property="TextColor" Value="White"/>
-                <!--Setter Property="BackgroundColor" Value="#333333"/-->
                 <Setter Property="HorizontalOptions" Value="End"/>
             </Style>
 
@@ -53,24 +51,24 @@
                     <Label Text="Přístupové údaje: " Style="{StaticResource GroupCaptionStyle}" />
 
                     <StackLayout Margin="20,20,0,0">
-                        <Label Text="Uživatelské jméno (email): " Style="{StaticResource CaptionStyle}" />
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="UsernameEntry"  Text="{Binding Username, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
+                        <Label Text="Uživatelské jméno (email):" Style="{StaticResource CaptionStyle}" />
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="UsernameEntry"  Text="{Binding Username, Mode=TwoWay}" Placeholder="Zadejte uživatelské jméno" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
 
                     <StackLayout Margin="20,0,0,0">
-                        <Label Text="Heslo: " Style="{StaticResource CaptionStyle}" />
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PasswordEntry"  IsPassword="True" Text="{Binding Password, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}"></Entry>
+                        <Label Text="Heslo:" Style="{StaticResource CaptionStyle}" />
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PasswordEntry"  IsPassword="True" Text="{Binding Password, Mode=TwoWay}" Placeholder="Zadejte heslo" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
 
                     <StackLayout Margin="20,0,0,0">
-                        <Label Text="Rodičovský zámek (PIN:)" Style="{StaticResource CaptionStyle}" />
-                        <Entry Margin="20,0,0,0" WidthRequest="100" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}"></Entry>
+                        <Label Text="Rodičovský zámek (PIN):" Style="{StaticResource CaptionStyle}" />
+                        <Entry Margin="20,0,0,0" WidthRequest="100" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}"  Placeholder="Zadejte PIN" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
 
                 </StackLayout>
                 <StackLayout Margin="20,30,20,0">
 
-                    <Label Text="Další nastavení: " Style="{StaticResource GroupCaptionStyle}" />
+                    <Label Text="Další nastavení:" Style="{StaticResource GroupCaptionStyle}" />
 
                     <Grid Margin="20,20,0,0">
                         <Grid.RowDefinitions>

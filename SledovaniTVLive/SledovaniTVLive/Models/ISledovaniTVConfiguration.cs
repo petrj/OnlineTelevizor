@@ -14,8 +14,9 @@ namespace SledovaniTVLive.Models
 
         //  user settings
         string StreamQuality { get; set; }
-        string ChannelGroup { get; set; }
-        string ChannelType { get; set; }
+        string ChannelFilterGroup { get; set; }
+        string ChannelFilterType { get; set; }
+        string ChannelFilterName { get; set; }
 
         bool ShowLocked { get; set; }
         bool ShowAdultChannels { get; set; }

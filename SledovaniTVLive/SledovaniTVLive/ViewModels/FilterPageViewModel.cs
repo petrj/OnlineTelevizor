@@ -21,9 +21,7 @@ namespace SledovaniTVLive.ViewModels
         private ISledovaniTVConfiguration _config;
         private Dictionary<string, GroupFilterItem> _groupToItem = new Dictionary<string, GroupFilterItem>();
         private Dictionary<string, TypeFilterItem> _typeToItem = new Dictionary<string, TypeFilterItem>();
-
-        private string _channelNameFilter { get; set; }
-
+        
         private GroupFilterItem _selectedGroupItem;
         private TypeFilterItem _selectedTypeItem;
 
@@ -40,15 +38,14 @@ namespace SledovaniTVLive.ViewModels
         {
             get
             {
-                return _channelNameFilter;
+                return _config.ChannelFilterName;
             }
             set
             {
-                _channelNameFilter = value;
+                _config.ChannelFilterName = value;
                 OnPropertyChanged(nameof(ChannelNameFilter));
             }
         }
-
 
         public GroupFilterItem SelectedGroupItem
         {
@@ -59,7 +56,7 @@ namespace SledovaniTVLive.ViewModels
             set
             {   
                 _selectedGroupItem = value;
-                _config.ChannelGroup = value == null ? "*" : value.Name;
+                _config.ChannelFilterGroup = value == null ? "*" : value.Name;
                 
                 OnPropertyChanged(nameof(SelectedGroupItem));
             }
@@ -74,7 +71,7 @@ namespace SledovaniTVLive.ViewModels
             set
             {
                 _selectedTypeItem = value;
-                _config.ChannelType = value == null ? "*" : value.Name;
+                _config.ChannelFilterType = value == null ? "*" : value.Name;
                 OnPropertyChanged(nameof(SelectedTypeItem));
             }
         }
@@ -107,8 +104,8 @@ namespace SledovaniTVLive.ViewModels
             IsBusy = true;
 
             // Clearing Pickers leads to clearing config value via SelectedTypeItem
-            var selectedGroupConfig = _config.ChannelGroup;
-            var selectedTypeConfig = _config.ChannelType;
+            var selectedGroupConfig = _config.ChannelFilterGroup;
+            var selectedTypeConfig = _config.ChannelFilterType;
 
             try
             {
@@ -141,7 +138,7 @@ namespace SledovaniTVLive.ViewModels
 
                         Groups.Add(g);
 
-                        if ((!String.IsNullOrEmpty(_config.ChannelGroup)) && (ch.Group == selectedGroupConfig))
+                        if ((!String.IsNullOrEmpty(_config.ChannelFilterGroup)) && (ch.Group == selectedGroupConfig))
                         {
                             SelectedGroupItem = g;
                         }
@@ -162,7 +159,7 @@ namespace SledovaniTVLive.ViewModels
 
                         Types.Add(tp);
 
-                        if ((!String.IsNullOrEmpty(_config.ChannelType)) && (ch.Type == selectedTypeConfig))
+                        if ((!String.IsNullOrEmpty(_config.ChannelFilterType)) && (ch.Type == selectedTypeConfig))
                         {
                             SelectedTypeItem = tp;
                         }

@@ -51,7 +51,6 @@ namespace SledovaniTVLive.Views
                 _viewModel.RefreshCommand.Execute(null);
             };
 
-            //await _viewModel.NavigateToPage(settingsPage, Navigation);
             await Navigation.PushAsync(settingsPage);
         }
 
@@ -59,36 +58,24 @@ namespace SledovaniTVLive.Views
         {
             var qualitiesPage = new QualitiesPage(_loggingService, _config, _context, _viewModel.TVService);
             
-            //await _viewModel.NavigateToPage(qualitiesPage, Navigation);
             await Navigation.PushAsync(qualitiesPage);
         }
 
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
         {
             var filterPage = new FilterPage(_loggingService, _config, _context, _viewModel.TVService);
-            filterPage.ChannelNameFilter = _viewModel.ChannelNameFilter;
 
             filterPage.Disappearing += delegate
             {
-                _viewModel.ChannelNameFilter = filterPage.ChannelNameFilter;
                 _viewModel.RefreshCommand.Execute(null);
             };
 
-            //await _viewModel.NavigateToPage(filterPage, Navigation);
             await Navigation.PushAsync(filterPage);
         }
 
         private async void Channel_Tapped(object sender, ItemTappedEventArgs e)
         {
             var channelItem = e.Item as ChannelItem;
-
-            //var dlgResult = await _dialogService.Confirm($"Stream {channel.Name}?");
-            //if (dlgResult)
-            //{
-            //    ((ListView)sender).SelectedItem = null;
-            //    await _viewModel.PlayStream(channel.Url);
-            //}
-
             await _viewModel.PlayStream(channelItem.Url);
         }
     }

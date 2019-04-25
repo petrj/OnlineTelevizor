@@ -8,46 +8,23 @@
     <ContentPage.Resources>
         <ResourceDictionary>
 
-            <Style x:Key="ListItemLabelStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="Margin" Value="15,5,5,5"/>
-                <Setter Property="VerticalTextAlignment" Value="Center"/>
-            </Style>
-
-            <Style x:Key="ListItemRightLabelStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="Margin" Value="15,5,5,5"/>
-                <Setter Property="VerticalTextAlignment" Value="Center"/>
-                <Setter Property="HorizontalTextAlignment" Value="End"/>
-            </Style>
-
             <Style x:Key="CaptionLabelStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="Yellow"/>
-                <Setter Property="FontSize" Value="16"/>
-                <Setter Property="Margin" Value="5,5,5,5"/>
-            </Style>
-
-            <Style x:Key="ListViewStyle" TargetType="ListView">
-                <Setter Property="SeparatorVisibility" Value="Default"/>
-                <Setter Property="SeparatorColor" Value="White"/>
-                <Setter Property="HasUnevenRows" Value="True"/>
-                <Setter Property="IsPullToRefreshEnabled" Value="True"/>
-                <Setter Property="VerticalOptions" Value="Start"/>
-            </Style>
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Margin" Value="10,5,5,5"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>          
 
             <Style x:Key="CommonEntryTextStyle" TargetType="Entry">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="BackgroundColor" Value="#333333"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="PlaceholderColor" Value="Gray"/>
             </Style>
 
             <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="BackgroundColor" Value="#333333"/>
+                <Setter Property="FontSize" Value="12"/>                
             </Style>
-
 
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -64,7 +41,7 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Text="Název:" Style="{DynamicResource CaptionLabelStyle}"/>
-        <Entry Grid.Row="0" Grid.Column="1" Text="{Binding ChannelNameFilter, Mode=TwoWay}"  Style="{StaticResource CommonEntryTextStyle}"/>
+        <Entry Grid.Row="0" Grid.Column="1" Text="{Binding ChannelNameFilter, Mode=TwoWay}" Placeholder="Zadejte název kanálu nebo jeho část" PlaceholderColor="Gray" Style="{StaticResource CommonEntryTextStyle}"/>
 
         <Label Grid.Row="1" Grid.Column="0" Text="Skupina:" Style="{DynamicResource CaptionLabelStyle}"/>
         <Picker Grid.Row="1" Grid.Column="1" 

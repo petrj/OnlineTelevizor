@@ -173,7 +173,7 @@ namespace SledovaniTVLive.Models
             }
         }
 
-        public string ChannelGroup
+        public string ChannelFilterGroup
         {
             get
             {
@@ -185,7 +185,7 @@ namespace SledovaniTVLive.Models
             }
         }
 
-        public string ChannelType
+        public string ChannelFilterType
         {
             get
             {
@@ -194,6 +194,18 @@ namespace SledovaniTVLive.Models
             set
             {
                 SavePersistingSettingValue<string>("ChannelType", value);
+            }
+        }
+
+        public string ChannelFilterName
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("ChannelFilterName");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("ChannelFilterName", value);
             }
         }
 

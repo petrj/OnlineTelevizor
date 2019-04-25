@@ -249,7 +249,7 @@ namespace SledovaniTVAPI
                 _status = StatusEnum.Logged;
             }
 
-            _log.Info("Login");
+            _log.Debug("Login");
 
             if (Status == StatusEnum.Logged)
             {
@@ -347,9 +347,7 @@ namespace SledovaniTVAPI
                                 Title = title,
                                 Start = DateTime.ParseExact(times, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
                                 Finish = DateTime.ParseExact(timef, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
-                            };
-
-                            _log.Debug($"Adding epg item {title}");
+                            };                            
 
                             result.Add(item);
                         };
@@ -449,7 +447,7 @@ namespace SledovaniTVAPI
 
             try
             {
-                _log.Info($"Reloading channels");
+                _log.Debug($"Reloading channels");
 
                 var ps = new Dictionary<string, string>()
                 {
@@ -482,7 +480,7 @@ namespace SledovaniTVAPI
                     result.Add(ch);
                 }
 
-                _log.Info($"Received {result.Count} channels");
+                _log.Debug($"Received {result.Count} channels");
             }
             catch (WebException wex)
             {

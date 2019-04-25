@@ -24,9 +24,9 @@ namespace SledovaniTVLive.Views
             var context = Android.App.Application.Context;
 
             var config = new SledovaniTVConfiguration(context);
-      
+#if DEBUG      
             config.DebugMode = true;
-            config.EnableLogging = true;
+#endif
 
             if (config.EnableLogging)
             {

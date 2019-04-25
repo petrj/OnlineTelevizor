@@ -18,28 +18,14 @@ namespace SledovaniTVLive.Views
     public partial class FilterPage : ContentPage
     {
         private FilterPageViewModel _viewModel;
-        private ISledovaniTVConfiguration _config;
 
         public FilterPage(ILoggingService loggingService, ISledovaniTVConfiguration config, Context context, TVService service)
         {
             InitializeComponent();
 
-            _config = config;
             var dialogService = new DialogService(this);
 
             BindingContext = _viewModel = new FilterPageViewModel(loggingService, config, dialogService, context, service);            
-        }
-
-        public string ChannelNameFilter
-        {
-            get
-            {
-                return _viewModel.ChannelNameFilter;
-            }
-            set
-            {
-                _viewModel.ChannelNameFilter = value;
-            }
         }
        
         protected override void OnAppearing()
