@@ -9,6 +9,7 @@ namespace SledovaniTVLive.Models
         private int _count = 0;
 
         public string Name { get; set; }
+
         public virtual string GUIName
         {
             get
@@ -31,17 +32,9 @@ namespace SledovaniTVLive.Models
             set
             {
                 _count = value;
-                OnPropertyChanged(nameof(CountAsString));
+
+                OnPropertyChanged(nameof(GUIName));                
             }
         }
-
-        public string CountAsString
-        {
-            get
-            {
-                return "(" + _count.ToString() + ")";
-            }
-        }
-
     }
 }

@@ -27,7 +27,7 @@ namespace SledovaniTVLive.Models
                     case "music": res = "Hudební"; break;                    
                 }
 
-                return $"{res} {CountAsString}";
+                return $"{res} ({Count.ToString()})";
             }
         }
     }

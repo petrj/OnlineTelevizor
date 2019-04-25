@@ -19,7 +19,7 @@ namespace SledovaniTVLive.Models
                     case "radio": res = "Rádia"; break;                    
                 }
 
-                return $"{res} {CountAsString}";
+                return $"{res} ({Count.ToString()})";
             }
         }
     }

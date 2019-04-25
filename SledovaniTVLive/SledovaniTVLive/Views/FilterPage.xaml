@@ -49,6 +49,7 @@
                 SelectedItem="{Binding SelectedGroupItem, Mode=TwoWay}"  
                 Style="{StaticResource CommonPickerTextStyle}"  
                 ItemsSource="{Binding Groups}"
+                ItemDisplayBinding="{Binding GUIName}"
                 />
 
         <Label Grid.Row="2" Grid.Column="0" Text="Typ:" Style="{DynamicResource CaptionLabelStyle}"/>

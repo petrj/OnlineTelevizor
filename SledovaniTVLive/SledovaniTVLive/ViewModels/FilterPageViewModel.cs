@@ -18,9 +18,7 @@ namespace SledovaniTVLive.ViewModels
     public class FilterPageViewModel : BaseViewModel
     {
         private TVService _service;
-        private ISledovaniTVConfiguration _config;
-        private Dictionary<string, GroupFilterItem> _groupToItem = new Dictionary<string, GroupFilterItem>();
-        private Dictionary<string, TypeFilterItem> _typeToItem = new Dictionary<string, TypeFilterItem>();
+        private ISledovaniTVConfiguration _config;       
         
         private GroupFilterItem _selectedGroupItem;
         private TypeFilterItem _selectedTypeItem;
@@ -106,7 +104,7 @@ namespace SledovaniTVLive.ViewModels
             // Clearing Pickers leads to clearing config value via SelectedTypeItem
             var selectedGroupConfig = _config.ChannelFilterGroup;
             var selectedTypeConfig = _config.ChannelFilterType;
-
+           
             try
             {
                 Groups.Clear();
@@ -115,11 +113,8 @@ namespace SledovaniTVLive.ViewModels
                 FirstGroup.Count = 0;
                 FirstType.Count = 0;
 
-                _groupToItem.Clear();
-                _typeToItem.Clear();
-
-                Groups.Add(FirstGroup);
-                Types.Add(FirstType);
+                var groupToItem = new Dictionary<string, GroupFilterItem>();
+                var typeToItem = new Dictionary<string, TypeFilterItem>();                
 
                 var channels = await _service.GetChannels();
 
@@ -128,7 +123,7 @@ namespace SledovaniTVLive.ViewModels
                     FirstGroup.Count++;
                     FirstType.Count++;
 
-                    if (!_groupToItem.ContainsKey(ch.Group))
+                    if (!groupToItem.ContainsKey(ch.Group))
                     {              
                         var g = new GroupFilterItem()
                         {
@@ -136,20 +131,18 @@ namespace SledovaniTVLive.ViewModels
                             Count = 1
                         };
 
-                        Groups.Add(g);
-
                         if ((!String.IsNullOrEmpty(_config.ChannelFilterGroup)) && (ch.Group == selectedGroupConfig))
                         {
                             SelectedGroupItem = g;
                         }
 
-                        _groupToItem.Add(ch.Group,g);
+                        groupToItem.Add(ch.Group,g);
                     } else
                     {
-                        _groupToItem[ch.Group].Count++;
+                        groupToItem[ch.Group].Count++;
                     }
 
-                    if (!_typeToItem.ContainsKey(ch.Type))
+                    if (!typeToItem.ContainsKey(ch.Type))
                     {
                         var tp = new TypeFilterItem()
                         {
@@ -157,20 +150,26 @@ namespace SledovaniTVLive.ViewModels
                             Count = 1
                         };
 
-                        Types.Add(tp);
-
                         if ((!String.IsNullOrEmpty(_config.ChannelFilterType)) && (ch.Type == selectedTypeConfig))
                         {
                             SelectedTypeItem = tp;
                         }
 
-                        _typeToItem.Add(ch.Type, tp);
+                        typeToItem.Add(ch.Type, tp);
                     }
                     else
                     {
-                        _typeToItem[ch.Type].Count++;                        
+                        typeToItem[ch.Type].Count++;                        
                     }
                 }
+
+                Groups.Add(FirstGroup);
+                foreach (var kvp in groupToItem)
+                    Groups.Add(kvp.Value);
+
+                Types.Add(FirstType);
+                foreach (var kvp in typeToItem)
+                    Types.Add(kvp.Value);
             } 
             catch (Exception ex)
             {
