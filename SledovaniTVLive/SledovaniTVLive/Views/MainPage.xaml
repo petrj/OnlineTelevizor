@@ -27,7 +27,7 @@
             <Style x:Key="ListItemEPGTextStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontSize" Value="12"/>
-                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="VerticalTextAlignment" Value="Top"/>
                 <Setter Property="FontAttributes" Value="Italic"/>
                 <Setter Property="LineBreakMode" Value="WordWrap"/>
             </Style>
@@ -71,8 +71,8 @@
                         <ViewCell.View>
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="25" />
-                                    <RowDefinition Height="45" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="40" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="40" />                                    
@@ -82,7 +82,7 @@
 
                                 <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Text="{Binding ChannelNumber}" Style="{DynamicResource ListItemCenterTextStyle}"/>                                
                                 <Label Grid.Row="0" Grid.Column="1" Margin="15,0,0,0" Text="{Binding Name}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" />
-                                <Label Grid.Row="1" Grid.Column="1" Margin="20,0,0,0" Text="{Binding CurrentEPGTitle}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemEPGTextStyle}" />
+                                <Label Grid.Row="1" Grid.Column="1" Margin="20,0,0,0" Text="{Binding CurrentEPGTitle}" Style="{DynamicResource ListItemEPGTextStyle}" />
                                 <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding LogoUrl}" WidthRequest="40" Style="{DynamicResource IconStyle}"/>
                             </Grid>
 
