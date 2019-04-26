@@ -21,7 +21,6 @@ namespace SledovaniTVLive.ViewModels
     public class MainPageViewModel : BaseViewModel
     {
         private TVService _service;
-        private ISledovaniTVConfiguration _config;
         private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public ObservableCollection<ChannelItem> Channels { get; set; } = new ObservableCollection<ChannelItem>();
@@ -35,7 +34,52 @@ namespace SledovaniTVLive.ViewModels
                 return _service;
             }
         }
+        
+        public Command RefreshCommand { get; set; }
 
+        public Command RefreshChannelsCommand { get; set; }
+        public Command RefreshEPGCommand { get; set; }
+        public Command ResetConnectionCommand { get; set; }
+        public Command CheckPurchaseCommand { get; set; }
+
+        public Command RequestWriteLogsPermissionsCommand { get; set; }
+
+        public MainPageViewModel(ILoggingService loggingService, ISledovaniTVConfiguration config, IDialogService dialogService, Context context)
+           : base(loggingService, config, dialogService, context)
+        {
+            _service = new TVService(loggingService, config);
+            _loggingService = loggingService;
+            _dialogService = dialogService;
+            _context = context;
+            Config = config;            
+
+            RefreshCommand = new Command(async () => await Refresh());
+
+            CheckPurchaseCommand = new Command(async () => await CheckPurchase());
+
+            RefreshEPGCommand = new Command(async () => await RefreshEPG());
+            RefreshChannelsCommand = new Command(async () => await RefreshChannels());
+
+            ResetConnectionCommand = new Command(async () => await ResetConnection());
+
+            RequestWriteLogsPermissionsCommand = new Command(async () => await RequestWriteLogsPermissions());
+            
+            RequestWriteLogsPermissionsCommand.Execute(null);
+
+            RefreshChannelsCommand.Execute(null);
+
+            // refreshing every min with 3s start delay
+            BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 3);
+        }
+
+        public Dictionary<string, ChannelItem> ChannelById
+        {
+            get
+            {
+                return _channelById;
+            }
+        }
+        
         public string StatusLabel
         {
             get
@@ -67,80 +111,38 @@ namespace SledovaniTVLive.ViewModels
             {
                 string status = String.Empty;
 
-                if (!_config.Purchased)
+                if (!Config.Purchased)
                     status = "Verze zdarma. ";
 
                 if (Channels.Count == 0)
                 {
                     return $"{status}Není k dispozici žádný kanál";
-                } else
+                }
+                else
                 if (Channels.Count == 1)
                 {
                     return $"{status}Načten 1 kanál";
-                } else
+                }
+                else
                 if ((Channels.Count >= 2) && (Channels.Count <= 4))
                 {
                     return $"{status}Načteny {Channels.Count} kanály";
-                } else
+                }
+                else
                 {
                     return $"{status}Načteno {Channels.Count} kanálů";
                 }
             }
         }
 
-        public Command RefreshCommand { get; set; }
-
-        public Command RefreshChannelsCommand { get; set; }
-        public Command RefreshEPGCommand { get; set; }
-        public Command ResetConnectionCommand { get; set; }
-        public Command CheckPurchaseCommand { get; set; }
-
-        public Command RequestWriteLogsPermissionsCommand { get; set; }
-
-        public MainPageViewModel(ILoggingService loggingService, ISledovaniTVConfiguration config, IDialogService dialogService, Context context)
-           : base(loggingService, config, dialogService, context)
-        {
-            _service = new TVService(loggingService, config);
-            _loggingService = loggingService;
-            _dialogService = dialogService;
-            _context = context;
-            _config = config;            
-
-            RefreshCommand = new Command(async () => await Refresh());
-
-            CheckPurchaseCommand = new Command(async () => await CheckPurchase());
-
-            RefreshEPGCommand = new Command(async () => await RefreshEPG());
-            RefreshChannelsCommand = new Command(async () => await RefreshChannels());
-
-            ResetConnectionCommand = new Command(async () => await ResetConnection());
-
-            RequestWriteLogsPermissionsCommand = new Command(async () => await RequestWriteLogsPermissions());
-            
-            RequestWriteLogsPermissionsCommand.Execute(null);
-
-            RefreshChannelsCommand.Execute(null);
-
-            // refreshing every min with 3s start delay
-            BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 3);
-        }
-
-        public Dictionary<string, ChannelItem> ChannelById
-        {
-            get
-            {
-                return _channelById;
-            }
-        }
-
         private async Task RequestWriteLogsPermissions()
         {
-            if (!_config.EnableLogging)
+            if (!Config.EnableLogging)
               return;
 
             await RequestPermission(Permission.Storage);            
         }
-
+               
         private async Task Refresh()
         {
             await RefreshChannels(false);
@@ -207,19 +209,19 @@ namespace SledovaniTVLive.ViewModels
 
                 foreach (var ch in channels)
                 {
-                    if (_config.ChannelFilterGroup != "*" &&
-                        _config.ChannelFilterGroup != null &&
-                        _config.ChannelFilterGroup != ch.Group)
+                    if (Config.ChannelFilterGroup != "*" &&
+                        Config.ChannelFilterGroup != null &&
+                        Config.ChannelFilterGroup != ch.Group)
                         continue;
 
-                    if (_config.ChannelFilterType != "*" &&
-                        _config.ChannelFilterType != null &&
-                        _config.ChannelFilterType != ch.Type)
+                    if (Config.ChannelFilterType != "*" &&
+                        Config.ChannelFilterType != null &&
+                        Config.ChannelFilterType != ch.Type)
                         continue;
 
-                    if ((!String.IsNullOrEmpty(_config.ChannelFilterName)) &&
-                        (_config.ChannelFilterName != "*") &&                        
-                        !ch.Name.ToLower().Contains(_config.ChannelFilterName.ToLower()))
+                    if ((!String.IsNullOrEmpty(Config.ChannelFilterName)) &&
+                        (Config.ChannelFilterName != "*") &&                        
+                        !ch.Name.ToLower().Contains(Config.ChannelFilterName.ToLower()))
                         continue;
 
                     Channels.Add(ch);
@@ -247,17 +249,17 @@ namespace SledovaniTVLive.ViewModels
 
         public async Task CheckPurchase()
         {
-            if (_config.Purchased)
+            if (Config.Purchased)
                 return;
 
             _loggingService.Debug($"Checking purchase");
 
             try
             {
-                if (!String.IsNullOrEmpty(_config.PurchaseId))
+                if (!String.IsNullOrEmpty(Config.PurchaseId))
                 {
                     // purchase information found in config
-                    _config.Purchased = true;
+                    Config.Purchased = true;
                     _loggingService.Debug($"Already purchased (purchase id in config)");
                     return;
                 }
@@ -276,11 +278,11 @@ namespace SledovaniTVLive.ViewModels
                 var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
                 foreach (var purchase in purchases)
                 {
-                    if (purchase.ProductId == _config.PurchaseProductId)
+                    if (purchase.ProductId == Config.PurchaseProductId)
                     {
-                        _config.Purchased = true;
-                        _config.PurchaseId = purchase.Id;
-                        _config.PurchaseToken = purchase.PurchaseToken;
+                        Config.Purchased = true;
+                        Config.PurchaseId = purchase.Id;
+                        Config.PurchaseToken = purchase.PurchaseToken;
 
                         _loggingService.Debug($"Already purchased");
                         break;

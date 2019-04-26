@@ -19,7 +19,6 @@ namespace SledovaniTVLive.ViewModels
     public class FilterPageViewModel : BaseViewModel
     {
         private TVService _service;
-        private ISledovaniTVConfiguration _config;
         private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         private GroupFilterItem _selectedGroupItem;
@@ -38,11 +37,11 @@ namespace SledovaniTVLive.ViewModels
         {
             get
             {
-                return _config.ChannelFilterName;
+                return Config.ChannelFilterName;
             }
             set
             {
-                _config.ChannelFilterName = value;
+                Config.ChannelFilterName = value;
                 OnPropertyChanged(nameof(ChannelNameFilter));
             }
         }
@@ -56,7 +55,7 @@ namespace SledovaniTVLive.ViewModels
             set
             {   
                 _selectedGroupItem = value;
-                _config.ChannelFilterGroup = value == null ? "*" : value.Name;
+                Config.ChannelFilterGroup = value == null ? "*" : value.Name;
                 
                 OnPropertyChanged(nameof(SelectedGroupItem));
             }
@@ -71,7 +70,7 @@ namespace SledovaniTVLive.ViewModels
             set
             {
                 _selectedTypeItem = value;
-                _config.ChannelFilterType = value == null ? "*" : value.Name;
+                Config.ChannelFilterType = value == null ? "*" : value.Name;
                 OnPropertyChanged(nameof(SelectedTypeItem));
             }
         }
@@ -83,11 +82,10 @@ namespace SledovaniTVLive.ViewModels
             _loggingService = loggingService;
             _dialogService = dialogService;
             _context = context;
-            _config = config;
+            Config = config;
 
             ClearFilterCommand = new Command(async () => await ClearFilter());
-            RefreshCommand = new Command(async () => await Refresh());
-            // SomeCommand = new Command(async () => await Task.Run(delegate { }));            
+            RefreshCommand = new Command(async () => await Refresh());            
         }
 
         private async Task ClearFilter()
@@ -106,8 +104,8 @@ namespace SledovaniTVLive.ViewModels
             IsBusy = true;
 
             // Clearing Pickers leads to clearing config value via SelectedTypeItem
-            var selectedGroupConfig = _config.ChannelFilterGroup;
-            var selectedTypeConfig = _config.ChannelFilterType;
+            var selectedGroupConfig = Config.ChannelFilterGroup;
+            var selectedTypeConfig = Config.ChannelFilterType;
            
             try
             {
@@ -135,7 +133,7 @@ namespace SledovaniTVLive.ViewModels
                             Count = 1
                         };
 
-                        if ((!String.IsNullOrEmpty(_config.ChannelFilterGroup)) && (ch.Group == selectedGroupConfig))
+                        if ((!String.IsNullOrEmpty(Config.ChannelFilterGroup)) && (ch.Group == selectedGroupConfig))
                         {
                             SelectedGroupItem = g;
                         }
@@ -154,7 +152,7 @@ namespace SledovaniTVLive.ViewModels
                             Count = 1
                         };
 
-                        if ((!String.IsNullOrEmpty(_config.ChannelFilterType)) && (ch.Type == selectedTypeConfig))
+                        if ((!String.IsNullOrEmpty(Config.ChannelFilterType)) && (ch.Type == selectedTypeConfig))
                         {
                             SelectedTypeItem = tp;
                         }

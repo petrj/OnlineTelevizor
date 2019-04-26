@@ -15,7 +15,6 @@ namespace SledovaniTVLive.ViewModels
     class StreamQualityViewModel : BaseViewModel
     {
         private TVService _service;
-        private ISledovaniTVConfiguration _config;
         private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public ObservableCollection<QualityItem> Qualities { get; set; } = new ObservableCollection<QualityItem>();
@@ -31,7 +30,7 @@ namespace SledovaniTVLive.ViewModels
             _loggingService = loggingService;
             _dialogService = dialogService;
             _context = context;
-            _config = config;
+            Config = config;
 
             RefreshCommand = new Command(async () => await Refresh());
         }
@@ -52,7 +51,7 @@ namespace SledovaniTVLive.ViewModels
                 {
                     Qualities.Add(q);
               
-                    if ((!String.IsNullOrEmpty(_config.StreamQuality)) && (q.Id == _config.StreamQuality))
+                    if ((!String.IsNullOrEmpty(Config.StreamQuality)) && (q.Id == Config.StreamQuality))
                     {
                         SelectedItem = q;
                     }                    

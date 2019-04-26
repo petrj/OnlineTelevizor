@@ -69,7 +69,7 @@
                 </StackLayout>
                 <StackLayout Margin="20,10,20,0">
 
-                    <Label Text="Další nastavení" Style="{StaticResource GroupCaptionStyle}" IsVisible="{Binding Config.Purchased}"/>
+                    <Label Text="Další nastavení" Style="{StaticResource GroupCaptionStyle}" IsVisible="{Binding IsPurchased}"/>
 
                     <Grid Margin="20,10,0,0">
                         <Grid.RowDefinitions>
@@ -80,13 +80,13 @@
                             <ColumnDefinition Width="30*" />
                         </Grid.ColumnDefinitions>
 
-                        <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit kanály pro dospělé (nutný PIN)" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.Purchased}"/>
-                        <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowAdultChannelsSwitch" IsToggled="{Binding Config.ShowAdultChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.Purchased}"/>
+                        <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit kanály pro dospělé (nutný PIN)" Style="{StaticResource CaptionStyle}" IsVisible="{Binding IsPurchased}"/>
+                        <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowAdultChannelsSwitch" IsToggled="{Binding Config.ShowAdultChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding IsPurchased}"/>
 
-                        <Label  Grid.Row="1" Grid.Column="0" Text="Zobrazit nedostupné kanály" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.Purchased}"/>
-                        <Switch Grid.Row="1" Grid.Column="1" x:Name="ShowLockedSwitch" IsToggled="{Binding Config.ShowLocked, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.Purchased}"/>
+                        <Label  Grid.Row="1" Grid.Column="0" Text="Zobrazit nedostupné kanály" Style="{StaticResource CaptionStyle}" IsVisible="{Binding IsPurchased}"/>
+                        <Switch Grid.Row="1" Grid.Column="1" x:Name="ShowLockedSwitch" IsToggled="{Binding Config.ShowLocked, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding IsPurchased}"/>
 
-                        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"  IsVisible="{Binding Config.NotPurchased}" Text="Získat plnou verzi" Command="{Binding PayCommand}" />
+                        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"  Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"/>
 
                         <Label  Grid.Row="3" Grid.Column="0" Text="Zakoupena plná verze" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.DebugMode}"/>
                         <Switch Grid.Row="3" Grid.Column="1" x:Name="PurchaseSwitch" IsToggled="{Binding Config.Purchased, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.DebugMode}" />

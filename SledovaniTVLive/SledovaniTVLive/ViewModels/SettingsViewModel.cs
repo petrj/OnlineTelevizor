@@ -17,7 +17,7 @@ namespace SledovaniTVLive.ViewModels
 {
     public class SettingsViewModel : BaseViewModel
     {
-        private ISledovaniTVConfiguration _config;
+        private bool _isPruchased;
 
         public Command ShareLogCommand { get; set; }
         public Command PayCommand { get; set; }
@@ -28,7 +28,9 @@ namespace SledovaniTVLive.ViewModels
             _loggingService = loggingService;
             _context = context;
             _dialogService = dialogService;
-            _config = config;
+            Config = config;
+
+            IsPurchased = Config.Purchased;
 
             ShareLogCommand = new Command(async () => await ShareLogWithPermissionsRequest());
             PayCommand = new Command(async () => await Pay());
@@ -38,7 +40,7 @@ namespace SledovaniTVLive.ViewModels
         {
             try
             {
-                _loggingService.Debug($"Paying product id: {_config.PurchaseProductId}");
+                _loggingService.Debug($"Paying product id: {Config.PurchaseProductId}");
 
                 var connected = await CrossInAppBilling.Current.ConnectAsync();
 
@@ -49,7 +51,7 @@ namespace SledovaniTVLive.ViewModels
                     return;
                 }
                 
-                var purchase = await CrossInAppBilling.Current.PurchaseAsync(_config.PurchaseProductId, ItemType.InAppPurchase, "apppayload");
+                var purchase = await CrossInAppBilling.Current.PurchaseAsync(Config.PurchaseProductId, ItemType.InAppPurchase, "apppayload");
                 if (purchase == null)
                 {
                     _loggingService.Info($"Not purchased");
@@ -65,11 +67,13 @@ namespace SledovaniTVLive.ViewModels
                     _loggingService.Info($"Purchase Date: {purchase.TransactionDateUtc.ToString()}");
                     _loggingService.Info($"Purchase Payload: {purchase.Payload}");
                     _loggingService.Info($"Purchase ConsumptionState: {purchase.ConsumptionState.ToString()}");
-                    _loggingService.Info($"Purchase AutoRenewing: {purchase.AutoRenewing}");                    
+                    _loggingService.Info($"Purchase AutoRenewing: {purchase.AutoRenewing}");
 
-                    _config.PurchaseToken = purchase.PurchaseToken;
-                    _config.PurchaseId = purchase.Id;
-                    _config.Purchased = true;
+                    Config.PurchaseToken = purchase.PurchaseToken;
+                    Config.PurchaseId = purchase.Id;
+                    Config.Purchased = true;
+
+                    IsPurchased = true;
 
                     //await _dialogService.Information("Platba byla úspěšně provedena.");
                 }
@@ -89,7 +93,7 @@ namespace SledovaniTVLive.ViewModels
         {
             get
             {
-                switch (_config.LoggingLevel)
+                switch (Config.LoggingLevel)
                 {
                     case LoggingLevelEnum.Debug:
                         return 0;
@@ -109,16 +113,47 @@ namespace SledovaniTVLive.ViewModels
 
                 switch (value)
                 {
-                    case 0: _config.LoggingLevel = LoggingLevelEnum.Debug;
+                    case 0:
+                        Config.LoggingLevel = LoggingLevelEnum.Debug;
                         break;
                     case 1:
-                        _config.LoggingLevel = LoggingLevelEnum.Info;
+                        Config.LoggingLevel = LoggingLevelEnum.Info;
                         break;
                     case 2:
-                        _config.LoggingLevel = LoggingLevelEnum.Error;
+                        Config.LoggingLevel = LoggingLevelEnum.Error;
                         break;
                 }  
                 OnPropertyChanged(nameof(LoggingLevelIndex));
+            }
+        }
+
+        public bool IsNotPurchased
+        {
+            get
+            {
+                return !IsPurchased;
+            }
+            set
+            {
+                IsPurchased = !value;
+
+                OnPropertyChanged(nameof(IsNotPurchased));
+                OnPropertyChanged(nameof(IsPurchased));
+            }
+        }
+
+        public bool IsPurchased
+        {
+            get
+            {
+                return _isPruchased;
+            }
+            set
+            {
+                _isPruchased = value;
+
+                OnPropertyChanged(nameof(IsNotPurchased));
+                OnPropertyChanged(nameof(IsPurchased));
             }
         }
 
@@ -129,7 +164,7 @@ namespace SledovaniTVLive.ViewModels
 
         private async Task ShareLog()
         {
-            if (!_config.EnableLogging)
+            if (!Config.EnableLogging)
             {
                 await _dialogService.Information("Logování není povoleno");
                 return;
