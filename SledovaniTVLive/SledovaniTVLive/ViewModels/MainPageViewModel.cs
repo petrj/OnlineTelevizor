@@ -276,7 +276,7 @@ namespace SledovaniTVLive.ViewModels
                 var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
                 foreach (var purchase in purchases)
                 {
-                    if (purchase.Id == _config.PurchaseId)
+                    if (purchase.ProductId == _config.PurchaseProductId)
                     {
                         _config.Purchased = true;
                         _config.PurchaseId = purchase.Id;
