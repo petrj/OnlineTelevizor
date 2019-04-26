@@ -24,7 +24,9 @@ namespace SledovaniTVLive.Models
                     case "regional": res = "Regionální"; break;
                     case "movie": res = "Filmy"; break;
                     case "other": res = "Ostatní"; break;
-                    case "music": res = "Hudební"; break;                    
+                    case "music": res = "Hudební"; break;
+                    case "sport": res = "Sportovní"; break;
+                    case "erotic": res = "Erotické"; break;
                 }
 
                 return $"{res} ({Count.ToString()})";
