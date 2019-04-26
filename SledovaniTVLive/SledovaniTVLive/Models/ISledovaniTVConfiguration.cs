@@ -27,8 +27,6 @@ namespace SledovaniTVLive.Models
         bool Purchased { get; set; }
         bool NotPurchased { get; }
 
-        string PurchaseId { get; set; }
-        string PurchaseToken { get; set; }
         string PurchaseProductId { get; }
 
         bool DebugMode { get; set; }

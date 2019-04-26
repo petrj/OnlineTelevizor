@@ -255,15 +255,7 @@ namespace SledovaniTVLive.ViewModels
             _loggingService.Debug($"Checking purchase");
 
             try
-            {
-                if (!String.IsNullOrEmpty(Config.PurchaseId))
-                {
-                    // purchase information found in config
-                    Config.Purchased = true;
-                    _loggingService.Debug($"Already purchased (purchase id in config)");
-                    return;
-                }
-
+            { 
                 // contacting service
 
                 var connected = await CrossInAppBilling.Current.ConnectAsync();
@@ -274,18 +266,33 @@ namespace SledovaniTVLive.ViewModels
                     await _dialogService.Information("Nepodařilo se ověřit stav zaplacení plné verze.");
                     return;
                 }
-
-                var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
-                foreach (var purchase in purchases)
+                                         
+                // check InAppProducts
+                var purchasesInfo = await CrossInAppBilling.Current.GetProductInfoAsync(ItemType.InAppPurchase, Config.PurchaseProductId);
+                foreach (var purchaseInfo in purchasesInfo)
                 {
-                    if (purchase.ProductId == Config.PurchaseProductId)
+                    if (purchaseInfo.ProductId == Config.PurchaseProductId)
                     {
                         Config.Purchased = true;
-                        Config.PurchaseId = purchase.Id;
-                        Config.PurchaseToken = purchase.PurchaseToken;
 
-                        _loggingService.Debug($"Already purchased");
+                        _loggingService.Debug($"Already purchased (InAppProduct)");
                         break;
+                    }
+                }
+
+                if (!Config.Purchased)
+                {
+                    // check InAppBillingPurchase
+                    var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
+                    foreach (var purchase in purchases)
+                    {
+                        if (purchase.ProductId == Config.PurchaseProductId)
+                        {
+                            Config.Purchased = true;
+
+                            _loggingService.Debug($"Already purchased (InAppBillingPurchase)");                    
+                            break;
+                        }
                     }
                 }
 

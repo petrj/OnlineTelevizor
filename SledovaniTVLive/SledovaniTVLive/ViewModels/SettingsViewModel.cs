@@ -69,8 +69,6 @@ namespace SledovaniTVLive.ViewModels
                     _loggingService.Info($"Purchase ConsumptionState: {purchase.ConsumptionState.ToString()}");
                     _loggingService.Info($"Purchase AutoRenewing: {purchase.AutoRenewing}");
 
-                    Config.PurchaseToken = purchase.PurchaseToken;
-                    Config.PurchaseId = purchase.Id;
                     Config.Purchased = true;
 
                     IsPurchased = true;

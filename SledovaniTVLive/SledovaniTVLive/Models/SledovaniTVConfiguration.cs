@@ -149,30 +149,6 @@ namespace SledovaniTVLive.Models
             }
         }
 
-        public string PurchaseId
-        {
-            get
-            {
-                return GetPersistingSettingValue<string>("PurchaseId");
-            }
-            set
-            {
-                SavePersistingSettingValue<string>("PurchaseId", value);
-            }
-        }
-
-        public string PurchaseToken
-        {
-            get
-            {
-                return GetPersistingSettingValue<string>("PurchaseToken");
-            }
-            set
-            {
-                SavePersistingSettingValue<string>("PurchaseToken", value);
-            }
-        }
-
         public string PurchaseProductId
         {
             get
