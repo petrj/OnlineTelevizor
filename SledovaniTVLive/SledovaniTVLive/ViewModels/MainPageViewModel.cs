@@ -13,6 +13,8 @@ using Xamarin.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using System.Threading;
+using Plugin.InAppBilling;
+using Plugin.InAppBilling.Abstractions;
 
 namespace SledovaniTVLive.ViewModels
 {
@@ -88,10 +90,10 @@ namespace SledovaniTVLive.ViewModels
 
         public Command RefreshCommand { get; set; }
 
-        public Command RefreshChannlesCommand { get; set; }
+        public Command RefreshChannelsCommand { get; set; }
         public Command RefreshEPGCommand { get; set; }
-
         public Command ResetConnectionCommand { get; set; }
+        public Command CheckPurchaseCommand { get; set; }
 
         public Command RequestWriteLogsPermissionsCommand { get; set; }
 
@@ -102,20 +104,22 @@ namespace SledovaniTVLive.ViewModels
             _loggingService = loggingService;
             _dialogService = dialogService;
             _context = context;
-            _config = config;
+            _config = config;            
 
             RefreshCommand = new Command(async () => await Refresh());
 
+            CheckPurchaseCommand = new Command(async () => await CheckPurchase());
+
             RefreshEPGCommand = new Command(async () => await RefreshEPG());
-            RefreshChannlesCommand = new Command(async () => await RefreshChannels());
+            RefreshChannelsCommand = new Command(async () => await RefreshChannels());
 
             ResetConnectionCommand = new Command(async () => await ResetConnection());
 
             RequestWriteLogsPermissionsCommand = new Command(async () => await RequestWriteLogsPermissions());
-
+            
             RequestWriteLogsPermissionsCommand.Execute(null);
 
-            RefreshChannlesCommand.Execute(null);
+            RefreshChannelsCommand.Execute(null);
 
             // refreshing every min with 3s start delay
             BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 3);
@@ -188,6 +192,8 @@ namespace SledovaniTVLive.ViewModels
         {
             await _semaphoreSlim.WaitAsync();
 
+            await CheckPurchase();
+
             IsBusy = true;
 
             try
@@ -237,6 +243,58 @@ namespace SledovaniTVLive.ViewModels
         {
             await _service.ResetConnection();
             OnPropertyChanged(nameof(StatusLabel));
+        }
+
+        public async Task CheckPurchase()
+        {
+            if (_config.Purchased)
+                return;
+
+            _loggingService.Debug($"Checking purchase");
+
+            try
+            {
+                if (!String.IsNullOrEmpty(_config.PurchaseId))
+                {
+                    // purchase information found in config
+                    _config.Purchased = true;
+                    _loggingService.Debug($"Already purchased (purchase id in config)");
+                    return;
+                }
+
+                // contacting service
+
+                var connected = await CrossInAppBilling.Current.ConnectAsync();
+
+                if (!connected)
+                {
+                    _loggingService.Info($"Connection to AppBilling service failed");
+                    await _dialogService.Information("Nepodařilo se ověřit stav zaplacení plné verze.");
+                    return;
+                }
+
+                var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
+                foreach (var purchase in purchases)
+                {
+                    if (purchase.Id == _config.PurchaseId)
+                    {
+                        _config.Purchased = true;
+                        _config.PurchaseId = purchase.Id;
+                        _config.PurchaseToken = purchase.PurchaseToken;
+
+                        _loggingService.Debug($"Already purchased");
+                        break;
+                    }
+                }
+
+            } catch (Exception ex)
+            {
+                _loggingService.Error(ex, "Error while checking purchase");            
+            }
+            finally
+            {
+                await CrossInAppBilling.Current.DisconnectAsync();
+            }
         }
     }
 }

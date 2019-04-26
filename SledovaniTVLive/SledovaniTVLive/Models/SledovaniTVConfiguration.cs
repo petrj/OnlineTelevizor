@@ -173,6 +173,14 @@ namespace SledovaniTVLive.Models
             }
         }
 
+        public string PurchaseProductId
+        {
+            get
+            {
+                return "sledovanitvlive";
+            }
+        }
+
         public string ChannelFilterGroup
         {
             get

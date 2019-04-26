@@ -11,6 +11,8 @@ using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Android.Content;
 using System.Text.RegularExpressions;
+using Plugin.InAppBilling;
+using Plugin.InAppBilling.Abstractions;
 
 namespace SledovaniTVLive.ViewModels
 {
@@ -161,6 +163,6 @@ namespace SledovaniTVLive.ViewModels
 
                 await _dialogService.Information(ex.ToString());
             }
-        }
+        }     
     }
 }

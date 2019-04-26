@@ -25,7 +25,7 @@ namespace SledovaniTVLive.Views
 
             var config = new SledovaniTVConfiguration(context);
 #if DEBUG      
-            config.DebugMode = true;            
+            config.DebugMode = true;
 #endif
 
             if (config.EnableLogging)

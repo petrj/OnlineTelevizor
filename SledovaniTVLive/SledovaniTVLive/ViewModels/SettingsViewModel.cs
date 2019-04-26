@@ -34,28 +34,26 @@ namespace SledovaniTVLive.ViewModels
             PayCommand = new Command(async () => await Pay());
         }
 
-        private async Task Pay()
+        protected async Task Pay()
         {
             try
             {
-                var productId = "11111";
-
-                _loggingService.Debug($"Paying product id: {productId}");
+                _loggingService.Debug($"Paying product id: {_config.PurchaseProductId}");
 
                 var connected = await CrossInAppBilling.Current.ConnectAsync();
 
                 if (!connected)
                 {
                     _loggingService.Info($"Connection to AppBilling service failed");
-                    await _dialogService.Information("Připojení k platební bráně selhalo.");
+                    await _dialogService.Information("Připojení k platební službě selhalo.");
                     return;
                 }
                 
-                var purchase = await CrossInAppBilling.Current.PurchaseAsync(productId, ItemType.InAppPurchase, "apppayload");
+                var purchase = await CrossInAppBilling.Current.PurchaseAsync(_config.PurchaseProductId, ItemType.InAppPurchase, "apppayload");
                 if (purchase == null)
                 {
                     _loggingService.Info($"Not purchased");
-                    await _dialogService.Information("Platba nebyla uskutečněna.");
+                    //await _dialogService.Information("Platba nebyla uskutečněna.");
                 }
                 else
                 {
@@ -71,13 +69,14 @@ namespace SledovaniTVLive.ViewModels
 
                     _config.PurchaseToken = purchase.PurchaseToken;
                     _config.PurchaseId = purchase.Id;
+                    _config.Purchased = true;
 
-                    await _dialogService.Information("Platba byla úspěšně provedena.");
+                    //await _dialogService.Information("Platba byla úspěšně provedena.");
                 }
             }
             catch (Exception ex)
             {                
-                await _dialogService.Information("Platba se nezdařila.");
+                //await _dialogService.Information("Platba se nezdařila.");
                 _loggingService.Error(ex, "Payment failed");
             }
             finally
@@ -85,8 +84,7 @@ namespace SledovaniTVLive.ViewModels
                 await CrossInAppBilling.Current.DisconnectAsync();
             }
         }
-
-
+        
         public int LoggingLevelIndex
         {
             get
