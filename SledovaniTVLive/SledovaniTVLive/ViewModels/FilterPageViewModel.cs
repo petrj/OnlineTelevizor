@@ -12,14 +12,16 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
+using System.Threading;
 
 namespace SledovaniTVLive.ViewModels
 {
     public class FilterPageViewModel : BaseViewModel
     {
         private TVService _service;
-        private ISledovaniTVConfiguration _config;       
-        
+        private ISledovaniTVConfiguration _config;
+        private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
+
         private GroupFilterItem _selectedGroupItem;
         private TypeFilterItem _selectedTypeItem;
 
@@ -99,6 +101,8 @@ namespace SledovaniTVLive.ViewModels
 
         private async Task Refresh()
         {
+            await _semaphoreSlim.WaitAsync();
+
             IsBusy = true;
 
             // Clearing Pickers leads to clearing config value via SelectedTypeItem
@@ -185,6 +189,8 @@ namespace SledovaniTVLive.ViewModels
 
                 if (SelectedGroupItem == null)
                     SelectedGroupItem = FirstGroup;
+
+                _semaphoreSlim.Release();
             }            
         }
     }

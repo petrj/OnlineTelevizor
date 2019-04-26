@@ -19,12 +19,13 @@
 
             <Style x:Key="CaptionStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="14"/>                
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
             </Style>
 
             <Style x:Key="GroupCaptionStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="#41b3ff"/>
-                <Setter Property="FontSize" Value="16"/>                
+                <Setter Property="FontSize" Value="14"/>                
             </Style>
 
             <Style x:Key="CommonSwitchTextStyle" TargetType="Switch">
@@ -48,9 +49,9 @@
 
                 <StackLayout Margin="20,10,20,0">
 
-                    <Label Text="Přístupové údaje: " Style="{StaticResource GroupCaptionStyle}" />
+                    <Label Text="Přístupové údaje" Style="{StaticResource GroupCaptionStyle}" />
 
-                    <StackLayout Margin="20,20,0,0">
+                    <StackLayout Margin="20,10,0,0">
                         <Label Text="Uživatelské jméno (email):" Style="{StaticResource CaptionStyle}" />
                         <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="UsernameEntry"  Text="{Binding Username, Mode=TwoWay}" Placeholder="Zadejte uživatelské jméno" Style="{StaticResource CommonEntryTextStyle}"></Entry>
                     </StackLayout>
@@ -66,11 +67,11 @@
                     </StackLayout>
 
                 </StackLayout>
-                <StackLayout Margin="20,30,20,0">
+                <StackLayout Margin="20,10,20,0">
 
-                    <Label Text="Další nastavení:" Style="{StaticResource GroupCaptionStyle}" />
+                    <Label Text="Další nastavení" Style="{StaticResource GroupCaptionStyle}" />
 
-                    <Grid Margin="20,20,0,0">
+                    <Grid Margin="20,10,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />                            
                         </Grid.RowDefinitions>

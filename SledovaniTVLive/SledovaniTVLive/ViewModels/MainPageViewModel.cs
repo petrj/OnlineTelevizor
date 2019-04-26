@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
-
+using System.Threading;
 
 namespace SledovaniTVLive.ViewModels
 {
@@ -20,6 +20,7 @@ namespace SledovaniTVLive.ViewModels
     {
         private TVService _service;
         private ISledovaniTVConfiguration _config;
+        private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public ObservableCollection<ChannelItem> Channels { get; set; } = new ObservableCollection<ChannelItem>();
 
@@ -144,6 +145,8 @@ namespace SledovaniTVLive.ViewModels
 
         private async Task RefreshEPG(bool SetFinallyNotBusy = true)
         {
+            await _semaphoreSlim.WaitAsync();
+
             IsBusy = true;
 
             try
@@ -176,11 +179,15 @@ namespace SledovaniTVLive.ViewModels
 
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
-            }
+
+                _semaphoreSlim.Release();
+            }      
         }
 
         private async Task RefreshChannels(bool SetFinallyNotBusy = true)
         {
+            await _semaphoreSlim.WaitAsync();
+
             IsBusy = true;
 
             try
@@ -221,6 +228,8 @@ namespace SledovaniTVLive.ViewModels
                 }
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
+
+                _semaphoreSlim.Release();
             }
         }
 

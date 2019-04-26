@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -15,6 +16,7 @@ namespace SledovaniTVLive.ViewModels
     {
         private TVService _service;
         private ISledovaniTVConfiguration _config;
+        private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public ObservableCollection<QualityItem> Qualities { get; set; } = new ObservableCollection<QualityItem>();
 
@@ -36,6 +38,8 @@ namespace SledovaniTVLive.ViewModels
 
         private async Task Refresh()
         {
+            await _semaphoreSlim.WaitAsync();
+
             IsBusy = true;
 
             try
@@ -59,6 +63,8 @@ namespace SledovaniTVLive.ViewModels
                 IsBusy = false;
                 OnPropertyChanged(nameof(IsBusy));
                 OnPropertyChanged(nameof(SelectedItem));
+
+                _semaphoreSlim.Release();
             }
         }
     }
