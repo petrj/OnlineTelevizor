@@ -8,33 +8,56 @@ using NLog.Config;
 
 namespace LoggerService
 {
-    public class BasicLoggingService : ILoggingService
+    public class FileLoggingService : ILoggingService
     {
+        private string _logFileName;
         private LoggingLevelEnum _minLevel;
 
-        public BasicLoggingService(LoggingLevelEnum minLevel = LoggingLevelEnum.Debug)
+        public FileLoggingService(LoggingLevelEnum minLevel = LoggingLevelEnum.Debug)
         {
             MinLevel = minLevel;
         }
-        
+
         public LoggingLevelEnum MinLevel { get => _minLevel; set => _minLevel = value; }
+
+        public string LogFilename
+        {
+            get
+            {
+                return _logFileName;
+            }
+            set
+            {
+                _logFileName = value;
+            }
+        }
 
         private void Write(LoggingLevelEnum level, string message)
         {
             try
             {
+                var logFolder = System.IO.Path.GetDirectoryName(LogFilename);
+                if (!Directory.Exists(logFolder))
+                    Directory.CreateDirectory(logFolder);
+
                 if ((int)level < (int)MinLevel)
                     return;
 
                 string msg = $"[{DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss")}] {level} {message}";
 
-                System.Diagnostics.Debug.WriteLine(msg);
+                using (var fs = new FileStream(LogFilename, FileMode.Append, FileAccess.Write))
+                {
+                    using (var sw = new StreamWriter(fs))
+                    {
+                        sw.WriteLine(msg);
+                    }
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                // log failed
+                System.Diagnostics.Debug.WriteLine($"Error while writing log to {LogFilename} ({ex})");
             }
-        } 
+        }      
 
         public void Debug(string message)
         {

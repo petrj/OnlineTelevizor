@@ -42,8 +42,6 @@ namespace SledovaniTVLive.ViewModels
         public Command ResetConnectionCommand { get; set; }
         public Command CheckPurchaseCommand { get; set; }
 
-        public Command RequestWriteLogsPermissionsCommand { get; set; }
-
         public MainPageViewModel(ILoggingService loggingService, ISledovaniTVConfiguration config, IDialogService dialogService, Context context)
            : base(loggingService, config, dialogService, context)
         {
@@ -61,11 +59,7 @@ namespace SledovaniTVLive.ViewModels
             RefreshChannelsCommand = new Command(async () => await RefreshChannels());
 
             ResetConnectionCommand = new Command(async () => await ResetConnection());
-
-            RequestWriteLogsPermissionsCommand = new Command(async () => await RequestWriteLogsPermissions());
-            
-            RequestWriteLogsPermissionsCommand.Execute(null);
-
+                        
             RefreshChannelsCommand.Execute(null);
 
             // refreshing every min with 3s start delay
@@ -134,15 +128,7 @@ namespace SledovaniTVLive.ViewModels
                 }
             }
         }
-
-        private async Task RequestWriteLogsPermissions()
-        {
-            if (!Config.EnableLogging)
-              return;
-
-            await RequestPermission(Permission.Storage);            
-        }
-               
+            
         private async Task Refresh()
         {
             await RefreshChannels(false);
@@ -243,13 +229,29 @@ namespace SledovaniTVLive.ViewModels
 
         private async Task ResetConnection()
         {
-            await _service.ResetConnection();
-            OnPropertyChanged(nameof(StatusLabel));
+            await _semaphoreSlim.WaitAsync();
+
+            IsBusy = true;
+
+            try
+            {
+                OnPropertyChanged(nameof(StatusLabel));
+
+                await _service.ResetConnection();
+            }
+            finally
+            {
+                IsBusy = false;                
+
+                OnPropertyChanged(nameof(StatusLabel));
+
+                _semaphoreSlim.Release();
+            }         
         }
 
         public async Task CheckPurchase()
         {
-            if (Config.Purchased)
+            if (Config.Purchased || Config.DebugMode)
                 return;
 
             _loggingService.Debug($"Checking purchase");
@@ -271,11 +273,21 @@ namespace SledovaniTVLive.ViewModels
                 var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
                 foreach (var purchase in purchases)
                 {
-                    if (purchase.ProductId == Config.PurchaseProductId)
+                    
+                    if (purchase.ProductId == Config.PurchaseProductId &&
+                        purchase.State == PurchaseState.Purchased)
                     {
                         Config.Purchased = true;
 
-                        _loggingService.Debug($"Already purchased (InAppBillingPurchase)");                    
+                        _loggingService.Debug($"Already purchased (InAppBillingPurchase)");
+
+                        _loggingService.Debug($"Purchase AutoRenewing: {purchase.AutoRenewing}");
+                        _loggingService.Debug($"Purchase Payload: {purchase.Payload}");
+                        _loggingService.Debug($"Purchase PurchaseToken: {purchase.PurchaseToken}");
+                        _loggingService.Debug($"Purchase State: {purchase.State}");
+                        _loggingService.Debug($"Purchase TransactionDateUtc: {purchase.TransactionDateUtc}");
+                        _loggingService.Debug($"Purchase ConsumptionState: {purchase.ConsumptionState}");
+
                         break;
                     }
                 }

@@ -31,13 +31,14 @@ namespace SledovaniTVLive.Views
 
             if (config.EnableLogging)
             {
+                // WRITE_EXTERNAL_STORAGE permission is disabled
+#if DEBUG       
                 loggingService = new BasicLoggingService(config.LoggingLevel);
-
-                var logFolder = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.Path, "SledovaniTVLive");
-
-                (loggingService as BasicLoggingService).LogFilename = Path.Combine(logFolder, "SledovaniTVLive.log");
+#else
+                loggingService = new DummyLoggingService();
+#endif
             } else
-            {
+            {                
                 loggingService = new DummyLoggingService();
             }
 

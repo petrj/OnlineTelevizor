@@ -114,7 +114,7 @@ namespace SledovaniTVLive.Services
 
                 var channels = await _sledovaniTV.GetChanels();
 
-                if (_sledovaniTV.Status == StatusEnum.Logged || _sledovaniTV.Status == StatusEnum.Paired)
+                if (_sledovaniTV.Status == StatusEnum.Logged)
                 {
                     if (String.IsNullOrEmpty(_config.DeviceId))
                     {
@@ -133,7 +133,10 @@ namespace SledovaniTVLive.Services
                             if (ch.Locked == "noAccess" && !_config.ShowLocked)
                                 continue;
 
-                            if (ch.Locked == "pin" && !_config.ShowAdultChannels)
+                            if (ch.Locked == "pin" &&
+                                (
+                                    !_config.ShowAdultChannels || String.IsNullOrEmpty(_config.ChildLockPIN)
+                                ))
                                 continue; // adult channels 
 
                             // unknown Locked state

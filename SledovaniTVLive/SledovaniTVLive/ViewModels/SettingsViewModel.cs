@@ -19,7 +19,6 @@ namespace SledovaniTVLive.ViewModels
     {
         private bool _isPruchased;
 
-        public Command ShareLogCommand { get; set; }
         public Command PayCommand { get; set; }
 
         public SettingsViewModel(ILoggingService loggingService, ISledovaniTVConfiguration config, Context context, IDialogService dialogService)
@@ -32,12 +31,18 @@ namespace SledovaniTVLive.ViewModels
 
             IsPurchased = Config.Purchased;
 
-            ShareLogCommand = new Command(async () => await ShareLogWithPermissionsRequest());
             PayCommand = new Command(async () => await Pay());
         }
 
         protected async Task Pay()
         {
+            if (Config.DebugMode)
+            {
+                Config.Purchased = true;
+                IsPurchased = true;
+                return;
+            }
+
             try
             {
                 _loggingService.Debug($"Paying product id: {Config.PurchaseProductId}");
@@ -70,7 +75,6 @@ namespace SledovaniTVLive.ViewModels
                     _loggingService.Info($"Purchase AutoRenewing: {purchase.AutoRenewing}");
 
                     Config.Purchased = true;
-
                     IsPurchased = true;
 
                     //await _dialogService.Information("Platba byla úspěšně provedena.");
@@ -80,6 +84,7 @@ namespace SledovaniTVLive.ViewModels
             {                
                 //await _dialogService.Information("Platba se nezdařila.");
                 _loggingService.Error(ex, "Payment failed");
+                await _dialogService.Information("Připojení k platební službě selhalo.");
             }
             finally
             {
@@ -153,36 +158,6 @@ namespace SledovaniTVLive.ViewModels
                 OnPropertyChanged(nameof(IsNotPurchased));
                 OnPropertyChanged(nameof(IsPurchased));
             }
-        }
-
-        private async Task ShareLogWithPermissionsRequest()
-        {
-            await RunWithPermission(Permission.Storage, async () => await ShareLog());
-        }
-
-        private async Task ShareLog()
-        {
-            if (!Config.EnableLogging)
-            {
-                await _dialogService.Information("Logování není povoleno");
-                return;
-            }
-
-            if (!(_loggingService is BasicLoggingService))
-            {
-                await _dialogService.Information("Logování bude probíhat až po restartování aplikace");
-                return;
-            }
-
-            var fName = (_loggingService as BasicLoggingService).LogFilename;
-
-            if (!File.Exists(fName))
-            {
-                await _dialogService.Information($"Log {fName} nebyl nalezen");
-                return;
-            }
-
-            await ShareFile(fName);
         }
     }
 }

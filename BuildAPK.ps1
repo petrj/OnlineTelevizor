@@ -14,10 +14,10 @@ function Create-APK
        [Parameter(Mandatory=$true)]
        $msbuild,
 
-	   [ValidateSet("16", "25")]
+	   [ValidateSet("16", "27")]
        $MinSdkVersion,
 
-	   [ValidateSet("16", "25")]
+	   [ValidateSet("16", "27")]
 	   $TargetSdkVersion,
 
 
@@ -38,7 +38,8 @@ function Create-APK
 		{
 			[xml]$manifest = Get-content -Path $manifestFileName
 
-			$dateTimeSuffix = [DateTime]::Now.ToString("yyyy-MM-dd--HHmm")
+			$packageName = $manifest.manifest.package;
+            $version = $manifest.manifest.versionCode;
 
 			$manifest.manifest.'uses-sdk'.minSdkVersion = "$MinSdkVersion"
 			$manifest.manifest.'uses-sdk'.targetSdkVersion = "$TargetSdkVersion"
@@ -64,7 +65,7 @@ function Create-APK
 				throw "Build failed"
 			}
 
-			$newName =  [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($defaultAPKName),$manifest.manifest.application.label+"-"+$dateTimeSuffix+"-mapi" + $MinSdkVersion+"-tapi"+$TargetSdkVersion+"-"+$Target+".apk")
+			$newName =  [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($defaultAPKName),$packageName+"-v"+$version+"-"+$Target+".apk")
 
 			Rename-Item -Path $defaultAPKName -NewName $newName -Verbose
 
@@ -94,6 +95,6 @@ if (-not (Test-Path -Path "nuget.exe"))
 .\nuget.exe restore .\SledovaniTVLive.sln
 
 #Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 16 -msbuild $msbuild | Move-Item -Destination  . -Verbose
-Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 25 -msbuild $msbuild | Move-Item -Destination  . -Verbose
+Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 27 -msbuild $msbuild | Move-Item -Destination  . -Verbose
 
-Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 25 -msbuild $msbuild -Target "Debug" | Move-Item -Destination  . -Verbose
+Create-APK -ProjFileName "$scriptPath\SledovaniTVLive\SledovaniTVLive.Android\SledovaniTVLive.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 27 -msbuild $msbuild -Target "Debug" | Move-Item -Destination  . -Verbose
