@@ -93,7 +93,7 @@
                         <Label  Grid.Row="1" Grid.Column="0" Text="Zobrazit nedostupné kanály" Style="{StaticResource CaptionStyle}" IsVisible="{Binding IsPurchased}"/>
                         <Switch Grid.Row="1" Grid.Column="1" x:Name="ShowLockedSwitch" IsToggled="{Binding Config.ShowLocked, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding IsPurchased}"/>
 
-                        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"  Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}" Style="{StaticResource ButtonStyle}" />
+                        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"  Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}" />
 
                         <Label  Grid.Row="3" Grid.Column="0" Text="Povolit logování (vyžaduje restart)" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.DebugMode}"/>
                         <Switch Grid.Row="3" Grid.Column="1" x:Name="EnableLoggingSwitch" IsToggled="{Binding Config.EnableLogging, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.DebugMode}" />                        

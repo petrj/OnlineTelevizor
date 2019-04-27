@@ -13,7 +13,7 @@ namespace TestConsole
         static void Main(string[] args)
         {
             var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
-            var loggingService = new BasicLoggingService();
+            var loggingService = new FileLoggingService();
             loggingService.LogFilename = "TestConsole.log";
             loggingService.MinLevel = LoggingLevelEnum.Debug;
 
