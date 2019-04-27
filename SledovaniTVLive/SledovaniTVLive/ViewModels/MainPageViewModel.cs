@@ -267,32 +267,16 @@ namespace SledovaniTVLive.ViewModels
                     return;
                 }
                                          
-                // check InAppProducts
-                var purchasesInfo = await CrossInAppBilling.Current.GetProductInfoAsync(ItemType.InAppPurchase, Config.PurchaseProductId);
-                foreach (var purchaseInfo in purchasesInfo)
+                // check InAppBillingPurchase
+                var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
+                foreach (var purchase in purchases)
                 {
-                    if (purchaseInfo.ProductId == Config.PurchaseProductId)
+                    if (purchase.ProductId == Config.PurchaseProductId)
                     {
                         Config.Purchased = true;
 
-                        _loggingService.Debug($"Already purchased (InAppProduct)");
+                        _loggingService.Debug($"Already purchased (InAppBillingPurchase)");                    
                         break;
-                    }
-                }
-
-                if (!Config.Purchased)
-                {
-                    // check InAppBillingPurchase
-                    var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
-                    foreach (var purchase in purchases)
-                    {
-                        if (purchase.ProductId == Config.PurchaseProductId)
-                        {
-                            Config.Purchased = true;
-
-                            _loggingService.Debug($"Already purchased (InAppBillingPurchase)");                    
-                            break;
-                        }
                     }
                 }
 
