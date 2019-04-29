@@ -13,7 +13,7 @@
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Margin" Value="10,5,5,5"/>
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
-            </Style>          
+            </Style>
 
             <Style x:Key="CommonEntryTextStyle" TargetType="Entry">
                 <Setter Property="TextColor" Value="White"/>
@@ -23,7 +23,7 @@
 
             <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="12"/>                
+                <!--Setter Property="FontSize" Value="12"/ not supported in Live PLayer -->
             </Style>
 
         </ResourceDictionary>
@@ -44,26 +44,26 @@
         <Entry Grid.Row="0" Grid.Column="1" Text="{Binding ChannelNameFilter, Mode=TwoWay}" Placeholder="Zadejte název kanálu nebo jeho část" PlaceholderColor="Gray" Style="{StaticResource CommonEntryTextStyle}"/>
 
         <Label Grid.Row="1" Grid.Column="0" Text="Skupina:" Style="{DynamicResource CaptionLabelStyle}"/>
-        <Picker Grid.Row="1" Grid.Column="1" 
-                x:Name="GroupPicker" 
-                SelectedItem="{Binding SelectedGroupItem, Mode=TwoWay}"  
-                Style="{StaticResource CommonPickerTextStyle}"  
+        <Picker Grid.Row="1" Grid.Column="1"
+                x:Name="GroupPicker"
+                SelectedItem="{Binding SelectedGroupItem, Mode=TwoWay}"
+                Style="{StaticResource CommonPickerTextStyle}"
                 ItemsSource="{Binding Groups}"
                 ItemDisplayBinding="{Binding GUIName}"
                 />
 
         <Label Grid.Row="2" Grid.Column="0" Text="Typ:" Style="{DynamicResource CaptionLabelStyle}"/>
-        <Picker Grid.Row="2" Grid.Column="1" 
-                x:Name="TypePicker" 
-                SelectedItem="{Binding SelectedTypeItem, Mode=TwoWay}"  
-                Style="{StaticResource CommonPickerTextStyle}"  
+        <Picker Grid.Row="2" Grid.Column="1"
+                x:Name="TypePicker"
+                SelectedItem="{Binding SelectedTypeItem, Mode=TwoWay}"
+                Style="{StaticResource CommonPickerTextStyle}"
                 ItemsSource="{Binding Types}"
                 />
     </Grid>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="Refresh.png"/>
-        <ToolbarItem Name="ToolbarItemClearFilter" Text="Zrušit filtry"  Command="{Binding ClearFilterCommand}" Icon="ClearFilter.png"/>        
+        <ToolbarItem Name="ToolbarItemClearFilter" Text="Zrušit filtry"  Command="{Binding ClearFilterCommand}" Icon="ClearFilter.png"/>
     </ContentPage.ToolbarItems>
 
 </ContentPage>
