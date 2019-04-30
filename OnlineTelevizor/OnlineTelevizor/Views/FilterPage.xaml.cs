@@ -1,0 +1,38 @@
+﻿using Android.Content;
+using LoggerService;
+using OnlineTelevizor.Models;
+using OnlineTelevizor.Services;
+using OnlineTelevizor.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
+
+namespace OnlineTelevizor.Views
+{
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class FilterPage : ContentPage
+    {
+        private FilterPageViewModel _viewModel;
+
+        public FilterPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, Context context, TVService service)
+        {
+            InitializeComponent();
+
+            var dialogService = new DialogService(this);
+
+            BindingContext = _viewModel = new FilterPageViewModel(loggingService, config, dialogService, context, service);
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            _viewModel.RefreshCommand.Execute(null);
+        }
+    }
+}

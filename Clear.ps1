@@ -9,10 +9,10 @@ foreach ($folder in `
         "packages",
         "SledovaniTVApi\bin",
         "SledovaniTVApi\obj",
-        "SledovaniTVLive\SledovaniTVLive\bin",
-        "SledovaniTVLive\SledovaniTVLive\obj",
-        "SledovaniTVLive\SledovaniTVLive.Android\bin",
-        "SledovaniTVLive\SledovaniTVLive.Android\obj",
+        "OnlineTelevizor\OnlineTelevizor\bin",
+        "OnlineTelevizor\OnlineTelevizor\obj",
+        "OnlineTelevizor\OnlineTelevizor.Android\bin",
+        "OnlineTelevizor\OnlineTelevizor.Android\obj",
         ".\TestConsole\bin",
 		".\TestConsole\obj"
      ))

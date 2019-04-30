@@ -1,8 +1,8 @@
 ﻿cd $PSScriptRoot
 
 $convert = "C:\Program Files (x86)\ImageMagick\convert.exe"
-$ResourcesFolder = "SledovaniTVLive\SledovaniTVLive.Android\Resources"
-$SourceImage = "Screens\Icon.png"
+$ResourcesFolder = "OnlineTelevizor\OnlineTelevizor.Android\Resources"
+$SourceImage = "Graphics\Icon.png"
 
 
 $SourceImageName = [System.IO.Path]::GetFileName($SourceImage)

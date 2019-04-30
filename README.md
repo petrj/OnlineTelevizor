@@ -1,6 +1,6 @@
-# Sledování TV Live
+# Online Televizor
 
-![Icon](https://raw.github.com/petrj/SledovaniTVLive/master/Screens/Icon.png)
+![Icon](https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Icon.png)
 
 
 #### CZ
@@ -15,6 +15,6 @@ Unofficial Android client for czech IPTV sledovaniTV.cz
 - using external player
 - for Android 4.4 and higher
 
-<img src="https://raw.github.com/petrj/SledovaniTVLive/master/Screens/Screenshot.png" width="400" alt="Screenshot"/>
-<img src="https://raw.github.com/petrj/SledovaniTVLive/master/Screens/Screenshot2.png" width="400" alt="Screenshot2"/>
-<img src="https://raw.github.com/petrj/SledovaniTVLive/master/Screens/Screenshot3.png" width="400" alt="Screenshot3"/>
+<img src="https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Screenshot.png" width="400" alt="Screenshot"/>
+<img src="https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Screenshot2.png" width="400" alt="Screenshot2"/>
+<img src="https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Screenshot3.png" width="400" alt="Screenshot3"/>

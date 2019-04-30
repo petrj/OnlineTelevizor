@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:OnlineTelevizor.Views"
+             x:Class="OnlineTelevizor.Views.MainPage"
+             BackgroundColor="Black"
+             NavigationPage.TitleIcon="Icon.png">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="ListItemTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Margin" Value="5,5,5,5"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="ListItemCenterTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Margin" Value="5,5,5,5"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="ListItemEPGTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="VerticalTextAlignment" Value="Start"/>
+                <Setter Property="FontAttributes" Value="Italic"/>
+                <Setter Property="LineBreakMode" Value="WordWrap"/>
+            </Style>
+
+            <Style x:Key="InfoLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Margin" Value="20,0,0,0"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="IconStyle" TargetType="Image">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="Margin" Value="5,0,10,0"/>
+            </Style>
+
+            <Style x:Key="ListViewStyle" TargetType="ListView">
+                <Setter Property="SeparatorVisibility" Value="Default"/>
+                <Setter Property="SeparatorColor" Value="White"/>
+                <Setter Property="HasUnevenRows" Value="True"/>
+                <Setter Property="IsPullToRefreshEnabled" Value="True"/>
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout>
+
+        <ListView x:Name="ChannelsListView"
+                    ItemsSource="{Binding Channels}"
+                    ItemTapped="Channel_Tapped"
+                    CachingStrategy="RecycleElement"
+                    IsPullToRefreshEnabled="True"
+                    RefreshCommand="{Binding RefreshCommand}"
+                    IsRefreshing="{Binding IsBusy}"
+                    Style="{StaticResource ListViewStyle}">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell Height="70">
+                        <ViewCell.View>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="40" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="70" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Text="{Binding ChannelNumber}" Style="{DynamicResource ListItemCenterTextStyle}"/>
+                                <Label Grid.Row="0" Grid.Column="1" Margin="15,0,0,0" Text="{Binding Name}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" />
+                                <Label Grid.Row="1" Grid.Column="1" Margin="20,0,0,0" Text="{Binding CurrentEPGTitle}" Style="{DynamicResource ListItemEPGTextStyle}" />
+                                <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding LogoUrl}" WidthRequest="40" Style="{DynamicResource IconStyle}"/>
+                            </Grid>
+
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+        <StackLayout Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="45" HorizontalOptions="Fill"  BackgroundColor="#262626">
+            <Label Text="{Binding StatusLabel}"  x:Name="StatusLabel" Style="{DynamicResource InfoLabelStyle}"></Label>
+        </StackLayout>
+
+    </StackLayout>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="Refresh.png"/>
+        <ToolbarItem Name="ToolbarItemFilter" Text="Filtr" Clicked="ToolbarItemFilter_Clicked" Icon="Filter.png"/>
+        <ToolbarItem Name="ToolbarItemQuality" Text="Kvalita" Clicked="ToolbarItemQuality_Clicked" Icon="Quality.png"/>
+        <ToolbarItem Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked" Icon="Settings.png" />
+    </ContentPage.ToolbarItems>
+</ContentPage >
