@@ -25,6 +25,8 @@ namespace OnlineTelevizor.Views
         private IOnlineTelevizorConfiguration _config;
         private ILoggingService _loggingService;
 
+        private FilterPage _filterPage;
+
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private string _numberPressed = String.Empty;
 
@@ -46,6 +48,12 @@ namespace OnlineTelevizor.Views
             });
 
             ChannelsListView.ItemSelected += ChannelsListView_ItemSelected;
+
+             _filterPage = new FilterPage(_loggingService, _config, _context, _viewModel.TVService);
+            _filterPage.Disappearing += delegate
+            {
+                _viewModel.RefreshCommand.Execute(null);
+            };
         }
 
         private void ChannelsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -58,10 +66,14 @@ namespace OnlineTelevizor.Views
             switch (key.ToLower())
             {
                 case "dpaddown":
-                    Task.Run(async () => await _viewModel.SelectNextChannel());
+                    Task.Run(async () => await OnKeyDown());
                     break;
                 case "dpadup":
-                    Task.Run(async () => await _viewModel.SelectPreviousChannel());
+                    Task.Run(async () => await OnKeyUp());
+                    break;
+                case "dpadleft":
+                case "dpadright":
+                    Task.Run(async () => await OnKeyLeft());
                     break;
                 case "dpadcenter":
                     if (_viewModel.SelectedItem != null)
@@ -98,7 +110,11 @@ namespace OnlineTelevizor.Views
                     HandleNumKey(9);
                     break;
                 default:
-                    _loggingService.Debug($"Unbound key down: {key}");
+                    if (_config.DebugMode)
+                    {
+                        _loggingService.Debug($"Unbound key down: {key}");
+                        CrossToastPopUp.Current.ShowToastSuccess(key);
+                    }
                     break;
             }
         }
@@ -166,16 +182,40 @@ namespace OnlineTelevizor.Views
             await Navigation.PushAsync(qualitiesPage);
         }
 
+        private Page GetNavigationStackPageByType(Type type)
+        {
+            foreach (var t in Navigation.NavigationStack)
+            {
+                if (t.GetType() == type)
+                {
+                    return t;
+                }
+            }
+            return null;
+        }
+
+        private async Task OnKeyLeft()
+        {
+        }
+
+        private async Task OnKeyDown()
+        {
+             await _viewModel.SelectNextChannel();
+        }
+
+        private async Task OnKeyUp()
+        {
+            var filterPageFromStack = GetNavigationStackPageByType(typeof(FilterPage));
+
+            if (filterPageFromStack == null)
+            {
+                await _viewModel.SelectPreviousChannel();
+            }
+        }
+
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
         {
-            var filterPage = new FilterPage(_loggingService, _config, _context, _viewModel.TVService);
-
-            filterPage.Disappearing += delegate
-            {
-                _viewModel.RefreshCommand.Execute(null);
-            };
-
-            await Navigation.PushAsync(filterPage);
+            await Navigation.PushAsync(_filterPage);
         }
 
         private async void Channel_Tapped(object sender, ItemTappedEventArgs e)

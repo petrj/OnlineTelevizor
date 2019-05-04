@@ -27,7 +27,6 @@ namespace OnlineTelevizor.Views
 
 #if DEBUG
             config.DebugMode = true;
-            config.Purchased = true;
 #endif
 
             if (config.EnableLogging)

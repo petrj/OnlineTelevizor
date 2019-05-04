@@ -344,14 +344,14 @@ namespace OnlineTelevizor.ViewModels
                     _channelById.Add(ch.Id, ch); // for faster EPG refresh
                 }
 
-                if (selectedChannelId != null)
+                if (selectedChannelId != null && _channelById.ContainsKey(selectedChannelId))
                 {
                     SelectedItem = _channelById[selectedChannelId];
                 }
                 else if (Channels.Count > 0)
                 {
                     // selecting first channel
-                    SelectedItem = channels[0];
+                    SelectedItem = Channels[0];
                 }
 
             } finally
