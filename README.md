@@ -3,15 +3,23 @@
 ![Icon](https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Icon.png)
 
 #### CZ
-Neoficiální Android aplikace pro českou IPTV sledovaniTV.cz
+Android aplikace pro příjem TV a rádia pomocí služby SledovaniTV.cz.
+
+- nejedná se o oficiální aplikaci služby SledovaniTV.cz
+
+- podpora klávesnic a dálkových ovladačů připojených jako klávesnice (usb, bluettooth)
+- pro přehrávání se používá externí aplikace nainstalovaná v Android zařízení
 - pouze živé vysílání
-- používá externí přehrávač
-- pro Android 4.4 a vyšší
+- podporován Android 4.4 a vyšší
 
 #### EN
-Unofficial Android client for czech IPTV sledovaniTV.cz
+Android application for playing internet TV and radio through czech IPTV service SledovaniTV.cz
+
+- this is not official application of SledovaniTV.cz service
+
+- supporting external keyboards and remote controls connected as keyboard (usb, bluettooth)
+- using external player installed in Android
 - only live broadcasting
-- using external player
 - for Android 4.4 and higher
 
 <img src="https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Screenshot.png" width="400" alt="Screenshot"/>
