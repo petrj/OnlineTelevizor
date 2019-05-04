@@ -50,11 +50,11 @@ namespace OnlineTelevizor.ViewModels
                 foreach (var q in qualities)
                 {
                     Qualities.Add(q);
-              
+
                     if ((!String.IsNullOrEmpty(Config.StreamQuality)) && (q.Id == Config.StreamQuality))
                     {
                         SelectedItem = q;
-                    }                    
+                    }
                 }
             }
             finally

@@ -10,6 +10,9 @@ using OnlineTelevizor.Services;
 using OnlineTelevizor.Views;
 using Plugin.Permissions;
 using Plugin.InAppBilling;
+using Plugin.Toast;
+using Xamarin.Forms;
+using OnlineTelevizor.ViewModels;
 
 namespace OnlineTelevizor.Droid
 {
@@ -24,11 +27,6 @@ namespace OnlineTelevizor.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
-
-            // workaround pro ne-pouziti FileProvideru:
-            // https://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed
-            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-            StrictMode.SetVmPolicy(builder.Build());
 
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
 
@@ -49,6 +47,13 @@ namespace OnlineTelevizor.Droid
         {
             base.OnActivityResult(requestCode, resultCode, data);
             InAppBillingImplementation.HandleActivityResult(requestCode, resultCode, data);
+        }
+
+        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        {
+            MessagingCenter.Send(keyCode.ToString(), BaseViewModel.KeyMessage);
+
+            return base.OnKeyDown(keyCode, e);
         }
     }
 }

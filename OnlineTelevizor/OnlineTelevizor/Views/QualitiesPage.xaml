@@ -27,11 +27,11 @@
     </ContentPage.Resources>
 
     <StackLayout>
-        <ListView x:Name="QualitiesListView" 
+        <ListView x:Name="QualitiesListView"
                             ItemsSource="{Binding Qualities}"
                             ItemTapped="Quality_Tapped"
                             CachingStrategy="RecycleElement"
-                            IsPullToRefreshEnabled="True"                      
+                            IsPullToRefreshEnabled="True"
                             RefreshCommand="{Binding RefreshCommand}"
                             IsRefreshing="{Binding IsBusy}"
                             SelectedItem="{Binding SelectedItem, Mode=TwoWay}"

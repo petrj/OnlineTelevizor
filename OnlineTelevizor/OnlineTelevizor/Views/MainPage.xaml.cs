@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Android.Content;
 using Android.Views;
+using Plugin.Toast;
+using System.Threading;
 
 namespace OnlineTelevizor.Views
 {
@@ -22,6 +24,9 @@ namespace OnlineTelevizor.Views
         private Context _context;
         private IOnlineTelevizorConfiguration _config;
         private ILoggingService _loggingService;
+
+        private DateTime _lastNumPressedTime = DateTime.MinValue;
+        private string _numberPressed = String.Empty;
 
         public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, Context context)
         {
@@ -34,6 +39,112 @@ namespace OnlineTelevizor.Views
             _loggingService = loggingService;
 
             BindingContext = _viewModel = new MainPageViewModel(loggingService, config, _dialogService, context);
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.KeyMessage, (key) =>
+            {
+                OnKeyDown(key);
+            });
+
+            ChannelsListView.ItemSelected += ChannelsListView_ItemSelected;
+        }
+
+        private void ChannelsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            ChannelsListView.ScrollTo(_viewModel.SelectedItem, ScrollToPosition.MakeVisible, true);
+        }
+
+        public void OnKeyDown(string key)
+        {
+            switch (key.ToLower())
+            {
+                case "dpaddown":
+                    Task.Run(async () => await _viewModel.SelectNextChannel());
+                    break;
+                case "dpadup":
+                    Task.Run(async () => await _viewModel.SelectPreviousChannel());
+                    break;
+                case "dpadcenter":
+                    if (_viewModel.SelectedItem != null)
+                        Task.Run(async () => await _viewModel.PlayStream(_viewModel.SelectedItem.Url));
+                    break;
+                case "num0":
+                    HandleNumKey(0);
+                    break;
+                case "num1":
+                    HandleNumKey(1);
+                    break;
+                case "num2":
+                    HandleNumKey(2);
+                    break;
+                case "num3":
+                    HandleNumKey(3);
+                    break;
+                case "num4":
+                    HandleNumKey(4);
+                    break;
+                case "num5":
+                    HandleNumKey(5);
+                    break;
+                case "num6":
+                    HandleNumKey(6);
+                    break;
+                case "num7":
+                    HandleNumKey(7);
+                    break;
+                case "num8":
+                    HandleNumKey(8);
+                    break;
+                case "num9":
+                    HandleNumKey(9);
+                    break;
+                default:
+                    _loggingService.Debug($"Unbound key down: {key}");
+                    break;
+            }
+        }
+
+        private void HandleNumKey(int number)
+        {
+            if ((DateTime.Now - _lastNumPressedTime).TotalSeconds>1)
+            {
+                _lastNumPressedTime = DateTime.MinValue;
+                _numberPressed = String.Empty;
+            }
+
+            _lastNumPressedTime = DateTime.Now;
+            _numberPressed += number;
+
+            CrossToastPopUp.Current.ShowToastSuccess(_numberPressed);
+
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                var numberPressedBefore = _numberPressed;
+
+                Thread.Sleep(2000);
+
+                if (numberPressedBefore == _numberPressed)
+                {
+                    Task.Run(async () =>
+                    {
+                        await _viewModel.SelectChannelByNumber(_numberPressed);
+                        if (_viewModel.SelectedItem != null)
+                            await _viewModel.PlayStream(_viewModel.SelectedItem.Url);
+                    });
+                }
+
+            }).Start();
+        }
+
+        public void Reset()
+        {
+            _viewModel.ResetConnectionCommand.Execute(null);
+        }
+
+        public void Refresh()
+        {
+            _viewModel.RefreshCommand.Execute(null);
         }
 
         private async void ToolbarItemSettings_Clicked(object sender, EventArgs e)
@@ -70,6 +181,7 @@ namespace OnlineTelevizor.Views
         private async void Channel_Tapped(object sender, ItemTappedEventArgs e)
         {
             var channelItem = e.Item as ChannelItem;
+            _viewModel.SelectedItem = channelItem;
             await _viewModel.PlayStream(channelItem.Url);
         }
     }

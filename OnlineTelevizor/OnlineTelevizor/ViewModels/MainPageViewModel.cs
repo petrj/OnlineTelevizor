@@ -15,6 +15,7 @@ using Plugin.Permissions.Abstractions;
 using System.Threading;
 using Plugin.InAppBilling;
 using Plugin.InAppBilling.Abstractions;
+using Plugin.Toast;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -34,7 +35,7 @@ namespace OnlineTelevizor.ViewModels
                 return _service;
             }
         }
-        
+
         public Command RefreshCommand { get; set; }
 
         public Command RefreshChannelsCommand { get; set; }
@@ -49,7 +50,7 @@ namespace OnlineTelevizor.ViewModels
             _loggingService = loggingService;
             _dialogService = dialogService;
             _context = context;
-            Config = config;            
+            Config = config;
 
             RefreshCommand = new Command(async () => await Refresh());
 
@@ -59,21 +60,144 @@ namespace OnlineTelevizor.ViewModels
             RefreshChannelsCommand = new Command(async () => await RefreshChannels());
 
             ResetConnectionCommand = new Command(async () => await ResetConnection());
-                        
+
             RefreshChannelsCommand.Execute(null);
 
             // refreshing every min with 3s start delay
             BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 3);
         }
 
-        public Dictionary<string, ChannelItem> ChannelById
+        public async Task SelectChannelByNumber(string number)
+        {
+            await _semaphoreSlim.WaitAsync();
+
+            await Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        // looking for channel by its number:
+                        foreach (var ch in Channels)
+                        {
+                            if (ch.ChannelNumber == number)
+                            {
+                                SelectedItem = ch;
+                                break;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        OnPropertyChanged(nameof(SelectedItem));
+
+                        _semaphoreSlim.Release();
+                    };
+                });
+        }
+
+        public ChannelItem SelectedItem { get; set; }
+
+        public async Task SelectNextChannel()
+        {
+            await _semaphoreSlim.WaitAsync();
+
+            await Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        if (Channels.Count == 0)
+                            return;
+
+                        if (SelectedItem == null)
+                        {
+                            SelectedItem = Channels[0];
+                        }
+                        else
+                        {
+                            bool next = false;
+                            foreach (var ch in Channels)
+                            {
+                                if (next)
+                                {
+                                    SelectedItem = ch;
+                                    break;
+                                }
+                                else
+                                {
+                                    if (ch == SelectedItem)
+                                    {
+                                        next = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        OnPropertyChanged(nameof(SelectedItem));
+
+                        _semaphoreSlim.Release();
+                    };
+                });
+        }
+
+        public async Task SelectPreviousChannel()
+        {
+            await _semaphoreSlim.WaitAsync();
+
+            await Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        if (Channels.Count == 0)
+                            return;
+
+                        if (SelectedItem == null)
+                        {
+                            SelectedItem = Channels[Channels.Count - 1];
+                        }
+                        else
+                        {
+                            bool previous = false;
+                            for (var i = Channels.Count-1; i >=0 ; i--)
+                            {
+                                if (previous)
+                                {
+                                    SelectedItem = Channels[i];
+                                    break;
+                                }
+                                else
+                                {
+                                    if (Channels[i] == SelectedItem)
+                                    {
+                                        previous = true;
+                                    }
+                                }
+                            }
+                        }
+
+                        OnPropertyChanged(nameof(SelectedItem));
+
+                    }
+                    finally
+                    {
+                        OnPropertyChanged(nameof(SelectedItem));
+
+                        _semaphoreSlim.Release();
+                    };
+                });
+        }
+
+        private Dictionary<string, ChannelItem> ChannelById
         {
             get
             {
                 return _channelById;
             }
         }
-        
+
         public string StatusLabel
         {
             get
@@ -128,7 +252,7 @@ namespace OnlineTelevizor.ViewModels
                 }
             }
         }
-            
+
         private async Task Refresh()
         {
             await RefreshChannels(false);
@@ -173,7 +297,7 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(IsBusy));
 
                 _semaphoreSlim.Release();
-            }      
+            }
         }
 
         private async Task RefreshChannels(bool SetFinallyNotBusy = true)
@@ -186,6 +310,12 @@ namespace OnlineTelevizor.ViewModels
 
             try
             {
+                string selectedChannelId = null;
+                if (SelectedItem != null)
+                {
+                    selectedChannelId = SelectedItem.Id;
+                }
+
                 OnPropertyChanged(nameof(StatusLabel));
 
                 Channels.Clear();
@@ -206,12 +336,22 @@ namespace OnlineTelevizor.ViewModels
                         continue;
 
                     if ((!String.IsNullOrEmpty(Config.ChannelFilterName)) &&
-                        (Config.ChannelFilterName != "*") &&                        
+                        (Config.ChannelFilterName != "*") &&
                         !ch.Name.ToLower().Contains(Config.ChannelFilterName.ToLower()))
                         continue;
 
                     Channels.Add(ch);
                     _channelById.Add(ch.Id, ch); // for faster EPG refresh
+                }
+
+                if (selectedChannelId != null)
+                {
+                    SelectedItem = _channelById[selectedChannelId];
+                }
+                else if (Channels.Count > 0)
+                {
+                    // selecting first channel
+                    SelectedItem = channels[0];
                 }
 
             } finally
@@ -222,6 +362,7 @@ namespace OnlineTelevizor.ViewModels
                 }
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
+                OnPropertyChanged(nameof(SelectedItem));
 
                 _semaphoreSlim.Release();
             }
@@ -241,12 +382,12 @@ namespace OnlineTelevizor.ViewModels
             }
             finally
             {
-                IsBusy = false;                
+                IsBusy = false;
 
                 OnPropertyChanged(nameof(StatusLabel));
 
                 _semaphoreSlim.Release();
-            }         
+            }
         }
 
         public async Task CheckPurchase()
@@ -257,7 +398,7 @@ namespace OnlineTelevizor.ViewModels
             _loggingService.Debug($"Checking purchase");
 
             try
-            { 
+            {
                 // contacting service
 
                 var connected = await CrossInAppBilling.Current.ConnectAsync();
@@ -268,12 +409,12 @@ namespace OnlineTelevizor.ViewModels
                     await _dialogService.Information("Nepodařilo se ověřit stav zaplacení plné verze.");
                     return;
                 }
-                                         
+
                 // check InAppBillingPurchase
                 var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
                 foreach (var purchase in purchases)
                 {
-                    
+
                     if (purchase.ProductId == Config.PurchaseProductId &&
                         purchase.State == PurchaseState.Purchased)
                     {
@@ -294,7 +435,7 @@ namespace OnlineTelevizor.ViewModels
 
             } catch (Exception ex)
             {
-                _loggingService.Error(ex, "Error while checking purchase");            
+                _loggingService.Error(ex, "Error while checking purchase");
             }
             finally
             {

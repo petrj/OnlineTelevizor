@@ -21,6 +21,7 @@ namespace OnlineTelevizor.ViewModels
         protected ILoggingService _loggingService;
         protected IDialogService _dialogService;
         protected Context _context;
+        public const string KeyMessage = "KeyDownMessage";
 
         public IOnlineTelevizorConfiguration Config { get; set; }
 
@@ -111,7 +112,7 @@ namespace OnlineTelevizor.ViewModels
         }
 
         #endregion
-                
+
         protected async Task ShareFile(string fileName)
         {
             try
@@ -149,7 +150,7 @@ namespace OnlineTelevizor.ViewModels
                     {
                         url += "&" + configQuality;
                     }
-                }                
+                }
 
                 var intent = new Intent(Intent.ActionView);
                 var uri = Android.Net.Uri.Parse(url);
@@ -163,6 +164,6 @@ namespace OnlineTelevizor.ViewModels
 
                 await _dialogService.Information(ex.ToString());
             }
-        }     
+        }
     }
 }
