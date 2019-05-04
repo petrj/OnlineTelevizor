@@ -17,7 +17,7 @@ Android application for playing internet TV and radio through czech IPTV service
 
 - this is not official application of SledovaniTV.cz service
 
-- supporting external keyboards and remote controls connected as keyboard (usb, bluettooth)
+- supporting external keyboards and remote controls connected as keyboard (usb, bluetooth)
 - using external player installed in Android
 - only live broadcasting
 - for Android 4.4 and higher
