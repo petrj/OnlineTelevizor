@@ -7,7 +7,7 @@ Android aplikace pro příjem TV a rádia pomocí služby SledovaniTV.cz.
 
 - nejedná se o oficiální aplikaci služby SledovaniTV.cz
 
-- podpora klávesnic a dálkových ovladačů připojených jako klávesnice (usb, bluettooth)
+- podpora klávesnic a dálkových ovladačů připojených jako klávesnice (usb, bluetooth)
 - pro přehrávání se používá externí aplikace nainstalovaná v Android zařízení
 - pouze živé vysílání
 - podporován Android 4.4 a vyšší
