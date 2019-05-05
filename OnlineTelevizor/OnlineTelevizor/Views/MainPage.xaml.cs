@@ -86,8 +86,7 @@ namespace OnlineTelevizor.Views
                 case "buttonr2":
                 case "mediaplaypause":
                 case "enter":
-                    if (_viewModel.SelectedItem != null)
-                        Task.Run(async () => await _viewModel.PlayStream(_viewModel.SelectedItem.Url));
+                        Task.Run(async () => await _viewModel.Play());
                     break;
                 case "back":
                     break;

@@ -473,5 +473,13 @@ namespace OnlineTelevizor.ViewModels
                 await CrossInAppBilling.Current.DisconnectAsync();
             }
         }
+
+        public async Task Play()
+        {
+            if (SelectedItem == null)
+                return;
+
+            await PlayStream(SelectedItem.Url);
+        }
     }
 }
