@@ -97,17 +97,18 @@ namespace OnlineTelevizor.ViewModels
 
         public ChannelItem SelectedItem { get; set; }
 
-        public async Task SelectNextChannel()
+
+        public async Task SelectNextChannel(int step = 1)
         {
             await _semaphoreSlim.WaitAsync();
 
             await Task.Run(
                 () =>
                 {
-                    try
-                    {
-                        if (Channels.Count == 0)
-                            return;
+                try
+                {
+                    if (Channels.Count == 0)
+                        return;
 
                         if (SelectedItem == null)
                         {
@@ -116,12 +117,22 @@ namespace OnlineTelevizor.ViewModels
                         else
                         {
                             bool next = false;
-                            foreach (var ch in Channels)
+                            var nextCount = 1;
+                            for (var i = 0; i < Channels.Count; i++)
                             {
+                                var ch = Channels[i];
+
                                 if (next)
                                 {
-                                    SelectedItem = ch;
-                                    break;
+                                    if (nextCount == step || i == Channels.Count-1)
+                                    {
+                                        SelectedItem = ch;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        nextCount++;
+                                    }
                                 }
                                 else
                                 {
@@ -142,7 +153,7 @@ namespace OnlineTelevizor.ViewModels
                 });
         }
 
-        public async Task SelectPreviousChannel()
+        public async Task SelectPreviousChannel(int step = 1)
         {
             await _semaphoreSlim.WaitAsync();
 
@@ -161,12 +172,20 @@ namespace OnlineTelevizor.ViewModels
                         else
                         {
                             bool previous = false;
+                            var previousCount = 1;
+
                             for (var i = Channels.Count-1; i >=0 ; i--)
                             {
                                 if (previous)
                                 {
-                                    SelectedItem = Channels[i];
-                                    break;
+                                    if (previousCount == step || i == 0)
+                                    {
+                                        SelectedItem = Channels[i];
+                                        break;
+                                    } else
+                                    {
+                                        previousCount++;
+                                    }
                                 }
                                 else
                                 {
@@ -256,7 +275,19 @@ namespace OnlineTelevizor.ViewModels
         private async Task Refresh()
         {
             await RefreshChannels(false);
-            await RefreshEPG();
+
+            // reconnecting after 1 sec (connection may fail after resume on wifi with poor signal)
+            await Task.Delay(1000);
+
+            if (_service.Status == StatusEnum.ConnectionNotAvailable)
+            {
+                await RefreshChannels(false);
+                await RefreshEPG();
+            }
+            else
+            {
+                await RefreshEPG();
+            }
         }
 
         private async Task RefreshEPG(bool SetFinallyNotBusy = true)

@@ -25,6 +25,7 @@ namespace OnlineTelevizor.Views
 
             var config = new OnlineTelevizorConfiguration(context);
 
+
 #if DEBUG
             config.DebugMode = true;
 #endif
@@ -55,13 +56,12 @@ namespace OnlineTelevizor.Views
         protected override void OnSleep()
         {
             // Handle when your app sleeps
-            _mainPage.Reset();
         }
 
         protected override void OnResume()
         {
             // Handle when your app resumes
-            _mainPage.Refresh();
+            _mainPage.RefreshOnResume();
         }
     }
 }

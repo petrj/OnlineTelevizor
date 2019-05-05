@@ -58,7 +58,7 @@ namespace OnlineTelevizor.Views
 
         private void ChannelsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            ChannelsListView.ScrollTo(_viewModel.SelectedItem, ScrollToPosition.MakeVisible, true);
+            ChannelsListView.ScrollTo(_viewModel.SelectedItem, ScrollToPosition.MakeVisible, false);
         }
 
         public void OnKeyDown(string key)
@@ -66,18 +66,30 @@ namespace OnlineTelevizor.Views
             switch (key.ToLower())
             {
                 case "dpaddown":
+                case "buttonr1":
                     Task.Run(async () => await OnKeyDown());
                     break;
                 case "dpadup":
+                case "buttonl1":
                     Task.Run(async () => await OnKeyUp());
                     break;
                 case "dpadleft":
-                case "dpadright":
+                case "pageup":
                     Task.Run(async () => await OnKeyLeft());
                     break;
+                case "pagedown":
+                case "dpadright":
+                    Task.Run(async () => await OnKeyRight());
+                    break;
                 case "dpadcenter":
+                case "space":
+                case "buttonr2":
+                case "mediaplaypause":
+                case "enter":
                     if (_viewModel.SelectedItem != null)
                         Task.Run(async () => await _viewModel.PlayStream(_viewModel.SelectedItem.Url));
+                    break;
+                case "back":
                     break;
                 case "num0":
                     HandleNumKey(0);
@@ -109,11 +121,15 @@ namespace OnlineTelevizor.Views
                 case "num9":
                     HandleNumKey(9);
                     break;
+                case "f5":
+                case "del":
+                    RefreshOnResume();
+                    break;
                 default:
                     if (_config.DebugMode)
                     {
                         _loggingService.Debug($"Unbound key down: {key}");
-                        CrossToastPopUp.Current.ShowToastSuccess(key);
+                        CrossToastPopUp.Current.ShowCustomToast($"Unbound key down: {key}", "#0000FF", "#FFFFFF");
                     }
                     break;
             }
@@ -130,7 +146,7 @@ namespace OnlineTelevizor.Views
             _lastNumPressedTime = DateTime.Now;
             _numberPressed += number;
 
-            CrossToastPopUp.Current.ShowToastSuccess(_numberPressed);
+            CrossToastPopUp.Current.ShowCustomToast(_numberPressed, "#0000FF", "#FFFFFF");
 
             new Thread(() =>
             {
@@ -145,21 +161,23 @@ namespace OnlineTelevizor.Views
                     Task.Run(async () =>
                     {
                         await _viewModel.SelectChannelByNumber(_numberPressed);
-                        if (_viewModel.SelectedItem != null)
+
+                        if (
+                                (_viewModel.SelectedItem != null) &&
+                                (_numberPressed == _viewModel.SelectedItem.ChannelNumber)
+                           )
+                        {
                             await _viewModel.PlayStream(_viewModel.SelectedItem.Url);
+                        }
                     });
                 }
 
             }).Start();
         }
 
-        public void Reset()
+        public void RefreshOnResume()
         {
             _viewModel.ResetConnectionCommand.Execute(null);
-        }
-
-        public void Refresh()
-        {
             _viewModel.RefreshCommand.Execute(null);
         }
 
@@ -196,6 +214,12 @@ namespace OnlineTelevizor.Views
 
         private async Task OnKeyLeft()
         {
+            await _viewModel.SelectPreviousChannel(10);
+        }
+
+        private async Task OnKeyRight()
+        {
+            await _viewModel.SelectNextChannel(10);
         }
 
         private async Task OnKeyDown()
@@ -205,12 +229,7 @@ namespace OnlineTelevizor.Views
 
         private async Task OnKeyUp()
         {
-            var filterPageFromStack = GetNavigationStackPageByType(typeof(FilterPage));
-
-            if (filterPageFromStack == null)
-            {
-                await _viewModel.SelectPreviousChannel();
-            }
+            await _viewModel.SelectPreviousChannel();
         }
 
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
