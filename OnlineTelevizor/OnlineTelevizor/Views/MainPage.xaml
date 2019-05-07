@@ -58,8 +58,8 @@
 
         <ListView x:Name="ChannelsListView"
                     ItemsSource="{Binding Channels}"
-                    ItemTapped="Channel_Tapped"
                     CachingStrategy="RecycleElement"
+                    ItemTapped="Channel_Tapped"
                     IsPullToRefreshEnabled="True"
                     RefreshCommand="{Binding RefreshCommand}"
                     IsRefreshing="{Binding IsBusy}"
@@ -85,9 +85,11 @@
                                 <Label Grid.Row="0" Grid.Column="1" Margin="15,0,0,0" Text="{Binding Name}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" />
                                 <Label Grid.Row="1" Grid.Column="1" Margin="20,0,0,0" Text="{Binding CurrentEPGTitle}" Style="{DynamicResource ListItemEPGTextStyle}" />
                                 <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding LogoUrl}" WidthRequest="40" Style="{DynamicResource IconStyle}"/>
+
                             </Grid>
 
                         </ViewCell.View>
+
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -102,6 +104,7 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="Refresh.png" />
+        <ToolbarItem Name="ToolbarItemDetail" Text="Info" Clicked="ToolbarItemDetail_Clicked" Icon="Info.png"/>
         <ToolbarItem Name="ToolbarItemFilter" Text="Filtr" Clicked="ToolbarItemFilter_Clicked" Icon="Filter.png"/>
         <ToolbarItem Name="ToolbarItemQuality" Text="Kvalita" Clicked="ToolbarItemQuality_Clicked" Icon="Quality.png"/>
         <ToolbarItem Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked" Icon="Settings.png" />

@@ -38,6 +38,8 @@ namespace OnlineTelevizor.ViewModels
 
         public Command RefreshCommand { get; set; }
 
+        public Command PlayCommand { get; set; }
+
         public Command RefreshChannelsCommand { get; set; }
         public Command RefreshEPGCommand { get; set; }
         public Command ResetConnectionCommand { get; set; }
@@ -60,6 +62,8 @@ namespace OnlineTelevizor.ViewModels
             RefreshChannelsCommand = new Command(async () => await RefreshChannels());
 
             ResetConnectionCommand = new Command(async () => await ResetConnection());
+
+            PlayCommand = new Command(async () => await Play());
 
             RefreshChannelsCommand.Execute(null);
 
@@ -96,7 +100,6 @@ namespace OnlineTelevizor.ViewModels
         }
 
         public ChannelItem SelectedItem { get; set; }
-
 
         public async Task SelectNextChannel(int step = 1)
         {

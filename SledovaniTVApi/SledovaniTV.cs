@@ -340,6 +340,7 @@ namespace SledovaniTVAPI
                             var title = epgCh.First[0]["title"].ToString();
                             var times = epgCh.First[0]["startTime"].ToString();
                             var timef = epgCh.First[0]["endTime"].ToString();
+                            var desc = epgCh.First[0]["description"].ToString();
 
                             var item = new EPGItem()
                             {
@@ -347,7 +348,8 @@ namespace SledovaniTVAPI
                                 Title = title,
                                 Start = DateTime.ParseExact(times, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
                                 Finish = DateTime.ParseExact(timef, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
-                            };                            
+                                Description = desc
+                            };
 
                             result.Add(item);
                         };

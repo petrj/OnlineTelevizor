@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OnlineTelevizor.Views.ChannelDetailPage"
+             BackgroundColor="Black"
+             Title="Detail programu">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="ChannelNameTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="TitleTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="DateTimeTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="DescriptionTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Margin" Value="0,20,0,0"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="IconStyle" TargetType="Image">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="HorizontalOptions" Value="End"/>
+            </Style>
+
+            <Style x:Key="PageBackgroundStyle" TargetType="ScrollView">
+                <Setter Property="BackgroundColor" Value="Black"/>
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+
+        <ScrollView Style="{StaticResource PageBackgroundStyle}">
+
+            <StackLayout Margin="20,10,20,0">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="1" />
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="1" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="120" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding ChannelName}"  Style="{DynamicResource ChannelNameTextStyle}"/>
+                    <Image Grid.Row="0" Grid.Column="1" Source="{Binding LogoUrl}" WidthRequest="120" Style="{DynamicResource IconStyle}"/>
+
+                    <BoxView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="White"/>
+
+                    <Label Grid.Row="2" Grid.Column="0"  Grid.ColumnSpan="2" Text="{Binding EPGTitle}"  Style="{DynamicResource TitleTextStyle}"/>
+
+                    <Label Grid.Row="3" Grid.Column="0" Text="{Binding EPGTime}" HorizontalTextAlignment="Start" Style="{DynamicResource DateTimeTextStyle}"/>
+                    <Label Grid.Row="3" Grid.Column="1" Text="{Binding EPGDate}" Margin="0,0,20,0" HorizontalTextAlignment="End" Style="{DynamicResource DateTimeTextStyle}"/>
+
+                    <BoxView Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="White"/>
+                </Grid>
+
+                <Label Text="{Binding EPGDescription}"  Style="{DynamicResource DescriptionTextStyle}"/>
+
+            </StackLayout>
+
+        </ScrollView>
+
+    </ContentPage.Content>
+
+</ContentPage>

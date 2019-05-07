@@ -47,13 +47,12 @@ namespace OnlineTelevizor.Models
 
         public String CurrentEPGTitle
         {
-            get
-            {
-                if (_EPGItems.Count == 0)
-                    return null;
+            get { return _EPGItems.Count == 0 ? null : _EPGItems[0].Title; }
+        }
 
-                return _EPGItems[0].Title;
-            }
+        public EPGItem CurrentEPGItem
+        {
+            get { return _EPGItems.Count == 0 ? null : _EPGItems[0]; }
         }
     }
 }

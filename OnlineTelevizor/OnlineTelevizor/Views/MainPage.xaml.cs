@@ -124,6 +124,11 @@ namespace OnlineTelevizor.Views
                 case "del":
                     RefreshOnResume();
                     break;
+                case "buttonl2":
+                case "info":
+                case "epg":
+                    ToolbarItemDetail_Clicked(this, null);
+                    break;
                 default:
                     if (_config.DebugMode)
                     {
@@ -199,18 +204,6 @@ namespace OnlineTelevizor.Views
             await Navigation.PushAsync(qualitiesPage);
         }
 
-        private Page GetNavigationStackPageByType(Type type)
-        {
-            foreach (var t in Navigation.NavigationStack)
-            {
-                if (t.GetType() == type)
-                {
-                    return t;
-                }
-            }
-            return null;
-        }
-
         private async Task OnKeyLeft()
         {
             await _viewModel.SelectPreviousChannel(10);
@@ -234,6 +227,20 @@ namespace OnlineTelevizor.Views
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(_filterPage);
+        }
+
+        private async void ToolbarItemDetail_Clicked(object sender, EventArgs e)
+        {
+            if (_viewModel.SelectedItem != null)
+            {
+                var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService, _context);
+                detailPage.Channel = _viewModel.SelectedItem;
+
+                await Navigation.PushAsync(detailPage);
+            } else
+            {
+                await _dialogService.Information("Není označen žádný kanál");
+            }
         }
 
         private async void Channel_Tapped(object sender, ItemTappedEventArgs e)

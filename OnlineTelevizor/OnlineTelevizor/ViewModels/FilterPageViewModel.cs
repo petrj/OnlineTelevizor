@@ -53,10 +53,10 @@ namespace OnlineTelevizor.ViewModels
                 return _selectedGroupItem;
             }
             set
-            {   
+            {
                 _selectedGroupItem = value;
                 Config.ChannelFilterGroup = value == null ? "*" : value.Name;
-                
+
                 OnPropertyChanged(nameof(SelectedGroupItem));
             }
         }
@@ -85,7 +85,7 @@ namespace OnlineTelevizor.ViewModels
             Config = config;
 
             ClearFilterCommand = new Command(async () => await ClearFilter());
-            RefreshCommand = new Command(async () => await Refresh());            
+            RefreshCommand = new Command(async () => await Refresh());
         }
 
         private async Task ClearFilter()
@@ -106,7 +106,7 @@ namespace OnlineTelevizor.ViewModels
             // Clearing Pickers leads to clearing config value via SelectedTypeItem
             var selectedGroupConfig = Config.ChannelFilterGroup;
             var selectedTypeConfig = Config.ChannelFilterType;
-           
+
             try
             {
                 Groups.Clear();
@@ -116,7 +116,7 @@ namespace OnlineTelevizor.ViewModels
                 FirstType.Count = 0;
 
                 var groupToItem = new Dictionary<string, GroupFilterItem>();
-                var typeToItem = new Dictionary<string, TypeFilterItem>();                
+                var typeToItem = new Dictionary<string, TypeFilterItem>();
 
                 var channels = await _service.GetChannels();
 
@@ -126,7 +126,7 @@ namespace OnlineTelevizor.ViewModels
                     FirstType.Count++;
 
                     if (!groupToItem.ContainsKey(ch.Group))
-                    {              
+                    {
                         var g = new GroupFilterItem()
                         {
                             Name = ch.Group,
@@ -161,7 +161,7 @@ namespace OnlineTelevizor.ViewModels
                     }
                     else
                     {
-                        typeToItem[ch.Type].Count++;                        
+                        typeToItem[ch.Type].Count++;
                     }
                 }
 
@@ -172,14 +172,14 @@ namespace OnlineTelevizor.ViewModels
                 Types.Add(FirstType);
                 foreach (var kvp in typeToItem)
                     Types.Add(kvp.Value);
-            } 
+            }
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "Error while refreshing filter page data");
             }
             finally
-            {   
-                IsBusy = false;             
+            {
+                IsBusy = false;
                 OnPropertyChanged(nameof(IsBusy));
 
                 if (SelectedTypeItem == null)
@@ -189,7 +189,7 @@ namespace OnlineTelevizor.ViewModels
                     SelectedGroupItem = FirstGroup;
 
                 _semaphoreSlim.Release();
-            }            
+            }
         }
     }
 }
