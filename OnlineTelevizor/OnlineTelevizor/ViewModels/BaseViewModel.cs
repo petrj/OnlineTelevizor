@@ -22,6 +22,7 @@ namespace OnlineTelevizor.ViewModels
         protected IDialogService _dialogService;
         protected Context _context;
         public const string KeyMessage = "KeyDownMessage";
+        public const string ShowDetailMessage = "ShowDetailMessage";
 
         public IOnlineTelevizorConfiguration Config { get; set; }
 

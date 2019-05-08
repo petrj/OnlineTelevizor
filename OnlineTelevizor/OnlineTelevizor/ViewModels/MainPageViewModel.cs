@@ -45,6 +45,9 @@ namespace OnlineTelevizor.ViewModels
         public Command ResetConnectionCommand { get; set; }
         public Command CheckPurchaseCommand { get; set; }
 
+        public Command LongPressCommand { get; set; }
+        public Command ShortPressCommand { get; set; }
+
         public MainPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, Context context)
            : base(loggingService, config, dialogService, context)
         {
@@ -65,10 +68,39 @@ namespace OnlineTelevizor.ViewModels
 
             PlayCommand = new Command(async () => await Play());
 
+            LongPressCommand = new Command(LongPress);
+            ShortPressCommand = new Command(ShortPress);
+
             RefreshChannelsCommand.Execute(null);
 
             // refreshing every min with 3s start delay
             BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 3);
+        }
+
+        private void LongPress(object item)
+        {
+            if (item != null && item is ChannelItem)
+            {
+                // select and show program epg detail
+
+                SelectedItem = item as ChannelItem;
+                OnPropertyChanged(nameof(SelectedItem));
+
+                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
+            }
+        }
+
+        private void ShortPress(object item)
+        {
+            if (item != null && item is ChannelItem)
+            {
+                // select and play
+
+                SelectedItem = item as ChannelItem;
+                OnPropertyChanged(nameof(SelectedItem));
+
+                Task.Run(async () => await Play());
+            }
         }
 
         public async Task SelectChannelByNumber(string number)

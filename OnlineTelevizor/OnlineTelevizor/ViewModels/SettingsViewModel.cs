@@ -55,7 +55,7 @@ namespace OnlineTelevizor.ViewModels
                     await _dialogService.Information("Připojení k platební službě selhalo.");
                     return;
                 }
-                
+
                 var purchase = await CrossInAppBilling.Current.PurchaseAsync(Config.PurchaseProductId, ItemType.InAppPurchase, "apppayload");
                 if (purchase == null)
                 {
@@ -81,7 +81,7 @@ namespace OnlineTelevizor.ViewModels
                 }
             }
             catch (Exception ex)
-            {                
+            {
                 //await _dialogService.Information("Platba se nezdařila.");
                 _loggingService.Error(ex, "Payment failed");
                 await _dialogService.Information("Připojení k platební službě selhalo.");
@@ -91,7 +91,7 @@ namespace OnlineTelevizor.ViewModels
                 await CrossInAppBilling.Current.DisconnectAsync();
             }
         }
-        
+
         public int LoggingLevelIndex
         {
             get
@@ -125,7 +125,7 @@ namespace OnlineTelevizor.ViewModels
                     case 2:
                         Config.LoggingLevel = LoggingLevelEnum.Error;
                         break;
-                }  
+                }
                 OnPropertyChanged(nameof(LoggingLevelIndex));
             }
         }

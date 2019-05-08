@@ -54,6 +54,11 @@ namespace OnlineTelevizor.Views
             {
                 _viewModel.RefreshCommand.Execute(null);
             };
+
+            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage, (sender) =>
+            {
+                Detail_Clicked(this, null);
+            });
         }
 
         private void ChannelsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -126,8 +131,8 @@ namespace OnlineTelevizor.Views
                     break;
                 case "buttonl2":
                 case "info":
-                case "epg":
-                    ToolbarItemDetail_Clicked(this, null);
+                case "guide":
+                    Detail_Clicked(this, null);
                     break;
                 default:
                     if (_config.DebugMode)
@@ -229,7 +234,7 @@ namespace OnlineTelevizor.Views
             await Navigation.PushAsync(_filterPage);
         }
 
-        private async void ToolbarItemDetail_Clicked(object sender, EventArgs e)
+        private async void Detail_Clicked(object sender, EventArgs e)
         {
             if (_viewModel.SelectedItem != null)
             {
@@ -241,13 +246,6 @@ namespace OnlineTelevizor.Views
             {
                 await _dialogService.Information("Není označen žádný kanál");
             }
-        }
-
-        private async void Channel_Tapped(object sender, ItemTappedEventArgs e)
-        {
-            var channelItem = e.Item as ChannelItem;
-            _viewModel.SelectedItem = channelItem;
-            await _viewModel.PlayStream(channelItem.Url);
         }
     }
 }

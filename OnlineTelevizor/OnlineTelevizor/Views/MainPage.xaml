@@ -4,7 +4,8 @@
              xmlns:local="clr-namespace:OnlineTelevizor.Views"
              x:Class="OnlineTelevizor.Views.MainPage"
              BackgroundColor="Black"
-             NavigationPage.TitleIcon="Icon.png">
+             NavigationPage.TitleIcon="Icon.png"
+             xmlns:local2="clr-namespace:OnlineTelevizor">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -59,7 +60,6 @@
         <ListView x:Name="ChannelsListView"
                     ItemsSource="{Binding Channels}"
                     CachingStrategy="RecycleElement"
-                    ItemTapped="Channel_Tapped"
                     IsPullToRefreshEnabled="True"
                     RefreshCommand="{Binding RefreshCommand}"
                     IsRefreshing="{Binding IsBusy}"
@@ -70,7 +70,16 @@
                 <DataTemplate>
                     <ViewCell Height="70">
                         <ViewCell.View>
-                            <Grid>
+                            <Grid
+                                local2:PressedEffect.LongPressCommand="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.LongPressCommand}"
+                                local2:PressedEffect.LongPressCommandParameter="{Binding .}"
+                                local2:PressedEffect.ShortPressCommand="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.ShortPressCommand}"
+                                local2:PressedEffect.ShortPressCommandParameter="{Binding .}">
+
+                                <Grid.Effects>
+                                    <local2:PressedEffect />
+                                </Grid.Effects>
+
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="30" />
                                     <RowDefinition Height="40" />
@@ -81,7 +90,7 @@
                                     <ColumnDefinition Width="70" />
                                 </Grid.ColumnDefinitions>
 
-                                <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Text="{Binding ChannelNumber}" Style="{DynamicResource ListItemCenterTextStyle}"/>
+                                <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Text="{Binding ChannelNumber}" Style="{DynamicResource ListItemCenterTextStyle}" />
                                 <Label Grid.Row="0" Grid.Column="1" Margin="15,0,0,0" Text="{Binding Name}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" />
                                 <Label Grid.Row="1" Grid.Column="1" Margin="20,0,0,0" Text="{Binding CurrentEPGTitle}" Style="{DynamicResource ListItemEPGTextStyle}" />
                                 <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding LogoUrl}" WidthRequest="40" Style="{DynamicResource IconStyle}"/>
@@ -104,7 +113,6 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="Refresh.png" />
-        <ToolbarItem Name="ToolbarItemDetail" Text="Info" Clicked="ToolbarItemDetail_Clicked" Icon="Info.png"/>
         <ToolbarItem Name="ToolbarItemFilter" Text="Filtr" Clicked="ToolbarItemFilter_Clicked" Icon="Filter.png"/>
         <ToolbarItem Name="ToolbarItemQuality" Text="Kvalita" Clicked="ToolbarItemQuality_Clicked" Icon="Quality.png"/>
         <ToolbarItem Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked" Icon="Settings.png" />
