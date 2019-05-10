@@ -21,6 +21,14 @@ namespace OnlineTelevizor.Models
         bool ShowLocked { get; set; }
         bool ShowAdultChannels { get; set; }
 
+        /// <summary>
+        /// -1    : no chanel 
+        /// 0     : last channel
+        /// 1...n : channel number
+        /// </summary>
+        string AutoPlayChannelNumber { get; set; }
+        string LastChannelNumber { get; set; }
+
         bool EnableLogging { get; set; }
         LoggingLevelEnum LoggingLevel { get; set; }
 

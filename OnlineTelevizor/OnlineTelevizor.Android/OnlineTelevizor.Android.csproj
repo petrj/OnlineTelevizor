@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
     <MandroidI18n>Other</MandroidI18n>
-    <AndroidSupportedAbis>armeabi;armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
     <IntermediateOutputPath>C:\Users\User\AppData\Local\Temp\vsABA.tmp\Debug\</IntermediateOutputPath>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>

@@ -72,18 +72,22 @@ namespace OnlineTelevizor.Views
             {
                 case "dpaddown":
                 case "buttonr1":
+                case "s":
                     Task.Run(async () => await OnKeyDown());
                     break;
                 case "dpadup":
                 case "buttonl1":
+                case "w":
                     Task.Run(async () => await OnKeyUp());
                     break;
                 case "dpadleft":
                 case "pageup":
+                case "a":
                     Task.Run(async () => await OnKeyLeft());
                     break;
                 case "pagedown":
                 case "dpadright":
+                case "d":
                     Task.Run(async () => await OnKeyRight());
                     break;
                 case "dpadcenter":
@@ -132,6 +136,8 @@ namespace OnlineTelevizor.Views
                 case "buttonl2":
                 case "info":
                 case "guide":
+                case "i":
+                case "g":
                     Detail_Clicked(this, null);
                     break;
                 default:
@@ -193,6 +199,8 @@ namespace OnlineTelevizor.Views
         private async void ToolbarItemSettings_Clicked(object sender, EventArgs e)
         {
             var settingsPage = new SettingsPage(_loggingService, _config, _context, _dialogService);
+            settingsPage.FillAutoPlayChannels(_viewModel.AllNotFilteredChannels);
+
             settingsPage.Disappearing += delegate
             {
                 _viewModel.ResetConnectionCommand.Execute(null);

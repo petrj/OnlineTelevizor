@@ -78,6 +78,34 @@ namespace OnlineTelevizor.Models
             }
         }
 
+        public string LastChannelNumber
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("LastChannelNumber");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("LastChannelNumber", value);
+            }
+        }
+
+        public string AutoPlayChannelNumber
+        {
+            get
+            {
+                var channelNumber = GetPersistingSettingValue<string>("AutoPlayChannelNumber");
+                if (string.IsNullOrEmpty(channelNumber))
+                    channelNumber = "-1"; // no autoplay 
+
+                return channelNumber;
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("AutoPlayChannelNumber", value);
+            }
+        }
+
         public bool EnableLogging
         {
             get

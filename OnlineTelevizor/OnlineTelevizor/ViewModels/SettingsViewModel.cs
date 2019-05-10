@@ -12,6 +12,7 @@ using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Plugin.InAppBilling;
 using Plugin.InAppBilling.Abstractions;
+using System.Collections.ObjectModel;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -21,6 +22,10 @@ namespace OnlineTelevizor.ViewModels
 
         public Command PayCommand { get; set; }
 
+        public ObservableCollection<ChannelItem> AutoPlayChannels { get; set; } = new ObservableCollection<ChannelItem>();
+
+        private ChannelItem _selectedChannelItem;
+
         public SettingsViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, Context context, IDialogService dialogService)
             : base(loggingService, config, dialogService, context)
         {
@@ -29,9 +34,55 @@ namespace OnlineTelevizor.ViewModels
             _dialogService = dialogService;
             Config = config;
 
-            IsPurchased = Config.Purchased;
+            IsPurchased = Config.Purchased;   
 
             PayCommand = new Command(async () => await Pay());
+        }
+
+        public void FillAutoPlayChannels(ObservableCollection<ChannelItem> channels = null)
+        {
+            AutoPlayChannels.Clear();
+
+            var first = new ChannelItem()
+            {
+                Name = "Nespouštět žádný kanál",
+                ChannelNumber = "-1"
+            };
+            var second = new ChannelItem()
+            {
+                Name = "Posledně vybraný kanál",
+                ChannelNumber = "0"
+            };
+
+            AutoPlayChannels.Add(first);
+            AutoPlayChannels.Add(second);
+
+            var anythingSelected = false;
+
+            foreach (var ch in channels)
+            {
+                AutoPlayChannels.Add(ch);
+
+                if (ch.ChannelNumber == Config.AutoPlayChannelNumber)                    
+                {
+                    anythingSelected = true;
+                    SelectedChannelItem = ch;
+                }
+            }
+
+            if (!anythingSelected)
+            {
+                if (Config.AutoPlayChannelNumber == "0")
+                {
+                    SelectedChannelItem = second;
+                }
+                else
+                {
+                    SelectedChannelItem = first;
+                }
+            }
+
+            OnPropertyChanged(nameof(AutoPlayChannels));
         }
 
         protected async Task Pay()
@@ -157,6 +208,23 @@ namespace OnlineTelevizor.ViewModels
 
                 OnPropertyChanged(nameof(IsNotPurchased));
                 OnPropertyChanged(nameof(IsPurchased));
+            }
+        }
+
+        public ChannelItem SelectedChannelItem
+        {
+            get
+            {
+                return _selectedChannelItem;
+            }
+            set
+            {
+                _selectedChannelItem = value;
+
+                if (value != null)
+                    Config.AutoPlayChannelNumber = value.ChannelNumber;
+
+                OnPropertyChanged(nameof(SelectedChannelItem));
             }
         }
     }

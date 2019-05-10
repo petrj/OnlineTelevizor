@@ -14,6 +14,7 @@ namespace OnlineTelevizor.Views
     public partial class App : Application
     {
         OnlineTelevizor.Views.MainPage _mainPage;
+        private DateTime _lastSleep = DateTime.MinValue;
 
         public App()
         {
@@ -47,20 +48,19 @@ namespace OnlineTelevizor.Views
             MainPage = new NavigationPage(_mainPage);
         }
 
-        protected override void OnStart()
-        {
-            // Handle when your app starts
-        }
-
         protected override void OnSleep()
         {
-            // Handle when your app sleeps
+            _lastSleep = DateTime.Now;
         }
 
         protected override void OnResume()
         {
-            // Handle when your app resumes
-            _mainPage.RefreshOnResume();
+            // refresh only when resume after 1 minute
+
+            if ((DateTime.Now - _lastSleep).TotalMinutes > 1)
+            {
+                _mainPage.RefreshOnResume();
+            }
         }
     }
 }

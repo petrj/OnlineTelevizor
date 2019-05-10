@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using System.Collections.ObjectModel;
 
 namespace OnlineTelevizor.Views
 {
@@ -31,9 +32,14 @@ namespace OnlineTelevizor.Views
 
             _config = config;
             _loggingService = loggingService;
-            _dialogService = dialogService;
+            _dialogService = dialogService;            
 
-            BindingContext = _viewModel = new SettingsViewModel(loggingService, config, context, dialogService);
+            BindingContext = _viewModel = new SettingsViewModel(loggingService, config, context, dialogService);            
+        }
+
+        public void FillAutoPlayChannels(ObservableCollection<ChannelItem> channels)
+        {
+            _viewModel.FillAutoPlayChannels(channels);
         }
 
         protected override void OnAppearing()

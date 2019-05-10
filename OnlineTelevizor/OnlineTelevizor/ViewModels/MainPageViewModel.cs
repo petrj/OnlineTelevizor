@@ -25,8 +25,12 @@ namespace OnlineTelevizor.ViewModels
         private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public ObservableCollection<ChannelItem> Channels { get; set; } = new ObservableCollection<ChannelItem>();
+        public ObservableCollection<ChannelItem> AllNotFilteredChannels { get; set; } = new ObservableCollection<ChannelItem>();
 
         private Dictionary<string, ChannelItem> _channelById { get; set; } = new Dictionary<string, ChannelItem>();
+
+        private ChannelItem _selectedItem;
+        private bool _firstRefresh = true;
 
         public TVService TVService
         {
@@ -83,8 +87,7 @@ namespace OnlineTelevizor.ViewModels
             {
                 // select and show program epg detail
 
-                SelectedItem = item as ChannelItem;
-                OnPropertyChanged(nameof(SelectedItem));
+                SelectedItem = item as ChannelItem;                
 
                 MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
             }
@@ -96,8 +99,7 @@ namespace OnlineTelevizor.ViewModels
             {
                 // select and play
 
-                SelectedItem = item as ChannelItem;
-                OnPropertyChanged(nameof(SelectedItem));
+                SelectedItem = item as ChannelItem;               
 
                 Task.Run(async () => await Play());
             }
@@ -124,14 +126,26 @@ namespace OnlineTelevizor.ViewModels
                     }
                     finally
                     {
-                        OnPropertyChanged(nameof(SelectedItem));
-
                         _semaphoreSlim.Release();
                     };
                 });
         }
 
-        public ChannelItem SelectedItem { get; set; }
+        public ChannelItem SelectedItem
+        {
+            get
+            {
+                return _selectedItem;
+            }
+            set
+            {
+                _selectedItem = value;
+                if (value != null)
+                    Config.LastChannelNumber = value.ChannelNumber;
+
+                OnPropertyChanged(nameof(SelectedItem));
+            }
+        }
 
         public async Task SelectNextChannel(int step = 1)
         {
@@ -181,8 +195,6 @@ namespace OnlineTelevizor.ViewModels
                     }
                     finally
                     {
-                        OnPropertyChanged(nameof(SelectedItem));
-
                         _semaphoreSlim.Release();
                     };
                 });
@@ -231,14 +243,9 @@ namespace OnlineTelevizor.ViewModels
                                 }
                             }
                         }
-
-                        OnPropertyChanged(nameof(SelectedItem));
-
                     }
                     finally
                     {
-                        OnPropertyChanged(nameof(SelectedItem));
-
                         _semaphoreSlim.Release();
                     };
                 });
@@ -376,21 +383,29 @@ namespace OnlineTelevizor.ViewModels
 
             try
             {
-                string selectedChannelId = null;
-                if (SelectedItem != null)
+                string selectedChannelNumber = null;
+                if (SelectedItem == null)
                 {
-                    selectedChannelId = SelectedItem.Id;
+                    selectedChannelNumber = Config.LastChannelNumber;
+                } else
+                {
+                    selectedChannelNumber = SelectedItem.ChannelNumber;
                 }
 
                 OnPropertyChanged(nameof(StatusLabel));
 
                 Channels.Clear();
+                AllNotFilteredChannels.Clear();
                 _channelById.Clear();
+
+                var channelByNumber = new Dictionary<string, ChannelItem>();
 
                 var channels = await _service.GetChannels();
 
                 foreach (var ch in channels)
                 {
+                    AllNotFilteredChannels.Add(ch);
+
                     if (Config.ChannelFilterGroup != "*" &&
                         Config.ChannelFilterGroup != null &&
                         Config.ChannelFilterGroup != ch.Group)
@@ -407,12 +422,14 @@ namespace OnlineTelevizor.ViewModels
                         continue;
 
                     Channels.Add(ch);
+
                     _channelById.Add(ch.Id, ch); // for faster EPG refresh
+                    channelByNumber.Add(ch.ChannelNumber, ch); // for channel selecting
                 }
 
-                if (selectedChannelId != null && _channelById.ContainsKey(selectedChannelId))
+                if (!String.IsNullOrEmpty(selectedChannelNumber) && channelByNumber.ContainsKey(selectedChannelNumber))
                 {
-                    SelectedItem = _channelById[selectedChannelId];
+                    SelectedItem = channelByNumber[selectedChannelNumber];
                 }
                 else if (Channels.Count > 0)
                 {
@@ -428,9 +445,46 @@ namespace OnlineTelevizor.ViewModels
                 }
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
-                OnPropertyChanged(nameof(SelectedItem));
 
                 _semaphoreSlim.Release();
+                
+                // auto play?
+                if (_firstRefresh)
+                {
+                    await AutoPlay();
+                }
+
+                _firstRefresh = false;
+            }
+        }
+
+        private async Task AutoPlay()
+        {
+            if (String.IsNullOrEmpty(Config.AutoPlayChannelNumber) ||
+                Config.AutoPlayChannelNumber == "-1")
+                return;
+
+            string channelNumber;
+
+            if (Config.AutoPlayChannelNumber == "0")
+            {
+                if (string.IsNullOrEmpty(Config.LastChannelNumber))
+                    return;
+
+                channelNumber = Config.LastChannelNumber;
+            } else
+            {
+                channelNumber = Config.AutoPlayChannelNumber;
+            }
+
+            foreach (var ch in Channels)
+            {
+                if (ch.ChannelNumber == channelNumber)
+                {
+                    SelectedItem = ch;
+                    await Play();
+                    break;
+                }
             }
         }
 
