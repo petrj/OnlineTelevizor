@@ -32,6 +32,7 @@ namespace OnlineTelevizor.Views
         {
             base.OnAppearing();
 
+            _viewModel.NotifyFontSizeChange();
             _viewModel.RefreshCommand.Execute(null);
         }
     }

@@ -104,7 +104,7 @@ namespace OnlineTelevizor.Models
             {
                 SavePersistingSettingValue<string>("AutoPlayChannelNumber", value);
             }
-        }
+        }        
 
         public bool EnableLogging
         {
@@ -147,6 +147,19 @@ namespace OnlineTelevizor.Models
             set
             {
                 _debugMode = value;
+            }
+        }
+
+        public AppFontSizeEnum AppFontSize
+        {
+            get
+            {
+                var index = GetPersistingSettingValue<int>("AppFontSize");
+                return (AppFontSizeEnum)index;
+            }
+            set
+            {
+                SavePersistingSettingValue<int>("AppFontSize", (int)value);
             }
         }
 

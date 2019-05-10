@@ -34,6 +34,37 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(EPGTime));
             }
         }
+        public string FontSizeForChannel
+        {
+            get
+            {
+                return GetScaledSize(20).ToString();
+            }
+        }
+
+        public string FontSizeForTitle
+        {
+            get
+            {
+                return GetScaledSize(22).ToString();
+            }
+        }
+
+        public string FontSizeForDescription
+        {
+            get
+            {
+                return GetScaledSize(16).ToString();
+            }
+        }
+
+        public string FontSizeForDatetime
+        {
+            get
+            {
+                return GetScaledSize(16).ToString();
+            }
+        }
 
         public string ChannelName
         {
@@ -57,7 +88,7 @@ namespace OnlineTelevizor.ViewModels
 
         public string EPGDate
         {
-            get { return (Channel == null || Channel.CurrentEPGItem == null) ? null : Channel.CurrentEPGItem.Start.ToString("d.M.yyyy"); }
+            get { return (Channel == null || Channel.CurrentEPGItem == null) ? null : Channel.CurrentEPGItem.Start.ToString("d.M."); }
         }
 
         public string EPGTime

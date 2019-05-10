@@ -35,7 +35,22 @@ namespace OnlineTelevizor.ViewModels
             _context = context;
             Config = config;
         }
-
+        
+        public int GetScaledSize(int normalSize)
+        {
+            switch (Config.AppFontSize)
+            {
+                case AppFontSizeEnum.Big:
+                    return Convert.ToInt32(Math.Round(normalSize * 1.25));
+                case AppFontSizeEnum.Biger:
+                    return Convert.ToInt32(Math.Round(normalSize * 1.5));
+                case AppFontSizeEnum.VeryBig:
+                    return Convert.ToInt32(Math.Round(normalSize * 1.75));
+                case AppFontSizeEnum.Huge:
+                    return Convert.ToInt32(Math.Round(normalSize * 2.0));
+                default: return normalSize;
+            }
+        }
         public bool IsBusy
         {
             get { return isBusy; }

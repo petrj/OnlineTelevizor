@@ -39,6 +39,37 @@ namespace OnlineTelevizor.ViewModels
             PayCommand = new Command(async () => await Pay());
         }
 
+        public string FontSizeForCaption
+        {
+            get
+            {
+                return GetScaledSize(14).ToString();
+            }
+        }
+
+        public string FontSizeForEntry
+        {
+            get
+            {
+                return GetScaledSize(14).ToString();
+            }
+        }
+
+        public string FontSizeForPicker
+        {
+            get
+            {
+                return GetScaledSize(12).ToString();
+            }
+        }
+
+        public void NotifyFontSizeChange()
+        {
+            OnPropertyChanged(nameof(FontSizeForCaption));
+            OnPropertyChanged(nameof(FontSizeForEntry));
+            OnPropertyChanged(nameof(FontSizeForPicker));
+        }
+
         public void FillAutoPlayChannels(ObservableCollection<ChannelItem> channels = null)
         {
             AutoPlayChannels.Clear();
@@ -178,6 +209,22 @@ namespace OnlineTelevizor.ViewModels
                         break;
                 }
                 OnPropertyChanged(nameof(LoggingLevelIndex));
+            }
+        }
+
+        public int AppFontSizeIndex
+        {
+            get
+            {
+                return (int)Config.AppFontSize;
+            }
+            set
+            {
+                Config.AppFontSize = (AppFontSizeEnum)value;
+
+                OnPropertyChanged(nameof(AppFontSizeIndex));
+
+                NotifyFontSizeChange();
             }
         }
 

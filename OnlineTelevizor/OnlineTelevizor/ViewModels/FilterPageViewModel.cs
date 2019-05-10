@@ -33,6 +33,30 @@ namespace OnlineTelevizor.ViewModels
         public GroupFilterItem FirstGroup { get; private set; } = new GroupFilterItem() { Name = "*" };
         public TypeFilterItem FirstType { get; private set; } = new TypeFilterItem() { Name = "*" };
 
+        public string FontSizeForPicker
+        {
+            get
+            {
+                return GetScaledSize(12).ToString();
+            }
+        }
+
+        public string FontSizeForLabel
+        {
+            get
+            {
+                return GetScaledSize(14).ToString();
+            }
+        }
+
+        public string FontSizeForEntry
+        {
+            get
+            {
+                return GetScaledSize(12).ToString();
+            }
+        }
+
         public string ChannelNameFilter
         {
             get
@@ -86,6 +110,13 @@ namespace OnlineTelevizor.ViewModels
 
             ClearFilterCommand = new Command(async () => await ClearFilter());
             RefreshCommand = new Command(async () => await Refresh());
+        }
+
+        public void NotifyFontSizeChange()
+        {
+            OnPropertyChanged(nameof(FontSizeForEntry));
+            OnPropertyChanged(nameof(FontSizeForLabel));
+            OnPropertyChanged(nameof(FontSizeForPicker));
         }
 
         private async Task ClearFilter()

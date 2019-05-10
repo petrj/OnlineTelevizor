@@ -27,7 +27,7 @@ namespace OnlineTelevizor.Views
             var config = new OnlineTelevizorConfiguration(context);
 
 #if DEBUG
-            config.DebugMode = true;
+            config.DebugMode = true;  
 #endif
 
             if (config.EnableLogging)

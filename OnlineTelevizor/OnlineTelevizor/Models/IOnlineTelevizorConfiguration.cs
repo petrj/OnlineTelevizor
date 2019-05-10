@@ -29,6 +29,8 @@ namespace OnlineTelevizor.Models
         string AutoPlayChannelNumber { get; set; }
         string LastChannelNumber { get; set; }
 
+        AppFontSizeEnum AppFontSize { get; set; }
+
         bool EnableLogging { get; set; }
         LoggingLevelEnum LoggingLevel { get; set; }
 

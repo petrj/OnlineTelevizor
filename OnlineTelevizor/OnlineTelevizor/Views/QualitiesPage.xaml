@@ -10,7 +10,6 @@
 
             <Style x:Key="ListItemLabelStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Margin" Value="15,5,5,5"/>
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
             </Style>
@@ -49,7 +48,7 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" Style="{DynamicResource ListItemLabelStyle}"/>
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" Style="{DynamicResource ListItemLabelStyle}" FontSize="{Binding Source={x:Reference QualitiesListView}, Path=BindingContext.FontSizeForQualityItem}"/>
 
                                 </Grid>
 

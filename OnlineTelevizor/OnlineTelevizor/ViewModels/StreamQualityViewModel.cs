@@ -35,6 +35,14 @@ namespace OnlineTelevizor.ViewModels
             RefreshCommand = new Command(async () => await Refresh());
         }
 
+        public string FontSizeForQualityItem
+        {
+            get
+            {
+                return GetScaledSize(14).ToString();
+            }
+        }
+
         private async Task Refresh()
         {
             await _semaphoreSlim.WaitAsync();

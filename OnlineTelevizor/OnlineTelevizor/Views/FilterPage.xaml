@@ -13,21 +13,17 @@
             </Style>
 
             <Style x:Key="CaptionLabelStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="#41b3ff"/>
-                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="TextColor" Value="#41b3ff"/>                
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
             </Style>
 
             <Style x:Key="CommonEntryTextStyle" TargetType="Entry">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="12"/>
                 <Setter Property="PlaceholderColor" Value="Gray"/>
             </Style>
 
             <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
-                <Setter Property="TextColor" Value="White"/>
-                <!-- Live player does not support Picker Font Size !!!!!!! -->
-                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="TextColor" Value="White"/>                
             </Style>
 
         </ResourceDictionary>
@@ -42,29 +38,31 @@
                 <StackLayout Margin="20,10,20,0">
 
                     <StackLayout Margin="20,10,0,0">
-                        <Label Text="Název:" Style="{DynamicResource CaptionLabelStyle}"/>
-                        <Entry  Margin="20,0,0,0" Text="{Binding ChannelNameFilter, Mode=TwoWay}" Placeholder="Zadejte název kanálu nebo jeho část" PlaceholderColor="Gray" Style="{StaticResource CommonEntryTextStyle}"/>
+                        <Label Text="Název:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
+                        <Entry  Margin="20,0,0,0" Text="{Binding ChannelNameFilter, Mode=TwoWay}" Placeholder="Zadejte název kanálu nebo jeho část" PlaceholderColor="Gray" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}"/>
                     </StackLayout>
 
                     <StackLayout Margin="20,0,0,0">
-                        <Label Text="Skupina:" Style="{DynamicResource CaptionLabelStyle}"/>
+                        <Label Text="Skupina:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
                         <Picker
                             Margin="20,0,0,0"
                             x:Name="GroupPicker"
                             SelectedItem="{Binding SelectedGroupItem, Mode=TwoWay}"
                             Style="{StaticResource CommonPickerTextStyle}"
+                            FontSize="{Binding FontSizeForPicker}"
                             ItemsSource="{Binding Groups}"
                             ItemDisplayBinding="{Binding GUIName}"/>
                     </StackLayout>
 
                     <StackLayout Margin="20,0,0,0">
 
-                        <Label  Text="Typ:" Style="{DynamicResource CaptionLabelStyle}"/>
+                        <Label Text="Typ:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
                         <Picker
                                 Margin="20,0,0,0"
                                 x:Name="TypePicker"
                                 SelectedItem="{Binding SelectedTypeItem, Mode=TwoWay}"
                                 Style="{StaticResource CommonPickerTextStyle}"
+                                FontSize="{Binding FontSizeForPicker}"
                                 ItemsSource="{Binding Types}"/>
                     </StackLayout>
 

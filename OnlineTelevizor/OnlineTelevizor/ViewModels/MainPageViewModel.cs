@@ -259,6 +259,62 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public string FontSizeForChannel
+        {
+            get
+            {
+                return GetScaledSize(16).ToString();
+            }
+        }
+
+        public string FontSizeForInfoLabel
+        {
+            get
+            {
+                return GetScaledSize(12).ToString();
+            }
+        }
+
+        public string FontSizeForChannelNumber
+        {
+            get
+            {
+                return GetScaledSize(11).ToString();
+            }
+        }
+
+        public string FontSizeForChannelEPG
+        {
+            get
+            {
+                return GetScaledSize(12).ToString();
+            }
+        }
+
+        public int HeightForChannelNameRow
+        {
+            get
+            {
+                return GetScaledSize(40);
+            }
+        }
+
+        public int WidthForIcon
+        {
+            get
+            {
+                return GetScaledSize(40);
+            }
+        }
+
+        public int HeightForChannelEPGRow
+        {
+            get
+            {
+                return GetScaledSize(30);
+            }
+        }
+
         public string StatusLabel
         {
             get
@@ -505,9 +561,21 @@ namespace OnlineTelevizor.ViewModels
                 IsBusy = false;
 
                 OnPropertyChanged(nameof(StatusLabel));
+                NotifyFontSizeChange();
 
                 _semaphoreSlim.Release();
             }
+        }
+
+        public void NotifyFontSizeChange()
+        {
+            OnPropertyChanged(nameof(FontSizeForChannel));
+            OnPropertyChanged(nameof(FontSizeForChannelNumber));
+            OnPropertyChanged(nameof(FontSizeForChannelEPG));
+            OnPropertyChanged(nameof(HeightForChannelNameRow));
+            OnPropertyChanged(nameof(HeightForChannelEPGRow));
+            OnPropertyChanged(nameof(FontSizeForInfoLabel));            
+            OnPropertyChanged(nameof(WidthForIcon));
         }
 
         public async Task CheckPurchase()
