@@ -8,9 +8,12 @@ Android aplikace pro příjem TV a rádia pomocí služby SledovaniTV.cz.
 - nejedná se o oficiální aplikaci služby SledovaniTV.cz
 
 - podpora klávesnic a dálkových ovladačů připojených jako klávesnice (usb, bluetooth)
+- možnost automatického spuštění vybraného kanálu po startu
+- možnost nastavení velikosti písma pro lepší čitelnost na tabletu nebo TV
 - pro přehrávání se používá externí aplikace nainstalovaná v Android zařízení
 - pouze živé vysílání
 - podporován Android 4.4 a vyšší
+- podpora architektur: armeabi, armeabi-v7a, x86, x86_x64, arm64-v8a
 
 #### EN
 Android application for playing internet TV and radio through czech IPTV service SledovaniTV.cz
@@ -18,9 +21,12 @@ Android application for playing internet TV and radio through czech IPTV service
 - this is not official application of SledovaniTV.cz service
 
 - supporting external keyboards and remote controls connected as keyboard (usb, bluetooth)
+- possibility to play selected channel after application start
+- user can change font size
 - using external player installed in Android
 - only live broadcasting
 - for Android 4.4 and higher
+- supported architectures: armeabi, armeabi-v7a, x86, x86_x64, arm64-v8a
 
 <img src="https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Screenshot.png" width="400" alt="Screenshot"/>
 <img src="https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Screenshot2.png" width="400" alt="Screenshot2"/>
