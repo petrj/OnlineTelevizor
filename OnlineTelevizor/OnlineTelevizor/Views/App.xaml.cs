@@ -27,14 +27,16 @@ namespace OnlineTelevizor.Views
             var config = new OnlineTelevizorConfiguration(context);
 
 #if DEBUG
-            config.DebugMode = true;  
+            config.DebugMode = true;
+            config.LoggingLevel = LoggingLevelEnum.Debug;
+            config.EnableLogging = true;            
 #endif
 
             if (config.EnableLogging)
             {
                 // WRITE_EXTERNAL_STORAGE permission is disabled
 #if DEBUG
-                loggingService = new BasicLoggingService(config.LoggingLevel);
+                loggingService = new TCPIPLoggingService("http://88.103.80.48:8100", config.LoggingLevel);
 #else
                 loggingService = new DummyLoggingService();
 #endif

@@ -37,6 +37,12 @@ namespace LoggerService
             try
             {
                 var logFolder = System.IO.Path.GetDirectoryName(LogFilename);
+                if(string.IsNullOrEmpty(logFolder))
+                {
+                    // app folder
+                    logFolder = AppDomain.CurrentDomain.BaseDirectory;
+                }
+
                 if (!Directory.Exists(logFolder))
                     Directory.CreateDirectory(logFolder);
 

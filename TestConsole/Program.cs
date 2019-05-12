@@ -13,9 +13,7 @@ namespace TestConsole
         static void Main(string[] args)
         {
             var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
-            var loggingService = new FileLoggingService();
-            loggingService.LogFilename = "TestConsole.log";
-            loggingService.MinLevel = LoggingLevelEnum.Debug;
+            var loggingService = new TCPIPLoggingService("http://88.103.80.48:8100");    
 
             Console.WriteLine("...");
 
@@ -59,7 +57,7 @@ namespace TestConsole
                     Console.WriteLine();
                     Console.WriteLine($"Status: {sledovaniTV.Status.ToString()}");
                     Console.WriteLine();
-                    Console.WriteLine("Press any key");
+                    Console.WriteLine("Press any key");                   
                 });
 
 
