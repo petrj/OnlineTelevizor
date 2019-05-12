@@ -96,7 +96,7 @@ namespace SledovaniTVAPI
                 request.Method = method;
                 request.ContentType = contentType;
                 request.Accept = "application/json";
-                request.Timeout = 100 * 60 * 1000; // 100 min timeout per one request
+                request.Timeout = 10 * 1000; // 10 sec timeout per one request
 
                 _log.Debug($"Sending {method} request to url: {request.RequestUri}");
                 _log.Debug($"ContentType: {request.ContentType}");

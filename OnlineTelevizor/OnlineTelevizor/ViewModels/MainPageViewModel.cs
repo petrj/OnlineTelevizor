@@ -55,6 +55,8 @@ namespace OnlineTelevizor.ViewModels
         public MainPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, Context context)
            : base(loggingService, config, dialogService, context)
         {
+            _loggingService.Debug("Initializing MainPageViewModel");
+
             _service = new TVService(loggingService, config);
             _loggingService = loggingService;
             _dialogService = dialogService;
@@ -87,7 +89,9 @@ namespace OnlineTelevizor.ViewModels
             {
                 // select and show program epg detail
 
-                SelectedItem = item as ChannelItem;                
+                SelectedItem = item as ChannelItem;
+
+                _loggingService.Debug($"Long press (channel {SelectedItem.Name})");
 
                 MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
             }
@@ -99,7 +103,9 @@ namespace OnlineTelevizor.ViewModels
             {
                 // select and play
 
-                SelectedItem = item as ChannelItem;               
+                SelectedItem = item as ChannelItem;
+
+                _loggingService.Debug($"Short press (channel {SelectedItem.Name})");
 
                 Task.Run(async () => await Play());
             }
@@ -107,6 +113,8 @@ namespace OnlineTelevizor.ViewModels
 
         public async Task SelectChannelByNumber(string number)
         {
+            _loggingService.Debug($"Selecting channel by number {number}");
+
             await _semaphoreSlim.WaitAsync();
 
             await Task.Run(
@@ -149,6 +157,8 @@ namespace OnlineTelevizor.ViewModels
 
         public async Task SelectNextChannel(int step = 1)
         {
+            _loggingService.Debug($"Selecting next channel (step {step})");
+
             await _semaphoreSlim.WaitAsync();
 
             await Task.Run(
@@ -202,6 +212,8 @@ namespace OnlineTelevizor.ViewModels
 
         public async Task SelectPreviousChannel(int step = 1)
         {
+            _loggingService.Debug($"Selecting previous channel (step {step})");
+
             await _semaphoreSlim.WaitAsync();
 
             await Task.Run(
@@ -372,6 +384,8 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task Refresh()
         {
+            _loggingService.Debug($"Refresh");
+
             await RefreshChannels(false);
 
             // reconnecting after 1 sec (connection may fail after resume on wifi with poor signal)
@@ -390,6 +404,8 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task RefreshEPG(bool SetFinallyNotBusy = true)
         {
+            _loggingService.Debug($"RefreshEPG");
+
             await _semaphoreSlim.WaitAsync();
 
             IsBusy = true;
@@ -431,6 +447,8 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task RefreshChannels(bool SetFinallyNotBusy = true)
         {
+            _loggingService.Debug($"RefreshChannels (SetFinallyNotBusy={SetFinallyNotBusy})");
+
             await _semaphoreSlim.WaitAsync();
 
             await CheckPurchase();
@@ -516,6 +534,8 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task AutoPlay()
         {
+            _loggingService.Debug("AutoPlay");
+
             if (String.IsNullOrEmpty(Config.AutoPlayChannelNumber) ||
                 Config.AutoPlayChannelNumber == "-1")
                 return;
@@ -546,6 +566,8 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task ResetConnection()
         {
+            _loggingService.Debug("Reseting connection");
+
             await _semaphoreSlim.WaitAsync();
 
             IsBusy = true;
@@ -635,6 +657,8 @@ namespace OnlineTelevizor.ViewModels
         {
             if (SelectedItem == null)
                 return;
+
+            _loggingService.Debug($"Playing selected channel {SelectedItem.Name}");
 
             await PlayStream(SelectedItem.Url);
         }

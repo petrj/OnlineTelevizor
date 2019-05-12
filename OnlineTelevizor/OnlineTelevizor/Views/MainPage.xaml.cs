@@ -40,6 +40,8 @@ namespace OnlineTelevizor.Views
             _context = context;
             _loggingService = loggingService;
 
+            _loggingService.Debug($"Initializing MainPage");
+
             BindingContext = _viewModel = new MainPageViewModel(loggingService, config, _dialogService, context);
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.KeyMessage, (key) =>
@@ -68,6 +70,8 @@ namespace OnlineTelevizor.Views
 
         public void OnKeyDown(string key)
         {
+            _loggingService.Debug($"OnKeyDown {key}");
+
             switch (key.ToLower())
             {
                 case "dpaddown":
@@ -152,6 +156,8 @@ namespace OnlineTelevizor.Views
 
         private void HandleNumKey(int number)
         {
+            _loggingService.Debug($"HandleNumKey {number}");
+
             if ((DateTime.Now - _lastNumPressedTime).TotalSeconds>1)
             {
                 _lastNumPressedTime = DateTime.MinValue;
@@ -192,12 +198,16 @@ namespace OnlineTelevizor.Views
 
         public void RefreshOnResume()
         {
+            _loggingService.Debug($"RefreshOnResume");
+
             _viewModel.ResetConnectionCommand.Execute(null);
             _viewModel.RefreshCommand.Execute(null);
         }
 
         private async void ToolbarItemSettings_Clicked(object sender, EventArgs e)
         {
+            _loggingService.Debug($"ToolbarItemSettings_Clicked");
+
             var settingsPage = new SettingsPage(_loggingService, _config, _context, _dialogService);
             settingsPage.FillAutoPlayChannels(_viewModel.AllNotFilteredChannels);
 
@@ -212,6 +222,8 @@ namespace OnlineTelevizor.Views
 
         private async void ToolbarItemQuality_Clicked(object sender, EventArgs e)
         {
+            _loggingService.Debug($"ToolbarItemQuality_Clicked");
+
             var qualitiesPage = new QualitiesPage(_loggingService, _config, _context, _viewModel.TVService);
 
             await Navigation.PushAsync(qualitiesPage);
@@ -239,11 +251,15 @@ namespace OnlineTelevizor.Views
 
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
         {
+            _loggingService.Debug($"ToolbarItemFilter_Clicked");
+
             await Navigation.PushAsync(_filterPage);
         }
 
         private async void Detail_Clicked(object sender, EventArgs e)
         {
+            _loggingService.Debug($"Detail_Clicked");
+
             if (_viewModel.SelectedItem != null)
             {
                 var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService, _context);
