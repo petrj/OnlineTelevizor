@@ -31,6 +31,7 @@ namespace OnlineTelevizor.ViewModels
 
         private ChannelItem _selectedItem;
         private bool _firstRefresh = true;
+        private int _lastRefreshDelay = 0;
 
         public TVService TVService
         {
@@ -77,7 +78,7 @@ namespace OnlineTelevizor.ViewModels
             LongPressCommand = new Command(LongPress);
             ShortPressCommand = new Command(ShortPress);            
 
-            // refreshing channles every hour with no start delay
+            // refreshing channels every hour with no start delay
             BackgroundCommandWorker.RunInBackground(RefreshChannelsCommand, 3600, 0);
 
             // refreshing EPG every min with 3s start delay
@@ -399,25 +400,28 @@ namespace OnlineTelevizor.ViewModels
             {
                 OnPropertyChanged(nameof(StatusLabel));
 
+                await _semaphoreSlim.WaitAsync();
+
+                IsBusy = true;
+
                 foreach (var channelItem in Channels)
                 {
                     channelItem.ClearEPG();
                 }
 
-                await _semaphoreSlim.WaitAsync();
-
-                IsBusy = true;
-
                 var epg = await _service.GetEPG();
 
-                foreach (var ei in epg)
+                if (epg != null)
                 {
-                    if (ChannelById.ContainsKey(ei.ChannelId))
+                    foreach (var ei in epg)
                     {
-                        // updating channel EPG
+                        if (ChannelById.ContainsKey(ei.ChannelId))
+                        {
+                            // updating channel EPG
 
-                        var ch = ChannelById[ei.ChannelId];
-                        ch.AddEPGItem(ei);
+                            var ch = ChannelById[ei.ChannelId];
+                            ch.AddEPGItem(ei);
+                        }
                     }
                 }
             }
@@ -429,6 +433,15 @@ namespace OnlineTelevizor.ViewModels
 
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));                
+            }
+
+            if (_service.Status == StatusEnum.ConnectionNotAvailable)
+            {
+                if (_lastRefreshDelay == 0)
+                {
+                    // refresh all after 3 seconds
+                    BackgroundCommandWorker.RunInBackground(RefreshCommand, 0, 3);
+                }
             }
         }
 
@@ -457,7 +470,7 @@ namespace OnlineTelevizor.ViewModels
 
                 var channels = await _service.GetChannels();                
 
-                if (channels.Count > 0)
+                if (channels != null && channels.Count > 0)
                 {
                     Channels.Clear();
                     AllNotFilteredChannels.Clear();
@@ -509,7 +522,32 @@ namespace OnlineTelevizor.ViewModels
 
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));                
-                
+            }
+
+            if (_service.Status == StatusEnum.ConnectionNotAvailable)
+            {
+                if (_lastRefreshDelay == 0)
+                {
+                    // first refresh
+                    _lastRefreshDelay = 2; 
+                } else
+                {
+                    if (_lastRefreshDelay < 60)
+                    {
+                        _lastRefreshDelay *= 2;
+                    }
+                }
+
+                // refresh again after _lastRefreshDelay seconds
+                BackgroundCommandWorker.RunInBackground(RefreshCommand, 0, _lastRefreshDelay);
+            } 
+            else
+            {
+                _lastRefreshDelay = 0;
+            }            
+            
+            if (_service.Status == StatusEnum.Logged)
+            {
                 // auto play?
                 if (_firstRefresh)
                 {
@@ -603,7 +641,7 @@ namespace OnlineTelevizor.ViewModels
                 if (!connected)
                 {
                     _loggingService.Info($"Connection to AppBilling service failed");
-                    await _dialogService.Information("Nepodařilo se ověřit stav zaplacení plné verze.");
+                    //await _dialogService.Information("Nepodařilo se ověřit stav zaplacení plné verze.");
                     return;
                 }
 

@@ -47,9 +47,9 @@
                         <Picker
                             Margin="20,0,0,0"
                             x:Name="GroupPicker"
-                            SelectedItem="{Binding SelectedGroupItem, Mode=TwoWay}"
-                            Style="{StaticResource CommonPickerTextStyle}"
                             FontSize="{Binding FontSizeForPicker}"
+                            SelectedItem="{Binding SelectedGroupItem, Mode=TwoWay}"
+                            Style="{StaticResource CommonPickerTextStyle}"                            
                             ItemsSource="{Binding Groups}"
                             ItemDisplayBinding="{Binding GUIName}"/>
                     </StackLayout>
@@ -60,9 +60,9 @@
                         <Picker
                                 Margin="20,0,0,0"
                                 x:Name="TypePicker"
+                                FontSize="{Binding FontSizeForPicker}"
                                 SelectedItem="{Binding SelectedTypeItem, Mode=TwoWay}"
                                 Style="{StaticResource CommonPickerTextStyle}"
-                                FontSize="{Binding FontSizeForPicker}"
                                 ItemsSource="{Binding Types}"/>
                     </StackLayout>
 

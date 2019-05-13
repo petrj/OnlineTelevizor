@@ -80,8 +80,8 @@
                         <Label  Text="Automaticky spustit po startu:"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
                         <Picker 
                             Margin="20,0,0,0"
-                            Style="{StaticResource CommonPickerTextStyle}"
                             FontSize="{Binding FontSizeForPicker}"
+                            Style="{StaticResource CommonPickerTextStyle}"                            
                             MinimumWidthRequest="200" 
                             SelectedItem="{Binding SelectedChannelItem, Mode=TwoWay}"
                             ItemsSource="{Binding AutoPlayChannels}"
@@ -89,8 +89,12 @@
                     </StackLayout>
 
                     <StackLayout Margin="20,10,20,0">
-                        <Label  Text="Velikost písma:"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
-                        <Picker Margin="20,0,0,0" Style="{StaticResource CommonPickerTextStyle}" FontSize="{Binding FontSizeForPicker}" SelectedIndex="{Binding AppFontSizeIndex, Mode=TwoWay}" >
+                        <Label  Text="Velikost písma:"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />                        
+                        <Picker 
+                            Margin="20,0,0,0" 
+                            FontSize="{Binding FontSizeForPicker}"
+                            Style="{StaticResource CommonPickerTextStyle}"                             
+                            SelectedIndex="{Binding AppFontSizeIndex, Mode=TwoWay}" >
                             <Picker.Items>
                                 <x:String>Normální</x:String>
                                 <x:String>Zvětšené</x:String>
@@ -120,8 +124,14 @@
                         <Label  Grid.Row="2" Grid.Column="0" Text="Povolit logování (vyžaduje restart)" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.DebugMode}" FontSize="{Binding FontSizeForCaption}"/>
                         <Switch Grid.Row="2" Grid.Column="1" x:Name="EnableLoggingSwitch" IsToggled="{Binding Config.EnableLogging, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.DebugMode}" />
 
-                        <Label  Grid.Row="3" Grid.Column="0" IsVisible="{Binding Config.EnableLogging}" Text="Úroveň logování:" LineBreakMode="NoWrap"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
-                        <Picker Grid.Row="3" Grid.Column="1" IsVisible="{Binding Config.EnableLogging}" WidthRequest="120" x:Name="LoggingLevelPicker" SelectedIndex="{Binding LoggingLevelIndex, Mode=TwoWay}" Style="{StaticResource CommonPickerTextStyle}" FontSize="{Binding FontSizeForPicker}">
+                        <Label  Grid.Row="3" Grid.Column="0" IsVisible="{Binding Config.EnableLogging}" Text="Úroveň logování:" LineBreakMode="NoWrap"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />                        
+                        <Picker Grid.Row="3" Grid.Column="1" 
+                                IsVisible="{Binding Config.EnableLogging}" 
+                                FontSize="{Binding FontSizeForPicker}"
+                                WidthRequest="120" 
+                                x:Name="LoggingLevelPicker" 
+                                SelectedIndex="{Binding LoggingLevelIndex, Mode=TwoWay}" 
+                                Style="{StaticResource CommonPickerTextStyle}">
                             <Picker.Items>
                                 <x:String>Debug</x:String>
                                 <x:String>Info</x:String>

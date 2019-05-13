@@ -35,10 +35,11 @@ namespace OnlineTelevizor.Views
 #if DEBUG
                 //loggingService = new TCPIPLoggingService("http://88.103.80.48:8100", config.LoggingLevel);
                 _loggingService = new BasicLoggingService(config.LoggingLevel);
-#else
+#else                 
                 _loggingService = new DummyLoggingService();
 #endif
-            } else
+            }
+            else
             {
                 _loggingService = new DummyLoggingService();
             }
