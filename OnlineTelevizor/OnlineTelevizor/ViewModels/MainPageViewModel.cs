@@ -55,7 +55,7 @@ namespace OnlineTelevizor.ViewModels
         public MainPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, Context context)
            : base(loggingService, config, dialogService, context)
         {
-            _loggingService.Debug("Initializing MainPageViewModel");
+            _loggingService.Info("Initializing MainPageViewModel");
 
             _service = new TVService(loggingService, config);
             _loggingService = loggingService;
@@ -75,11 +75,12 @@ namespace OnlineTelevizor.ViewModels
             PlayCommand = new Command(async () => await Play());
 
             LongPressCommand = new Command(LongPress);
-            ShortPressCommand = new Command(ShortPress);
+            ShortPressCommand = new Command(ShortPress);            
 
-            RefreshChannelsCommand.Execute(null);
+            // refreshing channles every hour with no start delay
+            BackgroundCommandWorker.RunInBackground(RefreshChannelsCommand, 3600, 0);
 
-            // refreshing every min with 3s start delay
+            // refreshing EPG every min with 3s start delay
             BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 3);
         }
 
@@ -91,7 +92,7 @@ namespace OnlineTelevizor.ViewModels
 
                 SelectedItem = item as ChannelItem;
 
-                _loggingService.Debug($"Long press (channel {SelectedItem.Name})");
+                _loggingService.Info($"Long press (channel {SelectedItem.Name})");
 
                 MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
             }
@@ -105,7 +106,7 @@ namespace OnlineTelevizor.ViewModels
 
                 SelectedItem = item as ChannelItem;
 
-                _loggingService.Debug($"Short press (channel {SelectedItem.Name})");
+                _loggingService.Info($"Short press (channel {SelectedItem.Name})");
 
                 Task.Run(async () => await Play());
             }
@@ -113,7 +114,7 @@ namespace OnlineTelevizor.ViewModels
 
         public async Task SelectChannelByNumber(string number)
         {
-            _loggingService.Debug($"Selecting channel by number {number}");
+            _loggingService.Info($"Selecting channel by number {number}");
 
             await _semaphoreSlim.WaitAsync();
 
@@ -157,7 +158,7 @@ namespace OnlineTelevizor.ViewModels
 
         public async Task SelectNextChannel(int step = 1)
         {
-            _loggingService.Debug($"Selecting next channel (step {step})");
+            _loggingService.Info($"Selecting next channel (step {step})");
 
             await _semaphoreSlim.WaitAsync();
 
@@ -212,7 +213,7 @@ namespace OnlineTelevizor.ViewModels
 
         public async Task SelectPreviousChannel(int step = 1)
         {
-            _loggingService.Debug($"Selecting previous channel (step {step})");
+            _loggingService.Info($"Selecting previous channel (step {step})");
 
             await _semaphoreSlim.WaitAsync();
 
@@ -384,31 +385,15 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task Refresh()
         {
-            _loggingService.Debug($"Refresh");
+            _loggingService.Info($"Refresh channels & EPG");
 
-            await RefreshChannels(false);
-
-            // reconnecting after 1 sec (connection may fail after resume on wifi with poor signal)
-            await Task.Delay(1000);
-
-            if (_service.Status == StatusEnum.ConnectionNotAvailable)
-            {
-                await RefreshChannels(false);
-                await RefreshEPG();
-            }
-            else
-            {
-                await RefreshEPG();
-            }
+            await RefreshChannels();
+            await RefreshEPG();
         }
 
-        private async Task RefreshEPG(bool SetFinallyNotBusy = true)
+        private async Task RefreshEPG()
         {
-            _loggingService.Debug($"RefreshEPG");
-
-            await _semaphoreSlim.WaitAsync();
-
-            IsBusy = true;
+            _loggingService.Info($"RefreshEPG");            
 
             try
             {
@@ -419,7 +404,12 @@ namespace OnlineTelevizor.ViewModels
                     channelItem.ClearEPG();
                 }
 
+                await _semaphoreSlim.WaitAsync();
+
+                IsBusy = true;
+
                 var epg = await _service.GetEPG();
+
                 foreach (var ei in epg)
                 {
                     if (ChannelById.ContainsKey(ei.ChannelId))
@@ -433,27 +423,20 @@ namespace OnlineTelevizor.ViewModels
             }
             finally
             {
-                if (SetFinallyNotBusy)
-                {
-                    IsBusy = false;
-                }
-
-                OnPropertyChanged(nameof(StatusLabel));
-                OnPropertyChanged(nameof(IsBusy));
+                IsBusy = false;
 
                 _semaphoreSlim.Release();
+
+                OnPropertyChanged(nameof(StatusLabel));
+                OnPropertyChanged(nameof(IsBusy));                
             }
         }
 
-        private async Task RefreshChannels(bool SetFinallyNotBusy = true)
+        private async Task RefreshChannels()
         {
-            _loggingService.Debug($"RefreshChannels (SetFinallyNotBusy={SetFinallyNotBusy})");
+            _loggingService.Info($"RefreshChannels");
 
-            await _semaphoreSlim.WaitAsync();
-
-            await CheckPurchase();
-
-            IsBusy = true;
+            await CheckPurchase();                 
 
             try
             {
@@ -468,73 +451,77 @@ namespace OnlineTelevizor.ViewModels
 
                 OnPropertyChanged(nameof(StatusLabel));
 
-                Channels.Clear();
-                AllNotFilteredChannels.Clear();
-                _channelById.Clear();
+                await _semaphoreSlim.WaitAsync();
 
-                var channelByNumber = new Dictionary<string, ChannelItem>();
+                IsBusy = true;
 
-                var channels = await _service.GetChannels();
+                var channels = await _service.GetChannels();                
 
-                foreach (var ch in channels)
+                if (channels.Count > 0)
                 {
-                    AllNotFilteredChannels.Add(ch);
+                    Channels.Clear();
+                    AllNotFilteredChannels.Clear();
+                    _channelById.Clear();
 
-                    if (Config.ChannelFilterGroup != "*" &&
-                        Config.ChannelFilterGroup != null &&
-                        Config.ChannelFilterGroup != ch.Group)
-                        continue;
+                    var channelByNumber = new Dictionary<string, ChannelItem>();
 
-                    if (Config.ChannelFilterType != "*" &&
-                        Config.ChannelFilterType != null &&
-                        Config.ChannelFilterType != ch.Type)
-                        continue;
+                    foreach (var ch in channels)
+                    {
+                        AllNotFilteredChannels.Add(ch);
 
-                    if ((!String.IsNullOrEmpty(Config.ChannelFilterName)) &&
-                        (Config.ChannelFilterName != "*") &&
-                        !ch.Name.ToLower().Contains(Config.ChannelFilterName.ToLower()))
-                        continue;
+                        if (Config.ChannelFilterGroup != "*" &&
+                            Config.ChannelFilterGroup != null &&
+                            Config.ChannelFilterGroup != ch.Group)
+                            continue;
 
-                    Channels.Add(ch);
+                        if (Config.ChannelFilterType != "*" &&
+                            Config.ChannelFilterType != null &&
+                            Config.ChannelFilterType != ch.Type)
+                            continue;
 
-                    _channelById.Add(ch.Id, ch); // for faster EPG refresh
-                    channelByNumber.Add(ch.ChannelNumber, ch); // for channel selecting
-                }
+                        if ((!String.IsNullOrEmpty(Config.ChannelFilterName)) &&
+                            (Config.ChannelFilterName != "*") &&
+                            !ch.Name.ToLower().Contains(Config.ChannelFilterName.ToLower()))
+                            continue;
 
-                if (!String.IsNullOrEmpty(selectedChannelNumber) && channelByNumber.ContainsKey(selectedChannelNumber))
-                {
-                    SelectedItem = channelByNumber[selectedChannelNumber];
-                }
-                else if (Channels.Count > 0)
-                {
-                    // selecting first channel
-                    SelectedItem = Channels[0];
+                        Channels.Add(ch);
+
+                        _channelById.Add(ch.Id, ch); // for faster EPG refresh
+                        channelByNumber.Add(ch.ChannelNumber, ch); // for channel selecting
+                    }
+
+                    if (!String.IsNullOrEmpty(selectedChannelNumber) && channelByNumber.ContainsKey(selectedChannelNumber))
+                    {
+                        SelectedItem = channelByNumber[selectedChannelNumber];
+                    }
+                    else if (Channels.Count > 0)
+                    {
+                        // selecting first channel
+                        SelectedItem = Channels[0];
+                    }
                 }
 
             } finally
             {
-                if (SetFinallyNotBusy)
-                {
-                    IsBusy = false;
-                }
-                OnPropertyChanged(nameof(StatusLabel));
-                OnPropertyChanged(nameof(IsBusy));
+                IsBusy = false;
 
                 _semaphoreSlim.Release();
+
+                OnPropertyChanged(nameof(StatusLabel));
+                OnPropertyChanged(nameof(IsBusy));                
                 
                 // auto play?
                 if (_firstRefresh)
                 {
+                    _firstRefresh = false;
                     await AutoPlay();
                 }
-
-                _firstRefresh = false;
             }
         }
 
         private async Task AutoPlay()
         {
-            _loggingService.Debug("AutoPlay");
+            _loggingService.Info("AutoPlay");
 
             if (String.IsNullOrEmpty(Config.AutoPlayChannelNumber) ||
                 Config.AutoPlayChannelNumber == "-1")
@@ -566,7 +553,7 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task ResetConnection()
         {
-            _loggingService.Debug("Reseting connection");
+            _loggingService.Info("Reseting connection");
 
             await _semaphoreSlim.WaitAsync();
 
@@ -582,10 +569,10 @@ namespace OnlineTelevizor.ViewModels
             {
                 IsBusy = false;
 
-                OnPropertyChanged(nameof(StatusLabel));
-                NotifyFontSizeChange();
-
                 _semaphoreSlim.Release();
+
+                OnPropertyChanged(nameof(StatusLabel));
+                NotifyFontSizeChange();                
             }
         }
 
@@ -605,7 +592,7 @@ namespace OnlineTelevizor.ViewModels
             if (Config.Purchased || Config.DebugMode)
                 return;
 
-            _loggingService.Debug($"Checking purchase");
+            _loggingService.Info($"Checking purchase");
 
             try
             {
@@ -624,7 +611,6 @@ namespace OnlineTelevizor.ViewModels
                 var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
                 foreach (var purchase in purchases)
                 {
-
                     if (purchase.ProductId == Config.PurchaseProductId &&
                         purchase.State == PurchaseState.Purchased)
                     {
@@ -658,7 +644,7 @@ namespace OnlineTelevizor.ViewModels
             if (SelectedItem == null)
                 return;
 
-            _loggingService.Debug($"Playing selected channel {SelectedItem.Name}");
+            _loggingService.Info($"Playing selected channel {SelectedItem.Name}");
 
             await PlayStream(SelectedItem.Url);
         }

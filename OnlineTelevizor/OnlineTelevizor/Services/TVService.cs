@@ -43,7 +43,7 @@ namespace OnlineTelevizor.Services
             {
                 var epg = await _sledovaniTV.GetEPG();
 
-                if (_sledovaniTV.Status == StatusEnum.Logged || _sledovaniTV.Status == StatusEnum.Paired)
+                if (_sledovaniTV.Status == StatusEnum.Logged)
                 {
                     foreach (var ei in epg)
                     {

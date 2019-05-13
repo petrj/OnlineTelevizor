@@ -199,8 +199,7 @@ namespace OnlineTelevizor.Views
         public void RefreshOnResume()
         {
             _loggingService.Debug($"RefreshOnResume");
-
-            _viewModel.ResetConnectionCommand.Execute(null);
+            
             _viewModel.RefreshCommand.Execute(null);
         }
 

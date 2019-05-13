@@ -15,48 +15,50 @@ namespace OnlineTelevizor.Views
     {
         OnlineTelevizor.Views.MainPage _mainPage;
         private DateTime _lastSleep = DateTime.MinValue;
+        protected ILoggingService _loggingService;
 
         public App()
         {
             InitializeComponent();
-
-            ILoggingService loggingService;
 
             var context = Android.App.Application.Context;
 
             var config = new OnlineTelevizorConfiguration(context);
 
 #if DEBUG
-            config.DebugMode = true;
-            config.LoggingLevel = LoggingLevelEnum.Debug;
-            config.EnableLogging = true;            
+            config.DebugMode = true;        
 #endif
 
             if (config.EnableLogging)
             {
                 // WRITE_EXTERNAL_STORAGE permission is disabled
 #if DEBUG
-                loggingService = new TCPIPLoggingService("http://88.103.80.48:8100", config.LoggingLevel);
+                //loggingService = new TCPIPLoggingService("http://88.103.80.48:8100", config.LoggingLevel);
+                _loggingService = new BasicLoggingService(config.LoggingLevel);
 #else
                 loggingService = new DummyLoggingService();
 #endif
             } else
             {
-                loggingService = new DummyLoggingService();
+                _loggingService = new DummyLoggingService();
             }
 
-            _mainPage = new MainPage(loggingService, config, context);
+            _mainPage = new MainPage(_loggingService, config, context);
 
             MainPage = new NavigationPage(_mainPage);
         }
 
         protected override void OnSleep()
         {
+            _loggingService.Info($"OnSleep");
+
             _lastSleep = DateTime.Now;
         }
 
         protected override void OnResume()
         {
+            _loggingService.Info($"OnResume");
+
             // refresh only when resume after 1 minute
 
             if ((DateTime.Now - _lastSleep).TotalMinutes > 1)

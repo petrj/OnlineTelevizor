@@ -242,16 +242,19 @@ namespace SledovaniTVAPI
             }
         }
 
-        public async Task Login()
+        public async Task Login(bool force = false)
         {
-            if (_session != null && !String.IsNullOrEmpty(_session.PHPSESSID))
+            if (force)
+                _status = StatusEnum.NotInitialized;
+
+            if (!force && _session != null && !String.IsNullOrEmpty(_session.PHPSESSID))
             {
                 _status = StatusEnum.Logged;
             }
 
             _log.Debug("Login");
 
-            if (Status == StatusEnum.Logged)
+            if (!force && Status == StatusEnum.Logged)
             {
                 _log.Debug("Device is already logged");
                 return;
@@ -265,7 +268,7 @@ namespace SledovaniTVAPI
                 return;
             }
 
-            if (_deviceConnection != null && !String.IsNullOrEmpty(_deviceConnection.deviceId))
+            if (!force && _deviceConnection != null && !String.IsNullOrEmpty(_deviceConnection.deviceId))
             {
                 _status = StatusEnum.Paired;
             }
@@ -285,7 +288,7 @@ namespace SledovaniTVAPI
 
             await DeviceLogin();
 
-            if (Status == StatusEnum.LoginFailed)
+            if (!force && Status == StatusEnum.LoginFailed)
             {
                 // bad device connection ? Pairing again
                 await CreatePairing();
@@ -325,6 +328,27 @@ namespace SledovaniTVAPI
 
                 var epgString = await SendRequest("epg", ps);
                 var epgJson = JObject.Parse(epgString);
+
+                // has session expired?
+                if (epgJson.HasValue("status") &&
+                   epgJson.GetStringValue("status") == "0")
+                {
+                    _log.Info("Received status 0, login again");
+                    
+                    await Login(true);
+
+                    if (Status == StatusEnum.Logged)
+                    {
+                        ps["PHPSESSID"] = _session.PHPSESSID;
+                        epgString = await SendRequest("epg", ps);
+                        epgJson = JObject.Parse(epgString);
+                    }
+                    else
+                    {
+                        _log.Info("Login again failed");
+                        return result;
+                    }                       
+                }
 
                 if (epgJson.HasValue("status") &&
                     epgJson.GetStringValue("status")=="1" &&
@@ -392,13 +416,34 @@ namespace SledovaniTVAPI
                 };
 
                 var streamQualityResponseString = await SendRequest("get-stream-qualities", ps);
-                var StreamQualityJson = JObject.Parse(streamQualityResponseString);
+                var streamQualityJson = JObject.Parse(streamQualityResponseString);
 
-                if (StreamQualityJson.HasValue("status") &&
-                   StreamQualityJson.GetStringValue("status") == "1" &&
-                   StreamQualityJson.HasValue("qualities"))
+                // has session expired?
+                if (streamQualityJson.HasValue("status") &&
+                   streamQualityJson.GetStringValue("status") == "0")
                 {
-                    foreach (var qToken in StreamQualityJson.GetValue("qualities"))
+                    _log.Info("Received status 0, login again");
+
+                    await Login(true);
+
+                    if (Status == StatusEnum.Logged)
+                    {
+                        ps["PHPSESSID"] = _session.PHPSESSID;
+                        streamQualityResponseString = await SendRequest("get-stream-qualities", ps);
+                        streamQualityJson = JObject.Parse(streamQualityResponseString);
+                    }
+                    else
+                    {
+                        _log.Info("Login again failed");
+                        return result;
+                    }
+                }
+
+                if (streamQualityJson.HasValue("status") &&
+                   streamQualityJson.GetStringValue("status") == "1" &&
+                   streamQualityJson.HasValue("qualities"))
+                {
+                    foreach (var qToken in streamQualityJson.GetValue("qualities"))
                     {
                         var q = JObject.Parse(qToken.ToString());
                         var id = q["id"];
@@ -460,29 +505,59 @@ namespace SledovaniTVAPI
                 var channelsString = await SendRequest("playlist", ps);
                 var channelsJson = JObject.Parse(channelsString);
 
-                var number = 1;
-                foreach (JObject channelJson in channelsJson["channels"])
+                // has session expired?
+                if (channelsJson.HasValue("status") &&
+                   channelsJson.GetStringValue("status") == "0")
                 {
-                    var ch = new Channel()
+                    _log.Info("Received status 0, login again");
+
+                    await Login(true);
+
+                    if (Status == StatusEnum.Logged)
                     {
-                        ChannelNumber = number.ToString(),
-
-                        Id = channelJson["id"].ToString(),
-                        Name = channelJson["name"].ToString(),
-                        Url = channelJson["url"].ToString(),
-
-                        Type = channelJson["type"].ToString(),
-                        LogoUrl = channelJson["logoUrl"].ToString(),
-                        Locked = channelJson["locked"].ToString(),
-                        ParentLocked = channelJson["parentLocked"].ToString(),
-                        Group = channelJson["group"].ToString()
-                    };
-
-                    number++;
-                    result.Add(ch);
+                        ps["PHPSESSID"] = _session.PHPSESSID;
+                        channelsString = await SendRequest("playlist", ps);
+                        channelsJson = JObject.Parse(channelsString);
+                    }
+                    else
+                    {
+                        _log.Info("Login again failed");
+                        return result;
+                    }
                 }
 
-                _log.Debug($"Received {result.Count} channels");
+                var number = 1;
+
+                if (channelsJson.HasValue("status") &&
+                 channelsJson.GetStringValue("status") == "1" &&
+                 channelsJson.HasValue("channels"))
+                {
+                    foreach (JObject channelJson in channelsJson["channels"])
+                    {
+                        var ch = new Channel()
+                        {
+                            ChannelNumber = number.ToString(),
+
+                            Id = channelJson["id"].ToString(),
+                            Name = channelJson["name"].ToString(),
+                            Url = channelJson["url"].ToString(),
+
+                            Type = channelJson["type"].ToString(),
+                            LogoUrl = channelJson["logoUrl"].ToString(),
+                            Locked = channelJson["locked"].ToString(),
+                            ParentLocked = channelJson["parentLocked"].ToString(),
+                            Group = channelJson["group"].ToString()
+                        };
+
+                        number++;
+                        result.Add(ch);
+                    }
+
+                    _log.Debug($"Received {result.Count} channels");
+                } else
+                {
+                    _log.Debug($"No channel received (status <>1)");
+                }                
             }
             catch (WebException wex)
             {
@@ -518,6 +593,27 @@ namespace SledovaniTVAPI
 
                 var unlockResponseString = await SendRequest("pin-unlock", ps);
                 var unlockResponseJson = JObject.Parse(unlockResponseString);
+                
+                // has session expired?
+                if (unlockResponseJson.HasValue("status") &&
+                   unlockResponseJson.GetStringValue("status") == "0")
+                {
+                    _log.Info("Received status 0, login again");
+
+                    await Login(true);
+
+                    if (Status == StatusEnum.Logged)
+                    {
+                        ps["PHPSESSID"] = _session.PHPSESSID;
+                        unlockResponseString = await SendRequest("pin-unlock", ps);
+                        unlockResponseJson = JObject.Parse(unlockResponseString);
+                    }
+                    else
+                    {
+                        _log.Info("Login again failed");
+                        return;
+                    }
+                }
 
                 if ((unlockResponseJson.HasValue("status")) &&
                     (unlockResponseJson.GetStringValue("status") == "1")
@@ -533,7 +629,8 @@ namespace SledovaniTVAPI
                 }
                 else
                 {
-                    throw new Exception("Unknown error");
+                    _log.Info("Unknown result while unlocking adult channels");
+                    return;
                 }
             }
             catch (WebException wex)
@@ -565,6 +662,30 @@ namespace SledovaniTVAPI
                 };
 
                 await SendRequest("pin-lock", ps);
+
+                var lockResponseString = await SendRequest("pin-lock", ps);
+                var lockResponseJson = JObject.Parse(lockResponseString);
+
+                // has session expired?
+                if (lockResponseJson.HasValue("status") &&
+                   lockResponseJson.GetStringValue("status") == "0")
+                {
+                    _log.Info("Received status 0, login again");
+
+                    await Login(true);
+
+                    if (Status == StatusEnum.Logged)
+                    {
+                        ps["PHPSESSID"] = _session.PHPSESSID;
+
+                        await SendRequest("pin-lock", ps);
+                    }
+                    else
+                    {
+                        _log.Info("Login again failed");
+                        return;
+                    }
+                }
             }
             catch (WebException wex)
             {
