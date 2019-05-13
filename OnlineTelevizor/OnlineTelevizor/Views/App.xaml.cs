@@ -26,7 +26,7 @@ namespace OnlineTelevizor.Views
             var config = new OnlineTelevizorConfiguration(context);
 
 #if DEBUG
-            config.DebugMode = true;        
+            config.DebugMode = true;
 #endif
 
             if (config.EnableLogging)
@@ -36,7 +36,7 @@ namespace OnlineTelevizor.Views
                 //loggingService = new TCPIPLoggingService("http://88.103.80.48:8100", config.LoggingLevel);
                 _loggingService = new BasicLoggingService(config.LoggingLevel);
 #else
-                loggingService = new DummyLoggingService();
+                _loggingService = new DummyLoggingService();
 #endif
             } else
             {
