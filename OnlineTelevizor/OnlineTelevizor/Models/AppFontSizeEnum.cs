@@ -6,10 +6,11 @@ namespace OnlineTelevizor.Models
 {
     public enum AppFontSizeEnum
     {
-        Standard = 0,
-        Big = 1,
-        Biger = 2,
-        VeryBig = 3,
-        Huge = 4
+        Normal = 0,
+        AboveNormal = 1,
+        Big = 2,
+        Biger = 3,
+        VeryBig = 5,
+        Huge = 6
     }
 }

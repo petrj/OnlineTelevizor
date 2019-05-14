@@ -40,6 +40,8 @@ namespace OnlineTelevizor.ViewModels
         {
             switch (Config.AppFontSize)
             {
+                case AppFontSizeEnum.AboveNormal:
+                    return Convert.ToInt32(Math.Round(normalSize * 1.12));
                 case AppFontSizeEnum.Big:
                     return Convert.ToInt32(Math.Round(normalSize * 1.25));
                 case AppFontSizeEnum.Biger:

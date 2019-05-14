@@ -314,9 +314,6 @@ namespace SledovaniTVAPI
 
             await Login();
 
-            if (_status != StatusEnum.Logged)
-                return result;
-
             try
             {
                 var ps = new Dictionary<string, string>()
@@ -331,10 +328,14 @@ namespace SledovaniTVAPI
 
                 // has session expired?
                 if (epgJson.HasValue("status") &&
-                   epgJson.GetStringValue("status") == "0")
+                    epgJson.GetStringValue("status") == "0" &&
+                    epgJson.HasValue("error") &&
+                    epgJson.GetStringValue("error") == "not logged")
                 {
                     _log.Info("Received status 0, login again");
-                    
+
+                    _session.PHPSESSID = null;
+
                     await Login(true);
 
                     if (Status == StatusEnum.Logged)
@@ -345,7 +346,7 @@ namespace SledovaniTVAPI
                     }
                     else
                     {
-                        _log.Info("Login again failed");
+                        _log.Info($"Login again failed (status: {Status})");
                         return result;
                     }                       
                 }
@@ -424,6 +425,8 @@ namespace SledovaniTVAPI
                 {
                     _log.Info("Received status 0, login again");
 
+                    _session.PHPSESSID = null;
+
                     await Login(true);
 
                     if (Status == StatusEnum.Logged)
@@ -434,7 +437,7 @@ namespace SledovaniTVAPI
                     }
                     else
                     {
-                        _log.Info("Login again failed");
+                        _log.Info($"Login again failed (status: {Status})");
                         return result;
                     }
                 }
@@ -507,9 +510,14 @@ namespace SledovaniTVAPI
 
                 // has session expired?
                 if (channelsJson.HasValue("status") &&
-                   channelsJson.GetStringValue("status") == "0")
+                    channelsJson.GetStringValue("status") == "0" &&
+                    channelsJson.HasValue("error") &&
+                    channelsJson.GetStringValue("error") == "not logged"
+                   )
                 {
                     _log.Info("Received status 0, login again");
+
+                    _session.PHPSESSID = null;
 
                     await Login(true);
 
@@ -521,7 +529,7 @@ namespace SledovaniTVAPI
                     }
                     else
                     {
-                        _log.Info("Login again failed");
+                        _log.Info($"Login again failed (status: {Status})");
                         return result;
                     }
                 }
@@ -600,6 +608,8 @@ namespace SledovaniTVAPI
                 {
                     _log.Info("Received status 0, login again");
 
+                    _session.PHPSESSID = null;
+
                     await Login(true);
 
                     if (Status == StatusEnum.Logged)
@@ -610,7 +620,7 @@ namespace SledovaniTVAPI
                     }
                     else
                     {
-                        _log.Info("Login again failed");
+                        _log.Info($"Login again failed (status: {Status})");
                         return;
                     }
                 }
@@ -672,6 +682,8 @@ namespace SledovaniTVAPI
                 {
                     _log.Info("Received status 0, login again");
 
+                    _session.PHPSESSID = null;
+
                     await Login(true);
 
                     if (Status == StatusEnum.Logged)
@@ -682,7 +694,7 @@ namespace SledovaniTVAPI
                     }
                     else
                     {
-                        _log.Info("Login again failed");
+                        _log.Info($"Login again failed (status: {Status})");
                         return;
                     }
                 }

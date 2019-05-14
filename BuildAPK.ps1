@@ -95,4 +95,4 @@ if (-not (Test-Path -Path "nuget.exe"))
 .\nuget.exe restore .\OnlineTelevizor.sln
 
 Create-APK -ProjFileName "$scriptPath\OnlineTelevizor\OnlineTelevizor.Android\OnlineTelevizor.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 27 -msbuild $msbuild | Move-Item -Destination  . -Verbose -Force
-#Create-APK -ProjFileName "$scriptPath\OnlineTelevizor\OnlineTelevizor.Android\OnlineTelevizor.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 27 -msbuild $msbuild -Target "Debug" | Move-Item -Destination  . -Verbose -Force
+Create-APK -ProjFileName "$scriptPath\OnlineTelevizor\OnlineTelevizor.Android\OnlineTelevizor.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 27 -msbuild $msbuild -Target "Debug" | Move-Item -Destination  . -Verbose -Force

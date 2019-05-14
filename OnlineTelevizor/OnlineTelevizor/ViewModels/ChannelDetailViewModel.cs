@@ -27,7 +27,7 @@ namespace OnlineTelevizor.ViewModels
 
                 OnPropertyChanged(nameof(ChannelName));
                 OnPropertyChanged(nameof(LogoUrl));
-                OnPropertyChanged(nameof(EPGTitle));
+                OnPropertyChanged(nameof(EPGTitle));                
 
                 OnPropertyChanged(nameof(EPGDescription));
                 OnPropertyChanged(nameof(EPGDate));

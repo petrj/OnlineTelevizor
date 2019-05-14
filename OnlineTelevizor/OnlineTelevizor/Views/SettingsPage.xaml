@@ -99,8 +99,9 @@
                                 <x:String>Normální</x:String>
                                 <x:String>Zvětšené</x:String>
                                 <x:String>Velké</x:String>
-                                <x:String>Větší</x:String>
+                                <x:String>Velké +</x:String>
                                 <x:String>Obrovské</x:String>
+                                <x:String>Obrovské +</x:String>
                             </Picker.Items>
                         </Picker>                            
 

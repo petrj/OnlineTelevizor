@@ -37,12 +37,28 @@ namespace OnlineTelevizor.Models
         {
             _EPGItems.Add(epgItem);
             OnPropertyChanged(nameof(CurrentEPGTitle));
+            OnPropertyChanged(nameof(EPGTime));
         }
 
         public void ClearEPG()
         {
             _EPGItems.Clear();
             OnPropertyChanged(nameof(CurrentEPGTitle));
+            OnPropertyChanged(nameof(EPGTime));
+        }
+
+        public string EPGTime
+        {
+            get
+            {
+                var epg = CurrentEPGItem;
+
+                return (epg == null)
+                    ? null
+                    : epg.Start.ToString("HH:mm")
+                        + " - " +
+                      epg.Finish.ToString("HH:mm");
+            }
         }
 
         public String CurrentEPGTitle

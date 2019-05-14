@@ -297,6 +297,14 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public string FontSizeForTime
+        {
+            get
+            {
+                return GetScaledSize(11).ToString();
+            }
+        }
+
         public string FontSizeForChannelEPG
         {
             get
@@ -329,11 +337,20 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public int HeightForTimeRow
+        {
+            get
+            {
+                return GetScaledSize(12);
+            }
+        }
+
         public string StatusLabel
         {
             get
             {
-                if (IsBusy)
+                if (IsBusy || 
+                    (_lastRefreshDelay > 0 && _lastRefreshDelay <= 4 )) // only first few seconds
                 {
                     return "Aktualizují se kanály...";
                 }
@@ -392,64 +409,11 @@ namespace OnlineTelevizor.ViewModels
             await RefreshEPG();
         }
 
-        private async Task RefreshEPG()
-        {
-            _loggingService.Info($"RefreshEPG");            
-
-            try
-            {
-                OnPropertyChanged(nameof(StatusLabel));
-
-                await _semaphoreSlim.WaitAsync();
-
-                IsBusy = true;
-
-                foreach (var channelItem in Channels)
-                {
-                    channelItem.ClearEPG();
-                }
-
-                var epg = await _service.GetEPG();
-
-                if (epg != null)
-                {
-                    foreach (var ei in epg)
-                    {
-                        if (ChannelById.ContainsKey(ei.ChannelId))
-                        {
-                            // updating channel EPG
-
-                            var ch = ChannelById[ei.ChannelId];
-                            ch.AddEPGItem(ei);
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                IsBusy = false;
-
-                _semaphoreSlim.Release();
-
-                OnPropertyChanged(nameof(StatusLabel));
-                OnPropertyChanged(nameof(IsBusy));                
-            }
-
-            if (_service.Status == StatusEnum.ConnectionNotAvailable)
-            {
-                if (_lastRefreshDelay == 0)
-                {
-                    // refresh all after 3 seconds
-                    BackgroundCommandWorker.RunInBackground(RefreshCommand, 0, 3);
-                }
-            }
-        }
-
         private async Task RefreshChannels()
         {
             _loggingService.Info($"RefreshChannels");
 
-            await CheckPurchase();                 
+            await CheckPurchase();
 
             try
             {
@@ -457,7 +421,8 @@ namespace OnlineTelevizor.ViewModels
                 if (SelectedItem == null)
                 {
                     selectedChannelNumber = Config.LastChannelNumber;
-                } else
+                }
+                else
                 {
                     selectedChannelNumber = SelectedItem.ChannelNumber;
                 }
@@ -468,7 +433,7 @@ namespace OnlineTelevizor.ViewModels
 
                 IsBusy = true;
 
-                var channels = await _service.GetChannels();                
+                var channels = await _service.GetChannels();
 
                 if (channels != null && channels.Count > 0)
                 {
@@ -514,23 +479,25 @@ namespace OnlineTelevizor.ViewModels
                     }
                 }
 
-            } finally
+            }
+            finally
             {
                 IsBusy = false;
 
                 _semaphoreSlim.Release();
 
                 OnPropertyChanged(nameof(StatusLabel));
-                OnPropertyChanged(nameof(IsBusy));                
+                OnPropertyChanged(nameof(IsBusy));
             }
 
-            if (_service.Status == StatusEnum.ConnectionNotAvailable)
+            if (Channels.Count == 0)
             {
                 if (_lastRefreshDelay == 0)
                 {
                     // first refresh
-                    _lastRefreshDelay = 2; 
-                } else
+                    _lastRefreshDelay = 2;
+                }
+                else
                 {
                     if (_lastRefreshDelay < 60)
                     {
@@ -540,12 +507,12 @@ namespace OnlineTelevizor.ViewModels
 
                 // refresh again after _lastRefreshDelay seconds
                 BackgroundCommandWorker.RunInBackground(RefreshCommand, 0, _lastRefreshDelay);
-            } 
+            }
             else
             {
                 _lastRefreshDelay = 0;
-            }            
-            
+            }
+
             if (_service.Status == StatusEnum.Logged)
             {
                 // auto play?
@@ -556,6 +523,63 @@ namespace OnlineTelevizor.ViewModels
                 }
             }
         }
+
+        private async Task RefreshEPG()
+        {
+            _loggingService.Info($"RefreshEPG");
+
+
+            var epgItemsCountRead = 0;
+            try
+            {
+                OnPropertyChanged(nameof(StatusLabel));
+
+                await _semaphoreSlim.WaitAsync();
+
+                IsBusy = true;
+
+                foreach (var channelItem in Channels)
+                {
+                    channelItem.ClearEPG();
+                }
+
+                var epg = await _service.GetEPG();
+
+                if (epg != null)
+                {
+                    foreach (var ei in epg)
+                    {
+                        epgItemsCountRead++;
+
+                        if (ChannelById.ContainsKey(ei.ChannelId))
+                        {
+                            // updating channel EPG
+
+                            var ch = ChannelById[ei.ChannelId];
+                            ch.AddEPGItem(ei);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                IsBusy = false;
+
+                _semaphoreSlim.Release();
+
+                OnPropertyChanged(nameof(StatusLabel));
+                OnPropertyChanged(nameof(IsBusy));                
+            }
+
+            if (epgItemsCountRead == 0)
+            {
+                if (_lastRefreshDelay == 0)
+                {
+                    // refresh all after 3 seconds
+                    BackgroundCommandWorker.RunInBackground(RefreshCommand, 0, 3);
+                }
+            }
+        }   
 
         private async Task AutoPlay()
         {
@@ -618,9 +642,11 @@ namespace OnlineTelevizor.ViewModels
         {
             OnPropertyChanged(nameof(FontSizeForChannel));
             OnPropertyChanged(nameof(FontSizeForChannelNumber));
+            OnPropertyChanged(nameof(FontSizeForTime));            
             OnPropertyChanged(nameof(FontSizeForChannelEPG));
             OnPropertyChanged(nameof(HeightForChannelNameRow));
             OnPropertyChanged(nameof(HeightForChannelEPGRow));
+            OnPropertyChanged(nameof(HeightForTimeRow));            
             OnPropertyChanged(nameof(FontSizeForInfoLabel));            
             OnPropertyChanged(nameof(WidthForIcon));
         }

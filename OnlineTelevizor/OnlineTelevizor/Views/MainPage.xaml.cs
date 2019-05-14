@@ -135,7 +135,8 @@ namespace OnlineTelevizor.Views
                     break;
                 case "f5":
                 case "del":
-                    RefreshOnResume();
+                    Reset();
+                    Refresh();
                     break;
                 case "buttonl2":
                 case "info":
@@ -196,16 +197,23 @@ namespace OnlineTelevizor.Views
             }).Start();
         }
 
-        public void RefreshOnResume()
+        public void Reset()
         {
-            _loggingService.Debug($"RefreshOnResume");
-            
+            _loggingService.Info($"Reset");
+
+            _viewModel.ResetConnectionCommand.Execute(null);         
+        }
+
+        public void Refresh()
+        {
+            _loggingService.Info($"Refresh");
+
             _viewModel.RefreshCommand.Execute(null);
         }
 
         private async void ToolbarItemSettings_Clicked(object sender, EventArgs e)
         {
-            _loggingService.Debug($"ToolbarItemSettings_Clicked");
+            _loggingService.Info($"ToolbarItemSettings_Clicked");
 
             var settingsPage = new SettingsPage(_loggingService, _config, _context, _dialogService);
             settingsPage.FillAutoPlayChannels(_viewModel.AllNotFilteredChannels);
@@ -221,7 +229,7 @@ namespace OnlineTelevizor.Views
 
         private async void ToolbarItemQuality_Clicked(object sender, EventArgs e)
         {
-            _loggingService.Debug($"ToolbarItemQuality_Clicked");
+            _loggingService.Info($"ToolbarItemQuality_Clicked");
 
             var qualitiesPage = new QualitiesPage(_loggingService, _config, _context, _viewModel.TVService);
 
@@ -250,14 +258,14 @@ namespace OnlineTelevizor.Views
 
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
         {
-            _loggingService.Debug($"ToolbarItemFilter_Clicked");
+            _loggingService.Info($"ToolbarItemFilter_Clicked");
 
             await Navigation.PushAsync(_filterPage);
         }
 
         private async void Detail_Clicked(object sender, EventArgs e)
         {
-            _loggingService.Debug($"Detail_Clicked");
+            _loggingService.Info($"Detail_Clicked");
 
             if (_viewModel.SelectedItem != null)
             {

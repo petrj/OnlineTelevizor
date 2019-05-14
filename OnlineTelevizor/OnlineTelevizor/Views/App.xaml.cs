@@ -49,6 +49,11 @@ namespace OnlineTelevizor.Views
             MainPage = new NavigationPage(_mainPage);
         }
 
+        protected override void OnStart()
+        {
+            _mainPage.Reset();
+        }
+
         protected override void OnSleep()
         {
             _loggingService.Info($"OnSleep");
@@ -64,7 +69,8 @@ namespace OnlineTelevizor.Views
 
             if ((DateTime.Now - _lastSleep).TotalMinutes > 1)
             {
-                _mainPage.RefreshOnResume();
+                _mainPage.Reset();
+                _mainPage.Refresh();
             }
         }
     }

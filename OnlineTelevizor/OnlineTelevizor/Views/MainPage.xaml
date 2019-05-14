@@ -29,6 +29,14 @@
                 <Setter Property="LineBreakMode" Value="WordWrap"/>
             </Style>
 
+            <Style x:Key="TimeTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="VerticalTextAlignment" Value="End"/>
+                <Setter Property="HorizontalOptions" Value="End"/>
+                <Setter Property="FontAttributes" Value="None"/>
+                <Setter Property="LineBreakMode" Value="WordWrap"/>
+            </Style>
+
             <Style x:Key="InfoLabelStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="#41b3ff"/>
                 <Setter Property="Margin" Value="20,0,0,0"/>
@@ -78,6 +86,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForChannelNameRow}" />
                                     <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForChannelEPGRow}" />
+                                    <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForTimeRow}" />                                    
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="40" />
@@ -85,10 +94,11 @@
                                     <ColumnDefinition Width="70" />
                                 </Grid.ColumnDefinitions>
 
-                                <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Text="{Binding ChannelNumber}" Style="{DynamicResource ChannelNumberTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannelNumber}" />
-                                <Label Grid.Row="0" Grid.Column="1" Margin="15,0,0,0" Text="{Binding Name}"  LineBreakMode="NoWrap" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannel}" />
-                                <Label Grid.Row="1" Grid.Column="1" Margin="20,0,0,0" Text="{Binding CurrentEPGTitle}" Style="{DynamicResource ChannelEPGTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannelEPG}"/>
+                                <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Text="{Binding ChannelNumber}" Style="{DynamicResource ChannelNumberTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannelNumber}" />
+                                <Label Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" Text="{Binding Name}"  LineBreakMode="NoWrap" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannel}" />
                                 <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding LogoUrl}" Style="{DynamicResource IconStyle}"/>
+                                <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,0" Text="{Binding CurrentEPGTitle}" Style="{DynamicResource ChannelEPGTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannelEPG}"/>
+                                <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,5,0" Text="{Binding EPGTime}" Style="{DynamicResource TimeTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForTime}"/>
 
                             </Grid>
 

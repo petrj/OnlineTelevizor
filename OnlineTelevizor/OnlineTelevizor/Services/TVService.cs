@@ -43,6 +43,13 @@ namespace OnlineTelevizor.Services
             {
                 var epg = await _sledovaniTV.GetEPG();
 
+                if (_sledovaniTV.Status == StatusEnum.ConnectionNotAvailable)
+                {
+                    // repeat again after 1500 ms
+                    await Task.Delay(1500);
+                    epg = await _sledovaniTV.GetEPG();
+                }
+
                 if (_sledovaniTV.Status == StatusEnum.Logged)
                 {
                     foreach (var ei in epg)
@@ -113,6 +120,13 @@ namespace OnlineTelevizor.Services
                 }
 
                 var channels = await _sledovaniTV.GetChanels();
+
+                if (_sledovaniTV.Status == StatusEnum.ConnectionNotAvailable)
+                {
+                    // repeat again after 1500 ms
+                    await Task.Delay(1500);
+                    channels = await _sledovaniTV.GetChanels();
+                }
 
                 if (_sledovaniTV.Status == StatusEnum.Logged)
                 {
