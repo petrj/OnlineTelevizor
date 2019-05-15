@@ -1,6 +1,7 @@
 ﻿using Android.Content;
 using Android.Preferences;
 using LoggerService;
+using OnlineTelevizor.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,11 +9,11 @@ using System.IO;
 using System.Text;
 using Xamarin.Forms;
 
-namespace OnlineTelevizor.Models
+namespace OnlineTelevizor.Droid
 {
     public class AndroidOnlineTelevizorConfiguration : CustomSharedPreferencesObject, IOnlineTelevizorConfiguration
     {
-        private bool _debugMode = false;
+        private bool _debugMode = false;       
 
         public string Username
         {

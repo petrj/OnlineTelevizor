@@ -20,6 +20,7 @@ namespace OnlineTelevizor.ViewModels
     {
         protected ILoggingService _loggingService;
         protected IDialogService _dialogService;
+        public const string UriMessage = "LaunchUri";
         public const string KeyMessage = "KeyDownMessage";
         public const string ShowDetailMessage = "ShowDetailMessage";
 
@@ -135,7 +136,7 @@ namespace OnlineTelevizor.ViewModels
             {
                 if (Device.RuntimePlatform == Device.UWP)
                 {
-                    Device.OpenUri(new Uri(url));
+                    MessagingCenter.Send(url, BaseViewModel.UriMessage);
                 }
                 else
                 if (Device.RuntimePlatform == Device.Android)
