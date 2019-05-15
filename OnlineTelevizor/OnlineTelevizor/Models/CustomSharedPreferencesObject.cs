@@ -15,9 +15,9 @@ namespace OnlineTelevizor.Models
         private ISharedPreferencesEditor _prefsEditor;
         private Context _context;
 
-        public CustomSharedPreferencesObject(Context context)
+        public CustomSharedPreferencesObject()
         {
-            _context = context;
+            _context = Android.App.Application.Context; 
             _sharedPrefs = PreferenceManager.GetDefaultSharedPreferences(_context);
             _prefsEditor = _sharedPrefs.Edit();
         }

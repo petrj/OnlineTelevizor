@@ -26,11 +26,10 @@ namespace OnlineTelevizor.ViewModels
 
         private ChannelItem _selectedChannelItem;
 
-        public SettingsViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, Context context, IDialogService dialogService)
-            : base(loggingService, config, dialogService, context)
+        public SettingsViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
+            : base(loggingService, config, dialogService)
         {
             _loggingService = loggingService;
-            _context = context;
             _dialogService = dialogService;
             Config = config;
 

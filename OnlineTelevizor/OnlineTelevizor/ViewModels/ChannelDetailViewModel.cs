@@ -103,12 +103,11 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
-        public ChannelDetailViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, Context context)
-            : base(loggingService, config, dialogService, context)
+        public ChannelDetailViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
+            : base(loggingService, config, dialogService)
         {
             _loggingService = loggingService;
             _dialogService = dialogService;
-            _context = context;
             Config = config;
         }
     }

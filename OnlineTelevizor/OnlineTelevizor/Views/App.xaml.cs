@@ -17,23 +17,17 @@ namespace OnlineTelevizor.Views
         private DateTime _lastSleep = DateTime.MinValue;
         protected ILoggingService _loggingService;
 
-        public App()
+        public App(IOnlineTelevizorConfiguration config)
         {
-            InitializeComponent();
-
-            var context = Android.App.Application.Context;
-
-            var config = new OnlineTelevizorConfiguration(context);
+            InitializeComponent();            
 
 #if DEBUG
             config.DebugMode = true;
 #endif
 
             if (config.EnableLogging)
-            {
-                // WRITE_EXTERNAL_STORAGE permission is disabled
-#if DEBUG
-                //loggingService = new TCPIPLoggingService("http://88.103.80.48:8100", config.LoggingLevel);
+            {         
+#if DEBUG                
                 _loggingService = new BasicLoggingService(config.LoggingLevel);
 #else                 
                 _loggingService = new DummyLoggingService();
@@ -44,7 +38,7 @@ namespace OnlineTelevizor.Views
                 _loggingService = new DummyLoggingService();
             }
 
-            _mainPage = new MainPage(_loggingService, config, context);
+            _mainPage = new MainPage(_loggingService, config);
 
             MainPage = new NavigationPage(_mainPage);
         }

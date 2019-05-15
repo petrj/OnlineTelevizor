@@ -25,20 +25,12 @@
                 <Setter Property="TextColor" Value="#41b3ff"/>
             </Style>
 
-            <Style x:Key="CommonSwitchTextStyle" TargetType="Switch">
-                <Setter Property="WidthRequest" Value="70"/>
-                <Setter Property="HorizontalOptions" Value="End"/>
+            <Style x:Key="CommonSwitchTextStyle" TargetType="Switch">                
+                <Setter Property="HorizontalOptions" Value="End"/>                
             </Style>
 
             <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
                 <Setter Property="TextColor" Value="White"/>              
-            </Style>
-
-            <Style x:Key="ButtonStyle" TargetType="Button">
-                <Setter Property="BackgroundColor" Value="#006cb8"/>
-                <Setter Property="TextColor" Value="LightBlue"/>
-                <Setter Property="HeightRequest" Value="22"/>
-                <Setter Property="FontSize" Value="12"/>
             </Style>
 
         </ResourceDictionary>
@@ -70,13 +62,12 @@
                     </StackLayout>
 
                 </StackLayout>
-                <StackLayout Margin="20,10,20,0">
+                
+                <StackLayout Margin="20,20,20,20">
 
-                    <Button Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"  FontSize="{Binding FontSizeForEntry}"/>
+                    <Label Margin="0,0,20,0" Text="Další nastavení" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
 
-                    <Label Margin="0,20,20,0" Text="Další nastavení" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-
-                    <StackLayout Margin="20,10,20,0">
+                    <StackLayout Margin="20,10,0,0">
                         <Label  Text="Automaticky spustit po startu:"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
                         <Picker 
                             Margin="20,0,0,0"
@@ -88,7 +79,7 @@
                             ItemDisplayBinding="{Binding Name}"/>
                     </StackLayout>
 
-                    <StackLayout Margin="20,10,20,0">
+                    <StackLayout Margin="20,10,0,0">
                         <Label  Text="Velikost písma:"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />                        
                         <Picker 
                             Margin="20,0,0,0" 
@@ -116,31 +107,14 @@
                             <ColumnDefinition Width="30*" />
                         </Grid.ColumnDefinitions>
 
-                        <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit kanály pro dospělé (nutný PIN)" Style="{StaticResource CaptionStyle}" IsVisible="{Binding IsPurchased}"  FontSize="{Binding FontSizeForCaption}"/>
-                        <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowAdultChannelsSwitch" IsToggled="{Binding Config.ShowAdultChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding IsPurchased}"/>
-
-                        <Label  Grid.Row="1" Grid.Column="0" Text="Zobrazit nedostupné kanály" Style="{StaticResource CaptionStyle}" IsVisible="{Binding IsPurchased}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Switch Grid.Row="1" Grid.Column="1" x:Name="ShowLockedSwitch" IsToggled="{Binding Config.ShowLocked, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding IsPurchased}"/>
-
-                        <Label  Grid.Row="2" Grid.Column="0" Text="Povolit logování (vyžaduje restart)" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.DebugMode}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Switch Grid.Row="2" Grid.Column="1" x:Name="EnableLoggingSwitch" IsToggled="{Binding Config.EnableLogging, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.DebugMode}" />
-
-                        <Label  Grid.Row="3" Grid.Column="0" IsVisible="{Binding Config.EnableLogging}" Text="Úroveň logování:" LineBreakMode="NoWrap"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />                        
-                        <Picker Grid.Row="3" Grid.Column="1" 
-                                IsVisible="{Binding Config.EnableLogging}" 
-                                FontSize="{Binding FontSizeForPicker}"
-                                WidthRequest="120" 
-                                x:Name="LoggingLevelPicker" 
-                                SelectedIndex="{Binding LoggingLevelIndex, Mode=TwoWay}" 
-                                Style="{StaticResource CommonPickerTextStyle}">
-                            <Picker.Items>
-                                <x:String>Debug</x:String>
-                                <x:String>Info</x:String>
-                                <x:String>Error</x:String>
-                            </Picker.Items>
-                        </Picker>
+                        <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit kanály pro dospělé (nutný PIN)" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.IsPurchased}"  FontSize="{Binding FontSizeForCaption}"/>
+                        <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowAdultChannelsSwitch" IsToggled="{Binding Config.ShowAdultChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.IsPurchased}"/>
                     </Grid>
+
+                    <Button Margin="20,10,0,0" Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
+
                 </StackLayout>
+            
             </StackLayout>
 
         </ScrollView>

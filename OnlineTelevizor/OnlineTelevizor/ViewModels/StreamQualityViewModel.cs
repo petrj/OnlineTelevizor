@@ -23,13 +23,12 @@ namespace OnlineTelevizor.ViewModels
 
         public QualityItem SelectedItem { get; set; }
 
-        public StreamQualityViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, Context context, TVService service)
-           : base(loggingService, config, dialogService, context)
+        public StreamQualityViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
+           : base(loggingService, config, dialogService)
         {
             _service = service;
             _loggingService = loggingService;
             _dialogService = dialogService;
-            _context = context;
             Config = config;
 
             RefreshCommand = new Command(async () => await Refresh());

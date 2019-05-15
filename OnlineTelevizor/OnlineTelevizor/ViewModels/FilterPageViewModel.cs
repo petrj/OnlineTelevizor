@@ -99,13 +99,12 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
-        public FilterPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, Context context, TVService service)
-           : base(loggingService, config, dialogService, context)
+        public FilterPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
+           : base(loggingService, config, dialogService)
         {
             _service = service;
             _loggingService = loggingService;
-            _dialogService = dialogService;
-            _context = context;
+            _dialogService = dialogService;           
             Config = config;
 
             ClearFilterCommand = new Command(async () => await ClearFilter());

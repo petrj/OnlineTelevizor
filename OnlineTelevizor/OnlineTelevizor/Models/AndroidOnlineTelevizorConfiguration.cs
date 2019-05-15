@@ -10,12 +10,9 @@ using Xamarin.Forms;
 
 namespace OnlineTelevizor.Models
 {
-    public class OnlineTelevizorConfiguration : CustomSharedPreferencesObject, IOnlineTelevizorConfiguration
+    public class AndroidOnlineTelevizorConfiguration : CustomSharedPreferencesObject, IOnlineTelevizorConfiguration
     {
         private bool _debugMode = false;
-
-        public OnlineTelevizorConfiguration(Context context) : base(context)
-        {}
 
         public string Username
         {

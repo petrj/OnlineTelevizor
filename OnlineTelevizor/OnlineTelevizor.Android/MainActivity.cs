@@ -13,6 +13,7 @@ using Plugin.InAppBilling;
 using Plugin.Toast;
 using Xamarin.Forms;
 using OnlineTelevizor.ViewModels;
+using OnlineTelevizor.Models;
 
 namespace OnlineTelevizor.Droid
 {
@@ -32,7 +33,7 @@ namespace OnlineTelevizor.Droid
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
-            _app = new App();
+            _app = new App(new AndroidOnlineTelevizorConfiguration());
 
             LoadApplication(_app);
         }

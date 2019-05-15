@@ -21,14 +21,14 @@ namespace OnlineTelevizor.Views
         private IOnlineTelevizorConfiguration _config;
 
 
-        public QualitiesPage (ILoggingService loggingService, IOnlineTelevizorConfiguration config, Context context, TVService service)
+        public QualitiesPage (ILoggingService loggingService, IOnlineTelevizorConfiguration config, TVService service)
 		{
 			InitializeComponent ();
 
             _config = config;
             var dialogService = new DialogService(this);
 
-            BindingContext = _viewModel = new StreamQualityViewModel(loggingService, config, dialogService, context, service);
+            BindingContext = _viewModel = new StreamQualityViewModel(loggingService, config, dialogService, service);
         }
 
         protected override void OnAppearing()

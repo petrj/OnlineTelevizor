@@ -21,7 +21,6 @@ namespace OnlineTelevizor.Views
     {
         private MainPageViewModel _viewModel;
         private DialogService _dialogService;
-        private Context _context;
         private IOnlineTelevizorConfiguration _config;
         private ILoggingService _loggingService;
 
@@ -30,19 +29,18 @@ namespace OnlineTelevizor.Views
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private string _numberPressed = String.Empty;
 
-        public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, Context context)
+        public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
             InitializeComponent();
 
             _dialogService = new DialogService(this);
 
             _config = config;
-            _context = context;
             _loggingService = loggingService;
 
             _loggingService.Debug($"Initializing MainPage");
 
-            BindingContext = _viewModel = new MainPageViewModel(loggingService, config, _dialogService, context);
+            BindingContext = _viewModel = new MainPageViewModel(loggingService, config, _dialogService);
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.KeyMessage, (key) =>
             {
@@ -51,7 +49,7 @@ namespace OnlineTelevizor.Views
 
             ChannelsListView.ItemSelected += ChannelsListView_ItemSelected;
 
-             _filterPage = new FilterPage(_loggingService, _config, _context, _viewModel.TVService);
+            _filterPage = new FilterPage(_loggingService, _config, _viewModel.TVService);
             _filterPage.Disappearing += delegate
             {
                 _viewModel.RefreshCommand.Execute(null);
@@ -61,6 +59,16 @@ namespace OnlineTelevizor.Views
             {
                 Detail_Clicked(this, null);
             });
+
+            if (Device.RuntimePlatform == Device.UWP)
+            {
+                ChannelsListView.ItemTapped += ChannelsListView_ItemTapped;
+            }
+        }
+
+        private void ChannelsListView_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            Task.Run(async () => await _viewModel.Play());            
         }
 
         private void ChannelsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -215,7 +223,7 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"ToolbarItemSettings_Clicked");
 
-            var settingsPage = new SettingsPage(_loggingService, _config, _context, _dialogService);
+            var settingsPage = new SettingsPage(_loggingService, _config, _dialogService);
             settingsPage.FillAutoPlayChannels(_viewModel.AllNotFilteredChannels);
 
             settingsPage.Disappearing += delegate
@@ -231,7 +239,7 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"ToolbarItemQuality_Clicked");
 
-            var qualitiesPage = new QualitiesPage(_loggingService, _config, _context, _viewModel.TVService);
+            var qualitiesPage = new QualitiesPage(_loggingService, _config, _viewModel.TVService);
 
             await Navigation.PushAsync(qualitiesPage);
         }
@@ -269,7 +277,7 @@ namespace OnlineTelevizor.Views
 
             if (_viewModel.SelectedItem != null)
             {
-                var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService, _context);
+                var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService);
                 detailPage.Channel = _viewModel.SelectedItem;
 
                 await Navigation.PushAsync(detailPage);

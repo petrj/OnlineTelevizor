@@ -26,15 +26,23 @@ namespace OnlineTelevizor.Views
         private ILoggingService _loggingService;
         IDialogService _dialogService;
 
-        public SettingsPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, Context context, IDialogService dialogService)
+        public SettingsPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
         {
             InitializeComponent();
 
             _config = config;
             _loggingService = loggingService;
-            _dialogService = dialogService;            
+            _dialogService = dialogService;
 
-            BindingContext = _viewModel = new SettingsViewModel(loggingService, config, context, dialogService);            
+            BindingContext = _viewModel = new SettingsViewModel(loggingService, config, dialogService);
+
+            if (Device.RuntimePlatform == Device.UWP)
+            {
+                ShowAdultChannelsSwitch.BackgroundColor = Color.LightGray;
+                UsernameEntry.TextColor = Color.Black;
+                PasswordEntry.TextColor = Color.Black;
+                PinEntry.TextColor = Color.Black;
+            }
         }
 
         public void FillAutoPlayChannels(ObservableCollection<ChannelItem> channels)

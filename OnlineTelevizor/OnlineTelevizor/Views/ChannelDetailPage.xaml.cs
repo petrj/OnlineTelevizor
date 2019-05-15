@@ -31,11 +31,11 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        public ChannelDetailPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, Context context)
+        public ChannelDetailPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
         {
             InitializeComponent();
 
-            BindingContext = _viewModel = new ChannelDetailViewModel(loggingService, config, dialogService, context);
+            BindingContext = _viewModel = new ChannelDetailViewModel(loggingService, config, dialogService);
         }
     }
 }

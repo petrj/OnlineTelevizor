@@ -16,27 +16,47 @@ namespace OnlineTelevizor.Services
         /// <param name="delaySeconds">start delay</param>
         public static void RunInBackground(Command command, int repeatIntervalSeconds = 5, int delaySeconds = 0)
         {
-            new Thread(() =>
+            if (Device.RuntimePlatform == Device.UWP)
             {
-                Thread.CurrentThread.IsBackground = true;
-
                 Thread.Sleep(delaySeconds * 1000);
 
-                do
+                command.Execute(null);
+
+                if (repeatIntervalSeconds == 0)
+                    return;
+
+                Device.StartTimer(TimeSpan.FromSeconds(repeatIntervalSeconds), () =>
                 {
                     command.Execute(null);
 
-                    if (repeatIntervalSeconds <= 0)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        Thread.Sleep(repeatIntervalSeconds * 1000);
-                    }
-                } while (true);
-            }).Start();
+                    return true; 
+                });
+            }
+            else
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                new Thread(() =>
+                {
+                    Thread.CurrentThread.IsBackground = true;
 
+                    Thread.Sleep(delaySeconds * 1000);
+
+                    do
+                    {
+                        command.Execute(null);
+
+                        if (repeatIntervalSeconds <= 0)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            Thread.Sleep(repeatIntervalSeconds * 1000);
+                        }
+                    } while (true);
+                }).Start();
+            }
         }
+
     }
 }

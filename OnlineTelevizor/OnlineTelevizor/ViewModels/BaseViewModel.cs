@@ -20,7 +20,6 @@ namespace OnlineTelevizor.ViewModels
     {
         protected ILoggingService _loggingService;
         protected IDialogService _dialogService;
-        protected Context _context;
         public const string KeyMessage = "KeyDownMessage";
         public const string ShowDetailMessage = "ShowDetailMessage";
 
@@ -28,11 +27,10 @@ namespace OnlineTelevizor.ViewModels
 
         bool isBusy = false;
 
-        public BaseViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, Context context)
+        public BaseViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
         {
             _loggingService = loggingService;
             _dialogService = dialogService;
-            _context = context;
             Config = config;
         }
         
@@ -131,50 +129,39 @@ namespace OnlineTelevizor.ViewModels
 
         #endregion
 
-        protected async Task ShareFile(string fileName)
-        {
-            try
-            {
-                var intent = new Intent(Intent.ActionSend);
-                var file = new Java.IO.File(fileName);
-                var uri = Android.Net.Uri.FromFile(file);
-                intent.PutExtra(Intent.ExtraStream, uri);
-                intent.SetDataAndType(uri, "text/plain");
-                intent.SetFlags(ActivityFlags.GrantReadUriPermission);
-                intent.SetFlags(ActivityFlags.NewTask);
-                _context.StartActivity(intent);
-            }
-            catch (Exception ex)
-            {
-                _loggingService.Error(ex);
-                await _dialogService.Information($"Při sdílení logu došlo k chybě");
-            }
-        }
-
         public async Task PlayStream(string url, int resultKeyCode = 0)
         {
             try
             {
-                // apply config quality:
-                if (!String.IsNullOrEmpty(Config.StreamQuality))
+                if (Device.RuntimePlatform == Device.UWP)
                 {
-                    var configQuality = "quality=" + Config.StreamQuality;
-
-                    var qMatches = Regex.Match(url, "quality=[0-9]{1,4}");
-                    if (qMatches != null && qMatches.Success)
-                    {
-                        url = url.Replace(qMatches.Value, configQuality);
-                    } else
-                    {
-                        url += "&" + configQuality;
-                    }
+                    Device.OpenUri(new Uri(url));
                 }
+                else
+                if (Device.RuntimePlatform == Device.Android)
+                {
+                    // apply config quality:
+                    if (!String.IsNullOrEmpty(Config.StreamQuality))
+                    {
+                        var configQuality = "quality=" + Config.StreamQuality;
 
-                var intent = new Intent(Intent.ActionView);
-                var uri = Android.Net.Uri.Parse(url);
-                intent.SetDataAndType(uri, "video/*");
-                intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask); // necessary for Android 5
-                _context.StartActivity(intent);
+                        var qMatches = Regex.Match(url, "quality=[0-9]{1,4}");
+                        if (qMatches != null && qMatches.Success)
+                        {
+                            url = url.Replace(qMatches.Value, configQuality);
+                        }
+                        else
+                        {
+                            url += "&" + configQuality;
+                        }
+                    }
+
+                    var intent = new Intent(Intent.ActionView);
+                    var uri = Android.Net.Uri.Parse(url);
+                    intent.SetDataAndType(uri, "video/*");
+                    intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask); // necessary for Android 5
+                    Android.App.Application.Context.StartActivity(intent);
+                }
             }
             catch (Exception ex)
             {

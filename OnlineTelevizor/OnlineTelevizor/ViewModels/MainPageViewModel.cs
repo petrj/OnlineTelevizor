@@ -13,9 +13,9 @@ using Xamarin.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using System.Threading;
+using Plugin.Toast;
 using Plugin.InAppBilling;
 using Plugin.InAppBilling.Abstractions;
-using Plugin.Toast;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -53,15 +53,14 @@ namespace OnlineTelevizor.ViewModels
         public Command LongPressCommand { get; set; }
         public Command ShortPressCommand { get; set; }
 
-        public MainPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, Context context)
-           : base(loggingService, config, dialogService, context)
+        public MainPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
+           : base(loggingService, config, dialogService)
         {
             _loggingService.Info("Initializing MainPageViewModel");
 
             _service = new TVService(loggingService, config);
             _loggingService = loggingService;
-            _dialogService = dialogService;
-            _context = context;
+            _dialogService = dialogService;            
             Config = config;
 
             RefreshCommand = new Command(async () => await Refresh());
@@ -77,7 +76,7 @@ namespace OnlineTelevizor.ViewModels
 
             LongPressCommand = new Command(LongPress);
             ShortPressCommand = new Command(ShortPress);            
-
+            
             // refreshing channels every hour with no start delay
             BackgroundCommandWorker.RunInBackground(RefreshChannelsCommand, 3600, 0);
 
@@ -652,7 +651,7 @@ namespace OnlineTelevizor.ViewModels
         }
 
         public async Task CheckPurchase()
-        {
+        {         
             if (Config.Purchased || Config.DebugMode)
                 return;
 

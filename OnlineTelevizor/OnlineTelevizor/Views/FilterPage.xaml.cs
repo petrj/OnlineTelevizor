@@ -19,13 +19,13 @@ namespace OnlineTelevizor.Views
     {
         private FilterPageViewModel _viewModel;
 
-        public FilterPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, Context context, TVService service)
+        public FilterPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, TVService service)
         {
             InitializeComponent();
 
             var dialogService = new DialogService(this);
 
-            BindingContext = _viewModel = new FilterPageViewModel(loggingService, config, dialogService, context, service);
+            BindingContext = _viewModel = new FilterPageViewModel(loggingService, config, dialogService, service);
         }
 
         protected override void OnAppearing()
