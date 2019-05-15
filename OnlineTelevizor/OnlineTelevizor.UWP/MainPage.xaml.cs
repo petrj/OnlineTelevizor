@@ -35,6 +35,14 @@ namespace OnlineTelevizor.UWP
             {
                 Task.Run(async () => await LaunchUrl(url));
             });
+
+            KeyDown += MainPage_KeyDown;    
+        }
+
+        private void MainPage_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            // Could not load file or assembly Plugin.Toast, Version=2.1.0.0
+            // MessagingCenter.Send(e.Key.ToString(), BaseViewModel.KeyMessage);
         }
 
         private async Task LaunchUrl(string url)

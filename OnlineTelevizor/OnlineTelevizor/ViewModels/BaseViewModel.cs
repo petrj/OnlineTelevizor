@@ -134,29 +134,29 @@ namespace OnlineTelevizor.ViewModels
         {
             try
             {
+                // apply config quality:
+                if (!String.IsNullOrEmpty(Config.StreamQuality))
+                {
+                    var configQuality = "quality=" + Config.StreamQuality;
+
+                    var qMatches = Regex.Match(url, "quality=[0-9]{1,4}");
+                    if (qMatches != null && qMatches.Success)
+                    {
+                        url = url.Replace(qMatches.Value, configQuality);
+                    }
+                    else
+                    {
+                        url += "&" + configQuality;
+                    }
+                }
+
                 if (Device.RuntimePlatform == Device.UWP)
                 {
                     MessagingCenter.Send(url, BaseViewModel.UriMessage);
                 }
                 else
                 if (Device.RuntimePlatform == Device.Android)
-                {
-                    // apply config quality:
-                    if (!String.IsNullOrEmpty(Config.StreamQuality))
-                    {
-                        var configQuality = "quality=" + Config.StreamQuality;
-
-                        var qMatches = Regex.Match(url, "quality=[0-9]{1,4}");
-                        if (qMatches != null && qMatches.Success)
-                        {
-                            url = url.Replace(qMatches.Value, configQuality);
-                        }
-                        else
-                        {
-                            url += "&" + configQuality;
-                        }
-                    }
-
+                {  
                     var intent = new Intent(Intent.ActionView);
                     var uri = Android.Net.Uri.Parse(url);
                     intent.SetDataAndType(uri, "video/*");

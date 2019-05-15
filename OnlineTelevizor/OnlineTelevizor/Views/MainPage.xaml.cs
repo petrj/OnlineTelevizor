@@ -154,10 +154,12 @@ namespace OnlineTelevizor.Views
                     Detail_Clicked(this, null);
                     break;
                 default:
-                    if (_config.DebugMode)
                     {
-                        _loggingService.Debug($"Unbound key down: {key}");
-                        CrossToastPopUp.Current.ShowCustomToast($"Unbound key down: {key}", "#0000FF", "#FFFFFF");
+                        if (_config.DebugMode)
+                        {
+                            _loggingService.Debug($"Unbound key down: {key}");
+                            CrossToastPopUp.Current.ShowCustomToast($"Unbound key down: {key}", "#0000FF", "#FFFFFF");
+                        }
                     }
                     break;
             }
@@ -167,7 +169,7 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Debug($"HandleNumKey {number}");
 
-            if ((DateTime.Now - _lastNumPressedTime).TotalSeconds>1)
+            if ((DateTime.Now - _lastNumPressedTime).TotalSeconds > 1)
             {
                 _lastNumPressedTime = DateTime.MinValue;
                 _numberPressed = String.Empty;
@@ -176,7 +178,7 @@ namespace OnlineTelevizor.Views
             _lastNumPressedTime = DateTime.Now;
             _numberPressed += number;
 
-            CrossToastPopUp.Current.ShowCustomToast(_numberPressed, "#0000FF", "#FFFFFF");
+            CrossToastPopUp.Current.ShowCustomToast(_numberPressed, "#0000FF", "#FFFFFF");       
 
             new Thread(() =>
             {
