@@ -13,7 +13,6 @@ using Xamarin.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using System.Threading;
-using Plugin.Toast;
 using Plugin.InAppBilling;
 using Plugin.InAppBilling.Abstractions;
 

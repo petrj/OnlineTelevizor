@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Android.Content;
 using Android.Views;
-using Plugin.Toast;
 using System.Threading;
 
 namespace OnlineTelevizor.Views
@@ -84,21 +83,25 @@ namespace OnlineTelevizor.Views
             {
                 case "dpaddown":
                 case "buttonr1":
+                case "down":
                 case "s":
                     Task.Run(async () => await OnKeyDown());
                     break;
                 case "dpadup":
                 case "buttonl1":
+                case "up":
                 case "w":
                     Task.Run(async () => await OnKeyUp());
                     break;
                 case "dpadleft":
                 case "pageup":
+                case "left":
                 case "a":
                     Task.Run(async () => await OnKeyLeft());
                     break;
                 case "pagedown":
                 case "dpadright":
+                case "right":
                 case "d":
                     Task.Run(async () => await OnKeyRight());
                     break;
@@ -112,33 +115,43 @@ namespace OnlineTelevizor.Views
                 case "back":
                     break;
                 case "num0":
+                case "number0":
                     HandleNumKey(0);
                     break;
                 case "num1":
+                case "number1":
                     HandleNumKey(1);
                     break;
                 case "num2":
+                case "number2":
                     HandleNumKey(2);
                     break;
                 case "num3":
+                case "number3":
                     HandleNumKey(3);
                     break;
                 case "num4":
+                case "number4":
                     HandleNumKey(4);
                     break;
                 case "num5":
+                case "number5":
                     HandleNumKey(5);
                     break;
                 case "num6":
+                case "number6":
                     HandleNumKey(6);
                     break;
                 case "num7":
+                case "number7":
                     HandleNumKey(7);
                     break;
                 case "num8":
+                case "number8":
                     HandleNumKey(8);
                     break;
                 case "num9":
+                case "number9":
                     HandleNumKey(9);
                     break;
                 case "f5":
@@ -158,7 +171,7 @@ namespace OnlineTelevizor.Views
                         if (_config.DebugMode)
                         {
                             _loggingService.Debug($"Unbound key down: {key}");
-                            CrossToastPopUp.Current.ShowCustomToast($"Unbound key down: {key}", "#0000FF", "#FFFFFF");
+                            MessagingCenter.Send($"Unbound key down: {key}", BaseViewModel.ToastMessage);                            
                         }
                     }
                     break;
@@ -178,7 +191,7 @@ namespace OnlineTelevizor.Views
             _lastNumPressedTime = DateTime.Now;
             _numberPressed += number;
 
-            CrossToastPopUp.Current.ShowCustomToast(_numberPressed, "#0000FF", "#FFFFFF");       
+            MessagingCenter.Send(_numberPressed, BaseViewModel.ToastMessage);
 
             new Thread(() =>
             {

@@ -35,6 +35,11 @@ namespace OnlineTelevizor.Droid
 
             _app = new App(new AndroidOnlineTelevizorConfiguration());
 
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
+            {
+                CrossToastPopUp.Current.ShowCustomToast(message, "#0000FF", "#FFFFFF");
+            });
+
             LoadApplication(_app);
         }
 

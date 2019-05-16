@@ -20,9 +20,10 @@ namespace OnlineTelevizor.ViewModels
     {
         protected ILoggingService _loggingService;
         protected IDialogService _dialogService;
-        public const string UriMessage = "LaunchUri";
+        public const string UriMessage = "LaunchUriMessage";
         public const string KeyMessage = "KeyDownMessage";
         public const string ShowDetailMessage = "ShowDetailMessage";
+        public const string ToastMessage = "ShowToastMessage";
 
         public IOnlineTelevizorConfiguration Config { get; set; }
 
