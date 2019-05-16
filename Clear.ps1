@@ -13,6 +13,8 @@ foreach ($folder in `
         "OnlineTelevizor\OnlineTelevizor\obj",
         "OnlineTelevizor\OnlineTelevizor.Android\bin",
         "OnlineTelevizor\OnlineTelevizor.Android\obj",
+		"OnlineTelevizor\OnlineTelevizor.UWP\bin",
+		"OnlineTelevizor\OnlineTelevizor.UWP\obj",
         ".\TestConsole\bin",
 		".\TestConsole\obj"
      ))

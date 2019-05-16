@@ -104,9 +104,15 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ClearFilter.png" />
+    <Content Include="Filter.png" />
+    <Content Include="Icon.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-200.png" />
     <Content Include="Assets\LargeTile.scale-400.png" />
+    <Content Include="Quality.png" />
+    <Content Include="Refresh.png" />
+    <Content Include="Settings.png" />
     <Content Include="Assets\SmallTile.scale-100.png" />
     <Content Include="Assets\SmallTile.scale-200.png" />
     <Content Include="Assets\SmallTile.scale-400.png" />
