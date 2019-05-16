@@ -1,0 +1,2 @@
+MainPackage=C:\OnlineTelevizor\OnlineTelevizor\OnlineTelevizor.UWP\bin\x64\Debug\OnlineTelevizor.UWP_8.0.1.0_x64_Debug.appx
+SymbolPackage=C:\OnlineTelevizor\OnlineTelevizor\OnlineTelevizor.UWP\AppPackages\OnlineTelevizor.UWP_8.0.1.0_Debug_Test\OnlineTelevizor.UWP_8.0.1.0_x64_Debug.appxsym
