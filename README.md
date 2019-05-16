@@ -7,7 +7,7 @@ Android a UWP aplikace pro příjem TV a rádia pomocí služby SledovaniTV.cz.
 
 - nejedná se o oficiální aplikaci služby SledovaniTV.cz
 
-- podpora klávesnic a dálkových ovladačů připojených jako klávesnice (usb, bluetooth, pouze Android)
+- podpora klávesnic a dálkových ovladačů připojených jako klávesnice (usb, bluetooth)
 - možnost automatického spuštění vybraného kanálu po startu
 - možnost nastavení velikosti písma pro lepší čitelnost na tabletu nebo TV (pouze Android)
 - v Android zařízení se pro přehrávání používá nainstalovaná externí aplikace  
@@ -20,7 +20,7 @@ Android application for playing internet TV and radio through czech IPTV service
 
 - this is not official application of SledovaniTV.cz service
 
-- supporting external keyboards and remote controls connected as keyboard (usb, bluetooth, Android only)
+- supporting external keyboards and remote controls connected as keyboard (usb, bluetooth)
 - possibility to play selected channel after application start 
 - user can change font size (Android only)
 - in Android using installed external player
