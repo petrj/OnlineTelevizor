@@ -35,6 +35,19 @@ namespace OnlineTelevizor.Views
             _dialogService = dialogService;
 
             BindingContext = _viewModel = new SettingsViewModel(loggingService, config, dialogService);
+
+            if (Device.RuntimePlatform == Device.UWP)
+            {             
+                UsernameEntry.TextColor = Color.Black;
+                UsernameEntry.BackgroundColor = Color.Gray;
+                PasswordEntry.TextColor = Color.Black;
+                PasswordEntry.BackgroundColor = Color.Gray;
+                PinEntry.TextColor = Color.Black;
+                PinEntry.BackgroundColor = Color.Gray;
+
+                FontSizeLabel.IsVisible = false;
+                FontSizePicker.IsVisible = false;
+            }
         }
 
         public void FillAutoPlayChannels(ObservableCollection<ChannelItem> channels)

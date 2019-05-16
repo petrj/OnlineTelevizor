@@ -41,22 +41,19 @@ namespace OnlineTelevizor.UWP
 
         private void MainPage_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            // Could not load file or assembly Plugin.Toast, Version=2.1.0.0
-            // MessagingCenter.Send(e.Key.ToString(), BaseViewModel.KeyMessage);
+            // Plugin.Toast does not work in UWP: Could not load file or assembly Plugin.Toast, Version=2.1.0.0
+            // and keys are consumed in ALL pages (for example in settings when type in username entry )!
+            //MessagingCenter.Send(e.Key.ToString(), BaseViewModel.KeyMessage);
         }
 
         private async Task LaunchUrl(string url)
         {
-          /* 
-            var options = new LauncherOptions();
-            options.ContentType = "video/mp4";
-            await Launcher.LaunchUriAsync(new Uri(url), options);
-           */
-            
-            var player = new MediaPlayer();
-            player.Source = MediaSource.CreateFromUri(new Uri(url));
-            player.RealTimePlayback = true;
-            player.Play();            
+            Xamarin.Forms.Device.BeginInvokeOnMainThread(
+              new Action(
+                  async () =>
+                  {
+                      await Launcher.LaunchUriAsync(new Uri($"vlc://openstream/?from=url&url={url}"));
+                  }));
         }
     }
 }

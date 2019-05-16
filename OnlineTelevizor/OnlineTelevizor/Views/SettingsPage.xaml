@@ -80,8 +80,9 @@
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0">
-                        <Label  Text="Velikost písma:"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />                        
+                        <Label  Text="Velikost písma:" x:Name="FontSizeLabel" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />                        
                         <Picker 
+                            x:Name="FontSizePicker"
                             Margin="20,0,0,0" 
                             FontSize="{Binding FontSizeForPicker}"
                             Style="{StaticResource CommonPickerTextStyle}"                             
