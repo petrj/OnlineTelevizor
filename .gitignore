@@ -332,3 +332,6 @@ Temporary Items
 nuget.exe
 OnlineTelevizor\OnlineTelevizor.UWP\AppPackages\*
 OnlineTelevizor\OnlineTelevizor.UWP\BundleArtifacts\*
+
+*.appxsym
+*.appxbundle

@@ -60,6 +60,9 @@
     <None Update="Views\App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <None Update="Views\ChannelDetailPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="Views\FilterPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>

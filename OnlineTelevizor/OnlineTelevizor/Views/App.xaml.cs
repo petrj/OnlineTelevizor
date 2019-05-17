@@ -21,10 +21,6 @@ namespace OnlineTelevizor.Views
         {
             InitializeComponent();
 
-#if DEBUG
-            config.DebugMode = true;
-#endif
-
             if (config.EnableLogging)
             {
 #if DEBUG
