@@ -16,7 +16,7 @@ Android a UWP aplikace pro příjem TV a rádia pomocí služby SledovaniTV.cz.
 - podporován Android 4.4 a vyšší (architektury: armeabi, armeabi-v7a, x86, x86_x64, arm64-v8a) 
 
 #### EN
-Android application for playing internet TV and radio through czech IPTV service SledovaniTV.cz
+Android and UWP application for playing internet TV and radio through czech IPTV service SledovaniTV.cz
 
 - this is not official application of SledovaniTV.cz service
 
