@@ -19,17 +19,17 @@ namespace OnlineTelevizor.Views
 
         public App(IOnlineTelevizorConfiguration config)
         {
-            InitializeComponent();            
+            InitializeComponent();
 
 #if DEBUG
             config.DebugMode = true;
 #endif
 
             if (config.EnableLogging)
-            {         
-#if DEBUG                
+            {
+#if DEBUG
                 _loggingService = new BasicLoggingService(config.LoggingLevel);
-#else                 
+#else
                 _loggingService = new DummyLoggingService();
 #endif
             }
@@ -69,3 +69,4 @@ namespace OnlineTelevizor.Views
         }
     }
 }
+

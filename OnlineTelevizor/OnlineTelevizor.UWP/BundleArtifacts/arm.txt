@@ -1,4 +1,0 @@
-MainPackage=C:\OnlineTelevizor\OnlineTelevizor\OnlineTelevizor.UWP\bin\ARM\Debug\OnlineTelevizor.UWP_8.0.1.0_ARM_Debug.appx
-SymbolPackage=C:\OnlineTelevizor\OnlineTelevizor\OnlineTelevizor.UWP\AppPackages\OnlineTelevizor.UWP_8.0.1.0_Debug_Test\OnlineTelevizor.UWP_8.0.1.0_ARM_Debug.appxsym
-ResourcePack=C:\OnlineTelevizor\OnlineTelevizor\OnlineTelevizor.UWP\bin\ARM\Debug\OnlineTelevizor.UWP_8.0.1.0_scale-100.appx
-ResourcePack=C:\OnlineTelevizor\OnlineTelevizor\OnlineTelevizor.UWP\bin\ARM\Debug\OnlineTelevizor.UWP_8.0.1.0_scale-400.appx

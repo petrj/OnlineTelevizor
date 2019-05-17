@@ -15,6 +15,8 @@ foreach ($folder in `
         "OnlineTelevizor\OnlineTelevizor.Android\obj",
 		"OnlineTelevizor\OnlineTelevizor.UWP\bin",
 		"OnlineTelevizor\OnlineTelevizor.UWP\obj",
+		"OnlineTelevizor\OnlineTelevizor.UWP\AppPackages",
+		"OnlineTelevizor\OnlineTelevizor.UWP\BundleArtifacts",
         ".\TestConsole\bin",
 		".\TestConsole\obj"
      ))

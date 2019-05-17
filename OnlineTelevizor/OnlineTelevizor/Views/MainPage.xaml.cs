@@ -67,7 +67,7 @@ namespace OnlineTelevizor.Views
 
         private void ChannelsListView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-            Task.Run(async () => await _viewModel.Play());            
+            Task.Run(async () => await _viewModel.Play());
         }
 
         private void ChannelsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -78,6 +78,15 @@ namespace OnlineTelevizor.Views
         public void OnKeyDown(string key)
         {
             _loggingService.Debug($"OnKeyDown {key}");
+
+            // key events can be consumed only on this MainPage
+
+            var stack = Navigation.NavigationStack;
+            if  (stack[stack.Count - 1].GetType() != typeof(MainPage))
+            {
+                // different page on navigation top
+                return;
+            }
 
             switch (key.ToLower())
             {
@@ -171,7 +180,7 @@ namespace OnlineTelevizor.Views
                         if (_config.DebugMode)
                         {
                             _loggingService.Debug($"Unbound key down: {key}");
-                            MessagingCenter.Send($"Unbound key down: {key}", BaseViewModel.ToastMessage);                            
+                            MessagingCenter.Send($"Unbound key down: {key}", BaseViewModel.ToastMessage);
                         }
                     }
                     break;
@@ -224,7 +233,7 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"Reset");
 
-            _viewModel.ResetConnectionCommand.Execute(null);         
+            _viewModel.ResetConnectionCommand.Execute(null);
         }
 
         public void Refresh()
