@@ -33,7 +33,7 @@ namespace OnlineTelevizor.ViewModels
             _dialogService = dialogService;
             Config = config;
 
-            IsPurchased = Config.Purchased;   
+            IsPurchased = Config.Purchased;
 
             PayCommand = new Command(async () => await Pay());
         }
@@ -93,7 +93,7 @@ namespace OnlineTelevizor.ViewModels
             {
                 AutoPlayChannels.Add(ch);
 
-                if (ch.ChannelNumber == Config.AutoPlayChannelNumber)                    
+                if (ch.ChannelNumber == Config.AutoPlayChannelNumber)
                 {
                     anythingSelected = true;
                     SelectedChannelItem = ch;

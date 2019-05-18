@@ -59,7 +59,7 @@ namespace OnlineTelevizor.ViewModels
 
             _service = new TVService(loggingService, config);
             _loggingService = loggingService;
-            _dialogService = dialogService;            
+            _dialogService = dialogService;
             Config = config;
 
             RefreshCommand = new Command(async () => await Refresh());
@@ -74,8 +74,8 @@ namespace OnlineTelevizor.ViewModels
             PlayCommand = new Command(async () => await Play());
 
             LongPressCommand = new Command(LongPress);
-            ShortPressCommand = new Command(ShortPress);            
-            
+            ShortPressCommand = new Command(ShortPress);
+
             // refreshing channels every hour with no start delay
             BackgroundCommandWorker.RunInBackground(RefreshChannelsCommand, 3600, 0);
 
@@ -339,7 +339,7 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                return GetScaledSize(12);
+                return GetScaledSize(14);
             }
         }
 
@@ -347,7 +347,7 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                if (IsBusy || 
+                if (IsBusy ||
                     (_lastRefreshDelay > 0 && _lastRefreshDelay <= 4 )) // only first few seconds
                 {
                     return "Aktualizují se kanály...";
@@ -566,7 +566,7 @@ namespace OnlineTelevizor.ViewModels
                 _semaphoreSlim.Release();
 
                 OnPropertyChanged(nameof(StatusLabel));
-                OnPropertyChanged(nameof(IsBusy));                
+                OnPropertyChanged(nameof(IsBusy));
             }
 
             if (epgItemsCountRead == 0)
@@ -577,7 +577,7 @@ namespace OnlineTelevizor.ViewModels
                     BackgroundCommandWorker.RunInBackground(RefreshCommand, 0, 3);
                 }
             }
-        }   
+        }
 
         private async Task AutoPlay()
         {
@@ -632,7 +632,7 @@ namespace OnlineTelevizor.ViewModels
                 _semaphoreSlim.Release();
 
                 OnPropertyChanged(nameof(StatusLabel));
-                NotifyFontSizeChange();                
+                NotifyFontSizeChange();
             }
         }
 
@@ -640,17 +640,17 @@ namespace OnlineTelevizor.ViewModels
         {
             OnPropertyChanged(nameof(FontSizeForChannel));
             OnPropertyChanged(nameof(FontSizeForChannelNumber));
-            OnPropertyChanged(nameof(FontSizeForTime));            
+            OnPropertyChanged(nameof(FontSizeForTime));
             OnPropertyChanged(nameof(FontSizeForChannelEPG));
             OnPropertyChanged(nameof(HeightForChannelNameRow));
             OnPropertyChanged(nameof(HeightForChannelEPGRow));
-            OnPropertyChanged(nameof(HeightForTimeRow));            
-            OnPropertyChanged(nameof(FontSizeForInfoLabel));            
+            OnPropertyChanged(nameof(HeightForTimeRow));
+            OnPropertyChanged(nameof(FontSizeForInfoLabel));
             OnPropertyChanged(nameof(WidthForIcon));
         }
 
         public async Task CheckPurchase()
-        {         
+        {
             if (Config.Purchased || Config.DebugMode)
                 return;
 

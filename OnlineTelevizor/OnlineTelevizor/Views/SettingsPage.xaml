@@ -25,12 +25,12 @@
                 <Setter Property="TextColor" Value="#41b3ff"/>
             </Style>
 
-            <Style x:Key="CommonSwitchTextStyle" TargetType="Switch">                
-                <Setter Property="HorizontalOptions" Value="End"/>                
+            <Style x:Key="CommonSwitchTextStyle" TargetType="Switch">
+                <Setter Property="HorizontalOptions" Value="End"/>
             </Style>
 
             <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
-                <Setter Property="TextColor" Value="White"/>              
+                <Setter Property="TextColor" Value="White"/>
             </Style>
 
         </ResourceDictionary>
@@ -62,30 +62,30 @@
                     </StackLayout>
 
                 </StackLayout>
-                
+
                 <StackLayout Margin="20,20,20,20">
 
                     <Label Margin="0,0,20,0" Text="Další nastavení" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
 
                     <StackLayout Margin="20,10,0,0">
                         <Label  Text="Automaticky spustit po startu:"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
-                        <Picker 
+                        <Picker
                             Margin="20,0,0,0"
                             FontSize="{Binding FontSizeForPicker}"
-                            Style="{StaticResource CommonPickerTextStyle}"                            
-                            MinimumWidthRequest="200" 
+                            Style="{StaticResource CommonPickerTextStyle}"
+                            MinimumWidthRequest="200"
                             SelectedItem="{Binding SelectedChannelItem, Mode=TwoWay}"
                             ItemsSource="{Binding AutoPlayChannels}"
                             ItemDisplayBinding="{Binding Name}"/>
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0">
-                        <Label  Text="Velikost písma:" x:Name="FontSizeLabel" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />                        
-                        <Picker 
+                        <Label  Text="Velikost písma:" x:Name="FontSizeLabel" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                        <Picker
                             x:Name="FontSizePicker"
-                            Margin="20,0,0,0" 
+                            Margin="20,0,0,0"
                             FontSize="{Binding FontSizeForPicker}"
-                            Style="{StaticResource CommonPickerTextStyle}"                             
+                            Style="{StaticResource CommonPickerTextStyle}"
                             SelectedIndex="{Binding AppFontSizeIndex, Mode=TwoWay}" >
                             <Picker.Items>
                                 <x:String>Normální</x:String>
@@ -95,7 +95,7 @@
                                 <x:String>Obrovské</x:String>
                                 <x:String>Obrovské +</x:String>
                             </Picker.Items>
-                        </Picker>                            
+                        </Picker>
 
                     </StackLayout>
 
@@ -115,7 +115,7 @@
                     <Button Margin="20,10,0,0" Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
 
                 </StackLayout>
-            
+
             </StackLayout>
 
         </ScrollView>

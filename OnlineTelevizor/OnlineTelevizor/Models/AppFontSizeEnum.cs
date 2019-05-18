@@ -10,7 +10,7 @@ namespace OnlineTelevizor.Models
         AboveNormal = 1,
         Big = 2,
         Biger = 3,
-        VeryBig = 5,
-        Huge = 6
+        VeryBig = 4,
+        Huge = 5
     }
 }

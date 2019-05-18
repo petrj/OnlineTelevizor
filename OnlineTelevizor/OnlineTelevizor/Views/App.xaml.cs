@@ -23,11 +23,7 @@ namespace OnlineTelevizor.Views
 
             if (config.EnableLogging)
             {
-#if DEBUG
                 _loggingService = new BasicLoggingService(config.LoggingLevel);
-#else
-                _loggingService = new DummyLoggingService();
-#endif
             }
             else
             {

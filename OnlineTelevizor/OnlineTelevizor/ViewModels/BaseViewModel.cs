@@ -35,7 +35,7 @@ namespace OnlineTelevizor.ViewModels
             _dialogService = dialogService;
             Config = config;
         }
-        
+
         public int GetScaledSize(int normalSize)
         {
             switch (Config.AppFontSize)
@@ -157,7 +157,7 @@ namespace OnlineTelevizor.ViewModels
                 }
                 else
                 if (Device.RuntimePlatform == Device.Android)
-                {  
+                {
                     var intent = new Intent(Intent.ActionView);
                     var uri = Android.Net.Uri.Parse(url);
                     intent.SetDataAndType(uri, "video/*");

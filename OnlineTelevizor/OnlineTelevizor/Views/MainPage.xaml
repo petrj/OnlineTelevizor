@@ -86,7 +86,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForChannelNameRow}" />
                                     <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForChannelEPGRow}" />
-                                    <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForTimeRow}" />                                    
+                                    <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForTimeRow}" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="40" />
@@ -124,4 +124,3 @@
         <ToolbarItem Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked" Icon="Settings.png" />
     </ContentPage.ToolbarItems>
 </ContentPage >
-    
