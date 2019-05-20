@@ -32,6 +32,9 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(EPGDescription));
                 OnPropertyChanged(nameof(EPGDate));
                 OnPropertyChanged(nameof(EPGTime));
+                OnPropertyChanged(nameof(EPGTimeStart));
+                OnPropertyChanged(nameof(EPGTimeFinish));
+                OnPropertyChanged(nameof(EPGProgress));                
             }
         }
         public string FontSizeForChannel
@@ -81,6 +84,11 @@ namespace OnlineTelevizor.ViewModels
             get { return Channel == null ? string.Empty : Channel.CurrentEPGTitle; }
         }
 
+        public double EPGProgress
+        {
+            get { return Channel == null || Channel.CurrentEPGItem == null ? 0 : Channel.CurrentEPGItem.Progress; }
+        }
+
         public String EPGDescription
         {
             get { return (Channel == null || Channel.CurrentEPGItem == null) ? null : Channel.CurrentEPGItem.Description; }
@@ -100,6 +108,26 @@ namespace OnlineTelevizor.ViewModels
                     : Channel.CurrentEPGItem.Start.ToString("HH:mm")
                         + " - " +
                       Channel.CurrentEPGItem.Finish.ToString("HH:mm");
+            }
+        }
+
+        public string EPGTimeStart
+        {
+            get
+            {
+                return (Channel == null || Channel.CurrentEPGItem == null)
+                    ? null
+                    : Channel.EPGTimeStart;
+            }
+        }
+
+        public string EPGTimeFinish
+        {
+            get
+            {
+                return (Channel == null || Channel.CurrentEPGItem == null)
+                    ? null
+                    : Channel.EPGTimeFinish;
             }
         }
 

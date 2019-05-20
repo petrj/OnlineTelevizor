@@ -20,7 +20,7 @@ namespace OnlineTelevizor.ViewModels
 {
     public class MainPageViewModel : BaseViewModel
     {
-        private TVService _service;
+        private TVService _service;       
         private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public ObservableCollection<ChannelItem> Channels { get; set; } = new ObservableCollection<ChannelItem>();
@@ -39,6 +39,8 @@ namespace OnlineTelevizor.ViewModels
                 return _service;
             }
         }
+
+        public bool IsPortrait { get; set; } = true;
 
         public Command RefreshCommand { get; set; }
 
@@ -93,7 +95,10 @@ namespace OnlineTelevizor.ViewModels
 
                 _loggingService.Info($"Long press (channel {SelectedItem.Name})");
 
-                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
+                if (IsPortrait)
+                {
+                    MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
+                } 
             }
         }
 
@@ -139,6 +144,40 @@ namespace OnlineTelevizor.ViewModels
                 });
         }
 
+        public string SelectedChannelEPGTitle
+        {
+            get
+            {
+                if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
+                    return String.Empty;
+
+                return SelectedItem.CurrentEPGItem.Title;
+            }
+        }
+
+        public double SelectedChannelEPGProgress
+        {
+            get
+            {
+                if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
+                    return 0;
+
+                return SelectedItem.CurrentEPGItem.Progress;
+            }
+        }        
+
+        public string SelectedChannelEPGDescription
+        {
+            get
+            {
+                if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
+                    return String.Empty;
+
+                return SelectedItem.CurrentEPGItem.Description;
+            }
+        }
+        
+         
         public ChannelItem SelectedItem
         {
             get
@@ -152,6 +191,10 @@ namespace OnlineTelevizor.ViewModels
                     Config.LastChannelNumber = value.ChannelNumber;
 
                 OnPropertyChanged(nameof(SelectedItem));
+                OnPropertyChanged(nameof(SelectedChannelEPGTitle));
+                OnPropertyChanged(nameof(SelectedChannelEPGDescription));
+                OnPropertyChanged(nameof(SelectedChannelEPGProgress));
+
             }
         }
 
@@ -343,6 +386,22 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public string FontSizeForTitle
+        {
+            get
+            {
+                return GetScaledSize(22).ToString();
+            }
+        }
+
+        public string FontSizeForDescription
+        {
+            get
+            {
+                return GetScaledSize(16).ToString();
+            }
+        }
+
         public string StatusLabel
         {
             get
@@ -486,6 +545,9 @@ namespace OnlineTelevizor.ViewModels
 
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
+                OnPropertyChanged(nameof(SelectedChannelEPGTitle));
+                OnPropertyChanged(nameof(SelectedChannelEPGDescription));
+                OnPropertyChanged(nameof(SelectedChannelEPGProgress));
             }
 
             if (Channels.Count == 0)
@@ -567,6 +629,9 @@ namespace OnlineTelevizor.ViewModels
 
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
+                OnPropertyChanged(nameof(SelectedChannelEPGTitle));
+                OnPropertyChanged(nameof(SelectedChannelEPGDescription));
+                OnPropertyChanged(nameof(SelectedChannelEPGProgress));
             }
 
             if (epgItemsCountRead == 0)
@@ -641,6 +706,8 @@ namespace OnlineTelevizor.ViewModels
             OnPropertyChanged(nameof(FontSizeForChannel));
             OnPropertyChanged(nameof(FontSizeForChannelNumber));
             OnPropertyChanged(nameof(FontSizeForTime));
+            OnPropertyChanged(nameof(FontSizeForTitle));
+            OnPropertyChanged(nameof(FontSizeForDescription));            
             OnPropertyChanged(nameof(FontSizeForChannelEPG));
             OnPropertyChanged(nameof(HeightForChannelNameRow));
             OnPropertyChanged(nameof(HeightForChannelEPGRow));

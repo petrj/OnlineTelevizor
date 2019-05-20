@@ -38,6 +38,8 @@ namespace OnlineTelevizor.Models
             _EPGItems.Add(epgItem);
             OnPropertyChanged(nameof(CurrentEPGTitle));
             OnPropertyChanged(nameof(EPGTime));
+            OnPropertyChanged(nameof(EPGTimeStart));
+            OnPropertyChanged(nameof(EPGTimeFinish));
         }
 
         public void ClearEPG()
@@ -45,6 +47,8 @@ namespace OnlineTelevizor.Models
             _EPGItems.Clear();
             OnPropertyChanged(nameof(CurrentEPGTitle));
             OnPropertyChanged(nameof(EPGTime));
+            OnPropertyChanged(nameof(EPGTimeStart));
+            OnPropertyChanged(nameof(EPGTimeFinish));
         }
 
         public string EPGTime
@@ -58,6 +62,31 @@ namespace OnlineTelevizor.Models
                     : epg.Start.ToString("HH:mm")
                         + " - " +
                       epg.Finish.ToString("HH:mm");
+            }
+        }
+
+
+        public string EPGTimeStart
+        {
+            get
+            {
+                var epg = CurrentEPGItem;
+
+                return (epg == null)
+                    ? null
+                    : epg.Start.ToString("HH:mm");
+            }
+        }
+
+        public string EPGTimeFinish
+        {
+            get
+            {
+                var epg = CurrentEPGItem;
+
+                return (epg == null)
+                    ? null                  
+                    : epg.Finish.ToString("HH:mm");
             }
         }
 

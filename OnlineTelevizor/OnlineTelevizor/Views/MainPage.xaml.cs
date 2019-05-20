@@ -65,6 +65,24 @@ namespace OnlineTelevizor.Views
             }
         }
 
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height); 
+
+            if (width>height)
+            {
+                _viewModel.IsPortrait = false;
+                LayoutGrid.ColumnDefinitions[0].Width = new GridLength(width/2.0);
+                LayoutGrid.ColumnDefinitions[1].Width = new GridLength(width/2.0);
+            } else
+            {
+                _viewModel.IsPortrait = true;
+
+                LayoutGrid.ColumnDefinitions[0].Width = new GridLength(width);
+                LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0);
+            }
+        }
+
         private void ChannelsListView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             Task.Run(async () => await _viewModel.Play());
