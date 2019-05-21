@@ -41,6 +41,7 @@ namespace OnlineTelevizor.ViewModels
         }
 
         public bool IsPortrait { get; set; } = true;
+        public bool DoNotScrollToChannel { get; set; } = false;
 
         public Command RefreshCommand { get; set; }
 
@@ -95,9 +96,11 @@ namespace OnlineTelevizor.ViewModels
 
                 _loggingService.Info($"Long press (channel {SelectedItem.Name})");
 
+                DoNotScrollToChannel = true;
+
                 if (IsPortrait)
                 {
-                    MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
+                    MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);                    
                 } 
             }
         }

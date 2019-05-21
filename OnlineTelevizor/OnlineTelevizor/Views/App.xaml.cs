@@ -32,8 +32,8 @@ namespace OnlineTelevizor.Views
 
             _mainPage = new MainPage(_loggingService, config);
 
-            MainPage = new NavigationPage(_mainPage);            
-        }        
+            MainPage = new NavigationPage(_mainPage);
+        }
 
         protected override void OnStart()
         {

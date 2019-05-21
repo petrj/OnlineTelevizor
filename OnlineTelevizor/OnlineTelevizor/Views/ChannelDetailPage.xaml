@@ -81,7 +81,8 @@
                     <Label Grid.Row="0" Grid.Column="0" Text="{Binding EPGTimeStart}" HorizontalTextAlignment="Start" Style="{DynamicResource DateTimeTextStyle}"  FontSize="{Binding FontSizeForDatetime}"/>
                     <Label Grid.Row="0" Grid.Column="1" Text="{Binding EPGTimeFinish}" Margin="0,0,10,0" HorizontalTextAlignment="End" Style="{DynamicResource DateTimeTextStyle}" FontSize="{Binding FontSizeForDatetime}"/>
 
-                    <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Progress="{Binding EPGProgress}"></ProgressBar>
+                    <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Progress="{Binding EPGProgress}" BackgroundColor="White"/>
+                    
                 </Grid>
 
                 <Label Text="{Binding EPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}"/>

@@ -49,8 +49,6 @@
             </Style>
 
             <Style x:Key="ListViewStyle" TargetType="ListView">
-                <Setter Property="SeparatorVisibility" Value="Default"/>
-                <Setter Property="SeparatorColor" Value="White"/>
                 <Setter Property="HasUnevenRows" Value="True"/>
                 <Setter Property="IsPullToRefreshEnabled" Value="True"/>
             </Style>
@@ -108,11 +106,12 @@
                                     <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForChannelNameRow}" />
                                     <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForChannelEPGRow}" />
                                     <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForTimeRow}" />
+                                    <RowDefinition Height="1" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="40" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="70" />                                    
                                 </Grid.ColumnDefinitions>
 
                                 <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Text="{Binding ChannelNumber}" Style="{DynamicResource ChannelNumberTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannelNumber}" />
@@ -120,7 +119,8 @@
                                 <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding LogoUrl}" Style="{DynamicResource IconStyle}"/>
                                 <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,0" Text="{Binding CurrentEPGTitle}" Style="{DynamicResource ChannelEPGTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannelEPG}"/>
                                 <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,5,0" Text="{Binding EPGTime}" Style="{DynamicResource TimeTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForTime}"/>
-
+                                
+                                <BoxView Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" BackgroundColor="White"/>
                             </Grid>
 
                         </ViewCell.View>
@@ -144,7 +144,7 @@
                 </Grid.ColumnDefinitions>
 
                 <BoxView Grid.Row="0" Grid.Column="0" BackgroundColor="White"/>
-                <ProgressBar Grid.Row="0" Grid.Column="0" Progress="{Binding SelectedChannelEPGProgress}"></ProgressBar>
+                <ProgressBar Grid.Row="0" Grid.Column="0" Progress="{Binding SelectedChannelEPGProgress}" BackgroundColor="White" />
             </Grid>
             
 
@@ -168,3 +168,5 @@
         <ToolbarItem Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked" Icon="Settings.png" />
     </ContentPage.ToolbarItems>
 </ContentPage >
+
+    

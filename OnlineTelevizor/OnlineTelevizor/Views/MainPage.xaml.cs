@@ -90,7 +90,12 @@ namespace OnlineTelevizor.Views
 
         private void ChannelsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            ChannelsListView.ScrollTo(_viewModel.SelectedItem, ScrollToPosition.MakeVisible, false);
+            if (!_viewModel.DoNotScrollToChannel)
+            {                
+                ChannelsListView.ScrollTo(_viewModel.SelectedItem, ScrollToPosition.MakeVisible, false);
+            }
+
+            _viewModel.DoNotScrollToChannel = false;
         }
 
         public void OnKeyDown(string key)
