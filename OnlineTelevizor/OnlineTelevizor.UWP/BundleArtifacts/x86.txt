@@ -1,0 +1,1 @@
+MainPackage=C:\OnlineTelevizor\OnlineTelevizor\OnlineTelevizor.UWP\bin\x86\Release\OnlineTelevizor.UWP_11.0.0.0_x86.appx
