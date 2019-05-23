@@ -51,6 +51,7 @@
             <Style x:Key="ListViewStyle" TargetType="ListView">
                 <Setter Property="HasUnevenRows" Value="True"/>
                 <Setter Property="IsPullToRefreshEnabled" Value="True"/>
+                <Setter Property="BackgroundColor" Value="Black"/>
             </Style>
 
             <Style x:Key="TitleTextStyle" TargetType="Label">
@@ -161,12 +162,11 @@
     </Grid>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="Refresh.png" />
+        <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="Refresh.png"/>
         <ToolbarItem Name="ToolbarItemInfo" Text="Info"  Clicked="Detail_Clicked" Icon="Info.png" />
         <ToolbarItem Name="ToolbarItemFilter" Text="Filtr" Clicked="ToolbarItemFilter_Clicked" Icon="Filter.png"/>
         <ToolbarItem Name="ToolbarItemQuality" Text="Kvalita" Clicked="ToolbarItemQuality_Clicked" Icon="Quality.png"/>
         <ToolbarItem Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked" Icon="Settings.png" />
     </ContentPage.ToolbarItems>
-</ContentPage >
-
+</ContentPage >    
     

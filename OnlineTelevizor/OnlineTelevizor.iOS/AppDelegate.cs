@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using CoreGraphics;
 using Foundation;
+using MediaPlayer;
 using OnlineTelevizor.Models;
+using OnlineTelevizor.ViewModels;
 using OnlineTelevizor.Views;
 using UIKit;
+using Xamarin.Forms;
 
 namespace OnlineTelevizor.iOS
 {
@@ -25,7 +28,14 @@ namespace OnlineTelevizor.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
-            LoadApplication(new App(new DebugConfiguration()));
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.UriMessage, (url) =>
+            {
+                //Device.OpenUri(new System.Uri(url));
+                app.OpenUrl(new NSUrl($"imovie://{url}"));
+            });            
+
+            LoadApplication(new App(new IOSOnlineTelevizorConfiguration()));
 
             return base.FinishedLaunching(app, options);
         }

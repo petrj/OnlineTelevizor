@@ -57,10 +57,11 @@ namespace OnlineTelevizor.Views
                 Detail_Clicked(this, null);
             });
 
-            if (Device.RuntimePlatform == Device.UWP)
+            if (Device.RuntimePlatform == Device.UWP ||
+                Device.RuntimePlatform == Device.iOS)
             {
                 ChannelsListView.ItemTapped += ChannelsListView_ItemTapped;
-            }
+            }            
         }
 
         protected override void OnSizeAllocated(double width, double height)

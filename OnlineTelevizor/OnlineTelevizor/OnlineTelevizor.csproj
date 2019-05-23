@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="Plugin.Permissions" Version="4.0.4-beta" />
-    <PackageReference Include="Xamarin.Forms" Version="3.6.0.264807" />
+    <PackageReference Include="Xamarin.Forms" Version="4.0.0.425677" />
   </ItemGroup>
 
   <ItemGroup>
