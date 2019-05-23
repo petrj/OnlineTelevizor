@@ -1,5 +1,4 @@
-﻿using Android.Content;
-using LoggerService;
+﻿using LoggerService;
 using NLog;
 using Plugin.InAppBilling;
 using Plugin.InAppBilling.Abstractions;
@@ -37,7 +36,7 @@ namespace OnlineTelevizor.Views
             BindingContext = _viewModel = new SettingsViewModel(loggingService, config, dialogService);
 
             if (Device.RuntimePlatform == Device.UWP)
-            {             
+            {
                 UsernameEntry.TextColor = Color.Black;
                 UsernameEntry.BackgroundColor = Color.Gray;
                 PasswordEntry.TextColor = Color.Black;
@@ -58,6 +57,6 @@ namespace OnlineTelevizor.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-        }  
+        }
     }
 }

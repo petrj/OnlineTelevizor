@@ -1,5 +1,4 @@
-﻿using Android.Content;
-using LoggerService;
+﻿using LoggerService;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.Services;
 using OnlineTelevizor.ViewModels;
@@ -40,11 +39,11 @@ namespace OnlineTelevizor.Views
 
         private async void Quality_Tapped(object sender, ItemTappedEventArgs e)
         {
-            await Task.Run( () => 
+            await Task.Run( () =>
             {
                 var qualityItem = e.Item as QualityItem;
                 _config.StreamQuality = qualityItem.Id;
-            });            
+            });
         }
     }
 }

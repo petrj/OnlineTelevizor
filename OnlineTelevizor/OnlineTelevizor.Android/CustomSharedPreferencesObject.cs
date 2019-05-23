@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using Xamarin.Forms;
 
-namespace OnlineTelevizor.Models
+namespace OnlineTelevizor.Droid
 {
     public abstract class CustomSharedPreferencesObject
     {
@@ -17,7 +17,7 @@ namespace OnlineTelevizor.Models
 
         public CustomSharedPreferencesObject()
         {
-            _context = Android.App.Application.Context; 
+            _context = Android.App.Application.Context;
             _sharedPrefs = PreferenceManager.GetDefaultSharedPreferences(_context);
             _prefsEditor = _sharedPrefs.Edit();
         }

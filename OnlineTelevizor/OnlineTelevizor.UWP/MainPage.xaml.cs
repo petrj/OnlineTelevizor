@@ -38,10 +38,10 @@ namespace OnlineTelevizor.UWP
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
             {
-                // No support for toast messages in UWP 
+                // No support for toast messages in UWP
             });
 
-            KeyDown += MainPage_KeyDown;    
+            KeyDown += MainPage_KeyDown;
         }
 
         private void MainPage_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -53,7 +53,7 @@ namespace OnlineTelevizor.UWP
                 case VirtualKey.Down:
                 case VirtualKey.Up:
                 case VirtualKey.Left:
-                case VirtualKey.Right: 
+                case VirtualKey.Right:
                 case VirtualKey.I:
                 case VirtualKey.E:
                 case VirtualKey.Enter:

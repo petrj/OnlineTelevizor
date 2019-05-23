@@ -1,5 +1,4 @@
-﻿using Android.Views;
-using LoggerService;
+﻿using LoggerService;
 using NLog;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.Services;

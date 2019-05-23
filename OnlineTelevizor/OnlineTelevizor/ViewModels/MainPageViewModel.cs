@@ -1,6 +1,4 @@
-﻿using Android.App;
-using Android.Content;
-using LoggerService;
+﻿using LoggerService;
 using SledovaniTVAPI;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.Services;
@@ -20,7 +18,7 @@ namespace OnlineTelevizor.ViewModels
 {
     public class MainPageViewModel : BaseViewModel
     {
-        private TVService _service;       
+        private TVService _service;
         private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public ObservableCollection<ChannelItem> Channels { get; set; } = new ObservableCollection<ChannelItem>();
@@ -100,8 +98,8 @@ namespace OnlineTelevizor.ViewModels
 
                 if (IsPortrait)
                 {
-                    MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);                    
-                } 
+                    MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
+                }
             }
         }
 
@@ -167,7 +165,7 @@ namespace OnlineTelevizor.ViewModels
 
                 return SelectedItem.CurrentEPGItem.Progress;
             }
-        }        
+        }
 
         public string SelectedChannelEPGDescription
         {
@@ -179,8 +177,8 @@ namespace OnlineTelevizor.ViewModels
                 return SelectedItem.CurrentEPGItem.Description;
             }
         }
-        
-         
+
+
         public ChannelItem SelectedItem
         {
             get
@@ -710,7 +708,7 @@ namespace OnlineTelevizor.ViewModels
             OnPropertyChanged(nameof(FontSizeForChannelNumber));
             OnPropertyChanged(nameof(FontSizeForTime));
             OnPropertyChanged(nameof(FontSizeForTitle));
-            OnPropertyChanged(nameof(FontSizeForDescription));            
+            OnPropertyChanged(nameof(FontSizeForDescription));
             OnPropertyChanged(nameof(FontSizeForChannelEPG));
             OnPropertyChanged(nameof(HeightForChannelNameRow));
             OnPropertyChanged(nameof(HeightForChannelEPGRow));

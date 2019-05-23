@@ -1,3 +1,0 @@
-MainPackage=C:\OnlineTelevizor\OnlineTelevizor\OnlineTelevizor.UWP\bin\ARM\Release\OnlineTelevizor.UWP_11.0.0.0_ARM.appx
-ResourcePack=C:\OnlineTelevizor\OnlineTelevizor\OnlineTelevizor.UWP\bin\ARM\Release\OnlineTelevizor.UWP_11.0.0.0_scale-100.appx
-ResourcePack=C:\OnlineTelevizor\OnlineTelevizor\OnlineTelevizor.UWP\bin\ARM\Release\OnlineTelevizor.UWP_11.0.0.0_scale-400.appx

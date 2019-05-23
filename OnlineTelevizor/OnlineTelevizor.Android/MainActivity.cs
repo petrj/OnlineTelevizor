@@ -14,6 +14,7 @@ using Plugin.Toast;
 using Xamarin.Forms;
 using OnlineTelevizor.ViewModels;
 using OnlineTelevizor.Models;
+using Android.Content;
 
 namespace OnlineTelevizor.Droid
 {
@@ -38,6 +39,15 @@ namespace OnlineTelevizor.Droid
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
             {
                 CrossToastPopUp.Current.ShowCustomToast(message, "#0000FF", "#FFFFFF");
+            });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.UriMessage, (url) =>
+            {
+                var intent = new Intent(Intent.ActionView);
+                var uri = Android.Net.Uri.Parse(url);
+                intent.SetDataAndType(uri, "video/*");
+                intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask); // necessary for Android 5
+                Android.App.Application.Context.StartActivity(intent);
             });
 
             LoadApplication(_app);

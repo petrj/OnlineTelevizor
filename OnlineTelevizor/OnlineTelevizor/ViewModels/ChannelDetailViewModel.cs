@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Android.Content;
 using LoggerService;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.Services;
@@ -27,14 +26,14 @@ namespace OnlineTelevizor.ViewModels
 
                 OnPropertyChanged(nameof(ChannelName));
                 OnPropertyChanged(nameof(LogoUrl));
-                OnPropertyChanged(nameof(EPGTitle));                
+                OnPropertyChanged(nameof(EPGTitle));
 
                 OnPropertyChanged(nameof(EPGDescription));
                 OnPropertyChanged(nameof(EPGDate));
                 OnPropertyChanged(nameof(EPGTime));
                 OnPropertyChanged(nameof(EPGTimeStart));
                 OnPropertyChanged(nameof(EPGTimeFinish));
-                OnPropertyChanged(nameof(EPGProgress));                
+                OnPropertyChanged(nameof(EPGProgress));
             }
         }
         public string FontSizeForChannel

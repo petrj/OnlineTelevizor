@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
-using Android.Content;
 using System.Text.RegularExpressions;
 using Plugin.InAppBilling;
 using Plugin.InAppBilling.Abstractions;
@@ -151,19 +150,7 @@ namespace OnlineTelevizor.ViewModels
                     }
                 }
 
-                if (Device.RuntimePlatform == Device.UWP)
-                {
-                    MessagingCenter.Send(url, BaseViewModel.UriMessage);
-                }
-                else
-                if (Device.RuntimePlatform == Device.Android)
-                {
-                    var intent = new Intent(Intent.ActionView);
-                    var uri = Android.Net.Uri.Parse(url);
-                    intent.SetDataAndType(uri, "video/*");
-                    intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask); // necessary for Android 5
-                    Android.App.Application.Context.StartActivity(intent);
-                }
+                MessagingCenter.Send(url, BaseViewModel.UriMessage);
             }
             catch (Exception ex)
             {

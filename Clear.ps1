@@ -17,6 +17,8 @@ foreach ($folder in `
 		"OnlineTelevizor\OnlineTelevizor.UWP\obj",
 		"OnlineTelevizor\OnlineTelevizor.UWP\AppPackages",
 		"OnlineTelevizor\OnlineTelevizor.UWP\BundleArtifacts",
+		"OnlineTelevizor\OnlineTelevizor.iOS\bin",
+		"OnlineTelevizor\OnlineTelevizor.iOS\obj",
         ".\TestConsole\bin",
 		".\TestConsole\obj"
      ))

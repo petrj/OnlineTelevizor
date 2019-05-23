@@ -1,6 +1,4 @@
-﻿using Android.App;
-using Android.Content;
-using LoggerService;
+﻿using LoggerService;
 using SledovaniTVAPI;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.Services;
@@ -104,7 +102,7 @@ namespace OnlineTelevizor.ViewModels
         {
             _service = service;
             _loggingService = loggingService;
-            _dialogService = dialogService;           
+            _dialogService = dialogService;
             Config = config;
 
             ClearFilterCommand = new Command(async () => await ClearFilter());

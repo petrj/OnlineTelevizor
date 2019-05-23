@@ -10,8 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Android.Content;
-using Android.Views;
 using System.Threading;
 
 namespace OnlineTelevizor.Views
@@ -67,7 +65,7 @@ namespace OnlineTelevizor.Views
 
         protected override void OnSizeAllocated(double width, double height)
         {
-            base.OnSizeAllocated(width, height); 
+            base.OnSizeAllocated(width, height);
 
             if (width>height)
             {
@@ -91,7 +89,7 @@ namespace OnlineTelevizor.Views
         private void ChannelsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             if (!_viewModel.DoNotScrollToChannel)
-            {                
+            {
                 ChannelsListView.ScrollTo(_viewModel.SelectedItem, ScrollToPosition.MakeVisible, false);
             }
 
