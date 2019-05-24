@@ -32,7 +32,8 @@ namespace OnlineTelevizor.iOS
             MessagingCenter.Subscribe<string>(this, BaseViewModel.UriMessage, (url) =>
             {
                 //Device.OpenUri(new System.Uri(url));
-                app.OpenUrl(new NSUrl($"imovie://{url}"));
+                
+                app.OpenUrl(new NSUrl($"vlc://openstream/?from=url&url={url}"));
             });            
 
             LoadApplication(new App(new IOSOnlineTelevizorConfiguration()));

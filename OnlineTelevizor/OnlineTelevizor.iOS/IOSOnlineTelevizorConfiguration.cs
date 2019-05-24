@@ -182,12 +182,10 @@ namespace OnlineTelevizor.iOS
         {
             get
             {
-                return GetPersistingSettingValue<bool>("Purchased");
+                return true;
             }
             set
-            {
-                SavePersistingSettingValue<bool>("Purchased", value);
-            }
+            { }
         }
 
         public bool NotPurchased

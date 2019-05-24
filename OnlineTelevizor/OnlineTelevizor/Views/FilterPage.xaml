@@ -19,11 +19,13 @@
 
             <Style x:Key="CommonEntryTextStyle" TargetType="Entry">
                 <Setter Property="TextColor" Value="White"/>
+                <Setter Property="BackgroundColor" Value="Black"/>
                 <Setter Property="PlaceholderColor" Value="Gray"/>
             </Style>
 
             <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
-                <Setter Property="TextColor" Value="White"/>                
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="BackgroundColor" Value="Black"/>
             </Style>
 
         </ResourceDictionary>
