@@ -3,28 +3,28 @@
 ![Icon](https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Icon.png)
 
 #### CZ
-Android a UWP aplikace pro příjem TV a rádia pomocí služby SledovaniTV.cz.
+Android, UWP a iOS aplikace pro příjem TV a rádia pomocí služby SledovaniTV.cz.
 
 - nejedná se o oficiální aplikaci služby SledovaniTV.cz
 
-- podpora klávesnic a dálkových ovladačů připojených jako klávesnice (usb, bluetooth)
+- podpora klávesnic a dálkových ovladačů připojených jako klávesnice (usb, bluetooth, pouze Android a UWP)
 - možnost automatického spuštění vybraného kanálu po startu
 - možnost nastavení velikosti písma pro lepší čitelnost na tabletu nebo TV (pouze Android)
 - v Android zařízení se pro přehrávání používá nainstalovaná externí aplikace  
-- v UWP se pro přehrávání používá VLC
+- v UWP a iOS se pro přehrávání používá VLC
 - pouze živé vysílání
 - podporován Android 4.4 a vyšší (architektury: armeabi, armeabi-v7a, x86, x86_x64, arm64-v8a) 
 
 #### EN
-Android and UWP application for playing internet TV and radio through czech IPTV service SledovaniTV.cz
+Android, UWP and iOS application for playing internet TV and radio through czech IPTV service SledovaniTV.cz
 
 - this is not official application of SledovaniTV.cz service
 
-- supporting external keyboards and remote controls connected as keyboard (usb, bluetooth)
+- supporting external keyboards and remote controls connected as keyboard (usb, bluetooth, only Android and UWP)
 - possibility to play selected channel after application start 
 - user can change font size (Android only)
 - in Android using installed external player
-- in UWP using VLC player 
+- in UWP and iOS using VLC player 
 - only live broadcasting
 - supported Android 4.4 and higher for architectures: armeabi, armeabi-v7a, x86, x86_x64, arm64-v8a
 
