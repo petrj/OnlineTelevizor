@@ -32,7 +32,5 @@
 	<string>LaunchScreen</string>
 	<key>CFBundleName</key>
 	<string>OnlineTelevizor</string>
-	<key>XSAppIconAssets</key>
-	<string>Assets.xcassets/AppIcon.appiconset</string>
 </dict>
 </plist>

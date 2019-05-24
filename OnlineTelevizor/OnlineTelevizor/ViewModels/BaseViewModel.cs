@@ -148,7 +148,7 @@ namespace OnlineTelevizor.ViewModels
                     {
                         url += "&" + configQuality;
                     }
-                }
+                }                
 
                 MessagingCenter.Send(url, BaseViewModel.UriMessage);
             }
