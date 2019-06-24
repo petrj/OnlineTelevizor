@@ -122,6 +122,18 @@ namespace OnlineTelevizor.UWP
             }
         }
 
+        public bool AnimatedScrolling
+        {
+            get
+            {
+                return GetSettingValue<bool>("AnimatedScrolling");
+            }
+            set
+            {
+                SaveSettingValue< bool>("AnimatedScrolling", value);
+            }
+        }
+
         public string LastChannelNumber
         {
             get
@@ -140,7 +152,7 @@ namespace OnlineTelevizor.UWP
             {
                 var channelNumber = GetSettingValue<string>("AutoPlayChannelNumber");
                 if (string.IsNullOrEmpty(channelNumber))
-                    channelNumber = "-1"; // no autoplay 
+                    channelNumber = "-1"; // no autoplay
 
                 return channelNumber;
             }
@@ -170,7 +182,7 @@ namespace OnlineTelevizor.UWP
             }
             set
             {
-                
+
             }
         }
 

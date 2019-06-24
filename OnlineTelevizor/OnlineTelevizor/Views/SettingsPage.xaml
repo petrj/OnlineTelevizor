@@ -27,7 +27,7 @@
             </Style>
 
             <Style x:Key="CommonSwitchTextStyle" TargetType="Switch">
-                <Setter Property="HorizontalOptions" Value="End"/>                
+                <Setter Property="HorizontalOptions" Value="End"/>
             </Style>
 
             <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
@@ -104,14 +104,20 @@
                     <Grid Margin="20,10,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="70*" />
                             <ColumnDefinition Width="30*" />
                         </Grid.ColumnDefinitions>
 
+
                         <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit kanály pro dospělé (nutný PIN)" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.IsPurchased}"  FontSize="{Binding FontSizeForCaption}"/>
                         <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowAdultChannelsSwitch" IsToggled="{Binding Config.ShowAdultChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.IsPurchased}"/>
+
+                        <Label  Grid.Row="1" Grid.Column="0" Text="Animované označování kanálů" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Switch Grid.Row="1" Grid.Column="1" x:Name="AnimatedScrolling" IsToggled="{Binding Config.AnimatedScrolling, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+
                     </Grid>
 
                     <Button Margin="20,10,0,0" Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>

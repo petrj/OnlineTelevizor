@@ -61,7 +61,7 @@ namespace OnlineTelevizor.Views
                 Device.RuntimePlatform == Device.iOS)
             {
                 ChannelsListView.ItemTapped += ChannelsListView_ItemTapped;
-            }            
+            }
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -91,7 +91,7 @@ namespace OnlineTelevizor.Views
         {
             if (!_viewModel.DoNotScrollToChannel)
             {
-                ChannelsListView.ScrollTo(_viewModel.SelectedItem, ScrollToPosition.MakeVisible, false);
+                ChannelsListView.ScrollTo(_viewModel.SelectedItem, ScrollToPosition.MakeVisible, _config.AnimatedScrolling);
             }
 
             _viewModel.DoNotScrollToChannel = false;

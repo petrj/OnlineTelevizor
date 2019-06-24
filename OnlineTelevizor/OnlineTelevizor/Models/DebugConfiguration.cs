@@ -7,7 +7,7 @@ namespace OnlineTelevizor.Models
 {
     public class DebugConfiguration : IOnlineTelevizorConfiguration
     {
-        private string _username =""; 
+        private string _username ="";
         private string _password = "";
         private string _childLockPIN;
         private string _streamQuality;
@@ -16,6 +16,7 @@ namespace OnlineTelevizor.Models
         private string _channelFilterName;
         private bool _showLocked;
         private bool _showAdultChannels;
+        private bool _animatedScrolling;
         private string _autoPlayChannelNumber;
         private string _lastChannelNumber;
         private AppFontSizeEnum _appFontSize = AppFontSizeEnum.Normal;
@@ -25,7 +26,7 @@ namespace OnlineTelevizor.Models
         private bool _dDebugMode = true;
         private string _dDeviceId;
         private string _dDevicePassword;
-    
+
 
         public string Username { get => _username; set => _username = value; }
         public string Password { get => _password; set => _password = value; }
@@ -36,6 +37,7 @@ namespace OnlineTelevizor.Models
         public string ChannelFilterName { get => _channelFilterName; set => _channelFilterName = value; }
         public bool ShowLocked { get => _showLocked; set => _showLocked = value; }
         public bool ShowAdultChannels { get => _showAdultChannels; set => _showAdultChannels = value; }
+        public bool AnimatedScrolling { get => _animatedScrolling; set => _animatedScrolling = value; }
         public string AutoPlayChannelNumber { get => _autoPlayChannelNumber; set => _autoPlayChannelNumber = value; }
         public string LastChannelNumber { get => _lastChannelNumber; set => _lastChannelNumber = value; }
         public AppFontSizeEnum AppFontSize { get => _appFontSize; set => _appFontSize = value; }

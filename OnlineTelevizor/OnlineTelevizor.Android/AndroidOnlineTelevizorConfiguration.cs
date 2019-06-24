@@ -13,7 +13,7 @@ namespace OnlineTelevizor.Droid
 {
     public class AndroidOnlineTelevizorConfiguration : CustomSharedPreferencesObject, IOnlineTelevizorConfiguration
     {
-        private bool _debugMode = false;       
+        private bool _debugMode = false;
 
         public string Username
         {
@@ -76,6 +76,18 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        public bool AnimatedScrolling
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("AnimatedScrolling");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("AnimatedScrolling", value);
+            }
+        }
+
         public string LastChannelNumber
         {
             get
@@ -94,7 +106,7 @@ namespace OnlineTelevizor.Droid
             {
                 var channelNumber = GetPersistingSettingValue<string>("AutoPlayChannelNumber");
                 if (string.IsNullOrEmpty(channelNumber))
-                    channelNumber = "-1"; // no autoplay 
+                    channelNumber = "-1"; // no autoplay
 
                 return channelNumber;
             }
@@ -102,7 +114,7 @@ namespace OnlineTelevizor.Droid
             {
                 SavePersistingSettingValue<string>("AutoPlayChannelNumber", value);
             }
-        }        
+        }
 
         public bool EnableLogging
         {

@@ -22,7 +22,7 @@ namespace OnlineTelevizor.Models
         bool ShowAdultChannels { get; set; }
 
         /// <summary>
-        /// -1    : no chanel 
+        /// -1    : no chanel
         /// 0     : last channel
         /// 1...n : channel number
         /// </summary>
@@ -37,12 +37,14 @@ namespace OnlineTelevizor.Models
         bool Purchased { get; set; }
         bool NotPurchased { get; }
 
+        bool AnimatedScrolling { get; set; }
+
         string PurchaseProductId { get; }
 
         bool DebugMode { get; set; }
 
         // private cached login credentailes
         string DeviceId { get; set; }
-        string DevicePassword { get; set; }       
+        string DevicePassword { get; set; }
     }
 }

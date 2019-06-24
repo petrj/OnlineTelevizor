@@ -138,6 +138,18 @@ namespace OnlineTelevizor.iOS
             }
         }
 
+        public bool AnimatedScrolling
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("AnimatedScrolling");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("AnimatedScrolling", value);
+            }
+        }
+
         public string LastChannelNumber
         {
             get
@@ -156,7 +168,7 @@ namespace OnlineTelevizor.iOS
             {
                 var channelNumber = GetPersistingSettingValue<string>("AutoPlayChannelNumber");
                 if (string.IsNullOrEmpty(channelNumber))
-                    channelNumber = "-1"; // no autoplay 
+                    channelNumber = "-1"; // no autoplay
 
                 return channelNumber;
             }
@@ -164,7 +176,7 @@ namespace OnlineTelevizor.iOS
             {
                 SavePersistingSettingValue<string>("AutoPlayChannelNumber", value);
             }
-        }        
+        }
 
         public bool EnableLogging
         {

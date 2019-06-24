@@ -167,6 +167,17 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public Color EPGProgressBackgroundColor
+        {
+            get
+            {
+                if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
+                    return Color.Black;
+
+                return Color.White;
+            }
+        }
+
         public string SelectedChannelEPGDescription
         {
             get
@@ -195,7 +206,7 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
                 OnPropertyChanged(nameof(SelectedChannelEPGDescription));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
-
+                OnPropertyChanged(nameof(EPGProgressBackgroundColor));
             }
         }
 
@@ -549,6 +560,8 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
                 OnPropertyChanged(nameof(SelectedChannelEPGDescription));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
+                OnPropertyChanged(nameof(EPGProgressBackgroundColor));
+
             }
 
             if (Channels.Count == 0)
@@ -633,6 +646,7 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
                 OnPropertyChanged(nameof(SelectedChannelEPGDescription));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
+                OnPropertyChanged(nameof(EPGProgressBackgroundColor));
             }
 
             if (epgItemsCountRead == 0)
