@@ -74,6 +74,10 @@
       <Project>{95468a7c-4400-4101-9a39-166f058b5b0b}</Project>
       <Name>SledovaniTVAPI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TVAPI\TVAPI.csproj">
+      <Project>{E5102B85-87A1-4ABC-B720-CB97925266FB}</Project>
+      <Name>TVAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

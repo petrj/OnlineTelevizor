@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SledovaniTVAPI
+namespace TVAPI
 {
     public class Channel : JSONObject
     {

@@ -13,6 +13,7 @@ using Plugin.Permissions.Abstractions;
 using System.Threading;
 using Plugin.InAppBilling;
 using Plugin.InAppBilling.Abstractions;
+using TVAPI;
 
 namespace OnlineTelevizor.ViewModels
 {

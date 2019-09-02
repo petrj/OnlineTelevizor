@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineTelevizor.UWP", "Onli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineTelevizor.iOS", "OnlineTelevizor\OnlineTelevizor.iOS\OnlineTelevizor.iOS.csproj", "{42B19830-EEE7-4F73-BD57-7774555C5425}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TVAPI", "TVAPI\TVAPI.csproj", "{E5102B85-87A1-4ABC-B720-CB97925266FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -218,6 +220,30 @@ Global
 		{42B19830-EEE7-4F73-BD57-7774555C5425}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 		{42B19830-EEE7-4F73-BD57-7774555C5425}.Release|x64.ActiveCfg = Release|iPhone
 		{42B19830-EEE7-4F73-BD57-7774555C5425}.Release|x86.ActiveCfg = Release|iPhone
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Debug|ARM.Build.0 = Debug|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Debug|x64.Build.0 = Debug|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Debug|x86.Build.0 = Debug|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Release|ARM.ActiveCfg = Release|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Release|ARM.Build.0 = Release|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Release|iPhone.Build.0 = Release|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Release|x64.ActiveCfg = Release|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Release|x64.Build.0 = Release|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Release|x86.ActiveCfg = Release|Any CPU
+		{E5102B85-87A1-4ABC-B720-CB97925266FB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

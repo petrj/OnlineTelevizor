@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LoggerService;
 using SledovaniTVAPI;
+using TVAPI;
 
 namespace TestConsole
 {
@@ -13,39 +14,40 @@ namespace TestConsole
         static void Main(string[] args)
         {
             var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
-            var loggingService = new TCPIPLoggingService("http://88.103.80.48:8100");    
+            var loggingService = new BasicLoggingService();
 
             Console.WriteLine("...");
 
-            var sledovaniTV = new SledovaniTV(loggingService );
-            sledovaniTV.SetCredentials(credentials.Username, credentials.Password, credentials.ChildLockPIN);
+            var tvService = new SledovaniTV(loggingService );
+            tvService.SetCredentials(credentials.Username, credentials.Password, credentials.ChildLockPIN);
 
             if (JSONObject.FileExists("connection.json"))
             {
-                sledovaniTV.Connection = JSONObject.LoadFromFile<DeviceConnection>("connection.json");
+                var conn = JSONObject.LoadFromFile<DeviceConnection>("connection.json");
+                tvService.SetConnection(conn.deviceId, conn.password);
             }
 
             Task.Run(
                 async () =>
                 {
-                    await sledovaniTV.Login();
+                    await tvService.Login();
 
                     if (!JSONObject.FileExists("connection.json"))
                     {
-                        sledovaniTV.Connection.SaveToFile("connection.json");
+                        tvService.Connection.SaveToFile("connection.json");
                     };
 
-                    var qualities = await sledovaniTV.GetStreamQualities();
+                    var qualities = await tvService.GetStreamQualities();
                     foreach (var q in qualities)
                     {
                         Console.WriteLine(q.Name.PadRight(20) + "  " + q.Id.PadLeft(10) + "  " + q.Allowed);
                     }
 
-                    await sledovaniTV.Unlock();
+                    //await tvService.Unlock();
                     //await sledovaniTV.Lock();
 
-                    var channels = await sledovaniTV.GetChanels();
-                    var epg = await sledovaniTV.GetEPG();
+                    var channels = await tvService.GetChanels();
+                    //var epg = await tvService.GetEPG();
 
                     foreach (var ch in channels)
                     {
@@ -55,7 +57,7 @@ namespace TestConsole
                     }
                     
                     Console.WriteLine();
-                    Console.WriteLine($"Status: {sledovaniTV.Status.ToString()}");
+                    Console.WriteLine($"Status: {tvService.Status.ToString()}");
                     Console.WriteLine();
                     Console.WriteLine("Press any key");                   
                 });

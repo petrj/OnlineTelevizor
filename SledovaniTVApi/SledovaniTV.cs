@@ -9,10 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
+using TVAPI;
 
 namespace SledovaniTVAPI
 {
-    public class SledovaniTV
+    public class SledovaniTV : ITVAPI
     {
         private ILoggingService _log;
         private const string ServiceUrl = "http://sledovanitv.cz/api/";
@@ -25,7 +26,7 @@ namespace SledovaniTVAPI
         public SledovaniTV(ILoggingService loggingService)
         {
             _log = loggingService;
-            Connection = new DeviceConnection();
+            _deviceConnection = new DeviceConnection();
             _session = new Session();
         }
 
@@ -39,12 +40,10 @@ namespace SledovaniTVAPI
             };
         }
 
-        public StatusEnum Status
+        public void SetConnection(string deviceId, string password)
         {
-            get
-            {
-                return _status;
-            }
+            _deviceConnection.deviceId = deviceId;
+            _deviceConnection.password = password;
         }
 
         public DeviceConnection Connection
@@ -53,9 +52,13 @@ namespace SledovaniTVAPI
             {
                 return _deviceConnection;
             }
-            set
+        }
+
+        public StatusEnum Status
+        {
+            get
             {
-                _deviceConnection = value;
+                return _status;
             }
         }
 

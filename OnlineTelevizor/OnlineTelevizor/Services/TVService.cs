@@ -9,6 +9,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using TVAPI;
 
 namespace OnlineTelevizor.Services
 {
@@ -18,21 +19,16 @@ namespace OnlineTelevizor.Services
         IOnlineTelevizorConfiguration _config;
         private bool _adultChannelsUnlocked = false;
 
-        private SledovaniTV _sledovaniTV;
+        private ITVAPI _service;
 
         public TVService(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
             _log = loggingService;
             _config = config;
 
-            _sledovaniTV = new SledovaniTV(loggingService);
-            _sledovaniTV.SetCredentials(_config.Username, _config.Password, _config.ChildLockPIN);
-
-            _sledovaniTV.Connection = new DeviceConnection()
-            {
-                deviceId = _config.DeviceId,
-                password = _config.DevicePassword
-            };
+            _service = new SledovaniTV(loggingService);
+            _service.SetCredentials(_config.Username, _config.Password, _config.ChildLockPIN);
+            _service.SetConnection(_config.DeviceId, _config.DevicePassword);
         }
 
         public async Task<ObservableCollection<EPGItem>> GetEPG()
@@ -41,16 +37,16 @@ namespace OnlineTelevizor.Services
 
             try
             {
-                var epg = await _sledovaniTV.GetEPG();
+                var epg = await _service.GetEPG();
 
-                if (_sledovaniTV.Status == StatusEnum.ConnectionNotAvailable)
+                if (_service.Status == StatusEnum.ConnectionNotAvailable)
                 {
                     // repeat again after 1500 ms
                     await Task.Delay(1500);
-                    epg = await _sledovaniTV.GetEPG();
+                    epg = await _service.GetEPG();
                 }
 
-                if (_sledovaniTV.Status == StatusEnum.Logged)
+                if (_service.Status == StatusEnum.Logged)
                 {
                     foreach (var ei in epg)
                     {
@@ -72,9 +68,9 @@ namespace OnlineTelevizor.Services
 
             try
             {
-                var qualities = await _sledovaniTV.GetStreamQualities();
+                var qualities = await _service.GetStreamQualities();
 
-                if (_sledovaniTV.Status != StatusEnum.Logged)
+                if (_service.Status != StatusEnum.Logged)
                     return result;
                 
                 foreach (var q in qualities)
@@ -109,32 +105,32 @@ namespace OnlineTelevizor.Services
                     !_adultChannelsUnlocked)
                 {
                     _adultChannelsUnlocked = true;
-                    await _sledovaniTV.Unlock();
+                    await _service.Unlock();
                 }
 
                 if (!_config.ShowAdultChannels &&
                     _adultChannelsUnlocked)
                 {
                     _adultChannelsUnlocked = false;
-                    await _sledovaniTV.Lock();
+                    await _service.Lock();
                 }
 
-                var channels = await _sledovaniTV.GetChanels();
+                var channels = await _service.GetChanels();
 
-                if (_sledovaniTV.Status == StatusEnum.ConnectionNotAvailable)
+                if (_service.Status == StatusEnum.ConnectionNotAvailable)
                 {
                     // repeat again after 1500 ms
                     await Task.Delay(1500);
-                    channels = await _sledovaniTV.GetChanels();
+                    channels = await _service.GetChanels();
                 }
 
-                if (_sledovaniTV.Status == StatusEnum.Logged)
+                if (_service.Status == StatusEnum.Logged)
                 {
                     if (String.IsNullOrEmpty(_config.DeviceId))
                     {
                         // saving device connection to configuration
-                        _config.DeviceId = _sledovaniTV.Connection.deviceId;
-                        _config.DevicePassword = _sledovaniTV.Connection.password;
+                        _config.DeviceId = _service.Connection.deviceId;
+                        _config.DevicePassword = _service.Connection.password;
                     }
 
                     var channelIndex = 0; 
@@ -184,18 +180,18 @@ namespace OnlineTelevizor.Services
         public async Task ResetConnection()
         {
             _adultChannelsUnlocked = false;
-            _sledovaniTV.ResetConnection();
+            _service.ResetConnection();
             _config.DeviceId = null;
             _config.DevicePassword = null;
-            _sledovaniTV.SetCredentials(_config.Username, _config.Password, _config.ChildLockPIN);
-            await _sledovaniTV.Login();
+            _service.SetCredentials(_config.Username, _config.Password, _config.ChildLockPIN);
+            await _service.Login();
         }
 
         public StatusEnum Status
         {
             get
             {
-                return _sledovaniTV.Status;
+                return _service.Status;
             }
         }
     }
