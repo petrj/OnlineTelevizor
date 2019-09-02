@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KUKITVAPI;
 using LoggerService;
 using SledovaniTVAPI;
 using TVAPI;
@@ -13,19 +14,32 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
+            
             var loggingService = new BasicLoggingService();
 
             Console.WriteLine("...");
 
-            var tvService = new SledovaniTV(loggingService );
-            tvService.SetCredentials(credentials.Username, credentials.Password, credentials.ChildLockPIN);
+            var tvService = new KUKITV(loggingService);
+
+            if (JSONObject.FileExists("kuki.json"))
+            {
+                var conn = JSONObject.LoadFromFile<DeviceConnection>("kuki.json");
+                tvService.SetConnection(conn.deviceId, null);
+            }
+
+            /*
+            if (JSONObject.FileExists("credentials.json"))
+            {
+                var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
+                tvService.SetCredentials(credentials.Username, credentials.Password, credentials.ChildLockPIN);
+            }
 
             if (JSONObject.FileExists("connection.json"))
             {
                 var conn = JSONObject.LoadFromFile<DeviceConnection>("connection.json");
                 tvService.SetConnection(conn.deviceId, conn.password);
             }
+            */
 
             Task.Run(
                 async () =>

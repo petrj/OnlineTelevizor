@@ -29,6 +29,8 @@ namespace LoggerService
                 string msg = $"[{DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss")}] {level} {message}";
 
                 System.Diagnostics.Debug.WriteLine(msg);
+
+                Console.WriteLine(msg);
             }
             catch
             {

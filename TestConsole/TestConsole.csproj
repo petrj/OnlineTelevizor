@@ -66,6 +66,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KUKITVAPI\KUKITVAPI.csproj">
+      <Project>{F6E4D41B-C086-47AD-9700-3B4D30D4370C}</Project>
+      <Name>KUKITVAPI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LoggerService\LoggerService.csproj">
       <Project>{3d9dd753-5e53-4316-992c-1bed899fe0e0}</Project>
       <Name>LoggerService</Name>
