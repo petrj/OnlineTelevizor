@@ -6,10 +6,9 @@
 Android, UWP a iOS aplikace pro příjem TV a rádia pomocí služeb:
 - SledovaniTV
 - Kuki
-<br />
-<br />
+&nbsp;
 - nejedná se o oficiální aplikaci služby SledovaniTV.cz ani Kuki
-<br />
+&nbsp;
 - podpora klávesnic a dálkových ovladačů připojených jako klávesnice (usb, bluetooth, pouze Android a UWP)
 - možnost automatického spuštění vybraného kanálu po startu
 - možnost nastavení velikosti písma pro lepší čitelnost na tabletu nebo TV (pouze Android)
@@ -19,10 +18,12 @@ Android, UWP a iOS aplikace pro příjem TV a rádia pomocí služeb:
 - podporován Android 4.4 a vyšší (architektury: armeabi, armeabi-v7a, x86, x86_x64, arm64-v8a) 
 
 #### EN
-Android, UWP and iOS application for playing internet TV and radio through czech IPTV service SledovaniTV.cz
-
+Android, UWP and iOS application for playing internet TV and radio through czech IPTV services
+- SledovaniTV
+- Kuki
+&nbsp;
 - this is not official application of SledovaniTV.cz service or Kuki
-
+&nbsp;
 - supporting external keyboards and remote controls connected as keyboard (usb, bluetooth, only Android and UWP)
 - possibility to play selected channel after application start 
 - user can change font size (Android only)
