@@ -10,6 +10,7 @@ namespace TVAPI
         void SetCredentials(string username, string password, string childLockPIN = null);
         void SetConnection(string deviceId, string password);
         DeviceConnection Connection { get; }
+        bool EPGEnabled { get; }
         StatusEnum Status { get; }       
         Task Login(bool force = false);
         Task<List<EPGItem>> GetEPG();

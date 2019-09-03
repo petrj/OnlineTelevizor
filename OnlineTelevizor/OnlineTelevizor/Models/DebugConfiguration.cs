@@ -7,6 +7,8 @@ namespace OnlineTelevizor.Models
 {
     public class DebugConfiguration : IOnlineTelevizorConfiguration
     {
+        private TVAPIEnum _tvAPI = TVAPIEnum.SledovaniTV;
+        private string _kukiSn = "";
         private string _username ="";
         private string _password = "";
         private string _childLockPIN;
@@ -28,6 +30,8 @@ namespace OnlineTelevizor.Models
         private string _dDevicePassword;
 
 
+        public TVAPIEnum TVApi { get => _tvAPI; set => _tvAPI = value; }
+        public string KUKIsn { get => _kukiSn; set => _kukiSn = value; }
         public string Username { get => _username; set => _username = value; }
         public string Password { get => _password; set => _password = value; }
         public string ChildLockPIN { get => _childLockPIN; set => _childLockPIN = value; }

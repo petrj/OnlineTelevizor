@@ -77,6 +77,31 @@ namespace OnlineTelevizor.iOS
             return result;
         }
 
+        public string KUKIsn
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("KUKIsn");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("KUKIsn", value);
+            }
+        }
+
+        public TVAPIEnum TVApi
+        {
+            get
+            {
+                var index = GetPersistingSettingValue<int>("TVApi");
+                return (TVAPIEnum)index;
+            }
+            set
+            {
+                SavePersistingSettingValue<int>("TVApi", (int)value);
+            }
+        }
+
         public string Username
         {
             get

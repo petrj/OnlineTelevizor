@@ -7,10 +7,14 @@ namespace OnlineTelevizor.Models
 {
     public interface IOnlineTelevizorConfiguration
     {
+        TVAPIEnum TVApi { get; set; }
+
         // credentials
         string Username { get; set; }
         string Password { get; set; }
         string ChildLockPIN { get; set; }
+
+        string KUKIsn { get; set; }
 
         //  user settings
         string StreamQuality { get; set; }

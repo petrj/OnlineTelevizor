@@ -40,9 +40,23 @@ namespace KUKITVAPI
             }
         }
 
+        public bool EPGEnabled
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public async Task Login(bool force = false)
         {
             _log.Debug($"Logging to KUKI");
+
+            if (String.IsNullOrEmpty(_connection.deviceId))
+            {
+                _status = StatusEnum.EmptyCredentials;
+                return;
+            }
 
             try
             {
@@ -85,64 +99,83 @@ namespace KUKITVAPI
         public async Task<List<Channel>> GetChanels()
         {
             var res = new List<Channel>();
-                       
-            var headerParams = new Dictionary<string, string>();
-            headerParams.Add("X-SessionKey", _session_key);
 
-            // get channels list:
+            await Login();
 
-            var channelsResponse = await SendRequest("https://as.kuki.cz/api/channels.json", "GET", null, headerParams);            
-            var channelsJsonString = Regex.Split(channelsResponse, "},\\s{0,1}{");
+            if (_status != StatusEnum.Logged)
+                return res;
 
-            var number = 1;
-
-            foreach (var channelJsonString in channelsJsonString)
+            try
             {
-                var chJsonString = channelJsonString; 
+                var headerParams = new Dictionary<string, string>();
+                headerParams.Add("X-SessionKey", _session_key);
 
-                if (chJsonString.StartsWith("["))
-                    chJsonString = chJsonString.Substring(1);
+                // get channels list:
 
-                if (chJsonString.EndsWith("]"))
-                    chJsonString = chJsonString.Substring(0, chJsonString.Length-1);
+                var channelsResponse = await SendRequest("https://as.kuki.cz/api/channels.json", "GET", null, headerParams);
+                var channelsJsonString = Regex.Split(channelsResponse, "},\\s{0,1}{");
 
-                if (!chJsonString.StartsWith("{"))
-                    chJsonString = "{" + chJsonString;
+                var number = 1;
 
-                if (!chJsonString.EndsWith("}"))
-                    chJsonString = chJsonString + "}";
-
-                var chJson = JObject.Parse(chJsonString);
-
-                var ch = new Channel()
+                foreach (var channelJsonString in channelsJsonString)
                 {
-                    ChannelNumber = number.ToString(),
-                    Name = chJson.GetStringValue("name"),
-                    Id = chJson.GetStringValue("timeshift_ident"),
-                    Type = chJson.GetStringValue("stream_type"),
-                    Locked = "none"                  
-                    
-                };
+                    var chJsonString = channelJsonString;
 
-                ch.LogoUrl = "https://www.kuki.cz/media/chlogo/" + chJson.GetStringValue("epg_logo");
+                    if (chJsonString.StartsWith("["))
+                        chJsonString = chJsonString.Substring(1);
 
-                var playTokenPostParams = new Dictionary<string, string>();
-                playTokenPostParams.Add("type", "live");
-                playTokenPostParams.Add("ident", ch.Id);
+                    if (chJsonString.EndsWith("]"))
+                        chJsonString = chJsonString.Substring(0, chJsonString.Length - 1);
 
-                // get play token:
+                    if (!chJsonString.StartsWith("{"))
+                        chJsonString = "{" + chJsonString;
 
-                var playTokenResponse = await SendRequest("https://as.kuki.cz/api/play-token", "POST", playTokenPostParams, headerParams);
-                var playTokenResponseJSon = JObject.Parse(playTokenResponse);
+                    if (!chJsonString.EndsWith("}"))
+                        chJsonString = chJsonString + "}";
 
-                var sign = playTokenResponseJSon.GetStringValue("sign");
-                var expires = playTokenResponseJSon.GetStringValue("expires");
+                    var chJson = JObject.Parse(chJsonString);
 
-                ch.Url = $"http://media.kuki.cz:8116/{ch.Id}/stream.m3u8?sign={sign}&expires={expires}";
+                    var ch = new Channel()
+                    {
+                        ChannelNumber = number.ToString(),
+                        Name = chJson.GetStringValue("name"),
+                        Id = chJson.GetStringValue("timeshift_ident"),
+                        Type = chJson.GetStringValue("stream_type"),
+                        Locked = "none"
 
-                res.Add(ch);
+                    };
 
-                number++;
+                    ch.LogoUrl = "https://www.kuki.cz/media/chlogo/" + chJson.GetStringValue("epg_logo");
+
+                    var playTokenPostParams = new Dictionary<string, string>();
+                    playTokenPostParams.Add("type", "live");
+                    playTokenPostParams.Add("ident", ch.Id);
+
+                    // get play token:
+
+                    var playTokenResponse = await SendRequest("https://as.kuki.cz/api/play-token", "POST", playTokenPostParams, headerParams);
+                    var playTokenResponseJSon = JObject.Parse(playTokenResponse);
+
+                    var sign = playTokenResponseJSon.GetStringValue("sign");
+                    var expires = playTokenResponseJSon.GetStringValue("expires");
+
+                    ch.Url = $"http://media.kuki.cz:8116/{ch.Id}/stream.m3u8?sign={sign}&expires={expires}";
+
+                    res.Add(ch);
+
+                    number++;
+                }
+
+            }
+            catch (WebException wex)
+            {
+                _log.Error(wex, "Error while getting channels");
+                _status = StatusEnum.ConnectionNotAvailable;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Error while getting channels");
+                _status = StatusEnum.GeneralError;
             }
 
             return res;

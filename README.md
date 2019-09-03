@@ -3,9 +3,11 @@
 ![Icon](https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Icon.png)
 
 #### CZ
-Android, UWP a iOS aplikace pro příjem TV a rádia pomocí služby SledovaniTV.cz.
+Android, UWP a iOS aplikace pro příjem TV a rádia pomocí služeb:
+- SledovaniTV
+- Kuki
 
-- nejedná se o oficiální aplikaci služby SledovaniTV.cz
+- nejedná se o oficiální aplikaci služby SledovaniTV.cz ani Kuki
 
 - podpora klávesnic a dálkových ovladačů připojených jako klávesnice (usb, bluetooth, pouze Android a UWP)
 - možnost automatického spuštění vybraného kanálu po startu
@@ -18,7 +20,7 @@ Android, UWP a iOS aplikace pro příjem TV a rádia pomocí služby SledovaniTV
 #### EN
 Android, UWP and iOS application for playing internet TV and radio through czech IPTV service SledovaniTV.cz
 
-- this is not official application of SledovaniTV.cz service
+- this is not official application of SledovaniTV.cz service or Kuki
 
 - supporting external keyboards and remote controls connected as keyboard (usb, bluetooth, only Android and UWP)
 - possibility to play selected channel after application start 

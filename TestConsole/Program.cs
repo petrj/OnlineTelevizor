@@ -66,9 +66,10 @@ namespace TestConsole
                     foreach (var ch in channels)
                     {
                         Console.WriteLine(ch.Name);
-                        Console.WriteLine("  " + ch.Locked);
-                        Console.WriteLine("  " + ch.Url);
-                        Console.WriteLine("  " + ch.LogoUrl);
+                        Console.WriteLine("  ID     :" + ch.Id);
+                        Console.WriteLine("  Locked :" + ch.Locked);
+                        Console.WriteLine("  Url    :" + ch.Url);
+                        Console.WriteLine("  LogoUrl:" + ch.LogoUrl);
                     }
                     
                     Console.WriteLine();

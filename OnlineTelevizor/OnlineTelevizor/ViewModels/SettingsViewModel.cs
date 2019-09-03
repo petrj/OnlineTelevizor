@@ -210,6 +210,46 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public int TVAPIIndex
+        {
+            get
+            {
+                return (int)Config.TVApi;
+            }
+            set
+            {
+                var oldApi = Config.TVApi;
+                Config.TVApi = (TVAPIEnum)value;                
+
+                OnPropertyChanged(nameof(TVAPIIndex));
+                OnPropertyChanged(nameof(IsSledovaniTVVisible));
+                OnPropertyChanged(nameof(IsKUKITVVisible));
+
+                if (Config.TVApi == TVAPIEnum.KUKI && oldApi != TVAPIEnum.KUKI)
+                {
+                    _dialogService.Information("Podpora Kuki je pouze z částečná (chybí EPG, bez filtrů na skupiny a typy kanálů a možnosti zvolit si kvalitu streamu)" + 
+                        Environment.NewLine +
+                        Environment.NewLine +
+                        "S/N zařízení je možné získat v nastavení mobilní aplikace Kuki");
+                }
+            }
+        }
+
+        public bool IsSledovaniTVVisible
+        {
+            get
+            {
+                return Config.TVApi == TVAPIEnum.SledovaniTV;
+            }           
+        }
+        public bool IsKUKITVVisible
+        {
+            get
+            {
+                return Config.TVApi == TVAPIEnum.KUKI;
+            }
+        }
+
         public int AppFontSizeIndex
         {
             get

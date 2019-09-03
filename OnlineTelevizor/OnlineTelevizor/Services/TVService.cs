@@ -10,6 +10,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using TVAPI;
+using KUKITVAPI;
 
 namespace OnlineTelevizor.Services
 {
@@ -26,9 +27,22 @@ namespace OnlineTelevizor.Services
             _log = loggingService;
             _config = config;
 
-            _service = new SledovaniTV(loggingService);
-            _service.SetCredentials(_config.Username, _config.Password, _config.ChildLockPIN);
-            _service.SetConnection(_config.DeviceId, _config.DevicePassword);
+            InitTVService();
+        }
+
+        private void InitTVService()
+        {
+            if (_config.TVApi == TVAPIEnum.SledovaniTV)
+            {
+                _service = new SledovaniTV(_log);
+                _service.SetCredentials(_config.Username, _config.Password, _config.ChildLockPIN);
+                _service.SetConnection(_config.DeviceId, _config.DevicePassword);
+            }
+            else
+            {
+                _service = new KUKITV(_log);
+                _service.SetConnection(_config.KUKIsn, null);
+            }
         }
 
         public async Task<ObservableCollection<EPGItem>> GetEPG()
@@ -153,12 +167,19 @@ namespace OnlineTelevizor.Services
                         }
 
                         if ( !_config.Purchased && (!(
+                                                        // sledovanitv
                                                         (ch.Id == "ct24") ||
                                                         (ch.Id == "ct2") ||
                                                         (ch.Id == "radio_country") ||
                                                         (ch.Id == "fireplace") ||
                                                         (ch.Id == "retro") ||
-                                                        (ch.Id == "nasatv")
+                                                        (ch.Id == "nasatv") ||
+                                                        // kuki
+                                                        (ch.Id == "ct2hd") ||
+                                                        (ch.Id == "seznam") ||
+                                                        (ch.Id == "kinosvet") ||
+                                                        (ch.Id == "croradiozurnal") ||
+                                                        (ch.Id == "radiojunior") 
                                                       )))
                            continue;
 
@@ -179,11 +200,15 @@ namespace OnlineTelevizor.Services
 
         public async Task ResetConnection()
         {
+            _service.ResetConnection();           
+
             _adultChannelsUnlocked = false;
-            _service.ResetConnection();
+
             _config.DeviceId = null;
             _config.DevicePassword = null;
-            _service.SetCredentials(_config.Username, _config.Password, _config.ChildLockPIN);
+
+            InitTVService();
+
             await _service.Login();
         }
 
@@ -192,6 +217,14 @@ namespace OnlineTelevizor.Services
             get
             {
                 return _service.Status;
+            }
+        }
+
+        public bool EPGEnabled
+        {
+            get
+            {
+                return _service.EPGEnabled;
             }
         }
     }

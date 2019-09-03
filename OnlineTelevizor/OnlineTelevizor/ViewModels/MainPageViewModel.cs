@@ -534,7 +534,9 @@ namespace OnlineTelevizor.ViewModels
 
                         Channels.Add(ch);
 
-                        _channelById.Add(ch.Id, ch); // for faster EPG refresh
+                        if (!_channelById.ContainsKey(ch.Id)) 
+                            _channelById.Add(ch.Id, ch); // for faster EPG refresh
+
                         channelByNumber.Add(ch.ChannelNumber, ch); // for channel selecting
                     }
 
@@ -601,6 +603,9 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task RefreshEPG()
         {
+            if (!_service.EPGEnabled)
+                return;
+
             _loggingService.Info($"RefreshEPG");
 
 

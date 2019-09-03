@@ -11,7 +11,7 @@ namespace OnlineTelevizor.Services
     {
         Page DialogPage { get; set; }
 
-        Task<bool> Confirm(string message, string title = "Confirm");
-        Task Information(string message, string title = "Information");
+        Task<bool> Confirm(string message, string title = "Potvrzení");
+        Task Information(string message, string title = "Informace");
     }
 }

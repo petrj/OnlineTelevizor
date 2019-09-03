@@ -45,6 +45,14 @@ namespace SledovaniTVAPI
             _deviceConnection.deviceId = deviceId;
             _deviceConnection.password = password;
         }
+        
+        public bool EPGEnabled
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         public DeviceConnection Connection
         {

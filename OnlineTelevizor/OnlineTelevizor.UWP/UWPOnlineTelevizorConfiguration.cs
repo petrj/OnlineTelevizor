@@ -61,6 +61,31 @@ namespace OnlineTelevizor.UWP
             return result;
         }
 
+        public string KUKIsn
+        {
+            get
+            {
+                return GetSettingValue<string>("KUKIsn");
+            }
+            set
+            {
+                SaveSettingValue<string>("KUKIsn", value);
+            }
+        }
+
+        public TVAPIEnum TVApi
+        {
+            get
+            {
+                var index = GetSettingValue<int>("TVApi");
+                return (TVAPIEnum)index;
+            }
+            set
+            {
+                SaveSettingValue<int>("TVApi", (int)value);
+            }
+        }
+
         public string Username
         {
             get

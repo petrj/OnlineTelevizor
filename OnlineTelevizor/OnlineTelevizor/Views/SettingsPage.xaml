@@ -44,9 +44,27 @@
 
             <StackLayout>
 
-                <StackLayout Margin="20,10,20,0">
+                 <StackLayout Margin="20,10,20,0">
 
-                    <Label Text="Přístupové údaje" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                    <Label  Text="Aktivní IPTV:" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+
+                    <Picker 
+                        x:Name="TVAPIPicker"
+                        Margin="20,0,0,0"
+                        FontSize="{Binding FontSizeForPicker}"
+                        Style="{StaticResource CommonPickerTextStyle}"
+                        SelectedIndex="{Binding TVAPIIndex, Mode=TwoWay}" >
+                        <Picker.Items>
+                            <x:String>SledovaniTV</x:String>
+                            <x:String>KUKI</x:String>
+                        </Picker.Items>
+                    </Picker>
+
+                </StackLayout>
+
+                <StackLayout Margin="20,10,20,0" IsVisible="{Binding IsSledovaniTVVisible, Mode=TwoWay}">
+
+                    <Label Text="Přístupové údaje SledovaniTV" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
 
                     <StackLayout Margin="20,10,0,0">
                         <Label Text="Uživatelské jméno (email):" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
@@ -61,6 +79,17 @@
                     <StackLayout Margin="20,0,0,0">
                         <Label Text="Rodičovský zámek (PIN):" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
                         <Entry Margin="20,0,0,0" WidthRequest="100" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}"  Placeholder="Zadejte PIN" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}"></Entry>
+                    </StackLayout>
+
+                </StackLayout>
+
+                <StackLayout Margin="20,10,20,0" IsVisible="{Binding IsKUKITVVisible, Mode=TwoWay}">
+
+                    <Label Text="Přístupové údaje KUKI" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+
+                    <StackLayout Margin="20,10,0,0">
+                        <Label Text="S/N zařízení:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="SNEntry"  Text="{Binding KUKIsn, Mode=TwoWay}" Placeholder="Zadejte S/N mobilního zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}"></Entry>
                     </StackLayout>
 
                 </StackLayout>
@@ -112,7 +141,7 @@
                         </Grid.ColumnDefinitions>
 
 
-                        <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit kanály pro dospělé (nutný PIN)" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.IsPurchased}"  FontSize="{Binding FontSizeForCaption}"/>
+                        <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit kanály pro dospělé" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.IsPurchased}"  FontSize="{Binding FontSizeForCaption}"/>
                         <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowAdultChannelsSwitch" IsToggled="{Binding Config.ShowAdultChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.IsPurchased}"/>
 
                         <Label  Grid.Row="1" Grid.Column="0" Text="Animované označování kanálů" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
