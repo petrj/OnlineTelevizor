@@ -1,9 +1,11 @@
 ﻿using LoggerService;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TVAPI;
 
@@ -13,7 +15,8 @@ namespace KUKITVAPI
     {
         private ILoggingService _log;
         private StatusEnum _status = StatusEnum.NotInitialized;
-        private DeviceConnection _connection = new DeviceConnection();        
+        private DeviceConnection _connection = new DeviceConnection();
+        private string _session_key = null;
 
         public KUKITV(ILoggingService loggingService)
         {
@@ -37,15 +40,112 @@ namespace KUKITVAPI
             }
         }
 
+        public async Task Login(bool force = false)
+        {
+            _log.Debug($"Logging to KUKI");
+
+            try
+            {
+
+                var sn = new Dictionary<string, string>();
+                sn.Add("sn", _connection.deviceId);
+
+                _status = StatusEnum.NotInitialized;
+
+                // authorize:
+
+                var authResponse = await SendRequest("https://as.kuki.cz/api/register", "POST", sn);
+                var authResponseJson = JObject.Parse(authResponse);
+
+                // get session key:
+                if (
+                      authResponseJson.HasValue("session_key")
+                    )
+                {
+                    _session_key = authResponseJson.GetStringValue("session_key");
+                    _status = StatusEnum.Logged;
+                }
+                else
+                {
+                    _status = StatusEnum.LoginFailed;
+                }
+            }
+            catch (WebException wex)
+            {
+                _log.Error(wex, "Login failed");
+                _status = StatusEnum.ConnectionNotAvailable;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Login failed");
+                _status = StatusEnum.ConnectionNotAvailable;
+            }
+        }
+
         public async Task<List<Channel>> GetChanels()
         {
-            var ch = new Channel()
-            {
-                ChannelNumber = "1",
-                Name = "CT"
-            };
+            var res = new List<Channel>();
+                       
+            var headerParams = new Dictionary<string, string>();
+            headerParams.Add("X-SessionKey", _session_key);
 
-            return new List<Channel>() { ch };
+            // get channels list:
+
+            var channelsResponse = await SendRequest("https://as.kuki.cz/api/channels.json", "GET", null, headerParams);            
+            var channelsJsonString = Regex.Split(channelsResponse, "},\\s{0,1}{");
+
+            var number = 1;
+
+            foreach (var channelJsonString in channelsJsonString)
+            {
+                var chJsonString = channelJsonString; 
+
+                if (chJsonString.StartsWith("["))
+                    chJsonString = chJsonString.Substring(1);
+
+                if (chJsonString.EndsWith("]"))
+                    chJsonString = chJsonString.Substring(0, chJsonString.Length-1);
+
+                if (!chJsonString.StartsWith("{"))
+                    chJsonString = "{" + chJsonString;
+
+                if (!chJsonString.EndsWith("}"))
+                    chJsonString = chJsonString + "}";
+
+                var chJson = JObject.Parse(chJsonString);
+
+                var ch = new Channel()
+                {
+                    ChannelNumber = number.ToString(),
+                    Name = chJson.GetStringValue("name"),
+                    Id = chJson.GetStringValue("timeshift_ident"),
+                    Type = chJson.GetStringValue("stream_type"),
+                    Locked = "none"                  
+                    
+                };
+
+                ch.LogoUrl = "https://www.kuki.cz/media/chlogo/" + chJson.GetStringValue("epg_logo");
+
+                var playTokenPostParams = new Dictionary<string, string>();
+                playTokenPostParams.Add("type", "live");
+                playTokenPostParams.Add("ident", ch.Id);
+
+                // get play token:
+
+                var playTokenResponse = await SendRequest("https://as.kuki.cz/api/play-token", "POST", playTokenPostParams, headerParams);
+                var playTokenResponseJSon = JObject.Parse(playTokenResponse);
+
+                var sign = playTokenResponseJSon.GetStringValue("sign");
+                var expires = playTokenResponseJSon.GetStringValue("expires");
+
+                ch.Url = $"http://media.kuki.cz:8116/{ch.Id}/stream.m3u8?sign={sign}&expires={expires}";
+
+                res.Add(ch);
+
+                number++;
+            }
+
+            return res;
         }
 
         public async Task<List<EPGItem>> GetEPG()
@@ -55,22 +155,14 @@ namespace KUKITVAPI
 
         public async Task<List<Quality>> GetStreamQualities()
         {
+            var q = new Quality()
+            {
+                Id = "0",
+                Name = "Standard",
+                Allowed = "1"
+            };
+
             return new List<Quality>() { };
-        }
-
-        public async Task Login(bool force = false)
-        {
-            _log.Debug($"Logging to KUKI");
-
-            var sn = new Dictionary<string, string>();
-            sn.Add("sn", _connection.deviceId);
-
-            // authorize:
-
-            var authResponse = SendRequest("https://as.kuki.cz/api/register", "POST", sn);
-
-            //var _sessionKey = 
-
         }
 
         public void ResetConnection()
@@ -118,7 +210,7 @@ namespace KUKITVAPI
             return url;
         }
 
-        private string SendRequest(string url, string method = "GET", Dictionary<string, string> postData = null, Dictionary<string, string> headers = null)
+        private async Task<string> SendRequest(string url, string method = "GET", Dictionary<string, string> postData = null, Dictionary<string, string> headers = null)
         {
             try
             {
@@ -157,7 +249,7 @@ namespace KUKITVAPI
                     }
                 }
 
-                using (var response = request.GetResponse() as HttpWebResponse)
+                using (var response = await request.GetResponseAsync() as HttpWebResponse)
                 {
                     string responseString;
                     using (var sr = new StreamReader(response.GetResponseStream()))

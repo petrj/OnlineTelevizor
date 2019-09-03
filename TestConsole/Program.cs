@@ -68,6 +68,7 @@ namespace TestConsole
                         Console.WriteLine(ch.Name);
                         Console.WriteLine("  " + ch.Locked);
                         Console.WriteLine("  " + ch.Url);
+                        Console.WriteLine("  " + ch.LogoUrl);
                     }
                     
                     Console.WriteLine();

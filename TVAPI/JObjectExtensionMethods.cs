@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SledovaniTVAPI
+namespace TVAPI
 {
     public static class JObjectExtensionMethods
     {
