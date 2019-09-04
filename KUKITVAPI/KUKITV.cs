@@ -145,7 +145,7 @@ namespace KUKITVAPI
                         Group = ""
                     };
 
-                    ch.LogoUrl = "https://www.kuki.cz/media/chlogo/" + chJson.GetStringValue("epg_logo");
+                    ch.LogoUrl = $"https://www.kuki.cz/media/chlogo/{ch.Id}.png";
 
                     var porn = chJson.GetStringValue("porn");
                     if (porn.ToLower() != "false")
