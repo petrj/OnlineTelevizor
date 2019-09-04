@@ -23,6 +23,7 @@ namespace OnlineTelevizor.Models
         private string _lastChannelNumber;
         private AppFontSizeEnum _appFontSize = AppFontSizeEnum.Normal;
         private bool _enableLogging = true;
+        private bool _doNotSplitScreenOnLandscape = true;
         private LoggingLevelEnum _loggingLevel;
         private bool _purchased = true;
         private bool _dDebugMode = true;
@@ -42,6 +43,7 @@ namespace OnlineTelevizor.Models
         public bool ShowLocked { get => _showLocked; set => _showLocked = value; }
         public bool ShowAdultChannels { get => _showAdultChannels; set => _showAdultChannels = value; }
         public bool AnimatedScrolling { get => _animatedScrolling; set => _animatedScrolling = value; }
+        public bool DoNotSplitScreenOnLandscape { get => _doNotSplitScreenOnLandscape; set => _doNotSplitScreenOnLandscape = value; }
         public string AutoPlayChannelNumber { get => _autoPlayChannelNumber; set => _autoPlayChannelNumber = value; }
         public string LastChannelNumber { get => _lastChannelNumber; set => _lastChannelNumber = value; }
         public AppFontSizeEnum AppFontSize { get => _appFontSize; set => _appFontSize = value; }

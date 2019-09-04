@@ -175,6 +175,18 @@ namespace OnlineTelevizor.iOS
             }
         }
 
+        public bool DoNotSplitScreenOnLandscape
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("DoNotSplitScreenOnLandscape");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("DoNotSplitScreenOnLandscape", value);
+            }
+        }
+
         public string LastChannelNumber
         {
             get

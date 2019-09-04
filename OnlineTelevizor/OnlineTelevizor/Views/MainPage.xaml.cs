@@ -68,7 +68,7 @@ namespace OnlineTelevizor.Views
         {
             base.OnSizeAllocated(width, height);
 
-            if (width>height)
+            if (width>height && !_config.DoNotSplitScreenOnLandscape)
             {
                 _viewModel.IsPortrait = false;
                 LayoutGrid.ColumnDefinitions[0].Width = new GridLength(width/2.0);

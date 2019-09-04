@@ -43,6 +43,8 @@ namespace OnlineTelevizor.Models
 
         bool AnimatedScrolling { get; set; }
 
+        bool DoNotSplitScreenOnLandscape { get; set; }
+
         string PurchaseProductId { get; }
 
         bool DebugMode { get; set; }

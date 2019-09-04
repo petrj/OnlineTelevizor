@@ -159,6 +159,18 @@ namespace OnlineTelevizor.UWP
             }
         }
 
+        public bool DoNotSplitScreenOnLandscape
+        {
+            get
+            {
+                return GetSettingValue<bool>("DoNotSplitScreenOnLandscape");
+            }
+            set
+            {
+                SaveSettingValue<bool>("DoNotSplitScreenOnLandscape", value);
+            }
+        }
+
         public string LastChannelNumber
         {
             get

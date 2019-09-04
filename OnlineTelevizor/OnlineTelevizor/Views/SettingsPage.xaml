@@ -145,7 +145,10 @@
                         <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowAdultChannelsSwitch" IsToggled="{Binding Config.ShowAdultChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.IsPurchased}"/>
 
                         <Label  Grid.Row="1" Grid.Column="0" Text="Animované označování kanálů" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Switch Grid.Row="1" Grid.Column="1" x:Name="AnimatedScrolling" IsToggled="{Binding Config.AnimatedScrolling, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                        <Switch Grid.Row="1" Grid.Column="1" x:Name="AnimatedScrollingSwitch" IsToggled="{Binding Config.AnimatedScrolling, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+
+                        <Label  Grid.Row="2" Grid.Column="0" Text="Nerozdělovat obrazovku při zobrazení na šířku" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Switch Grid.Row="2" Grid.Column="1" x:Name="DoNotSplitScreenOnLandscapeSwitch" IsToggled="{Binding Config.DoNotSplitScreenOnLandscape, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
 
                     </Grid>
 
