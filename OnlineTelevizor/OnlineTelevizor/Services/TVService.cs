@@ -159,7 +159,7 @@ namespace OnlineTelevizor.Services
 
                             if (ch.Locked == "pin" &&
                                 (
-                                    !_config.ShowAdultChannels || String.IsNullOrEmpty(_config.ChildLockPIN)
+                                    !_config.ShowAdultChannels
                                 ))
                                 continue; // adult channels 
 

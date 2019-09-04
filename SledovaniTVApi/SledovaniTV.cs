@@ -564,7 +564,6 @@ namespace SledovaniTVAPI
                             Type = channelJson["type"].ToString(),
                             LogoUrl = channelJson["logoUrl"].ToString(),
                             Locked = channelJson["locked"].ToString(),
-                            ParentLocked = channelJson["parentLocked"].ToString(),
                             Group = channelJson["group"].ToString()
                         };
 

@@ -14,7 +14,6 @@ namespace TVAPI
        public string Type { get; set; }
        public string LogoUrl { get; set; }
        public string Locked { get; set; }
-       public string ParentLocked { get; set; }
        public string Group { get; set; }
     }
 }

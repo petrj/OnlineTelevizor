@@ -35,9 +35,14 @@
 
         <ScrollView Style="{StaticResource PageBackgroundStyle}">
 
-            <StackLayout>
+            <StackLayout>                
 
                 <StackLayout Margin="20,10,20,0">
+
+                    <ActivityIndicator
+                           IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           Color="White" />
 
                     <StackLayout Margin="20,10,0,0">
                         <Label Text="Název:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>

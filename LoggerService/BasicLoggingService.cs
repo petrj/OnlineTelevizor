@@ -30,7 +30,7 @@ namespace LoggerService
 
                 System.Diagnostics.Debug.WriteLine(msg);
 
-                Console.WriteLine(msg);
+                //Console.WriteLine(msg);
             }
             catch
             {

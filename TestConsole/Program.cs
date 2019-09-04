@@ -19,6 +19,7 @@ namespace TestConsole
 
             Console.WriteLine("...");
 
+         
             var tvService = new KUKITV(loggingService);
 
             if (JSONObject.FileExists("kuki.json"))
@@ -26,8 +27,11 @@ namespace TestConsole
                 var conn = JSONObject.LoadFromFile<DeviceConnection>("kuki.json");
                 tvService.SetConnection(conn.deviceId, null);
             }
+          
 
-            /*
+           /*
+            var tvService = new SledovaniTV(loggingService);
+
             if (JSONObject.FileExists("credentials.json"))
             {
                 var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
@@ -39,6 +43,7 @@ namespace TestConsole
                 var conn = JSONObject.LoadFromFile<DeviceConnection>("connection.json");
                 tvService.SetConnection(conn.deviceId, conn.password);
             }
+           
             */
 
             Task.Run(
@@ -67,9 +72,13 @@ namespace TestConsole
                     {
                         Console.WriteLine(ch.Name);
                         Console.WriteLine("  ID     :" + ch.Id);
+                        Console.WriteLine("  Number :" + ch.ChannelNumber);
                         Console.WriteLine("  Locked :" + ch.Locked);
                         Console.WriteLine("  Url    :" + ch.Url);
+                        Console.WriteLine("  Type   :" + ch.Type);
+                        Console.WriteLine("  Group  :" + ch.Group);
                         Console.WriteLine("  LogoUrl:" + ch.LogoUrl);
+                        Console.WriteLine("-----------------------");
                     }
                     
                     Console.WriteLine();

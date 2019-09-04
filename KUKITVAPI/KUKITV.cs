@@ -141,11 +141,15 @@ namespace KUKITVAPI
                         Name = chJson.GetStringValue("name"),
                         Id = chJson.GetStringValue("timeshift_ident"),
                         Type = chJson.GetStringValue("stream_type"),
-                        Locked = "none"
-
+                        Locked = "none",
+                        Group = ""
                     };
 
                     ch.LogoUrl = "https://www.kuki.cz/media/chlogo/" + chJson.GetStringValue("epg_logo");
+
+                    var porn = chJson.GetStringValue("porn");
+                    if (porn.ToLower() != "false")
+                        ch.Locked = "pin";
 
                     var playTokenPostParams = new Dictionary<string, string>();
                     playTokenPostParams.Add("type", "live");
