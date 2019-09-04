@@ -45,6 +45,14 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public string FontSizeForText
+        {
+            get
+            {
+                return GetScaledSize(11).ToString();
+            }
+        }
+
         public string FontSizeForEntry
         {
             get
@@ -66,6 +74,7 @@ namespace OnlineTelevizor.ViewModels
             OnPropertyChanged(nameof(FontSizeForCaption));
             OnPropertyChanged(nameof(FontSizeForEntry));
             OnPropertyChanged(nameof(FontSizeForPicker));
+            OnPropertyChanged(nameof(FontSizeForText));            
         }
 
         public void FillAutoPlayChannels(ObservableCollection<ChannelItem> channels = null)
@@ -218,20 +227,11 @@ namespace OnlineTelevizor.ViewModels
             }
             set
             {
-                var oldApi = Config.TVApi;
                 Config.TVApi = (TVAPIEnum)value;                
 
                 OnPropertyChanged(nameof(TVAPIIndex));
                 OnPropertyChanged(nameof(IsSledovaniTVVisible));
                 OnPropertyChanged(nameof(IsKUKITVVisible));
-
-                if (Config.TVApi == TVAPIEnum.KUKI && oldApi != TVAPIEnum.KUKI)
-                {
-                    _dialogService.Information("Podpora Kuki je pouze z částečná (chybí EPG, bez filtrů na skupiny a typy kanálů a možnosti zvolit si kvalitu streamu)" + 
-                        Environment.NewLine +
-                        Environment.NewLine +
-                        "S/N zařízení je možné získat v nastavení mobilní aplikace Kuki");
-                }
             }
         }
 

@@ -92,6 +92,11 @@
                         <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="SNEntry"  Text="{Binding KUKIsn, Mode=TwoWay}" Placeholder="Zadejte S/N mobilního zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}"></Entry>
                     </StackLayout>
 
+                    <StackLayout Margin="20,10,0,0">
+                        <Label Text="Podpora Kuki je pouze částečná (bez EPG, bez filtrů na skupiny a možnosti zvolit si kvalitu streamu)" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForText}"/>
+                        <Label Text="S/N zařízení je možné získat v nastavení mobilní aplikace Kuki" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForText}"/>
+                    </StackLayout>
+
                 </StackLayout>
 
                 <StackLayout Margin="20,20,20,20">
