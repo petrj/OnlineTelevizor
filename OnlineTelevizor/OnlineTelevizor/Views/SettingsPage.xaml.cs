@@ -57,6 +57,22 @@ namespace OnlineTelevizor.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
+
+#if DVBSTREAMER            
+            var dvbStreamerEnabled = true;
+#else
+            var dvbStreamerEnabled = false;
+#endif
+
+            if (!dvbStreamerEnabled)
+            {
+                if (_config.TVApi == TVAPIEnum.DVBStreamer)
+                    _viewModel.TVAPIIndex = 0;
+
+                if (TVAPIPicker.Items.Contains("DVB Streamer"))
+                    TVAPIPicker.Items.Remove("DVB Streamer");
+            }
+
         }
     }
 }

@@ -57,7 +57,7 @@
                         <Picker.Items>
                             <x:String>SledovaniTV</x:String>
                             <x:String>Kuki</x:String>
-                            <!--x:String>DVB Streamer</x:String-->
+                            <x:String>DVB Streamer</x:String>
                         </Picker.Items>
                     </Picker>
 
