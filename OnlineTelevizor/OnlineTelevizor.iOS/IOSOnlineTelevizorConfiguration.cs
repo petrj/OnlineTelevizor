@@ -89,6 +89,18 @@ namespace OnlineTelevizor.iOS
             }
         }
 
+        public string DVBStreamerUrl
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("DVBStreamerUrl");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("DVBStreamerUrl", value);
+            }
+        }
+
         public TVAPIEnum TVApi
         {
             get

@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DVBStreamerAPI\DVBStreamerAPI.csproj" />
     <ProjectReference Include="..\..\KUKITVAPI\KUKITVAPI.csproj" />
     <ProjectReference Include="..\..\LoggerService\LoggerService.csproj" />
     <ProjectReference Include="..\..\SledovaniTVApi\SledovaniTVAPI.csproj" />

@@ -25,7 +25,7 @@ namespace OnlineTelevizor.Views
         private ILoggingService _loggingService;
         IDialogService _dialogService;
 
-        public SettingsPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
+        public SettingsPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
         {
             InitializeComponent();
 
@@ -33,7 +33,7 @@ namespace OnlineTelevizor.Views
             _loggingService = loggingService;
             _dialogService = dialogService;
 
-            BindingContext = _viewModel = new SettingsViewModel(loggingService, config, dialogService);
+            BindingContext = _viewModel = new SettingsViewModel(loggingService, config, dialogService, service);
 
             if (Device.RuntimePlatform == Device.UWP)
             {

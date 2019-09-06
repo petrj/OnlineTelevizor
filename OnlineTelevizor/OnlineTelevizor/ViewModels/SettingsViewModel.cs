@@ -18,16 +18,19 @@ namespace OnlineTelevizor.ViewModels
     public class SettingsViewModel : BaseViewModel
     {
         private bool _isPruchased;
+        private TVService _service;
 
         public Command PayCommand { get; set; }
+        public Command StopStreamCommand { get; set; }
 
         public ObservableCollection<ChannelItem> AutoPlayChannels { get; set; } = new ObservableCollection<ChannelItem>();
 
         private ChannelItem _selectedChannelItem;
 
-        public SettingsViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
+        public SettingsViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
             : base(loggingService, config, dialogService)
         {
+            _service = service;
             _loggingService = loggingService;
             _dialogService = dialogService;
             Config = config;
@@ -35,6 +38,7 @@ namespace OnlineTelevizor.ViewModels
             IsPurchased = Config.Purchased;
 
             PayCommand = new Command(async () => await Pay());
+            StopStreamCommand = new Command(async () => await StopStream());
         }
 
         public string FontSizeForCaption
@@ -121,6 +125,11 @@ namespace OnlineTelevizor.ViewModels
             }
 
             OnPropertyChanged(nameof(AutoPlayChannels));
+        }
+        
+        protected async Task StopStream()
+        {
+            await _service.StopStream();
         }
 
         protected async Task Pay()
@@ -232,6 +241,7 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(TVAPIIndex));
                 OnPropertyChanged(nameof(IsSledovaniTVVisible));
                 OnPropertyChanged(nameof(IsKUKITVVisible));
+                OnPropertyChanged(nameof(IsDVBStreamerVisible));
             }
         }
 
@@ -247,6 +257,14 @@ namespace OnlineTelevizor.ViewModels
             get
             {
                 return Config.TVApi == TVAPIEnum.KUKI;
+            }
+        }
+
+        public bool IsDVBStreamerVisible
+        {
+            get
+            {
+                return Config.TVApi == TVAPIEnum.DVBStreamer;
             }
         }
 

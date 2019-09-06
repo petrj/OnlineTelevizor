@@ -56,7 +56,8 @@
                         SelectedIndex="{Binding TVAPIIndex, Mode=TwoWay}" >
                         <Picker.Items>
                             <x:String>SledovaniTV</x:String>
-                            <x:String>KUKI</x:String>
+                            <x:String>Kuki</x:String>
+                            <!--x:String>DVB Streamer</x:String-->
                         </Picker.Items>
                     </Picker>
 
@@ -95,6 +96,21 @@
                     <StackLayout Margin="20,10,0,0">
                         <Label Text="Podpora Kuki je pouze částečná (bez EPG a možnosti zvolit si kvalitu streamu)" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForText}"/>
                         <Label Text="S/N zařízení je možné získat v nastavení mobilní aplikace Kuki" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForText}"/>
+                    </StackLayout>
+
+                </StackLayout>
+
+                <StackLayout Margin="20,10,20,0" IsVisible="{Binding IsDVBStreamerVisible, Mode=TwoWay}">
+
+                    <Label Text="Přístupové údaje pro DVB Streamer" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+
+                    <StackLayout Margin="20,10,0,0">
+                        <Label Text="Url služby:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="DVBStreamerUrlEntry"  Text="{Binding DVBStreamerUrl, Mode=TwoWay}" Placeholder="Zadejte url služby" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}"></Entry>
+                    </StackLayout>
+
+                    <StackLayout Margin="20,10,0,0">
+                        <Button Margin="20,10,0,0" Text="Zastavit stream" Command="{Binding StopStreamCommand}" FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
                     </StackLayout>
 
                 </StackLayout>
@@ -167,3 +183,4 @@
 
     </ContentPage.Content>
 </ContentPage>
+    

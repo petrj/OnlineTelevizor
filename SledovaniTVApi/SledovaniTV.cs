@@ -720,5 +720,10 @@ namespace SledovaniTVAPI
                 _status = StatusEnum.GeneralError;
             }
         }
+
+        public async Task Stop()
+        {
+            // nothing to stop
+        }
     }
 }

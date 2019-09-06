@@ -73,6 +73,18 @@ namespace OnlineTelevizor.UWP
             }
         }
 
+        public string DVBStreamerUrl
+        {
+            get
+            {
+                return GetSettingValue<string>("DVBStreamerUrl");
+            }
+            set
+            {
+                SaveSettingValue<string>("DVBStreamerUrl", value);
+            }
+        }
+
         public TVAPIEnum TVApi
         {
             get

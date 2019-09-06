@@ -19,5 +19,6 @@ namespace TVAPI
         Task<List<Channel>> GetChanels();
         Task Unlock();
         Task Lock();
+        Task Stop();
     }
 }

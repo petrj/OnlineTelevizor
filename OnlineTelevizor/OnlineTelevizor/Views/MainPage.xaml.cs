@@ -269,7 +269,7 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"ToolbarItemSettings_Clicked");
 
-            var settingsPage = new SettingsPage(_loggingService, _config, _dialogService);
+            var settingsPage = new SettingsPage(_loggingService, _config, _dialogService, _viewModel.TVService);
             settingsPage.FillAutoPlayChannels(_viewModel.AllNotFilteredChannels);
 
             settingsPage.Disappearing += delegate

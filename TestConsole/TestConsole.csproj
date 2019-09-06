@@ -66,6 +66,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DVBStreamerAPI\DVBStreamerAPI.csproj">
+      <Project>{4D725CC6-15E5-480E-A8D1-9A872F89BF1B}</Project>
+      <Name>DVBStreamerAPI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KUKITVAPI\KUKITVAPI.csproj">
       <Project>{F6E4D41B-C086-47AD-9700-3B4D30D4370C}</Project>
       <Name>KUKITVAPI</Name>

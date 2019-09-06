@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TVAPI;
 using KUKITVAPI;
+using DVBStreamerAPI;
 
 namespace OnlineTelevizor.Services
 {
@@ -32,16 +33,21 @@ namespace OnlineTelevizor.Services
 
         private void InitTVService()
         {
-            if (_config.TVApi == TVAPIEnum.SledovaniTV)
+            switch (_config.TVApi)
             {
-                _service = new SledovaniTV(_log);
-                _service.SetCredentials(_config.Username, _config.Password, _config.ChildLockPIN);
-                _service.SetConnection(_config.DeviceId, _config.DevicePassword);
-            }
-            else
-            {
-                _service = new KUKITV(_log);
-                _service.SetConnection(_config.KUKIsn, null);
+                case TVAPIEnum.SledovaniTV:
+                    _service = new SledovaniTV(_log);
+                    _service.SetCredentials(_config.Username, _config.Password, _config.ChildLockPIN);
+                    _service.SetConnection(_config.DeviceId, _config.DevicePassword);
+                    break;
+                case TVAPIEnum.KUKI:
+                    _service = new KUKITV(_log);
+                    _service.SetConnection(_config.KUKIsn, null);
+                    break;
+                case TVAPIEnum.DVBStreamer:
+                    _service = new DVBStreamerClient(_log);
+                    _service.SetConnection(_config.DVBStreamerUrl, null);
+                    break;
             }
         }
 
@@ -106,6 +112,11 @@ namespace OnlineTelevizor.Services
             }
 
             return result;
+        }
+
+        public async Task StopStream()
+        {
+            await _service.Stop();
         }
 
         public async Task<ObservableCollection<ChannelItem>> GetChannels()

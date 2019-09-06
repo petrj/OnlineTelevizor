@@ -11,6 +11,8 @@ foreach ($folder in `
         "SledovaniTVApi\obj",
 		"KUKITVAPI\bin",
         "KUKITVAPI\obj",
+		"DVBStreamerAPI\bin",
+		"DVBStreamerAPI\obj",
 		"TVAPI\bin",
         "TVAPI\obj",		
         "OnlineTelevizor\OnlineTelevizor\bin",

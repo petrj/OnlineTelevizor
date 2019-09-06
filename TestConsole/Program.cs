@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DVBStreamerAPI;
 using KUKITVAPI;
 using LoggerService;
 using SledovaniTVAPI;
@@ -19,32 +20,43 @@ namespace TestConsole
 
             Console.WriteLine("...");
 
-         
-            var tvService = new KUKITV(loggingService);
+            /*
+              var tvService = new KUKITV(loggingService);
 
-            if (JSONObject.FileExists("kuki.json"))
+              if (JSONObject.FileExists("kuki.json"))
+              {
+                  var conn = JSONObject.LoadFromFile<DeviceConnection>("kuki.json");
+                  tvService.SetConnection(conn.deviceId, null);
+              }         
+              */
+
+            /*
+              var tvService = new SledovaniTV(loggingService);
+
+              if (JSONObject.FileExists("credentials.json"))
+              {
+                  var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
+                  tvService.SetCredentials(credentials.Username, credentials.Password, credentials.ChildLockPIN);
+              }
+
+              if (JSONObject.FileExists("connection.json"))
+              {
+                  var conn = JSONObject.LoadFromFile<DeviceConnection>("connection.json");
+                  tvService.SetConnection(conn.deviceId, conn.password);
+              }
+
+            */
+
+            var tvService = new DVBStreamerClient(loggingService);
+
+            if (JSONObject.FileExists("dvbStreamer.json"))
             {
-                var conn = JSONObject.LoadFromFile<DeviceConnection>("kuki.json");
+                var conn = JSONObject.LoadFromFile<DeviceConnection>("dvbStreamer.json");
                 tvService.SetConnection(conn.deviceId, null);
             }
-          
+              
 
-           /*
-            var tvService = new SledovaniTV(loggingService);
 
-            if (JSONObject.FileExists("credentials.json"))
-            {
-                var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
-                tvService.SetCredentials(credentials.Username, credentials.Password, credentials.ChildLockPIN);
-            }
-
-            if (JSONObject.FileExists("connection.json"))
-            {
-                var conn = JSONObject.LoadFromFile<DeviceConnection>("connection.json");
-                tvService.SetConnection(conn.deviceId, conn.password);
-            }
-           
-            */
 
             Task.Run(
                 async () =>
