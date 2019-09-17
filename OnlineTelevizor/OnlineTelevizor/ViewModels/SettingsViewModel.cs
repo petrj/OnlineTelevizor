@@ -12,6 +12,7 @@ using Plugin.Permissions.Abstractions;
 using Plugin.InAppBilling;
 using Plugin.InAppBilling.Abstractions;
 using System.Collections.ObjectModel;
+using System.Reflection;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -22,6 +23,8 @@ namespace OnlineTelevizor.ViewModels
 
         public Command PayCommand { get; set; }
         public Command StopStreamCommand { get; set; }
+
+        public Command AboutCommand { get; set; }
 
         public ObservableCollection<ChannelItem> AutoPlayChannels { get; set; } = new ObservableCollection<ChannelItem>();
 
@@ -39,6 +42,7 @@ namespace OnlineTelevizor.ViewModels
 
             PayCommand = new Command(async () => await Pay());
             StopStreamCommand = new Command(async () => await StopStream());
+            AboutCommand = new Command(async () => await About());
         }
 
         public string FontSizeForCaption
@@ -78,7 +82,7 @@ namespace OnlineTelevizor.ViewModels
             OnPropertyChanged(nameof(FontSizeForCaption));
             OnPropertyChanged(nameof(FontSizeForEntry));
             OnPropertyChanged(nameof(FontSizeForPicker));
-            OnPropertyChanged(nameof(FontSizeForText));            
+            OnPropertyChanged(nameof(FontSizeForText));
         }
 
         public void FillAutoPlayChannels(ObservableCollection<ChannelItem> channels = null)
@@ -126,10 +130,57 @@ namespace OnlineTelevizor.ViewModels
 
             OnPropertyChanged(nameof(AutoPlayChannels));
         }
-        
+
         protected async Task StopStream()
         {
             await _service.StopStream();
+        }
+
+        protected async Task About()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("");
+            sb.AppendLine($"Autor: Petr Janoušek");
+
+            _loggingService.Info($"Checking purchase");
+            try
+            {
+                // contacting service
+
+                var connected = await CrossInAppBilling.Current.ConnectAsync();
+
+                if (connected)
+                {
+                    // check InAppBillingPurchase
+                    var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
+                    foreach (var purchase in purchases)
+                    {
+                        if (purchase.ProductId == Config.PurchaseProductId &&
+                            purchase.State == PurchaseState.Purchased)
+                        {
+                            sb.AppendLine("");
+                            sb.AppendLine("");
+                            sb.AppendLine($"Zakoupena plná verze");
+                            sb.AppendLine("");
+                            sb.AppendLine($"Datum : {purchase.TransactionDateUtc}");
+                            sb.AppendLine($"Id objednávky: {purchase.Id}");
+
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex, "Error while checking purchase");
+            }
+            finally
+            {
+                await CrossInAppBilling.Current.DisconnectAsync();
+            }
+
+            await _dialogService.Information(sb.ToString(), "Online Televizor");
         }
 
         protected async Task Pay()
@@ -236,7 +287,7 @@ namespace OnlineTelevizor.ViewModels
             }
             set
             {
-                Config.TVApi = (TVAPIEnum)value;                
+                Config.TVApi = (TVAPIEnum)value;
 
                 OnPropertyChanged(nameof(TVAPIIndex));
                 OnPropertyChanged(nameof(IsSledovaniTVVisible));
@@ -250,7 +301,7 @@ namespace OnlineTelevizor.ViewModels
             get
             {
                 return Config.TVApi == TVAPIEnum.SledovaniTV;
-            }           
+            }
         }
         public bool IsKUKITVVisible
         {

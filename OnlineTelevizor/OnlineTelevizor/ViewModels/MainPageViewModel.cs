@@ -534,7 +534,7 @@ namespace OnlineTelevizor.ViewModels
 
                         Channels.Add(ch);
 
-                        if (!_channelById.ContainsKey(ch.Id)) 
+                        if (!_channelById.ContainsKey(ch.Id))
                             _channelById.Add(ch.Id, ch); // for faster EPG refresh
 
                         channelByNumber.Add(ch.ChannelNumber, ch); // for channel selecting
@@ -739,9 +739,6 @@ namespace OnlineTelevizor.ViewModels
 
         public async Task CheckPurchase()
         {
-            if (Config.Purchased || Config.DebugMode)
-                return;
-
             _loggingService.Info($"Checking purchase");
 
             try
@@ -757,6 +754,8 @@ namespace OnlineTelevizor.ViewModels
                     return;
                 }
 
+                bool purchased = false;
+
                 // check InAppBillingPurchase
                 var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
                 foreach (var purchase in purchases)
@@ -765,6 +764,7 @@ namespace OnlineTelevizor.ViewModels
                         purchase.State == PurchaseState.Purchased)
                     {
                         Config.Purchased = true;
+                        purchased = true;
 
                         _loggingService.Debug($"Already purchased (InAppBillingPurchase)");
 
@@ -777,6 +777,12 @@ namespace OnlineTelevizor.ViewModels
 
                         break;
                     }
+                }
+
+                if (!purchased && Config.Purchased)
+                {
+                    _loggingService.Debug($"Purchase refunded?");
+                    Config.Purchased = false;
                 }
 
             } catch (Exception ex)
