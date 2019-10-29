@@ -65,9 +65,14 @@ namespace OnlineTelevizor.Views
                     if (_playerPage == null)
                         _playerPage = new PlayerPage();
 
+                    var playing = _playerPage.Playing;
+
                     _playerPage.SetMediaUrl(url);
 
-                    Navigation.PushModalAsync(_playerPage);
+                    if (!playing)
+                    {
+                        Navigation.PushModalAsync(_playerPage);
+                    }
                 });
             });
 

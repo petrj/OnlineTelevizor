@@ -30,9 +30,24 @@ namespace OnlineTelevizor.Views
             videoView.MediaPlayer = _mediaPlayer;
         }
 
+        public bool Playing
+        {
+            get
+            {
+                return videoView.MediaPlayer.IsPlaying;
+            }
+        }
+
         public void SetMediaUrl(string mediaUrl)
         {
             _mediaUrl = mediaUrl;
+
+            if (Playing)
+            {
+                videoView.MediaPlayer.Stop();
+                _media = new Media(_libVLC, _mediaUrl, FromType.FromLocation);
+                videoView.MediaPlayer.Play(_media);
+            }            
         }
 
         protected override void OnAppearing()
@@ -40,7 +55,6 @@ namespace OnlineTelevizor.Views
             base.OnAppearing();
 
             _media = new Media(_libVLC, _mediaUrl, FromType.FromLocation);
-
             videoView.MediaPlayer.Play(_media);
         }
 
