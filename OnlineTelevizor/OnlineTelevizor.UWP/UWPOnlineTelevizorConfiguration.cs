@@ -159,6 +159,18 @@ namespace OnlineTelevizor.UWP
             }
         }
 
+        public bool InternalPlayer
+        {
+            get
+            {
+                return GetSettingValue<bool>("InternalPlayer");
+            }
+            set
+            {
+                SaveSettingValue<bool>("InternalPlayer", value);
+            }
+        }
+
         public bool AnimatedScrolling
         {
             get

@@ -19,6 +19,7 @@ namespace OnlineTelevizor.ViewModels
         protected ILoggingService _loggingService;
         protected IDialogService _dialogService;
         public const string UriMessage = "LaunchUriMessage";
+        public const string PlayInternal = "PlayInternal";
         public const string KeyMessage = "KeyDownMessage";
         public const string ShowDetailMessage = "ShowDetailMessage";
         public const string ToastMessage = "ShowToastMessage";
@@ -149,7 +150,14 @@ namespace OnlineTelevizor.ViewModels
                     }
                 }
 
-                MessagingCenter.Send(url, BaseViewModel.UriMessage);
+                if (Config.InternalPlayer)
+                {
+                    MessagingCenter.Send(url, BaseViewModel.PlayInternal);
+                }
+                else
+                {
+                    MessagingCenter.Send(url, BaseViewModel.UriMessage);
+                }
             }
             catch (Exception ex)
             {

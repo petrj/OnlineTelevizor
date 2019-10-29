@@ -22,6 +22,7 @@ namespace OnlineTelevizor.Views
         private ILoggingService _loggingService;
 
         private FilterPage _filterPage;
+        private PlayerPage _playerPage;
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private string _numberPressed = String.Empty;
@@ -55,6 +56,19 @@ namespace OnlineTelevizor.Views
             MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage, (sender) =>
             {
                 Detail_Clicked(this, null);
+            });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.PlayInternal, (url) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (_playerPage == null)
+                        _playerPage = new PlayerPage();
+
+                    _playerPage.SetMediaUrl(url);
+
+                    Navigation.PushModalAsync(_playerPage);
+                });
             });
 
             if (Device.RuntimePlatform == Device.UWP ||

@@ -113,6 +113,18 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        public bool InternalPlayer
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("InternalPlayer");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("InternalPlayer", value);
+            }
+        }
+
         public bool AnimatedScrolling
         {
             get

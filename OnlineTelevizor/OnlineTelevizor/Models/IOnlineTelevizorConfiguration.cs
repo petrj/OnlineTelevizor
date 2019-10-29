@@ -16,7 +16,7 @@ namespace OnlineTelevizor.Models
 
         string KUKIsn { get; set; }
 
-        string DVBStreamerUrl { get; set; }        
+        string DVBStreamerUrl { get; set; }
 
         //  user settings
         string StreamQuality { get; set; }
@@ -26,6 +26,8 @@ namespace OnlineTelevizor.Models
 
         bool ShowLocked { get; set; }
         bool ShowAdultChannels { get; set; }
+
+        bool InternalPlayer { get; set; }
 
         /// <summary>
         /// -1    : no chanel

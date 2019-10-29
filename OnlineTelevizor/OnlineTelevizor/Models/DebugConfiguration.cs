@@ -19,6 +19,7 @@ namespace OnlineTelevizor.Models
         private string _channelFilterName;
         private bool _showLocked;
         private bool _showAdultChannels;
+        private bool _internalPlayer;
         private bool _animatedScrolling;
         private string _autoPlayChannelNumber;
         private string _lastChannelNumber;
@@ -44,6 +45,7 @@ namespace OnlineTelevizor.Models
         public string ChannelFilterName { get => _channelFilterName; set => _channelFilterName = value; }
         public bool ShowLocked { get => _showLocked; set => _showLocked = value; }
         public bool ShowAdultChannels { get => _showAdultChannels; set => _showAdultChannels = value; }
+        public bool InternalPlayer { get => _internalPlayer; set => _internalPlayer = value; }
         public bool AnimatedScrolling { get => _animatedScrolling; set => _animatedScrolling = value; }
         public bool DoNotSplitScreenOnLandscape { get => _doNotSplitScreenOnLandscape; set => _doNotSplitScreenOnLandscape = value; }
         public string AutoPlayChannelNumber { get => _autoPlayChannelNumber; set => _autoPlayChannelNumber = value; }

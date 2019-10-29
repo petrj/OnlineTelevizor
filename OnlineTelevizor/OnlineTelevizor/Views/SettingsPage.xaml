@@ -171,6 +171,9 @@
                         <Label  Grid.Row="2" Grid.Column="0" Text="Nerozdělovat obrazovku při zobrazení na šířku" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
                         <Switch Grid.Row="2" Grid.Column="1" x:Name="DoNotSplitScreenOnLandscapeSwitch" IsToggled="{Binding Config.DoNotSplitScreenOnLandscape, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
 
+                        <Label  Grid.Row="3" Grid.Column="0" Text="Použít interní přehrávač" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Switch Grid.Row="3" Grid.Column="1" x:Name="UseInternalPlayerSwitch" IsToggled="{Binding Config.InternalPlayer, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+
                     </Grid>
 
                     <Button Margin="20,10,0,0" Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
