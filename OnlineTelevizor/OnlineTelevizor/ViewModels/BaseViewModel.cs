@@ -10,8 +10,7 @@ using Xamarin.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using System.Text.RegularExpressions;
-using Plugin.InAppBilling;
-using Plugin.InAppBilling.Abstractions;
+
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -148,7 +147,7 @@ namespace OnlineTelevizor.ViewModels
                     {
                         url += "&" + configQuality;
                     }
-                }                
+                }
 
                 MessagingCenter.Send(url, BaseViewModel.UriMessage);
             }

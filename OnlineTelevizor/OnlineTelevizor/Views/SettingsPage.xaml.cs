@@ -1,7 +1,6 @@
 ﻿using LoggerService;
 using NLog;
 using Plugin.InAppBilling;
-using Plugin.InAppBilling.Abstractions;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.Services;
 using OnlineTelevizor.ViewModels;
@@ -58,7 +57,7 @@ namespace OnlineTelevizor.Views
         {
             base.OnAppearing();
 
-#if DVBSTREAMER            
+#if DVBSTREAMER
             var dvbStreamerEnabled = true;
 #else
             var dvbStreamerEnabled = false;

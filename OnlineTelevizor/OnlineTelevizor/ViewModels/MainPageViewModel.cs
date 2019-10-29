@@ -8,11 +8,8 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Plugin.Permissions;
-using Plugin.Permissions.Abstractions;
 using System.Threading;
 using Plugin.InAppBilling;
-using Plugin.InAppBilling.Abstractions;
 using TVAPI;
 
 namespace OnlineTelevizor.ViewModels

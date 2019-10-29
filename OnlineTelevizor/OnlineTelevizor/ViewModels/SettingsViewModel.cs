@@ -10,7 +10,6 @@ using Xamarin.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Plugin.InAppBilling;
-using Plugin.InAppBilling.Abstractions;
 using System.Collections.ObjectModel;
 using System.Reflection;
 
