@@ -20,6 +20,10 @@ namespace OnlineTelevizor.Views
         {
             InitializeComponent();
 
+config.Username = "luis99@seznam.cz";
+config.Password = "123456";
+
+
             if (config.EnableLogging)
             {
                 _loggingService = new BasicLoggingService(config.LoggingLevel);
