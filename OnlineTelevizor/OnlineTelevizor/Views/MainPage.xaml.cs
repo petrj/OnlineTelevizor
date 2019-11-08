@@ -282,6 +282,7 @@ namespace OnlineTelevizor.Views
             if (_playerPage != null && _playerPage.Playing)
             {
                 _playerPage.Stop();
+                Navigation.PopModalAsync();
             }
         }
 

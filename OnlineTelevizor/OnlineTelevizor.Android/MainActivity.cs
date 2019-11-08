@@ -38,7 +38,7 @@ namespace OnlineTelevizor.Droid
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
             {
-                CrossToastPopUp.Current.ShowCustomToast(message, "#0000FF", "#FFFFFF");
+                CrossToastPopUp.Current.ShowCustomToast(message, "#3F51B5", "#FFFFFF");
             });
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.UriMessage, (url) =>
