@@ -20,10 +20,6 @@ namespace OnlineTelevizor.Views
         {
             InitializeComponent();
 
-config.Username = "luis99@seznam.cz";
-config.Password = "123456";
-
-
             if (config.EnableLogging)
             {
                 _loggingService = new BasicLoggingService(config.LoggingLevel);
@@ -46,6 +42,8 @@ config.Password = "123456";
         protected override void OnSleep()
         {
             _loggingService.Info($"OnSleep");
+
+            _mainPage.StopPLayback();
 
             _lastSleep = DateTime.Now;
         }

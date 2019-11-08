@@ -161,11 +161,6 @@ namespace OnlineTelevizor.ViewModels
                             Count = 1
                         };
 
-                        if ((!String.IsNullOrEmpty(Config.ChannelFilterGroup)) && (ch.Group == selectedGroupConfig))
-                        {
-                            SelectedGroupItem = g;
-                        }
-
                         groupToItem.Add(ch.Group,g);
                     } else
                     {
@@ -180,11 +175,6 @@ namespace OnlineTelevizor.ViewModels
                             Count = 1
                         };
 
-                        if ((!String.IsNullOrEmpty(Config.ChannelFilterType)) && (ch.Type == selectedTypeConfig))
-                        {
-                            SelectedTypeItem = tp;
-                        }
-
                         typeToItem.Add(ch.Type, tp);
                     }
                     else
@@ -197,9 +187,34 @@ namespace OnlineTelevizor.ViewModels
                 foreach (var kvp in groupToItem)
                     Groups.Add(kvp.Value);
 
+                // selecting available after create ALL Groups
+                if (!string.IsNullOrEmpty(selectedGroupConfig))
+                {
+                    foreach (var grp in Groups)
+                    {
+                        if (grp.Name == selectedGroupConfig)
+                        {
+                            SelectedGroupItem = grp;
+                            break;
+                        }
+                    }
+                }
+
                 Types.Add(FirstType);
                 foreach (var kvp in typeToItem)
                     Types.Add(kvp.Value);
+
+                if (!string.IsNullOrEmpty(selectedTypeConfig))
+                {
+                    foreach (var kvp in typeToItem)
+                    {
+                        if (kvp.Key == selectedTypeConfig)
+                        {
+                            SelectedTypeItem = kvp.Value;
+                            break;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

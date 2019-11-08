@@ -71,7 +71,7 @@ namespace OnlineTelevizor.Views
 
                     if (!playing)
                     {
-                        Navigation.PushModalAsync(_playerPage);
+                         Navigation.PushModalAsync(_playerPage);
                     }
                 });
             });
@@ -275,6 +275,14 @@ namespace OnlineTelevizor.Views
             _loggingService.Info($"Reset");
 
             _viewModel.ResetConnectionCommand.Execute(null);
+        }
+
+        public void StopPLayback()
+        {
+            if (_playerPage != null && _playerPage.Playing)
+            {
+                _playerPage.Stop();
+            }
         }
 
         public void Refresh()

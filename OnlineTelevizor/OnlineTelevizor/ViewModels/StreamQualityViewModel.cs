@@ -20,7 +20,7 @@ namespace OnlineTelevizor.ViewModels
 
         public Command RefreshCommand { get; set; }
 
-        public QualityItem SelectedItem { get; set; }
+        public QualityItem _selectedItem;
 
         public StreamQualityViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
            : base(loggingService, config, dialogService)
@@ -33,11 +33,36 @@ namespace OnlineTelevizor.ViewModels
             RefreshCommand = new Command(async () => await Refresh());
         }
 
+        public QualityItem SelectedItem
+        {
+            get
+            {
+                return _selectedItem;
+            } set
+            {
+                _selectedItem = value;
+
+                OnPropertyChanged(nameof(SelectedItem));
+            }
+        }
+
         public string FontSizeForQualityItem
         {
             get
             {
                 return GetScaledSize(14).ToString();
+            }
+        }
+
+        public void SelectQualityByConfg()
+        {
+            foreach (var q in Qualities)
+            {
+                if ((!String.IsNullOrEmpty(Config.StreamQuality)) && (q.Id == Config.StreamQuality))
+                {
+                    SelectedItem = q;
+                    break;
+                }
             }
         }
 
@@ -56,20 +81,18 @@ namespace OnlineTelevizor.ViewModels
                 foreach (var q in qualities)
                 {
                     Qualities.Add(q);
-
-                    if ((!String.IsNullOrEmpty(Config.StreamQuality)) && (q.Id == Config.StreamQuality))
-                    {
-                        SelectedItem = q;
-                    }
                 }
             }
             finally
             {
                 IsBusy = false;
-                OnPropertyChanged(nameof(IsBusy));
-                OnPropertyChanged(nameof(SelectedItem));
 
                 _semaphoreSlim.Release();
+
+                OnPropertyChanged(nameof(IsBusy));
+                OnPropertyChanged(nameof(Qualities));
+
+                SelectQualityByConfg();
             }
         }
     }

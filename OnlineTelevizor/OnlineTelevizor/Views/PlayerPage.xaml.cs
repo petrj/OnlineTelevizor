@@ -47,7 +47,7 @@ namespace OnlineTelevizor.Views
                 videoView.MediaPlayer.Stop();
                 _media = new Media(_libVLC, _mediaUrl, FromType.FromLocation);
                 videoView.MediaPlayer.Play(_media);
-            }            
+            }
         }
 
         protected override void OnAppearing()
@@ -62,6 +62,11 @@ namespace OnlineTelevizor.Views
         {
             base.OnDisappearing();
 
+            Stop();
+        }
+
+        public void Stop()
+        {
             videoView.MediaPlayer.Stop();
         }
     }
