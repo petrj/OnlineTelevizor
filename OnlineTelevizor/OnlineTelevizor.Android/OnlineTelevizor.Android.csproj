@@ -34,7 +34,7 @@
     <AndroidLinkMode>None</AndroidLinkMode>
     <MandroidI18n>Other</MandroidI18n>
     <AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF733.tmp\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsC3C2.tmp\Debug\</IntermediateOutputPath>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
@@ -43,21 +43,21 @@
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
-    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF733.tmp\Release\</IntermediateOutputPath>
+    <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsC3C2.tmp\Release\</IntermediateOutputPath>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidLinkMode>None</AndroidLinkMode>
     <MandroidI18n>Other</MandroidI18n>
-    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <EnableProguard>false</EnableProguard>
     <AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
@@ -75,7 +75,7 @@
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF733.tmp\Debug - Live Player\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsC3C2.tmp\Debug - Live Player\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
