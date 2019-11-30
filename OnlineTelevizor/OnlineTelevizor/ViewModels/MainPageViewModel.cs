@@ -11,6 +11,7 @@ using Xamarin.Forms;
 using System.Threading;
 using Plugin.InAppBilling;
 using TVAPI;
+using Plugin.InAppBilling.Abstractions;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -26,7 +27,8 @@ namespace OnlineTelevizor.ViewModels
 
         private ChannelItem _selectedItem;
         private bool _firstRefresh = true;
-        private int _lastRefreshDelay = 0;
+        private int _lastRefreshChannelsDelay = 0;
+        private int _lastRefreshEPEGsDelay = 0;
 
         public TVService TVService
         {
@@ -75,8 +77,8 @@ namespace OnlineTelevizor.ViewModels
             LongPressCommand = new Command(LongPress);
             ShortPressCommand = new Command(ShortPress);
 
-            // refreshing channels every hour with no start delay
-            BackgroundCommandWorker.RunInBackground(RefreshChannelsCommand, 3600, 0);
+            // refreshing every hour with no start delay
+            BackgroundCommandWorker.RunInBackground(RefreshCommand, 3600, 0);
 
             // refreshing EPG every min with 3s start delay
             BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 3);
@@ -417,14 +419,14 @@ namespace OnlineTelevizor.ViewModels
             get
             {
                 if (IsBusy ||
-                    (_lastRefreshDelay > 0 && _lastRefreshDelay <= 4 )) // only first few seconds
+                    (_lastRefreshChannelsDelay > 0 && _lastRefreshChannelsDelay <= 5 )) // only first few seconds
                 {
                     return "Aktualizují se kanály...";
                 }
 
                 switch (_service.Status)
                 {
-                    case StatusEnum.GeneralError: return $"Chyba";
+                    case StatusEnum.GeneralError: return $"Služba není dostupná";
                     case StatusEnum.ConnectionNotAvailable: return $"Chyba připojení";
                     case StatusEnum.NotInitialized: return "";
                     case StatusEnum.EmptyCredentials: return "Nevyplněny přihlašovací údaje";
@@ -449,7 +451,8 @@ namespace OnlineTelevizor.ViewModels
 
                 if (Channels.Count == 0)
                 {
-                    return $"{status}Není k dispozici žádný kanál";
+                    return $"{status}Aktualizují se kanály.."; 
+                        // empty channels list not possible
                 }
                 else
                 if (Channels.Count == 1)
@@ -472,15 +475,77 @@ namespace OnlineTelevizor.ViewModels
         {
             _loggingService.Info($"Refresh channels & EPG");
 
+            await CheckPurchase();
+
             await RefreshChannels();
-            await RefreshEPG();
+            var epgItemsRefreshedCount = await RefreshEPG();
+
+            // auto refresh channels ?
+            if ((Channels.Count == 0) &&
+                 (_service.Status != StatusEnum.NotInitialized) &&
+                 (_service.Status != StatusEnum.EmptyCredentials) &&
+                 (_service.Status != StatusEnum.LoginFailed) &&
+                 (_lastRefreshChannelsDelay < 3600)
+               )
+            {
+                if (_lastRefreshChannelsDelay == 0)
+                {
+                    // first refresh
+                    _lastRefreshChannelsDelay = 2;
+                }
+                else
+                { 
+                    _lastRefreshChannelsDelay *= 2;
+                }
+
+                // refresh again after _lastRefreshChannelsDelay seconds
+                BackgroundCommandWorker.RunInBackground(RefreshCommand, 0, _lastRefreshChannelsDelay);
+            }
+            else
+            {
+                _lastRefreshChannelsDelay = 0;
+            }
+
+            // auto refresh epg?
+            if (
+                (epgItemsRefreshedCount == 0) &&
+                   (_service.Status != StatusEnum.NotInitialized) &&
+                   (_service.Status != StatusEnum.EmptyCredentials) &&
+                   (_service.Status != StatusEnum.LoginFailed) &&
+                   (_lastRefreshEPEGsDelay < 60)
+                   )             
+            {
+                if (_lastRefreshEPEGsDelay == 0)
+                {
+                    // first refresh
+                    _lastRefreshEPEGsDelay = 2;
+                }
+                else
+                {
+                    _lastRefreshEPEGsDelay *= 2;                    
+                }
+
+                // refresh again after _lastRefreshEPEGsDelay seconds
+                BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 0, _lastRefreshEPEGsDelay);
+            } else
+            {
+                _lastRefreshEPEGsDelay = 0;
+            }
+
+            if (_service.Status == StatusEnum.Logged && Channels.Count>0)
+            {
+                // auto play?
+                if (_firstRefresh)
+                {
+                    _firstRefresh = false;
+                    await AutoPlay();
+                }
+            }
         }
 
         private async Task RefreshChannels()
         {
             _loggingService.Info($"RefreshChannels");
-
-            await CheckPurchase();
 
             try
             {
@@ -562,46 +627,13 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
                 OnPropertyChanged(nameof(EPGProgressBackgroundColor));
 
-            }
-
-            if (Channels.Count == 0)
-            {
-                if (_lastRefreshDelay == 0)
-                {
-                    // first refresh
-                    _lastRefreshDelay = 2;
-                }
-                else
-                {
-                    if (_lastRefreshDelay < 60)
-                    {
-                        _lastRefreshDelay *= 2;
-                    }
-                }
-
-                // refresh again after _lastRefreshDelay seconds
-                BackgroundCommandWorker.RunInBackground(RefreshCommand, 0, _lastRefreshDelay);
-            }
-            else
-            {
-                _lastRefreshDelay = 0;
-            }
-
-            if (_service.Status == StatusEnum.Logged)
-            {
-                // auto play?
-                if (_firstRefresh)
-                {
-                    _firstRefresh = false;
-                    await AutoPlay();
-                }
-            }
+            }           
         }
 
-        private async Task RefreshEPG()
+        private async Task<int> RefreshEPG()
         {
             if (!_service.EPGEnabled)
-                return;
+                return 0;
 
             _loggingService.Info($"RefreshEPG");
 
@@ -652,14 +684,7 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(EPGProgressBackgroundColor));
             }
 
-            if (epgItemsCountRead == 0)
-            {
-                if (_lastRefreshDelay == 0)
-                {
-                    // refresh all after 3 seconds
-                    BackgroundCommandWorker.RunInBackground(RefreshCommand, 0, 3);
-                }
-            }
+            return epgItemsCountRead;
         }
 
         private async Task AutoPlay()

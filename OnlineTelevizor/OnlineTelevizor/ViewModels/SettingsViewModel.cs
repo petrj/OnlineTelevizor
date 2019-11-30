@@ -12,6 +12,7 @@ using Plugin.Permissions.Abstractions;
 using Plugin.InAppBilling;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using Plugin.InAppBilling.Abstractions;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -184,12 +185,12 @@ namespace OnlineTelevizor.ViewModels
 
         protected async Task Pay()
         {
-            if (Config.DebugMode)
-            {
-                Config.Purchased = true;
-                IsPurchased = true;
-                return;
-            }
+            //if (Config.DebugMode)
+            //{
+            //    Config.Purchased = true;
+            //    IsPurchased = true;
+            //    return;
+            //}
 
             try
             {
@@ -232,13 +233,12 @@ namespace OnlineTelevizor.ViewModels
             {
                 //await _dialogService.Information("Platba se nezdařila.");
                 _loggingService.Error(ex, "Payment failed");
-                await _dialogService.Information("Připojení k platební službě selhalo.");
             }
             finally
             {
                 await CrossInAppBilling.Current.DisconnectAsync();
             }
-        }
+        }      
 
         public int LoggingLevelIndex
         {

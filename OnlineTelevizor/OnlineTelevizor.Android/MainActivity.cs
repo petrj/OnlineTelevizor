@@ -29,8 +29,9 @@ namespace OnlineTelevizor.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
-
+            
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
+            Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity = this;
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
@@ -49,6 +50,10 @@ namespace OnlineTelevizor.Droid
                 intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask); // necessary for Android 5
                 Android.App.Application.Context.StartActivity(intent);
             });
+
+            // prevent sleep:
+            Window window = (Forms.Context as Activity).Window;
+            window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
             LoadApplication(_app);
         }
