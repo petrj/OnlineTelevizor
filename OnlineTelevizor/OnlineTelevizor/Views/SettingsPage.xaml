@@ -110,6 +110,10 @@
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0">
+                        <Label Text="Příklad: http://10.0.0.2:8090" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForText}"/>                        
+                    </StackLayout>
+
+                    <StackLayout Margin="20,10,0,0">
                         <Button Margin="20,10,0,0" Text="Zastavit stream" Command="{Binding StopStreamCommand}" FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
                     </StackLayout>
 

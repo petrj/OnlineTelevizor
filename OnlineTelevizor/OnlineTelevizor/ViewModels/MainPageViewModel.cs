@@ -553,6 +553,7 @@ namespace OnlineTelevizor.ViewModels
         private async Task RefreshChannels()
         {
             _loggingService.Info($"RefreshChannels");
+            _notFilteredChannelsCount = 0;
 
             try
             {
