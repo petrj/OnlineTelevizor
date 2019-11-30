@@ -29,6 +29,7 @@ namespace OnlineTelevizor.ViewModels
         private bool _firstRefresh = true;
         private int _lastRefreshChannelsDelay = 0;
         private int _lastRefreshEPEGsDelay = 0;
+        private int _notFilteredChannelsCount = 0;
 
         public TVService TVService
         {
@@ -80,8 +81,8 @@ namespace OnlineTelevizor.ViewModels
             // refreshing every hour with no start delay
             BackgroundCommandWorker.RunInBackground(RefreshCommand, 3600, 0);
 
-            // refreshing EPG every min with 3s start delay
-            BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 3);
+            // refreshing EPG every min with 60s start delay
+            BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 60);
         }
 
         private void LongPress(object item)
@@ -451,8 +452,14 @@ namespace OnlineTelevizor.ViewModels
 
                 if (Channels.Count == 0)
                 {
-                    return $"{status}Aktualizují se kanály.."; 
-                        // empty channels list not possible
+                    if (_notFilteredChannelsCount == 0)
+                    {
+                        return $"{status}"; // awaiting refresh ....
+                    }
+                    else
+                    {                        
+                        return $"{status}Není k dispozici žádný kanál";
+                    }
                 }
                 else
                 if (Channels.Count == 1)
@@ -481,7 +488,7 @@ namespace OnlineTelevizor.ViewModels
             var epgItemsRefreshedCount = await RefreshEPG();
 
             // auto refresh channels ?
-            if ((Channels.Count == 0) &&
+            if ((_notFilteredChannelsCount == 0) &&
                  (_service.Status != StatusEnum.NotInitialized) &&
                  (_service.Status != StatusEnum.EmptyCredentials) &&
                  (_service.Status != StatusEnum.LoginFailed) &&
@@ -569,6 +576,7 @@ namespace OnlineTelevizor.ViewModels
 
                 if (channels != null && channels.Count > 0)
                 {
+                    _notFilteredChannelsCount = channels.Count;
                     Channels.Clear();
                     AllNotFilteredChannels.Clear();
                     _channelById.Clear();
