@@ -44,4 +44,20 @@ ul
 	text-align:left;
 }
 
+.screenshot
+{    
+    
+    float: left;
+    position:relative;
+    left: 15%;	
+    list-style:none;
+}
+
+.screenshot img
+{
+    margin:20px;
+    height:500px;
+    display:block;    
+}
+
 </style>
