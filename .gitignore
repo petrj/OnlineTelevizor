@@ -335,3 +335,6 @@ OnlineTelevizor\OnlineTelevizor.UWP\BundleArtifacts\*
 
 *.appxsym
 *.appxbundle
+
+www/nbproject/*
+www\nbproject\*
