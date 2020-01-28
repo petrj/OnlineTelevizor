@@ -29,6 +29,8 @@ namespace OnlineTelevizor.Models
 
         bool InternalPlayer { get; set; }
 
+        bool Fullscreen { get; set; }
+
         /// <summary>
         /// -1    : no chanel
         /// 0     : last channel

@@ -187,6 +187,18 @@ namespace OnlineTelevizor.iOS
             }
         }
 
+        public bool Fullscreen
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("Fullscreen");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("Fullscreen", value);
+            }
+        }
+
         public bool AnimatedScrolling
         {
             get

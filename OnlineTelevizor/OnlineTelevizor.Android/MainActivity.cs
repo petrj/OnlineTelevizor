@@ -35,7 +35,8 @@ namespace OnlineTelevizor.Droid
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
-            _app = new App(new AndroidOnlineTelevizorConfiguration());
+            var cfg = new AndroidOnlineTelevizorConfiguration();
+            _app = new App(cfg);
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
             {
@@ -51,9 +52,32 @@ namespace OnlineTelevizor.Droid
                 Android.App.Application.Context.StartActivity(intent);
             });
 
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.EnableFullScreen, (msg) =>
+            {
+                this.Window.AddFlags(WindowManagerFlags.Fullscreen);                                                
+            });
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.DisableFullScreen, (msg) =>
+            {
+                this.Window.ClearFlags(WindowManagerFlags.Fullscreen);                
+            });
+
             // prevent sleep:
             Window window = (Forms.Context as Activity).Window;
             window.AddFlags(WindowManagerFlags.KeepScreenOn);
+            
+            if (cfg.Fullscreen)
+            {
+                // https://stackoverflow.com/questions/39248138/how-to-hide-bottom-bar-of-android-back-home-in-xamarin-forms
+
+                int uiOptions = (int)Window.DecorView.SystemUiVisibility;
+
+                uiOptions |= (int)SystemUiFlags.LowProfile;
+                uiOptions |= (int)SystemUiFlags.Fullscreen;
+                uiOptions |= (int)SystemUiFlags.HideNavigation;
+                uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+
+                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+            }
 
             LoadApplication(_app);
         }

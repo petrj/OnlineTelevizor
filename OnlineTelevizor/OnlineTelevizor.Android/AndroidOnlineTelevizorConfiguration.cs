@@ -125,6 +125,18 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        public bool Fullscreen
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("Fullscreen");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("Fullscreen", value);
+            }
+        }
+
         public bool AnimatedScrolling
         {
             get

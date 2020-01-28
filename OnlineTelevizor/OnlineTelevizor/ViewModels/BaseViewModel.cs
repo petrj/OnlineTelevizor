@@ -19,6 +19,8 @@ namespace OnlineTelevizor.ViewModels
         protected ILoggingService _loggingService;
         protected IDialogService _dialogService;
         public const string UriMessage = "LaunchUriMessage";
+        public const string EnableFullScreen = "EnableFullScreen";
+        public const string DisableFullScreen = "DisableFullScreen";
         public const string PlayInternal = "PlayInternal";
         public const string KeyMessage = "KeyDownMessage";
         public const string ShowDetailMessage = "ShowDetailMessage";

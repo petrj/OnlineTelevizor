@@ -178,6 +178,9 @@
                         <Label  Grid.Row="3" Grid.Column="0" Text="Použít interní přehrávač" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
                         <Switch Grid.Row="3" Grid.Column="1" x:Name="UseInternalPlayerSwitch" IsToggled="{Binding Config.InternalPlayer, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
 
+                        <Label  Grid.Row="4" Grid.Column="0" Text="Celá obrazovka (po restartu)" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Switch Grid.Row="4" Grid.Column="1" x:Name="FullscreenSwitch" IsToggled="{Binding Config.Fullscreen, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+
                     </Grid>
 
                     <Button Margin="20,10,0,0" Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
