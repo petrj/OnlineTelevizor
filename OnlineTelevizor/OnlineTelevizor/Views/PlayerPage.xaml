@@ -13,6 +13,8 @@
                 <TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" />
                 <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped"/>
                 <SwipeGestureRecognizer Direction="Right" Swiped="SwipeGestureRecognizer_Swiped"/>
+                <SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Up"/>
+                <SwipeGestureRecognizer Direction="Down" Swiped="SwipeGestureRecognizer_Down"/>
             </StackLayout.GestureRecognizers>
         </StackLayout>
 

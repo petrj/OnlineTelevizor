@@ -28,9 +28,9 @@ namespace OnlineTelevizor.Views
             Core.Initialize();
 
             _libVLC = new LibVLC();
-            _mediaPlayer = new MediaPlayer(_libVLC) { EnableHardwareDecoding = true };            
+            _mediaPlayer = new MediaPlayer(_libVLC) { EnableHardwareDecoding = true };
 
-            videoView.MediaPlayer = _mediaPlayer;            
+            videoView.MediaPlayer = _mediaPlayer;
         }
 
         public void OnDoubleTapped(object sender, EventArgs e)
@@ -62,7 +62,7 @@ namespace OnlineTelevizor.Views
             {
                 videoView.MediaPlayer.Stop();
                 _media = new Media(_libVLC, _mediaUrl, FromType.FromLocation);
-                
+
                 videoView.MediaPlayer.Play(_media);
             }
         }
@@ -71,12 +71,12 @@ namespace OnlineTelevizor.Views
         {
             base.OnAppearing();
 
-            _media = new Media(_libVLC, _mediaUrl, FromType.FromLocation);            
+            _media = new Media(_libVLC, _mediaUrl, FromType.FromLocation);
             videoView.MediaPlayer.Play(_media);
 
             if (!_fullscreen)
             {
-                OnDoubleTapped(this, null);                                
+                OnDoubleTapped(this, null);
             }
         }
 
@@ -102,5 +102,44 @@ namespace OnlineTelevizor.Views
             // go back
             Navigation.PopModalAsync();
         }
+
+        private void SwipeGestureRecognizer_Up(object sender, SwipedEventArgs e)
+        {
+            int currentVol = _mediaPlayer.Volume / 10;
+
+            if (currentVol == 10)
+                return;
+
+            currentVol += 1;
+
+            if (currentVol > 10)
+            {
+                currentVol = 10;
+            }
+
+            _mediaPlayer.Volume = currentVol*10;
+
+            MessagingCenter.Send($"Hlasitost {_mediaPlayer.Volume}%", BaseViewModel.ToastMessage);
+        }
+
+        private void SwipeGestureRecognizer_Down(object sender, SwipedEventArgs e)
+        {
+            int currentVol = _mediaPlayer.Volume / 10;
+
+            if (currentVol == 0)
+                return;
+
+            currentVol -= 1;
+
+            if (currentVol < 0)
+            {
+                currentVol = 0;
+            }
+
+            _mediaPlayer.Volume = currentVol*10;
+
+            MessagingCenter.Send($"Hlasitost {_mediaPlayer.Volume}%", BaseViewModel.ToastMessage);
+        }
+
     }
 }
