@@ -110,7 +110,7 @@
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0">
-                        <Label Text="Příklad: http://10.0.0.2:8090" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForText}"/>                        
+                        <Label Text="Příklad: http://10.0.0.2:8090" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForText}"/>
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0">
@@ -178,8 +178,8 @@
                         <Label  Grid.Row="3" Grid.Column="0" Text="Použít interní přehrávač" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
                         <Switch Grid.Row="3" Grid.Column="1" x:Name="UseInternalPlayerSwitch" IsToggled="{Binding Config.InternalPlayer, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
 
-                        <Label  Grid.Row="4" Grid.Column="0" Text="Celá obrazovka (po restartu)" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Switch Grid.Row="4" Grid.Column="1" x:Name="FullscreenSwitch" IsToggled="{Binding Config.Fullscreen, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                        <Label  Grid.Row="4" Grid.Column="0" Text="Celá obrazovka" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Switch Grid.Row="4" Grid.Column="1" x:Name="FullscreenSwitch" IsToggled="{Binding IsFullScreen, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
 
                     </Grid>
 

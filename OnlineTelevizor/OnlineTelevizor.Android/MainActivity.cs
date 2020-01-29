@@ -22,6 +22,10 @@ namespace OnlineTelevizor.Droid
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         private App _app;
+        private AndroidOnlineTelevizorConfiguration _cfg;
+
+        private int _defaultUiOptions;
+        private int _fullscreenUiOptions;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -29,14 +33,15 @@ namespace OnlineTelevizor.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
-            
+
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity = this;
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
-            var cfg = new AndroidOnlineTelevizorConfiguration();
-            _app = new App(cfg);
+            _cfg = new AndroidOnlineTelevizorConfiguration();
+
+            _app = new App(_cfg);
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
             {
@@ -54,32 +59,43 @@ namespace OnlineTelevizor.Droid
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.EnableFullScreen, (msg) =>
             {
-                this.Window.AddFlags(WindowManagerFlags.Fullscreen);                                                
+                SetFullScreen(true);
             });
             MessagingCenter.Subscribe<string>(this, BaseViewModel.DisableFullScreen, (msg) =>
             {
-                this.Window.ClearFlags(WindowManagerFlags.Fullscreen);                
+                SetFullScreen(false);
             });
 
             // prevent sleep:
             Window window = (Forms.Context as Activity).Window;
             window.AddFlags(WindowManagerFlags.KeepScreenOn);
-            
-            if (cfg.Fullscreen)
+
+            // https://stackoverflow.com/questions/39248138/how-to-hide-bottom-bar-of-android-back-home-in-xamarin-forms
+            _defaultUiOptions = (int)Window.DecorView.SystemUiVisibility;
+
+            _fullscreenUiOptions = _defaultUiOptions;
+            _fullscreenUiOptions |= (int)SystemUiFlags.LowProfile;
+            _fullscreenUiOptions |= (int)SystemUiFlags.Fullscreen;
+            _fullscreenUiOptions |= (int)SystemUiFlags.HideNavigation;
+            _fullscreenUiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+
+            if (_cfg.Fullscreen)
             {
-                // https://stackoverflow.com/questions/39248138/how-to-hide-bottom-bar-of-android-back-home-in-xamarin-forms
-
-                int uiOptions = (int)Window.DecorView.SystemUiVisibility;
-
-                uiOptions |= (int)SystemUiFlags.LowProfile;
-                uiOptions |= (int)SystemUiFlags.Fullscreen;
-                uiOptions |= (int)SystemUiFlags.HideNavigation;
-                uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
-
-                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+                SetFullScreen(true);
             }
 
             LoadApplication(_app);
+        }
+
+        private void SetFullScreen(bool on)
+        {
+            if (on)
+            {
+                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)_fullscreenUiOptions;
+            } else
+            {
+                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)_defaultUiOptions;
+            };
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)

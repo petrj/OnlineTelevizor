@@ -19,6 +19,7 @@ namespace OnlineTelevizor.ViewModels
     public class SettingsViewModel : BaseViewModel
     {
         private bool _isPruchased;
+        private bool _isFullscreen;
         private TVService _service;
 
         public Command PayCommand { get; set; }
@@ -50,6 +51,27 @@ namespace OnlineTelevizor.ViewModels
             get
             {
                 return GetScaledSize(14).ToString();
+            }
+        }
+
+        public bool IsFullScreen
+        {
+            get
+            {
+                return Config.Fullscreen;
+            }
+            set
+            {
+                Config.Fullscreen = value;
+                if (value)
+                {
+                    MessagingCenter.Send(String.Empty, BaseViewModel.EnableFullScreen);
+                } else
+                {
+                    MessagingCenter.Send(String.Empty, BaseViewModel.DisableFullScreen);
+                }
+
+                OnPropertyChanged(nameof(IsFullScreen));
             }
         }
 
@@ -238,7 +260,7 @@ namespace OnlineTelevizor.ViewModels
             {
                 await CrossInAppBilling.Current.DisconnectAsync();
             }
-        }      
+        }
 
         public int LoggingLevelIndex
         {

@@ -24,7 +24,7 @@
     <AndroidSigningKeyStore>C:\Users\pjanousek\AppData\Local\Xamarin\Mono for Android\Keystore\PJsAndroidKeyStore\PJsAndroidKeyStore.keystore</AndroidSigningKeyStore>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
@@ -35,12 +35,12 @@
     <MandroidI18n>Other</MandroidI18n>
     <AndroidSupportedAbis>
     </AndroidSupportedAbis>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vs4F4.tmp\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsE2B9.tmp\Debug\</IntermediateOutputPath>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
-    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
+    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <AndroidTlsProvider>
     </AndroidTlsProvider>
@@ -56,7 +56,7 @@
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vs4F4.tmp\Release\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsE2B9.tmp\Release\</IntermediateOutputPath>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
@@ -80,7 +80,7 @@
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vs4F4.tmp\Debug - Live Player\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsE2B9.tmp\Debug - Live Player\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
