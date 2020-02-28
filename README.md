@@ -41,3 +41,4 @@ Android, UWP and iOS application for playing internet TV and radio through czech
 <img src="https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Screenshot5.png" width="400" alt="Screenshot5"/>
 
 https://play.google.com/store/apps/details?id=net.petrjanousek.OnlineTelevizor
+http://onlinetelevizor.eu/
