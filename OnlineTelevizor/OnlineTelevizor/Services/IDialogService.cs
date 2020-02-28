@@ -13,5 +13,7 @@ namespace OnlineTelevizor.Services
 
         Task<bool> Confirm(string message, string title = "Potvrzení");
         Task Information(string message, string title = "Informace");
+
+        Task ConfirmSingleButton(string message, string title = "Potvrzení", string btnOK = "OK");
     }
 }

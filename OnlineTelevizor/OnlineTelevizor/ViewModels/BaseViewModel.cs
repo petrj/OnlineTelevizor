@@ -25,6 +25,7 @@ namespace OnlineTelevizor.ViewModels
         public const string KeyMessage = "KeyDownMessage";
         public const string ShowDetailMessage = "ShowDetailMessage";
         public const string ToastMessage = "ShowToastMessage";
+        public const string ShowConfiguration = "ShowConfiguration";
 
         public IOnlineTelevizorConfiguration Config { get; set; }
 
@@ -166,6 +167,27 @@ namespace OnlineTelevizor.ViewModels
                 _loggingService.Error(ex, "PlayStream general error");
 
                 await _dialogService.Information(ex.ToString());
+            }
+        }
+
+        public bool EmptyCredentials
+        {
+            get
+            {
+                if (Config.TVApi == TVAPIEnum.SledovaniTV &&
+                    String.IsNullOrEmpty(Config.Username) &&
+                    String.IsNullOrEmpty(Config.Password))
+                    return true;
+
+                if (Config.TVApi == TVAPIEnum.KUKI &&
+                    String.IsNullOrEmpty(Config.KUKIsn))
+                    return true;
+
+                if (Config.TVApi == TVAPIEnum.DVBStreamer &&
+                    String.IsNullOrEmpty(Config.DVBStreamerUrl))
+                    return true;
+
+                return false;
             }
         }
     }

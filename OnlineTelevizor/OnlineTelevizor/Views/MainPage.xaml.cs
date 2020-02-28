@@ -20,6 +20,7 @@ namespace OnlineTelevizor.Views
         private DialogService _dialogService;
         private IOnlineTelevizorConfiguration _config;
         private ILoggingService _loggingService;
+        private bool _emptyCredentialsDialogHandled = false;
 
         private FilterPage _filterPage;
         private PlayerPage _playerPage;
@@ -74,6 +75,11 @@ namespace OnlineTelevizor.Views
                          Navigation.PushModalAsync(_playerPage);
                     }
                 });
+            });
+
+            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowConfiguration, (sender) =>
+            {
+                ToolbarItemSettings_Clicked(this, null);
             });
 
             if (Device.RuntimePlatform == Device.UWP ||
@@ -163,6 +169,9 @@ namespace OnlineTelevizor.Views
                         Task.Run(async () => await _viewModel.Play());
                     break;
                 case "back":
+                case "f4":
+                case "escape":
+                    StopPLayback();
                     break;
                 case "num0":
                 case "number0":

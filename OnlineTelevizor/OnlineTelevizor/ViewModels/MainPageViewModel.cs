@@ -30,6 +30,7 @@ namespace OnlineTelevizor.ViewModels
         private int _lastRefreshChannelsDelay = 0;
         private int _lastRefreshEPEGsDelay = 0;
         private int _notFilteredChannelsCount = 0;
+        private bool _emptyCredentialsChecked = false;
 
         public TVService TVService
         {
@@ -457,7 +458,7 @@ namespace OnlineTelevizor.ViewModels
                         return $"{status}"; // awaiting refresh ....
                     }
                     else
-                    {                        
+                    {
                         return $"{status}Není k dispozici žádný kanál";
                     }
                 }
@@ -484,6 +485,8 @@ namespace OnlineTelevizor.ViewModels
 
             await CheckPurchase();
 
+            await CheckEmptyCredentials();
+
             await RefreshChannels();
             var epgItemsRefreshedCount = await RefreshEPG();
 
@@ -501,7 +504,7 @@ namespace OnlineTelevizor.ViewModels
                     _lastRefreshChannelsDelay = 2;
                 }
                 else
-                { 
+                {
                     _lastRefreshChannelsDelay *= 2;
                 }
 
@@ -520,7 +523,7 @@ namespace OnlineTelevizor.ViewModels
                    (_service.Status != StatusEnum.EmptyCredentials) &&
                    (_service.Status != StatusEnum.LoginFailed) &&
                    (_lastRefreshEPEGsDelay < 60)
-                   )             
+                   )
             {
                 if (_lastRefreshEPEGsDelay == 0)
                 {
@@ -529,7 +532,7 @@ namespace OnlineTelevizor.ViewModels
                 }
                 else
                 {
-                    _lastRefreshEPEGsDelay *= 2;                    
+                    _lastRefreshEPEGsDelay *= 2;
                 }
 
                 // refresh again after _lastRefreshEPEGsDelay seconds
@@ -636,7 +639,7 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
                 OnPropertyChanged(nameof(EPGProgressBackgroundColor));
 
-            }           
+            }
         }
 
         private async Task<int> RefreshEPG()
@@ -751,6 +754,8 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(StatusLabel));
                 NotifyFontSizeChange();
             }
+
+            _emptyCredentialsChecked = false;
         }
 
         public void NotifyFontSizeChange()
@@ -834,6 +839,22 @@ namespace OnlineTelevizor.ViewModels
             _loggingService.Info($"Playing selected channel {SelectedItem.Name}");
 
             await PlayStream(SelectedItem.Url);
+        }
+
+        public async Task CheckEmptyCredentials()
+        {
+            if (!_emptyCredentialsChecked && EmptyCredentials)
+            {
+                await _dialogService.ConfirmSingleButton("Nejsou vyplněny přihlašovací údaje" +
+                    Environment.NewLine +
+                    Environment.NewLine +
+                    "Pro sledování živého vysílání je nutné být uživatelem SledovaniTV.cz nebo Kuki a v nastavení musí být vyplněny odpovídající přihlašovací údaje.",
+                    "Online Televizor", "Přejít do nastavení");
+
+                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowConfiguration);
+            }
+
+            _emptyCredentialsChecked = true;
         }
     }
 }
