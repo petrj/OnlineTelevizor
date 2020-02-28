@@ -168,7 +168,7 @@ namespace OnlineTelevizor.Views
                 case "enter":
                         Task.Run(async () => await _viewModel.Play());
                     break;
-                case "back":
+                //case "back":
                 case "f4":
                 case "escape":
                     StopPLayback();
