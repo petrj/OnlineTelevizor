@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
@@ -31,6 +32,30 @@ namespace OnlineTelevizor.Views
             _mediaPlayer = new MediaPlayer(_libVLC) { EnableHardwareDecoding = true };
 
             videoView.MediaPlayer = _mediaPlayer;
+        }
+
+        private void ShowAudioOnlyIcon()
+        {
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                Thread.Sleep(1000); // 1s
+
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (_mediaPlayer.VideoTrack == -1)
+                    {
+                        AudioOnlyimage.IsVisible = true;
+                        videoView.IsVisible = false;
+                    }
+                    else
+                    {
+                        AudioOnlyimage.IsVisible = false;
+                        videoView.IsVisible = true;
+                    }
+                });
+            }).Start();
         }
 
         public void OnDoubleTapped(object sender, EventArgs e)
@@ -71,8 +96,7 @@ namespace OnlineTelevizor.Views
         {
             base.OnAppearing();
 
-            _media = new Media(_libVLC, _mediaUrl, FromType.FromLocation);
-            videoView.MediaPlayer.Play(_media);
+            Start();
 
             if (!_fullscreen)
             {
@@ -92,9 +116,36 @@ namespace OnlineTelevizor.Views
             }
         }
 
+        public void Start()
+        {
+            _media = new Media(_libVLC, _mediaUrl, FromType.FromLocation);
+            videoView.MediaPlayer.Play(_media);
+
+            ShowAudioOnlyIcon();
+        }
+
         public void Stop()
         {
             videoView.MediaPlayer.Stop();
+        }
+
+        public void Resume()
+        {
+            if (Playing)
+            {
+                // workaround for black screen after resume (only audio is playing)
+                // TODO: resume video without reinitializing
+
+                if (_mediaPlayer.VideoTrack != -1)
+                {
+                    Stop();
+
+                    VideoStackLayout.Children.Remove(videoView);
+                    VideoStackLayout.Children.Add(videoView);
+
+                    Start();
+                }
+            }
         }
 
         private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
@@ -107,17 +158,17 @@ namespace OnlineTelevizor.Views
         {
             int currentVol = _mediaPlayer.Volume / 10;
 
-            if (currentVol == 10)
-                return;
-
-            currentVol += 1;
-
-            if (currentVol > 10)
+            if (currentVol != 10)
             {
-                currentVol = 10;
-            }
+                currentVol += 1;
 
-            _mediaPlayer.Volume = currentVol*10;
+                if (currentVol > 10)
+                {
+                    currentVol = 10;
+                }
+
+                _mediaPlayer.Volume = currentVol * 10;
+            }
 
             MessagingCenter.Send($"Hlasitost {_mediaPlayer.Volume}%", BaseViewModel.ToastMessage);
         }
@@ -126,17 +177,17 @@ namespace OnlineTelevizor.Views
         {
             int currentVol = _mediaPlayer.Volume / 10;
 
-            if (currentVol == 0)
-                return;
-
-            currentVol -= 1;
-
-            if (currentVol < 0)
+            if (currentVol != 0)
             {
-                currentVol = 0;
-            }
+                currentVol -= 1;
 
-            _mediaPlayer.Volume = currentVol*10;
+                if (currentVol < 0)
+                {
+                    currentVol = 0;
+                }
+
+                _mediaPlayer.Volume = currentVol * 10;
+            }
 
             MessagingCenter.Send($"Hlasitost {_mediaPlayer.Volume}%", BaseViewModel.ToastMessage);
         }

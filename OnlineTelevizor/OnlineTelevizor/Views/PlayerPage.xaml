@@ -7,8 +7,9 @@
              mc:Ignorable="d"
              x:Class="OnlineTelevizor.Views.PlayerPage">
     <ContentPage.Content>
-        <StackLayout>
-            <vlc:VideoView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView"  />
+        <StackLayout x:Name="VideoStackLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <vlc:VideoView IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView"  />
+            <Image Source="Audio" IsVisible="False" x:Name="AudioOnlyimage" HorizontalOptions="Center" VerticalOptions="Center" Margin="50,50,50,50" />
             <StackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" />
                 <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped"/>

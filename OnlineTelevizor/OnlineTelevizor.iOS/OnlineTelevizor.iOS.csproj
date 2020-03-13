@@ -203,5 +203,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />
+    <BundleResource Include="Resources\Audio.png" />
   </ItemGroup>
 </Project>

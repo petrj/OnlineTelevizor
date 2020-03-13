@@ -195,6 +195,30 @@ namespace OnlineTelevizor.UWP
             }
         }
 
+        public bool Fullscreen
+        {
+            get
+            {
+                return GetSettingValue<bool>("Fullscreen");
+            }
+            set
+            {
+                SaveSettingValue<bool>("Fullscreen", value);
+            }
+        }
+
+        public bool PlayOnBackground
+        {
+            get
+            {
+                return GetSettingValue<bool>("PlayOnBackground");
+            }
+            set
+            {
+                SaveSettingValue<bool>("PlayOnBackground", value);
+            }
+        }
+
         public string LastChannelNumber
         {
             get

@@ -15,21 +15,24 @@ namespace OnlineTelevizor.Views
         OnlineTelevizor.Views.MainPage _mainPage;
         private DateTime _lastSleep = DateTime.MinValue;
         protected ILoggingService _loggingService;
+        private IOnlineTelevizorConfiguration _config;
 
         public App(IOnlineTelevizorConfiguration config)
         {
             InitializeComponent();
 
-            if (config.EnableLogging)
+            _config = config;
+
+            if (_config.EnableLogging)
             {
-                _loggingService = new BasicLoggingService(config.LoggingLevel);
+                _loggingService = new BasicLoggingService(_config.LoggingLevel);
             }
             else
             {
                 _loggingService = new DummyLoggingService();
             }
 
-            _mainPage = new MainPage(_loggingService, config);
+            _mainPage = new MainPage(_loggingService, _config);
 
             MainPage = new NavigationPage(_mainPage);
         }
@@ -43,7 +46,10 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"OnSleep");
 
-            _mainPage.StopPLayback();
+            if (!_config.PlayOnBackground)
+            {
+                _mainPage.StopPlayback();
+            }
 
             _lastSleep = DateTime.Now;
         }
@@ -51,6 +57,11 @@ namespace OnlineTelevizor.Views
         protected override void OnResume()
         {
             _loggingService.Info($"OnResume");
+
+            if (_config.PlayOnBackground)
+            {
+                _mainPage.ResumePlayback();
+            }
 
             // refresh only when resume after 1 minute
 

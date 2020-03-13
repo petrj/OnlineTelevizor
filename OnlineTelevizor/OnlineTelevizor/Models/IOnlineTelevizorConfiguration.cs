@@ -31,6 +31,8 @@ namespace OnlineTelevizor.Models
 
         bool Fullscreen { get; set; }
 
+        bool PlayOnBackground { get; set; }
+
         /// <summary>
         /// -1    : no chanel
         /// 0     : last channel

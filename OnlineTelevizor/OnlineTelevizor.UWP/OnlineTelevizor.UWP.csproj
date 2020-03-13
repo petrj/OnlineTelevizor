@@ -112,6 +112,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Audio.png" />
     <Content Include="ClearFilter.png" />
     <Content Include="Filter.png" />
     <Content Include="Icon.png" />

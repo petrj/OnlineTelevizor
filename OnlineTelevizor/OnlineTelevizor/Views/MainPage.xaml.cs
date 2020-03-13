@@ -171,7 +171,7 @@ namespace OnlineTelevizor.Views
                 //case "back":
                 case "f4":
                 case "escape":
-                    StopPLayback();
+                    StopPlayback();
                     break;
                 case "num0":
                 case "number0":
@@ -286,12 +286,20 @@ namespace OnlineTelevizor.Views
             _viewModel.ResetConnectionCommand.Execute(null);
         }
 
-        public void StopPLayback()
+        public void StopPlayback()
         {
             if (_playerPage != null && _playerPage.Playing)
             {
                 _playerPage.Stop();
                 Navigation.PopModalAsync();
+            }
+        }
+
+        public void ResumePlayback()
+        {
+            if (_playerPage != null && _playerPage.Playing)
+            {
+                _playerPage.Resume();
             }
         }
 

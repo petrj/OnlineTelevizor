@@ -137,6 +137,18 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        public bool PlayOnBackground
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("PlayOnBackground");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("PlayOnBackground", value);
+            }
+        }
+
         public bool AnimatedScrolling
         {
             get
