@@ -153,12 +153,16 @@ namespace OnlineTelevizor.Views
                 case "pageup":
                 case "left":
                 case "a":
+                case "b":
+                case "mediaplayprevious":
                     Task.Run(async () => await OnKeyLeft());
                     break;
                 case "pagedown":
                 case "dpadright":
                 case "right":
                 case "d":
+                case "f":
+                case "mediaplaynext":
                     Task.Run(async () => await OnKeyRight());
                     break;
                 case "dpadcenter":
@@ -166,11 +170,12 @@ namespace OnlineTelevizor.Views
                 case "buttonr2":
                 case "mediaplaypause":
                 case "enter":
-                        Task.Run(async () => await _viewModel.Play());
+                        Task.Run(async () => await OnKeyPlay());
                     break;
                 //case "back":
                 case "f4":
                 case "escape":
+                case "mediaplaystop":
                     StopPlayback();
                     break;
                 case "num0":
@@ -286,9 +291,17 @@ namespace OnlineTelevizor.Views
             _viewModel.ResetConnectionCommand.Execute(null);
         }
 
+        public bool Playing
+        {
+            get
+            {
+                return _playerPage != null && _playerPage.Playing;
+            }
+        }
+
         public void StopPlayback()
         {
-            if (_playerPage != null && _playerPage.Playing)
+            if (Playing)
             {
                 _playerPage.Stop();
                 Navigation.PopModalAsync();
@@ -297,7 +310,7 @@ namespace OnlineTelevizor.Views
 
         public void ResumePlayback()
         {
-            if (_playerPage != null && _playerPage.Playing)
+            if (Playing)
             {
                 _playerPage.Resume();
             }
@@ -335,24 +348,63 @@ namespace OnlineTelevizor.Views
             await Navigation.PushAsync(qualitiesPage);
         }
 
+        private async Task OnKeyPlay()
+        {
+            if (!Playing)
+            {
+                await _viewModel.Play();
+            }
+        }
+
         private async Task OnKeyLeft()
         {
-            await _viewModel.SelectPreviousChannel(10);
+            if (!Playing)
+            {
+                await _viewModel.SelectPreviousChannel(10);
+            } else
+            {
+                await _viewModel.SelectPreviousChannel();
+                await _viewModel.Play();
+            }
         }
 
         private async Task OnKeyRight()
         {
-            await _viewModel.SelectNextChannel(10);
+            if (!Playing)
+            {
+                await _viewModel.SelectNextChannel(10);
+            }
+            else
+            {
+                await _viewModel.SelectNextChannel();
+                await _viewModel.Play();
+            }
         }
 
         private async Task OnKeyDown()
         {
-             await _viewModel.SelectNextChannel();
+            if (!Playing)
+            {
+                await _viewModel.SelectNextChannel();
+            }
+            else
+            {
+                await _viewModel.SelectNextChannel();
+                await _viewModel.Play();
+            }
         }
 
         private async Task OnKeyUp()
         {
-            await _viewModel.SelectPreviousChannel();
+            if (!Playing)
+            {
+                await _viewModel.SelectPreviousChannel();
+            }
+            else
+            {
+                await _viewModel.SelectPreviousChannel();
+                await _viewModel.Play();
+            }
         }
 
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
