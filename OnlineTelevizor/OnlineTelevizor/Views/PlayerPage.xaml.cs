@@ -1,4 +1,7 @@
 ﻿using LibVLCSharp.Shared;
+using LoggerService;
+using OnlineTelevizor.Models;
+using OnlineTelevizor.Services;
 using OnlineTelevizor.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -19,12 +22,15 @@ namespace OnlineTelevizor.Views
         LibVLC _libVLC = null;
         MediaPlayer _mediaPlayer;
         Media _media = null;
-        private string _mediaUrl;
         bool _fullscreen = false;
 
-        public PlayerPage()
+        private PlayerPageViewModel _viewModel;
+
+        public PlayerPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
         {
             InitializeComponent();
+
+            BindingContext = _viewModel = new PlayerPageViewModel(loggingService, config, dialogService);
 
             Core.Initialize();
 
@@ -44,16 +50,7 @@ namespace OnlineTelevizor.Views
 
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    if (_mediaPlayer.VideoTrack == -1)
-                    {
-                        AudioOnlyimage.IsVisible = true;
-                        videoView.IsVisible = false;
-                    }
-                    else
-                    {
-                        AudioOnlyimage.IsVisible = false;
-                        videoView.IsVisible = true;
-                    }
+                    _viewModel.AudioViewVisible = (_mediaPlayer.VideoTrack == -1);
                 });
             }).Start();
         }
@@ -79,14 +76,15 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        public void SetMediaUrl(string mediaUrl)
+        public void SetMediaUrl(string mediaUrl, string title)
         {
-            _mediaUrl = mediaUrl;
+            _viewModel.MediaUrl = mediaUrl;
+            _viewModel.Title = title;
 
             if (Playing)
             {
                 videoView.MediaPlayer.Stop();
-                _media = new Media(_libVLC, _mediaUrl, FromType.FromLocation);
+                _media = new Media(_libVLC, mediaUrl, FromType.FromLocation);
 
                 videoView.MediaPlayer.Play(_media);
             }
@@ -118,7 +116,7 @@ namespace OnlineTelevizor.Views
 
         public void Start()
         {
-            _media = new Media(_libVLC, _mediaUrl, FromType.FromLocation);
+            _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);
             videoView.MediaPlayer.Play(_media);
 
             ShowAudioOnlyIcon();

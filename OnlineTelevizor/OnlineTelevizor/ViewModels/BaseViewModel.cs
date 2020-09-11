@@ -133,7 +133,7 @@ namespace OnlineTelevizor.ViewModels
 
         #endregion
 
-        public async Task PlayStream(string url, int resultKeyCode = 0)
+        public async Task PlayStream(string url, string title)
         {
             try
             {
@@ -155,7 +155,7 @@ namespace OnlineTelevizor.ViewModels
 
                 if (Config.InternalPlayer)
                 {
-                    MessagingCenter.Send(url, BaseViewModel.PlayInternal);
+                    MessagingCenter.Send<BaseViewModel, string[]> (this, BaseViewModel.PlayInternal, new string[] { url, title });
                 }
                 else
                 {

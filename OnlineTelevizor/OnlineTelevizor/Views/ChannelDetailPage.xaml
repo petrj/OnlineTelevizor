@@ -14,7 +14,7 @@
             </Style>
 
             <Style x:Key="TitleTextStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="White"/>                
+                <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
             </Style>
@@ -82,7 +82,7 @@
                     <Label Grid.Row="0" Grid.Column="1" Text="{Binding EPGTimeFinish}" Margin="0,0,10,0" HorizontalTextAlignment="End" Style="{DynamicResource DateTimeTextStyle}" FontSize="{Binding FontSizeForDatetime}"/>
 
                     <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Progress="{Binding EPGProgress}" BackgroundColor="White"/>
-                    
+
                 </Grid>
 
                 <Label Text="{Binding EPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}"/>

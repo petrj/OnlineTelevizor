@@ -838,7 +838,7 @@ namespace OnlineTelevizor.ViewModels
 
             _loggingService.Info($"Playing selected channel {SelectedItem.Name}");
 
-            await PlayStream(SelectedItem.Url);
+            await PlayStream(SelectedItem.Url, SelectedItem.Name);
         }
 
         public async Task CheckEmptyCredentials()

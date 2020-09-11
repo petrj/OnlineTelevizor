@@ -24,14 +24,14 @@
     <AndroidSigningKeyStore>C:\Users\pjanousek\AppData\Local\Xamarin\Mono for Android\Keystore\PJsAndroidKeyStore\PJsAndroidKeyStore.keystore</AndroidSigningKeyStore>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AndroidLinkMode>None</AndroidLinkMode>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
     <MandroidI18n>Other</MandroidI18n>
     <AndroidSupportedAbis>
     </AndroidSupportedAbis>
@@ -39,8 +39,8 @@
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
-    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
+    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <AndroidTlsProvider>
     </AndroidTlsProvider>

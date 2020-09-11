@@ -6,10 +6,33 @@
              xmlns:vlc="clr-namespace:LibVLCSharp.Forms.Shared;assembly=LibVLCSharp.Forms"
              mc:Ignorable="d"
              x:Class="OnlineTelevizor.Views.PlayerPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="ChannelNameTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+
+            <Style x:Key="AudioImageStyle" TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="Margin" Value="50,50,50,50"/>
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.Content>
         <StackLayout x:Name="VideoStackLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <vlc:VideoView IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView"  />
-            <Image Source="Audio" IsVisible="False" x:Name="AudioOnlyimage" HorizontalOptions="Center" VerticalOptions="Center" Margin="50,50,50,50" />
+            <vlc:VideoView IsVisible="{Binding VideoViewVisible}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView"  />
+            <StackLayout x:Name="AudioOnlyStackLayout" IsVisible="{Binding AudioViewVisible}" Margin="0,20,0,0" >
+                <Label x:Name="AudioOnlyText" Text="{Binding Title}" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding FontSizeForChannel}" />
+                <Image Source="Audio" x:Name="AudioOnlyImage" Style="{DynamicResource AudioImageStyle}" />
+            </StackLayout>
             <StackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" />
                 <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped"/>
