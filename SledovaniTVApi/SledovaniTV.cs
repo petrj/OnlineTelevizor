@@ -373,10 +373,10 @@ namespace SledovaniTVAPI
 
                         foreach (var epg in epgJson.GetValue("channels")[chId])
                         {
-                            var title = epgCh.First[0]["title"].ToString();
-                            var times = epgCh.First[0]["startTime"].ToString();
-                            var timef = epgCh.First[0]["endTime"].ToString();
-                            var desc = epgCh.First[0]["description"].ToString();
+                            var title = epg["title"].ToString();
+                            var times = epg["startTime"].ToString();
+                            var timef = epg["endTime"].ToString();
+                            var desc = epg["description"].ToString();
 
                             var item = new EPGItem()
                             {

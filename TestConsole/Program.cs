@@ -30,7 +30,7 @@ namespace TestConsole
               }         
               */
 
-            /*
+            
               var tvService = new SledovaniTV(loggingService);
 
               if (JSONObject.FileExists("credentials.json"))
@@ -45,15 +45,13 @@ namespace TestConsole
                   tvService.SetConnection(conn.deviceId, conn.password);
               }
 
-            */
-
-            var tvService = new DVBStreamerClient(loggingService);
-
+              /*
             if (JSONObject.FileExists("dvbStreamer.json"))
             {
                 var conn = JSONObject.LoadFromFile<DeviceConnection>("dvbStreamer.json");
                 tvService.SetConnection(conn.deviceId, null);
             }
+              */
               
 
 
@@ -78,7 +76,7 @@ namespace TestConsole
                     //await sledovaniTV.Lock();
 
                     var channels = await tvService.GetChanels();
-                    //var epg = await tvService.GetEPG();
+                    var epg = await tvService.GetEPG();
 
                     foreach (var ch in channels)
                     {
@@ -92,7 +90,16 @@ namespace TestConsole
                         Console.WriteLine("  LogoUrl:" + ch.LogoUrl);
                         Console.WriteLine("-----------------------");
                     }
-                    
+
+                    foreach (var epgItem in epg)
+                    {
+                        Console.WriteLine($"EPG         : {epgItem.Title}");
+                        Console.WriteLine($"  CH ID     : {epgItem.ChannelId}");
+                        Console.WriteLine($"  Time      : {epgItem.Start.ToString("HH.mm")} - {epgItem.Finish.ToString("HH.mm")}");
+                        //Console.WriteLine($"  Progress  : {epgItem.Progress.ToString("#0.00")}");
+                        Console.WriteLine("-----------------------");
+                    }
+
                     Console.WriteLine();
                     Console.WriteLine($"Status: {tvService.Status.ToString()}");
                     Console.WriteLine();
