@@ -12,6 +12,7 @@ namespace OnlineTelevizor.ViewModels
         private bool _videoViewVisible = true;
         private string _mediaUrl;
         private string _title;
+        private string _mediaType;
 
         public string MediaUrl
         {
@@ -24,6 +25,20 @@ namespace OnlineTelevizor.ViewModels
                 _mediaUrl = value;
 
                 OnPropertyChanged(nameof(MediaUrl));
+            }
+        }
+
+        public string MediaType
+        {
+            get
+            {
+                return _mediaType;
+            }
+            set
+            {
+                _mediaType = value;
+
+                OnPropertyChanged(nameof(MediaType));
             }
         }
 

@@ -50,7 +50,14 @@ namespace OnlineTelevizor.Views
 
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    _viewModel.AudioViewVisible = (_mediaPlayer.VideoTrack == -1);
+                    if (
+                            (_viewModel.AudioViewVisible = (_mediaPlayer.VideoTrack == -1))
+                            ||
+                            (!string.IsNullOrEmpty(_viewModel.MediaType) && (_viewModel.MediaType.ToLower() == "radio"))
+                        )
+                    {
+                        _viewModel.AudioViewVisible = true;
+                    }
                 });
             }).Start();
         }
@@ -76,10 +83,11 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        public void SetMediaUrl(string mediaUrl, string title)
+        public void SetMediaUrl(string mediaUrl, string title, string type)
         {
             _viewModel.MediaUrl = mediaUrl;
             _viewModel.Title = title;
+            _viewModel.MediaType = type;
 
             if (Playing)
             {

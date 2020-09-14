@@ -11,6 +11,7 @@ namespace TVAPI
        public string Name { get; set;  }
        public string Url { get; set; }
        public string Id { get; set; }
+       public string EPGId { get; set; }
        public string Type { get; set; }
        public string LogoUrl { get; set; }
        public string Locked { get; set; }

@@ -59,7 +59,7 @@ namespace OnlineTelevizor.Views
                 Detail_Clicked(this, null);
             });
 
-            MessagingCenter.Subscribe<BaseViewModel, string[]>(this, BaseViewModel.PlayInternal, (sender, urlAndName) =>
+            MessagingCenter.Subscribe<BaseViewModel, string[]>(this, BaseViewModel.PlayInternal, (sender, urlAndNameAndType) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -68,7 +68,7 @@ namespace OnlineTelevizor.Views
 
                     var playing = _playerPage.Playing;
 
-                    _playerPage.SetMediaUrl(urlAndName[0], urlAndName[1]);
+                    _playerPage.SetMediaUrl(urlAndNameAndType[0], urlAndNameAndType[1], urlAndNameAndType[2]);
 
                     if (!playing)
                     {
@@ -276,7 +276,7 @@ namespace OnlineTelevizor.Views
                                 (_numberPressed == _viewModel.SelectedItem.ChannelNumber)
                            )
                         {
-                            await _viewModel.PlayStream(_viewModel.SelectedItem.Url, _viewModel.SelectedItem.Name);
+                            await _viewModel.PlayStream(_viewModel.SelectedItem.Url, _viewModel.SelectedItem.Name, _viewModel.SelectedItem.Type);
                         }
                     });
                 }

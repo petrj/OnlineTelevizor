@@ -676,6 +676,9 @@ namespace OnlineTelevizor.ViewModels
                         {
                             // updating channel EPG
 
+                            if (ei.Finish < DateTime.Now || ei.Start> DateTime.Now)
+                                continue; // only current programs
+
                             var ch = ChannelById[ei.ChannelId];
                             ch.AddEPGItem(ei);
                         }
@@ -754,8 +757,6 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(StatusLabel));
                 NotifyFontSizeChange();
             }
-
-            _emptyCredentialsChecked = false;
         }
 
         public void NotifyFontSizeChange()
@@ -838,7 +839,7 @@ namespace OnlineTelevizor.ViewModels
 
             _loggingService.Info($"Playing selected channel {SelectedItem.Name}");
 
-            await PlayStream(SelectedItem.Url, SelectedItem.Name);
+            await PlayStream(SelectedItem.Url, SelectedItem.Name, SelectedItem.Type);
         }
 
         public async Task CheckEmptyCredentials()

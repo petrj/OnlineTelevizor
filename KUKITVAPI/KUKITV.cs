@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -18,10 +19,15 @@ namespace KUKITVAPI
         private DeviceConnection _connection = new DeviceConnection();
         private string _session_key = null;
 
+        private List<Channel> _cachedChannels = null;
+        private List<EPGItem> _cachedEPG = null;
+        private DateTime _cachedChannelsRefreshTime = DateTime.MinValue;
+        private DateTime _cachedEPGRefreshTime = DateTime.MinValue;
+
         public KUKITV(ILoggingService loggingService)
         {
             _log = loggingService;
-            _connection = new DeviceConnection();            
+            _connection = new DeviceConnection();
         }
 
         public DeviceConnection Connection
@@ -44,7 +50,7 @@ namespace KUKITVAPI
         {
             get
             {
-                return false;
+                return true;
             }
         }
 
@@ -55,6 +61,16 @@ namespace KUKITVAPI
             if (String.IsNullOrEmpty(_connection.deviceId))
             {
                 _status = StatusEnum.EmptyCredentials;
+                return;
+            }
+
+            if (force)
+                _status = StatusEnum.NotInitialized;
+
+
+            if (!force && Status == StatusEnum.Logged)
+            {
+                _log.Debug("Device is already logged");
                 return;
             }
 
@@ -98,6 +114,13 @@ namespace KUKITVAPI
 
         public async Task<List<Channel>> GetChanels()
         {
+            if (((DateTime.Now-_cachedChannelsRefreshTime).TotalMinutes<60) &&
+                _cachedChannels != null &&
+                _cachedChannels.Count > 0)
+            {
+                return _cachedChannels;
+            }
+
             var res = new List<Channel>();
 
             await Login();
@@ -140,6 +163,7 @@ namespace KUKITVAPI
                         ChannelNumber = number.ToString(),
                         Name = chJson.GetStringValue("name"),
                         Id = chJson.GetStringValue("timeshift_ident"),
+                        EPGId = chJson.GetStringValue("id"),
                         Type = chJson.GetStringValue("stream_type"),
                         Locked = "none",
                         Group = ""
@@ -182,12 +206,108 @@ namespace KUKITVAPI
                 _status = StatusEnum.GeneralError;
             }
 
+            _cachedChannels = res;
+            _cachedChannelsRefreshTime = DateTime.Now;
+
             return res;
         }
 
         public async Task<List<EPGItem>> GetEPG()
         {
-            return new List<EPGItem>() {};
+            if (((DateTime.Now - _cachedEPGRefreshTime).TotalMinutes < 60) &&
+                _cachedEPG != null &&
+                _cachedEPG.Count > 0)
+            {
+                return _cachedEPG;
+            }
+
+            var res = new List<EPGItem>();
+
+            await Login();
+
+            if (_status != StatusEnum.Logged)
+                return res;
+
+            try
+            {
+                var headerParams = new Dictionary<string, string>();
+                headerParams.Add("X-SessionKey", _session_key);
+
+                var channels = await GetChanels();
+                var channelEPGIDs = new List<string>();
+
+                // first channel is not loaded
+                channelEPGIDs.Add($"channel:0");
+
+                var chCount = 0;
+                var totalChCount = 0;
+                foreach (var ch in channels)
+                {
+                    channelEPGIDs.Add($"channel:{ch.EPGId}");
+
+                    chCount++;
+                    totalChCount++;
+
+                    if (chCount>=10 ||
+                        totalChCount == channels.Count)
+                    {
+                        chCount = 0;
+
+                        var channelEPGIDsAsCommaSeparatedString = string.Join(",", channelEPGIDs);
+
+                        var epgResponse = await SendRequest($"https://as.kuki.cz/api-v2/dashboard?rowGuidList=channel:{channelEPGIDsAsCommaSeparatedString}", "GET", null, headerParams);
+
+                        foreach (Match rgm in Regex.Matches(epgResponse, "\"mediaType\":\"EPG_ENTITY\""))
+                        {
+                            var pos = epgResponse.IndexOf("\"sourceLogo\"", rgm.Index);
+
+                            var partJson = "{" + epgResponse.Substring(rgm.Index, pos - rgm.Index - 1) + "}";
+
+                            var epg = JObject.Parse(partJson);
+
+                            var ident = epg["ident"].ToString();
+                            var title = epg["label"].ToString();
+                            var times = $"{epg["startDate"]}{DateTime.Now.Year} {epg["start"]}";
+                            var timef = $"{epg["endDate"]}{DateTime.Now.Year} {epg["end"]}";
+                            var desc = String.Empty;
+
+                            var item = new EPGItem()
+                            {
+                                ChannelId = ident,
+                                Title = title,
+                                Start = DateTime.ParseExact(times, "d.M.yyyy HH:mm", CultureInfo.InvariantCulture),
+                                Finish = DateTime.ParseExact(timef, "d.M.yyyy HH:mm", CultureInfo.InvariantCulture),
+                                Description = desc
+                            };
+
+                            if (item.Finish < DateTime.Now)
+                                continue;
+
+                            res.Add(item);
+                        }
+
+                        channelEPGIDs.Clear();
+                        channelEPGIDs.Add($"channel:0");
+                    }
+                }
+
+            }
+            catch (WebException wex)
+            {
+
+                _log.Error(wex, "Error while getting epg");
+                _status = StatusEnum.ConnectionNotAvailable;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Error while getting epg");
+                _status = StatusEnum.GeneralError;
+            }
+
+            _cachedEPG = res;
+            _cachedEPGRefreshTime = DateTime.Now;
+
+            return res;
         }
 
         public async Task<List<Quality>> GetStreamQualities()
@@ -204,7 +324,7 @@ namespace KUKITVAPI
 
         public void ResetConnection()
         {
-            
+
         }
 
         public void SetConnection(string deviceId, string password)
@@ -214,16 +334,16 @@ namespace KUKITVAPI
 
         public void SetCredentials(string username, string password, string childLockPIN = null)
         {
-           
+
         }
 
         public async Task Lock()
         {
-            
+
         }
 
         public async Task Unlock()
-        {            
+        {
 
         }
 
@@ -235,7 +355,7 @@ namespace KUKITVAPI
             {
                 if (first)
                 {
-                    first = false;                    
+                    first = false;
                 }
                 else
                 {
@@ -267,7 +387,7 @@ namespace KUKITVAPI
                         request.Headers.Add(header.Key, header.Value);
                     }
                 }
-                
+
                 _log.Debug($"Sending {method} request to url: {request.RequestUri}");
                 _log.Debug($"ContentType: {request.ContentType}");
                 _log.Debug($"Method: {request.Method}");
@@ -293,14 +413,14 @@ namespace KUKITVAPI
                     {
                         responseString = sr.ReadToEnd();
                     }
-  
+
                     _log.Debug($"Response: {responseString}");
                     _log.Debug($"StatusCode: {response.StatusCode}");
                     _log.Debug($"StatusDescription: {response.StatusDescription}");
 
                     _log.Debug($"ContentLength: {response.ContentLength}");
                     _log.Debug($"ContentType: {response.ContentType}");
-                    _log.Debug($"ContentEncoding: {response.ContentEncoding}");  
+                    _log.Debug($"ContentEncoding: {response.ContentEncoding}");
 
                     return responseString;
                 }

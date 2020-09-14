@@ -94,7 +94,6 @@
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0">
-                        <Label Text="Podpora Kuki je pouze částečná (bez EPG a možnosti zvolit si kvalitu streamu)" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForText}"/>
                         <Label Text="S/N zařízení je možné získat v nastavení mobilní aplikace Kuki" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForText}"/>
                     </StackLayout>
 

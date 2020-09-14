@@ -35,7 +35,7 @@
     <MandroidI18n>Other</MandroidI18n>
     <AndroidSupportedAbis>
     </AndroidSupportedAbis>
-    <IntermediateOutputPath>C:\Users\User\AppData\Local\Temp\vsF3DE.tmp\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsCEFE.tmp\Debug\</IntermediateOutputPath>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
@@ -56,7 +56,7 @@
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <IntermediateOutputPath>C:\Users\User\AppData\Local\Temp\vsF3DE.tmp\Release\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsCEFE.tmp\Release\</IntermediateOutputPath>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
@@ -80,7 +80,7 @@
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
-    <IntermediateOutputPath>C:\Users\User\AppData\Local\Temp\vsF3DE.tmp\Debug - Live Player\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsCEFE.tmp\Debug - Live Player\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
