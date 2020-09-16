@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
@@ -10,11 +9,12 @@ using OnlineTelevizor.Services;
 using OnlineTelevizor.Views;
 using Plugin.Permissions;
 using Plugin.InAppBilling;
-using Plugin.Toast;
 using Xamarin.Forms;
 using OnlineTelevizor.ViewModels;
 using OnlineTelevizor.Models;
 using Android.Content;
+using Android.Graphics;
+using AndroidX.Core.Graphics;
 
 namespace OnlineTelevizor.Droid
 {
@@ -23,6 +23,7 @@ namespace OnlineTelevizor.Droid
     {
         private App _app;
         private AndroidOnlineTelevizorConfiguration _cfg;
+        private Toast _toastInstance = null;
 
         private int _defaultUiOptions;
         private int _fullscreenUiOptions;
@@ -45,7 +46,7 @@ namespace OnlineTelevizor.Droid
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
             {
-                CrossToastPopUp.Current.ShowCustomToast(message, "#3F51B5", "#FFFFFF");
+                ShowToastMessage(message, "#FFFFFF", "#3F51B5");
             });
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.UriMessage, (url) =>
@@ -115,6 +116,27 @@ namespace OnlineTelevizor.Droid
             MessagingCenter.Send(keyCode.ToString(), BaseViewModel.KeyMessage);
 
             return base.OnKeyDown(keyCode, e);
+        }
+
+        private void ShowToastMessage(string message, string foregroundColor = "#FFFFFF", string backgroundColor = "#3F51B5")
+        {
+            var length = Android.Widget.ToastLength.Short;
+
+            // To dismiss existing toast, otherwise, the screen will be populated with it if the user do so
+            _toastInstance?.Cancel();
+
+            _toastInstance = Toast.MakeText(Android.App.Application.Context, message, length);
+
+            var view = _toastInstance.View;
+            view.Background.SetColorFilter(BlendModeColorFilterCompat.CreateBlendModeColorFilterCompat(Android.Graphics.Color.ParseColor(backgroundColor), BlendModeCompat.SrcIn));
+
+            var textView = (TextView)view.FindViewById(Android.Resource.Id.Message);
+            textView.SetTextColor(Android.Graphics.Color.ParseColor(foregroundColor));
+            textView.TextSize = BaseViewModel.GetScaledSize(_cfg, 25);
+
+            _toastInstance.SetGravity(GravityFlags.Center, 0, 0);
+
+            _toastInstance.Show();
         }
     }
 }

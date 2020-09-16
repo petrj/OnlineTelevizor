@@ -38,7 +38,7 @@ namespace OnlineTelevizor.ViewModels
             Config = config;
         }
 
-        public int GetScaledSize(int normalSize)
+        public static int GetScaledSize(IOnlineTelevizorConfiguration Config, int normalSize)
         {
             switch (Config.AppFontSize)
             {
@@ -55,6 +55,12 @@ namespace OnlineTelevizor.ViewModels
                 default: return normalSize;
             }
         }
+
+        public int GetScaledSize(int normalSize)
+        {
+            return GetScaledSize(Config, normalSize);
+        }
+
         public bool IsBusy
         {
             get { return isBusy; }

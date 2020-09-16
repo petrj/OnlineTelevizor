@@ -418,6 +418,8 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"Detail_Clicked");
 
+
+
             if (_viewModel.SelectedItem != null)
             {
                 var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService);
