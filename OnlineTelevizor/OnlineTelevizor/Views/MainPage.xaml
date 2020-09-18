@@ -132,7 +132,7 @@
 
         </ListView>
 
-        <StackLayout Grid.Row="0" Grid.Column="1" Margin="10,10,10,10">
+        <StackLayout x:Name="StackLayoutEPGDetail" Grid.Row="0" Grid.Column="1" Margin="10,10,10,10">
 
             <Label Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"/>
 
@@ -148,8 +148,8 @@
             </Grid>
 
 
-            <ScrollView>
-                <Label Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
+            <ScrollView x:Name="ScrollViewChannelEPGDescription" BackgroundColor="{Binding EPGDescriptionBackgroundColor}" >
+                <Label x:Name="LabelChannelEPGDescription" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
             </ScrollView>
 
         </StackLayout>

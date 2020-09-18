@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Threading;
+using static OnlineTelevizor.ViewModels.MainPageViewModel;
 
 namespace OnlineTelevizor.Views
 {
@@ -20,12 +21,9 @@ namespace OnlineTelevizor.Views
         private DialogService _dialogService;
         private IOnlineTelevizorConfiguration _config;
         private ILoggingService _loggingService;
-        private bool _emptyCredentialsDialogHandled = false;
 
         private FilterPage _filterPage;
         private PlayerPage _playerPage;
-
-        private ToolbarItem _selectedToolBarItem = null;
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private string _numberPressed = String.Empty;
@@ -89,11 +87,27 @@ namespace OnlineTelevizor.Views
             {
                 ChannelsListView.ItemTapped += ChannelsListView_ItemTapped;
             }
+
+            ScrollViewChannelEPGDescription.Scrolled += ScrollViewChannelEPGDescription_Scrolled;
+        }
+
+        private void ScrollViewChannelEPGDescription_Scrolled(object sender, ScrolledEventArgs e)
+        {
+            if (_viewModel.SelectedPart != SelectedPartEnum.EPGDetail)
+            {
+                // ScrollViewChannelEPGDescription got focus unexpectedly
+                // hiding to lost focus
+                // the only legal way to scroll EPG detail by keyobard is to change SelectedPartEnum to EPGDetail
+                ScrollViewChannelEPGDescription.IsVisible = false;
+                ScrollViewChannelEPGDescription.IsVisible = true;
+            }
         }
 
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
+
+            _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
 
             if (width>height && !_config.DoNotSplitScreenOnLandscape)
             {
@@ -364,7 +378,20 @@ namespace OnlineTelevizor.Views
         {
             if (!Playing)
             {
-                await _viewModel.SelectPreviousChannel(10);
+                if (_viewModel.IsPortrait)
+                {
+                    // no EPG detail on right
+                    await _viewModel.SelectPreviousChannel(10);
+                }
+                else
+                {
+                    // EPG detail on right
+                    if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
+                    {
+                        await ScrollViewChannelEPGDescription.ScrollToAsync(0, 0, false);
+                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                    }
+                }
             }
             else
             {
@@ -377,7 +404,19 @@ namespace OnlineTelevizor.Views
         {
             if (!Playing)
             {
-                await _viewModel.SelectNextChannel(10);
+                if (_viewModel.IsPortrait)
+                {
+                    // no EPG detail on right
+                    await _viewModel.SelectNextChannel(10);
+                }
+                else
+                {
+                    // EPG detail on right
+                    if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
+                    {
+                        _viewModel.SelectedPart = SelectedPartEnum.EPGDetail;
+                    }
+                }
             }
             else
             {
@@ -390,7 +429,13 @@ namespace OnlineTelevizor.Views
         {
             if (!Playing)
             {
-                await _viewModel.SelectNextChannel();
+                if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
+                {
+                    await _viewModel.SelectNextChannel();
+                } else
+                {
+                    await ScrollViewChannelEPGDescription.ScrollToAsync(ScrollViewChannelEPGDescription.ScrollX, ScrollViewChannelEPGDescription.ScrollY + 10+(int)_config.AppFontSize, false);
+                }
             }
             else
             {
@@ -403,7 +448,14 @@ namespace OnlineTelevizor.Views
         {
             if (!Playing)
             {
-                await _viewModel.SelectPreviousChannel();
+                if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
+                {
+                    await _viewModel.SelectPreviousChannel();
+                }
+                else
+                {
+                    await ScrollViewChannelEPGDescription.ScrollToAsync(ScrollViewChannelEPGDescription.ScrollX, ScrollViewChannelEPGDescription.ScrollY - (10 + (int)_config.AppFontSize), false);
+                }
             }
             else
             {

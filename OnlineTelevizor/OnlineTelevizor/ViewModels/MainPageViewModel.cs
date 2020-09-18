@@ -34,6 +34,14 @@ namespace OnlineTelevizor.ViewModels
 
         private string _selectedChannelEPGDescription = String.Empty;
 
+        public enum SelectedPartEnum
+        {
+            ChannelsList = 0,
+            EPGDetail = 1
+        }
+
+        private SelectedPartEnum _selectedPart = SelectedPartEnum.ChannelsList;
+
         public TVService TVService
         {
             get
@@ -179,6 +187,31 @@ namespace OnlineTelevizor.ViewModels
                     return Color.Black;
 
                 return Color.White;
+            }
+        }
+
+        public SelectedPartEnum SelectedPart
+        {
+            get
+            {
+                return _selectedPart;
+            }
+            set
+            {
+                _selectedPart = value;
+
+                OnPropertyChanged(nameof(EPGDescriptionBackgroundColor));
+            }
+        }
+
+        public Color EPGDescriptionBackgroundColor
+        {
+            get
+            {
+                if (_selectedPart == SelectedPartEnum.ChannelsList)
+                    return Color.Black;
+
+                return Color.FromHex("005996");
             }
         }
 
