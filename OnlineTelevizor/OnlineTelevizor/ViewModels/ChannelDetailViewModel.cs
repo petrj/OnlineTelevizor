@@ -13,6 +13,8 @@ namespace OnlineTelevizor.ViewModels
     public class ChannelDetailViewModel : BaseViewModel
     {
         private ChannelItem _channel;
+        private string _EPGDescription = string.Empty;
+        private TVService _service;
 
         public ChannelItem Channel
         {
@@ -28,14 +30,16 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(LogoUrl));
                 OnPropertyChanged(nameof(EPGTitle));
 
-                OnPropertyChanged(nameof(EPGDescription));
                 OnPropertyChanged(nameof(EPGDate));
                 OnPropertyChanged(nameof(EPGTime));
                 OnPropertyChanged(nameof(EPGTimeStart));
                 OnPropertyChanged(nameof(EPGTimeFinish));
                 OnPropertyChanged(nameof(EPGProgress));
+
+                Task.Run( async () => await UpdateChannelEPGDescription());
             }
         }
+
         public string FontSizeForChannel
         {
             get
@@ -90,7 +94,15 @@ namespace OnlineTelevizor.ViewModels
 
         public String EPGDescription
         {
-            get { return (Channel == null || Channel.CurrentEPGItem == null) ? null : Channel.CurrentEPGItem.Description; }
+            get
+            {
+                return _EPGDescription;
+            }
+            set
+            {
+                _EPGDescription = value;
+                OnPropertyChanged(nameof(EPGDescription));
+            }
         }
 
         public string EPGDate
@@ -130,12 +142,24 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
-        public ChannelDetailViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
+        public ChannelDetailViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
             : base(loggingService, config, dialogService)
         {
             _loggingService = loggingService;
             _dialogService = dialogService;
+            _service = service;
             Config = config;
+        }
+
+        private async Task UpdateChannelEPGDescription()
+        {
+            if (Channel == null || Channel.CurrentEPGItem == null)
+            {
+                EPGDescription = String.Empty;
+                return;
+            }
+
+            EPGDescription = await _service.GetEPGItemDescription(Channel.CurrentEPGItem);
         }
     }
 }

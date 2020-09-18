@@ -66,7 +66,7 @@ namespace DVBStreamerAPI
                 if (
                       resJson.HasValue("serviceState")
                     )
-                {                    
+                {
                     _status = StatusEnum.Logged;
                 }
                 else
@@ -92,7 +92,7 @@ namespace DVBStreamerAPI
                 return res;
 
             try
-            {           
+            {
                 // get channels list:
 
                 var channelsResponse = await SendRequest(new Dictionary<string, string> { { "action", "listChannels" } });
@@ -128,12 +128,12 @@ namespace DVBStreamerAPI
                         Url = chJson.GetStringValue("url"),
                         Locked = "none",
                         Group = ""
-                    };                  
+                    };
 
                     res.Add(ch);
 
                     number++;
-                }           
+                }
             }
             catch (WebException wex)
             {
@@ -152,6 +152,11 @@ namespace DVBStreamerAPI
         public async Task<List<EPGItem>> GetEPG()
         {
             return new List<EPGItem>() { };
+        }
+
+        public async Task<string> GetEPGItemDescription(EPGItem epgItem)
+        {
+            return String.Empty;
         }
 
         public async Task<List<Quality>> GetStreamQualities()

@@ -15,11 +15,12 @@ using OnlineTelevizor.Models;
 using Android.Content;
 using Android.Graphics;
 using AndroidX.Core.Graphics;
+using Android.Hardware.Input;
 
 namespace OnlineTelevizor.Droid
 {
     [Activity(Label = "OnlineTelevizor", Icon = "@drawable/Icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, InputManager.IInputDeviceListener
     {
         private App _app;
         private AndroidOnlineTelevizorConfiguration _cfg;
@@ -113,6 +114,7 @@ namespace OnlineTelevizor.Droid
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
+
             MessagingCenter.Send(keyCode.ToString(), BaseViewModel.KeyMessage);
 
             return base.OnKeyDown(keyCode, e);
@@ -137,6 +139,21 @@ namespace OnlineTelevizor.Droid
             _toastInstance.SetGravity(GravityFlags.Center, 0, 0);
 
             _toastInstance.Show();
+        }
+
+        public void OnInputDeviceAdded(int deviceId)
+        {
+
+        }
+
+        public void OnInputDeviceChanged(int deviceId)
+        {
+
+        }
+
+        public void OnInputDeviceRemoved(int deviceId)
+        {
+
         }
     }
 }

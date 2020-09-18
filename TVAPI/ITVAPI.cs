@@ -11,9 +11,10 @@ namespace TVAPI
         void SetConnection(string deviceId, string password);
         DeviceConnection Connection { get; }
         bool EPGEnabled { get; }
-        StatusEnum Status { get; }       
+        StatusEnum Status { get; }
         Task Login(bool force = false);
         Task<List<EPGItem>> GetEPG();
+        Task<string> GetEPGItemDescription(EPGItem epgItem);
         Task<List<Quality>> GetStreamQualities();
         void ResetConnection();
         Task<List<Channel>> GetChanels();

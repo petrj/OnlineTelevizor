@@ -45,7 +45,7 @@ namespace SledovaniTVAPI
             _deviceConnection.deviceId = deviceId;
             _deviceConnection.password = password;
         }
-        
+
         public bool EPGEnabled
         {
             get
@@ -314,6 +314,11 @@ namespace SledovaniTVAPI
             }
         }
 
+        public async Task<string> GetEPGItemDescription(EPGItem epgItem)
+        {
+            return epgItem.Description;
+        }
+
         /// <summary>
         /// Getting actual EPG
         /// </summary>
@@ -359,7 +364,7 @@ namespace SledovaniTVAPI
                     {
                         _log.Info($"Login again failed (status: {Status})");
                         return result;
-                    }                       
+                    }
                 }
 
                 if (epgJson.HasValue("status") &&
@@ -575,7 +580,7 @@ namespace SledovaniTVAPI
                 } else
                 {
                     _log.Debug($"No channel received (status <>1)");
-                }                
+                }
             }
             catch (WebException wex)
             {
@@ -611,7 +616,7 @@ namespace SledovaniTVAPI
 
                 var unlockResponseString = await SendRequest("pin-unlock", ps);
                 var unlockResponseJson = JObject.Parse(unlockResponseString);
-                
+
                 // has session expired?
                 if (unlockResponseJson.HasValue("status") &&
                    unlockResponseJson.GetStringValue("status") == "0")

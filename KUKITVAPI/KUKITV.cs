@@ -212,6 +212,47 @@ namespace KUKITVAPI
             return res;
         }
 
+        public async Task<string> GetEPGItemDescription(EPGItem epgItem)
+        {
+            if (!string.IsNullOrEmpty(epgItem.Description))
+                return epgItem.Description;
+
+            epgItem.Description = await GetEPGProgramDetailDescription(epgItem.EPGId);
+
+            return epgItem.Description;
+        }
+
+        private async Task<string> GetEPGProgramDetailDescription(string guidEPGProgramNumber)
+        {
+            try
+            {
+                var headerParams = new Dictionary<string, string>();
+                headerParams.Add("X-SessionKey", _session_key);
+
+                var epgProgramDetailResponse = await SendRequest($"https://as.kuki.cz/api-v2/epg-entity/{guidEPGProgramNumber}", "GET", null, headerParams);
+
+                var epgProgramDetail = JObject.Parse(epgProgramDetailResponse);
+
+                var desc = epgProgramDetail["description"].ToString();
+
+                return desc;
+            }
+            catch (WebException wex)
+            {
+                _log.Error(wex, "Error while getting epg program detail");
+                _status = StatusEnum.ConnectionNotAvailable;
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Error while getting epg program detail");
+                _status = StatusEnum.GeneralError;
+
+                return null;
+            }
+        }
+
         public async Task<List<EPGItem>> GetEPG()
         {
             if (((DateTime.Now - _cachedEPGRefreshTime).TotalMinutes < 60) &&
@@ -257,7 +298,7 @@ namespace KUKITVAPI
 
                         var epgResponse = await SendRequest($"https://as.kuki.cz/api-v2/dashboard?rowGuidList=channel:{channelEPGIDsAsCommaSeparatedString}", "GET", null, headerParams);
 
-                        foreach (Match rgm in Regex.Matches(epgResponse, "\"mediaType\":\"EPG_ENTITY\""))
+                        foreach (Match rgm in Regex.Matches(epgResponse, "\"guid\":\"epg:"))
                         {
                             var pos = epgResponse.IndexOf("\"sourceLogo\"", rgm.Index);
 
@@ -271,15 +312,18 @@ namespace KUKITVAPI
                             var timef = $"{epg["endDate"]}{DateTime.Now.Year} {epg["end"]}";
                             var desc = String.Empty;
 
+                            var guid = epg["guid"].ToString();
+
                             var item = new EPGItem()
                             {
                                 ChannelId = ident,
                                 Title = title,
                                 Start = DateTime.ParseExact(times, "d.M.yyyy HH:mm", CultureInfo.InvariantCulture),
                                 Finish = DateTime.ParseExact(timef, "d.M.yyyy HH:mm", CultureInfo.InvariantCulture),
-                                Description = desc
+                                EPGId = guid.Substring(4)
                             };
 
+                            // excluding old programs
                             if (item.Finish < DateTime.Now)
                                 continue;
 

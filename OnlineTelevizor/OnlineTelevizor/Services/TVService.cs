@@ -92,7 +92,7 @@ namespace OnlineTelevizor.Services
 
                 if (_service.Status != StatusEnum.Logged)
                     return result;
-                
+
                 foreach (var q in qualities)
                 {
                     if (q.Allowed == "0")
@@ -104,7 +104,7 @@ namespace OnlineTelevizor.Services
                         Id = q.Id
                     });
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -112,6 +112,11 @@ namespace OnlineTelevizor.Services
             }
 
             return result;
+        }
+
+        public async Task<string> GetEPGItemDescription(EPGItem epgItem)
+        {
+            return await _service.GetEPGItemDescription(epgItem);
         }
 
         public async Task StopStream()
@@ -125,7 +130,7 @@ namespace OnlineTelevizor.Services
 
             try
             {
-                if (_config.ShowAdultChannels && 
+                if (_config.ShowAdultChannels &&
                     !String.IsNullOrEmpty(_config.ChildLockPIN) &&
                     !_adultChannelsUnlocked)
                 {
@@ -158,7 +163,7 @@ namespace OnlineTelevizor.Services
                         _config.DevicePassword = _service.Connection.password;
                     }
 
-                    var channelIndex = 0; 
+                    var channelIndex = 0;
                     foreach (var ch in channels)
                     {
                         if (ch.Locked != "none")
@@ -172,7 +177,7 @@ namespace OnlineTelevizor.Services
                                 (
                                     !_config.ShowAdultChannels
                                 ))
-                                continue; // adult channels 
+                                continue; // adult channels
 
                             // unknown Locked state
                         }
@@ -190,7 +195,7 @@ namespace OnlineTelevizor.Services
                                                         (ch.Id == "seznam") ||
                                                         (ch.Id == "kinosvet") ||
                                                         (ch.Id == "croradiozurnal") ||
-                                                        (ch.Id == "radiojunior") 
+                                                        (ch.Id == "radiojunior")
                                                       )))
                            continue;
 
@@ -211,7 +216,7 @@ namespace OnlineTelevizor.Services
 
         public async Task ResetConnection()
         {
-            _service.ResetConnection();           
+            _service.ResetConnection();
 
             _adultChannelsUnlocked = false;
 

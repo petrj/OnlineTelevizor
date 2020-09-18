@@ -25,6 +25,8 @@ namespace OnlineTelevizor.Views
         private FilterPage _filterPage;
         private PlayerPage _playerPage;
 
+        private ToolbarItem _selectedToolBarItem = null;
+
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private string _numberPressed = String.Empty;
 
@@ -284,6 +286,8 @@ namespace OnlineTelevizor.Views
             }).Start();
         }
 
+
+
         public void Reset()
         {
             _loggingService.Info($"Reset");
@@ -361,7 +365,8 @@ namespace OnlineTelevizor.Views
             if (!Playing)
             {
                 await _viewModel.SelectPreviousChannel(10);
-            } else
+            }
+            else
             {
                 await _viewModel.SelectPreviousChannel();
                 await _viewModel.Play();
@@ -418,11 +423,9 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"Detail_Clicked");
 
-
-
             if (_viewModel.SelectedItem != null)
             {
-                var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService);
+                var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService, _viewModel.TVService);
                 detailPage.Channel = _viewModel.SelectedItem;
 
                 await Navigation.PushAsync(detailPage);

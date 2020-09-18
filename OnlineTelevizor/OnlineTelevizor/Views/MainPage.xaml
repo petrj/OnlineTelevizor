@@ -161,7 +161,7 @@
     </Grid>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="Refresh.png"/>
+        <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="Refresh.png"   />
         <ToolbarItem Name="ToolbarItemInfo" Text="Info"  Clicked="Detail_Clicked" Icon="Info.png" />
         <ToolbarItem Name="ToolbarItemFilter" Text="Filtr" Clicked="ToolbarItemFilter_Clicked" Icon="Filter.png"/>
         <ToolbarItem Name="ToolbarItemQuality" Text="Kvalita" Clicked="ToolbarItemQuality_Clicked" Icon="Quality.png"/>

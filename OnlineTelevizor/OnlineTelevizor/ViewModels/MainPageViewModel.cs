@@ -32,6 +32,8 @@ namespace OnlineTelevizor.ViewModels
         private int _notFilteredChannelsCount = 0;
         private bool _emptyCredentialsChecked = false;
 
+        private string _selectedChannelEPGDescription = String.Empty;
+
         public TVService TVService
         {
             get
@@ -180,14 +182,27 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        private async Task UpdateSelectedChannelEPGDescription()
+        {
+            if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
+            {
+                SelectedChannelEPGDescription = String.Empty;
+                return;
+            }
+
+            SelectedChannelEPGDescription = await _service.GetEPGItemDescription(SelectedItem.CurrentEPGItem);
+        }
+
         public string SelectedChannelEPGDescription
         {
             get
             {
-                if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
-                    return String.Empty;
-
-                return SelectedItem.CurrentEPGItem.Description;
+                return _selectedChannelEPGDescription;
+            }
+            set
+            {
+                _selectedChannelEPGDescription = value;
+                OnPropertyChanged(nameof(SelectedChannelEPGDescription));
             }
         }
 
@@ -206,9 +221,10 @@ namespace OnlineTelevizor.ViewModels
 
                 OnPropertyChanged(nameof(SelectedItem));
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
-                OnPropertyChanged(nameof(SelectedChannelEPGDescription));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
                 OnPropertyChanged(nameof(EPGProgressBackgroundColor));
+
+                Task.Run( async () => await UpdateSelectedChannelEPGDescription());
             }
         }
 
@@ -635,10 +651,10 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
-                OnPropertyChanged(nameof(SelectedChannelEPGDescription));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
                 OnPropertyChanged(nameof(EPGProgressBackgroundColor));
 
+                await UpdateSelectedChannelEPGDescription();
             }
         }
 
@@ -694,9 +710,10 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
-                OnPropertyChanged(nameof(SelectedChannelEPGDescription));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
                 OnPropertyChanged(nameof(EPGProgressBackgroundColor));
+
+                await UpdateSelectedChannelEPGDescription();
             }
 
             return epgItemsCountRead;

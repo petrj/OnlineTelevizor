@@ -100,7 +100,6 @@ namespace TestConsole
                         Console.WriteLine("-----------------------");
                     }
 
-
                     var epg = await tvService.GetEPG();
 
                     Thread.Sleep(2000);
@@ -115,6 +114,7 @@ namespace TestConsole
                         //Console.WriteLine($"  Progress  : {epgItem.Progress.ToString("#0.00")}");
                         Console.WriteLine("-----------------------");
                     }
+                    Console.WriteLine($"EPG items count: {epg.Count}");
 
                     Console.WriteLine();
                     Console.WriteLine($"Status: {tvService.Status.ToString()}");

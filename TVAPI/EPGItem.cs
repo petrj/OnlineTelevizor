@@ -6,6 +6,8 @@ namespace TVAPI
     {
         public string ChannelId { get; set; }
 
+        public string EPGId { get; set; }
+
         public string Title { get; set; }
         public string Description { get; set; }
 
@@ -17,7 +19,7 @@ namespace TVAPI
             get
             {
                 if (Finish == DateTime.MinValue || Start == DateTime.MinValue ||
-                    Finish == DateTime.MaxValue || Finish == DateTime.MaxValue || 
+                    Finish == DateTime.MaxValue || Finish == DateTime.MaxValue ||
                     Start > DateTime.Now || Start>Finish)
                     return 0;
 
