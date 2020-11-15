@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
 using TVAPI;
+using System.Web;
 
 namespace SledovaniTVAPI
 {
@@ -382,10 +383,12 @@ namespace SledovaniTVAPI
                             var times = epg["startTime"].ToString();
                             var timef = epg["endTime"].ToString();
                             var desc = epg["description"].ToString();
+                            var epgEventId = epg["eventId"].ToString();
 
                             var item = new EPGItem()
                             {
                                 ChannelId = chId,
+                                EPGId = epgEventId,
                                 Title = title,
                                 Start = DateTime.ParseExact(times, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
                                 Finish = DateTime.ParseExact(timef, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
@@ -729,6 +732,12 @@ namespace SledovaniTVAPI
         public async Task Stop()
         {
             // nothing to stop
+        }
+
+        public string GetEPGEventUrl(EPGItem item)
+        {
+            var eventIdEncoded = HttpUtility.UrlEncode(item.EPGId);
+            return $"http://sledovanitv.cz/vlc/api-timeshift/event.m3u8?PHPSESSID={_session.PHPSESSID}&eventId={eventIdEncoded}";
         }
     }
 }

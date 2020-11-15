@@ -300,5 +300,10 @@ namespace DVBStreamerAPI
                 _status = StatusEnum.GeneralError;
             }
         }
+
+        public  string GetEPGEventUrl(EPGItem item)
+        {
+            return null;
+        }
     }
 }

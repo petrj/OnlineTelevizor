@@ -24,6 +24,7 @@ namespace TestConsole
 
             Console.WriteLine("...");
 
+            /*
             var tvService = new KUKITV(loggingService);
 
             if (JSONObject.FileExists("kuki.json"))
@@ -31,9 +32,10 @@ namespace TestConsole
                 var conn = JSONObject.LoadFromFile<DeviceConnection>("kuki.json");
                 tvService.SetConnection(conn.deviceId, null);
             }
+            */
 
 
-            /*
+            
             var tvService = new SledovaniTV(loggingService);
 
             if (JSONObject.FileExists("credentials.json"))
@@ -48,7 +50,7 @@ namespace TestConsole
                 var conn = JSONObject.LoadFromFile<DeviceConnection>("connection.json");
                 tvService.SetConnection(conn.deviceId, conn.password);
             }
-            */
+            
 
 
             /*
@@ -111,6 +113,8 @@ namespace TestConsole
                         Console.WriteLine($"EPG         : {epgItem.Title}");
                         Console.WriteLine($"  CH ID     : {epgItem.ChannelId}");
                         Console.WriteLine($"  Time      : {epgItem.Start.ToString("HH.mm")} - {epgItem.Finish.ToString("HH.mm")}");
+                        Console.WriteLine($"  url     : {tvService.GetEPGEventUrl(epgItem)}");
+                        
                         //Console.WriteLine($"  Progress  : {epgItem.Progress.ToString("#0.00")}");
                         Console.WriteLine("-----------------------");
                     }
