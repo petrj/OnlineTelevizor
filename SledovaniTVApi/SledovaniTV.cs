@@ -67,7 +67,7 @@ namespace SledovaniTVAPI
         {
             get
             {
-                if (_session == null || String.IsNullOrEmpty(PHPSESSID))
+                if (_session == null || String.IsNullOrEmpty(_session.PHPSESSID))
                 {
                     return null;
                 }
