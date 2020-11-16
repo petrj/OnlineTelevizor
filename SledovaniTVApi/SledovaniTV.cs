@@ -63,6 +63,19 @@ namespace SledovaniTVAPI
             }
         }
 
+        public string PHPSESSID
+        {
+            get
+            {
+                if (_session == null || String.IsNullOrEmpty(PHPSESSID))
+                {
+                    return null;
+                }
+
+                return _session.PHPSESSID;
+            }
+        }
+        
         public StatusEnum Status
         {
             get
