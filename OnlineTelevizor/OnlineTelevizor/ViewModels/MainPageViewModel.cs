@@ -889,7 +889,7 @@ namespace OnlineTelevizor.ViewModels
 
             _loggingService.Info($"Playing selected channel {SelectedItem.Name}");
 
-            await PlayStream(SelectedItem.Url, SelectedItem.Name, SelectedItem.Type);
+            await PlayStream(SelectedItem.Url, SelectedItem.Name, SelectedItem.Type, SelectedItem.CurrentEPGTitle);
         }
 
         public async Task CheckEmptyCredentials()

@@ -42,6 +42,17 @@ namespace OnlineTelevizor.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
+#if DEBUG
+            Console.WriteLine("Debug version");
+
+            _cfg.TVApi = TVAPIEnum.SledovaniTV;
+            _cfg.Username = "luis99@seznam.cz";
+            _cfg.Password = "123456";
+            _cfg.InternalPlayer = true;
+#else
+      
+#endif
+
 
             _app = new App(_cfg);
 

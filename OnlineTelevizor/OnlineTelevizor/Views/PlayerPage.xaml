@@ -32,6 +32,7 @@
             <StackLayout x:Name="AudioOnlyStackLayout" IsVisible="{Binding AudioViewVisible}" Margin="0,20,0,0" >
                 <Label x:Name="AudioOnlyText" Text="{Binding Title}" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding FontSizeForChannel}" />
                 <Image Source="Audio" x:Name="AudioOnlyImage" Style="{DynamicResource AudioImageStyle}" />
+                <Label x:Name="AudioOnlyDescription" Text="{Binding Description}" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding FontSizeForDescription}" />
             </StackLayout>
             <StackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" />

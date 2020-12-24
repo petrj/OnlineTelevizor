@@ -83,11 +83,12 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        public void SetMediaUrl(string mediaUrl, string title, string type)
+        public void SetMediaUrl(string mediaUrl, string title, string type, string description)
         {
             _viewModel.MediaUrl = mediaUrl;
             _viewModel.Title = title;
             _viewModel.MediaType = type;
+            _viewModel.Description = description;
 
             if (Playing)
             {

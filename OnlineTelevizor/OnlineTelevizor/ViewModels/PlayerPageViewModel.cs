@@ -11,7 +11,7 @@ namespace OnlineTelevizor.ViewModels
     {
         private bool _videoViewVisible = true;
         private string _mediaUrl;
-        private string _title;
+        private string _description;
         private string _mediaType;
 
         public string MediaUrl
@@ -42,17 +42,17 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
-        public string Title
+        public string Description
         {
             get
             {
-                return _title;
+                return _description;
             }
             set
             {
-                _title = value;
+                _description = value;
 
-                OnPropertyChanged(nameof(Title));
+                OnPropertyChanged(nameof(Description));
             }
         }
 
@@ -91,6 +91,14 @@ namespace OnlineTelevizor.ViewModels
             get
             {
                 return GetScaledSize(20).ToString();
+            }
+        }
+
+        public string FontSizeForDescription
+        {
+            get
+            {
+                return GetScaledSize(16).ToString();
             }
         }
 
