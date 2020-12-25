@@ -23,6 +23,9 @@ namespace OnlineTelevizor.Views
         MediaPlayer _mediaPlayer;
         Media _media = null;
         bool _fullscreen = false;
+        bool _playInProgress = false;
+
+        public Command CheckStreamCommand { get; set; }
 
         private PlayerPageViewModel _viewModel;
 
@@ -38,28 +41,37 @@ namespace OnlineTelevizor.Views
             _mediaPlayer = new MediaPlayer(_libVLC) { EnableHardwareDecoding = true };
 
             videoView.MediaPlayer = _mediaPlayer;
+
+            CheckStreamCommand = new Command(async () => await CheckStream());
+
+            BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 5);
         }
 
-        private void ShowAudioOnlyIcon()
+        private async Task CheckStream()
         {
-            new Thread(() =>
+            if (!Playing)
+                return;
+
+            Device.BeginInvokeOnMainThread(() =>
             {
-                Thread.CurrentThread.IsBackground = true;
-
-                Thread.Sleep(1000); // 1s
-
-                Device.BeginInvokeOnMainThread(() =>
+                if (!videoView.MediaPlayer.IsPlaying)
                 {
-                    if (
-                            (_viewModel.AudioViewVisible = (_mediaPlayer.VideoTrack == -1))
-                            ||
-                            (!string.IsNullOrEmpty(_viewModel.MediaType) && (_viewModel.MediaType.ToLower() == "radio"))
-                        )
-                    {
-                        _viewModel.AudioViewVisible = true;
-                    }
-                });
-            }).Start();
+                    Start();
+                }
+
+                if (
+                        (_viewModel.AudioViewVisible = (_mediaPlayer.VideoTrack == -1))
+                        ||
+                        (!string.IsNullOrEmpty(_viewModel.MediaType) && (_viewModel.MediaType.ToLower() == "radio"))
+                    )
+                {
+                    _viewModel.AudioViewVisible = true;
+                } else
+                {
+                    _viewModel.AudioViewVisible = false;
+                }
+            });
+
         }
 
         public void OnDoubleTapped(object sender, EventArgs e)
@@ -79,7 +91,8 @@ namespace OnlineTelevizor.Views
         {
             get
             {
-                return videoView.MediaPlayer.IsPlaying;
+                //return videoView.MediaPlayer.IsPlaying;
+                return _playInProgress;
             }
         }
 
@@ -128,12 +141,24 @@ namespace OnlineTelevizor.Views
             _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);
             videoView.MediaPlayer.Play(_media);
 
-            ShowAudioOnlyIcon();
+            _viewModel.AudioViewVisible = true;
+            _playInProgress = true;
+
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                Thread.Sleep(1000); // 1s
+
+                CheckStreamCommand.Execute(null);
+            }).Start();
         }
 
         public void Stop()
         {
             videoView.MediaPlayer.Stop();
+
+            _playInProgress = false;
         }
 
         public void Resume()
