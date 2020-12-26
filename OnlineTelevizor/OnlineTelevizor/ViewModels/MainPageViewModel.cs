@@ -472,7 +472,7 @@ namespace OnlineTelevizor.ViewModels
                 if (IsBusy ||
                     (_lastRefreshChannelsDelay > 0 && _lastRefreshChannelsDelay <= 5 )) // only first few seconds
                 {
-                    return "Aktualizují se kanály...";
+                    return "Aktualizace kanálů...";
                 }
 
                 switch (_service.Status)
@@ -889,7 +889,14 @@ namespace OnlineTelevizor.ViewModels
 
             _loggingService.Info($"Playing selected channel {SelectedItem.Name}");
 
-            await PlayStream(SelectedItem.Url, SelectedItem.Name, SelectedItem.Type, SelectedItem.CurrentEPGTitle);
+            await PlayStream(new MediaDetail()
+            {
+                MediaUrl = SelectedItem.Url,
+                Title = SelectedItem.Name,
+                Type = SelectedItem.Type,
+                CurrentEPGItem = SelectedItem.CurrentEPGItem,
+                ChanneldID = SelectedItem.Id
+            });
         }
 
         public async Task CheckEmptyCredentials()

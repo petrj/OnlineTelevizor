@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using TVAPI;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -23,17 +23,19 @@ namespace OnlineTelevizor.Views
         MediaPlayer _mediaPlayer;
         Media _media = null;
         bool _fullscreen = false;
-        bool _playInProgress = false;
+        bool _playInProgress = false;        
 
         public Command CheckStreamCommand { get; set; }
 
+        public Command AnimeIconCommand { get; set; }
+
         private PlayerPageViewModel _viewModel;
 
-        public PlayerPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
+        public PlayerPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
         {
             InitializeComponent();
 
-            BindingContext = _viewModel = new PlayerPageViewModel(loggingService, config, dialogService);
+            BindingContext = _viewModel = new PlayerPageViewModel(loggingService, config, dialogService, service);
 
             Core.Initialize();
 
@@ -43,14 +45,23 @@ namespace OnlineTelevizor.Views
             videoView.MediaPlayer = _mediaPlayer;
 
             CheckStreamCommand = new Command(async () => await CheckStream());
+            AnimeIconCommand = new Command(async () => await Anime());
 
             BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 5);
+            BackgroundCommandWorker.RunInBackground(AnimeIconCommand, 1, 1);
+        }
+
+        private async Task Anime()
+        {
+            await Task.Run( () => { _viewModel.Anime(); } );
         }
 
         private async Task CheckStream()
         {
             if (!Playing)
+            {
                 return;
+            }
 
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -70,6 +81,8 @@ namespace OnlineTelevizor.Views
                 {
                     _viewModel.AudioViewVisible = false;
                 }
+
+                UpdateEPG();
             });
 
         }
@@ -96,17 +109,37 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        public void SetMediaUrl(string mediaUrl, string title, string type, string description)
+        private void UpdateEPG()
         {
-            _viewModel.MediaUrl = mediaUrl;
-            _viewModel.Title = title;
-            _viewModel.MediaType = type;
-            _viewModel.Description = description;
+            if (_viewModel.EPGItem == null)
+            {
+                _viewModel.Description = String.Empty;
+                _viewModel.DetailedDescription = String.Empty;
+                _viewModel.TimeDescription = String.Empty;
+                _viewModel.EPGProgress = 0;
+            } else
+            {
+                _viewModel.Description = _viewModel.EPGItem.Title;
+                _viewModel.DetailedDescription = _viewModel.EPGItem.Description;
+                _viewModel.TimeDescription = _viewModel.EPGItem.Start.ToString("HH:mm") + " - " + _viewModel.EPGItem.Finish.ToString("HH:mm");
+                _viewModel.EPGProgress = _viewModel.EPGItem.Progress;
+            }
+        }
+
+        public void SetMediaUrl(MediaDetail detail)
+        {
+            _viewModel.MediaUrl = detail.MediaUrl;
+            _viewModel.Title = detail.Title;
+            _viewModel.MediaType = detail.Type;
+            _viewModel.ChannelId = detail.ChanneldID;
+            _viewModel.EPGItem = detail.CurrentEPGItem;
+
+            UpdateEPG();
 
             if (Playing)
             {
                 videoView.MediaPlayer.Stop();
-                _media = new Media(_libVLC, mediaUrl, FromType.FromLocation);
+                _media = new Media(_libVLC, detail.MediaUrl, FromType.FromLocation);
 
                 videoView.MediaPlayer.Play(_media);
             }

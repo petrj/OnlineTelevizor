@@ -57,18 +57,18 @@ namespace OnlineTelevizor.Views
             MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage, (sender) =>
             {
                 Detail_Clicked(this, null);
-            });
+            });            
 
-            MessagingCenter.Subscribe<BaseViewModel, string[]>(this, BaseViewModel.PlayInternal, (sender, urlAndNameTypeAndDescription) =>
+            MessagingCenter.Subscribe<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternal, (sender, mediaDetail) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     if (_playerPage == null)
-                        _playerPage = new PlayerPage(_loggingService, _config, _dialogService);
+                        _playerPage = new PlayerPage(_loggingService, _config, _dialogService, _viewModel.TVService);
 
                     var playing = _playerPage.Playing;
 
-                    _playerPage.SetMediaUrl(urlAndNameTypeAndDescription[0], urlAndNameTypeAndDescription[1], urlAndNameTypeAndDescription[2], urlAndNameTypeAndDescription[3]);
+                    _playerPage.SetMediaUrl(mediaDetail);
 
                     if (!playing)
                     {
@@ -292,7 +292,14 @@ namespace OnlineTelevizor.Views
                                 (_numberPressed == _viewModel.SelectedItem.ChannelNumber)
                            )
                         {
-                            await _viewModel.PlayStream(_viewModel.SelectedItem.Url, _viewModel.SelectedItem.Name, _viewModel.SelectedItem.Type, _viewModel.SelectedItem.CurrentEPGTitle);
+                            await _viewModel.PlayStream(new MediaDetail()
+                            {
+                                MediaUrl = _viewModel.SelectedItem.Url,
+                                Title = _viewModel.SelectedItem.Name,
+                                Type = _viewModel.SelectedItem.Type,
+                                CurrentEPGItem = _viewModel.SelectedItem.CurrentEPGItem,
+                                ChanneldID = _viewModel.SelectedItem.Id
+                            }); 
                         }
                     });
                 }

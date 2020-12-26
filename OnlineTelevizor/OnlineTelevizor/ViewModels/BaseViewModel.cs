@@ -139,7 +139,7 @@ namespace OnlineTelevizor.ViewModels
 
         #endregion
 
-        public async Task PlayStream(string url, string title, string type, string description)
+        public async Task PlayStream(MediaDetail mediaDetail)
         {
             try
             {
@@ -148,24 +148,24 @@ namespace OnlineTelevizor.ViewModels
                 {
                     var configQuality = "quality=" + Config.StreamQuality;
 
-                    var qMatches = Regex.Match(url, "quality=[0-9]{1,4}");
+                    var qMatches = Regex.Match(mediaDetail.MediaUrl, "quality=[0-9]{1,4}");
                     if (qMatches != null && qMatches.Success)
                     {
-                        url = url.Replace(qMatches.Value, configQuality);
+                        mediaDetail.MediaUrl = mediaDetail.MediaUrl.Replace(qMatches.Value, configQuality);
                     }
                     else
                     {
-                        url += "&" + configQuality;
+                        mediaDetail.MediaUrl += "&" + configQuality;
                     }
                 }
 
                 if (Config.InternalPlayer)
                 {
-                    MessagingCenter.Send<BaseViewModel, string[]> (this, BaseViewModel.PlayInternal, new string[] { url, title, type, description });
+                    MessagingCenter.Send<BaseViewModel, MediaDetail> (this, BaseViewModel.PlayInternal, mediaDetail);
                 }
                 else
                 {
-                    MessagingCenter.Send(url, BaseViewModel.UriMessage);
+                    MessagingCenter.Send(mediaDetail.MediaUrl, BaseViewModel.UriMessage);
                 }
             }
             catch (Exception ex)
