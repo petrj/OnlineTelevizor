@@ -247,7 +247,7 @@ namespace OnlineTelevizor.ViewModels
 
             RefreshCommand = new Command(async () => await Refresh());
 
-            BackgroundCommandWorker.RunInBackground(RefreshCommand, 10, 5);
+            BackgroundCommandWorker.RunInBackground(RefreshCommand, 30, 15);
         }
 
         private async Task Refresh()

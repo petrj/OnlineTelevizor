@@ -82,10 +82,10 @@ namespace OnlineTelevizor.Views
                 } else
                 {
                     _viewModel.AudioViewVisible = false;
-                }
-
-                UpdateEPG();
+                }                
             });
+
+            await UpdateEPG();
 
         }
 
@@ -111,21 +111,28 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        private void UpdateEPG()
+        private async Task UpdateEPG()
         {
-            if (_viewModel.EPGItem == null)
-            {
-                _viewModel.Description = String.Empty;
-                _viewModel.DetailedDescription = String.Empty;
-                _viewModel.TimeDescription = String.Empty;
-                _viewModel.EPGProgress = 0;
-            } else
-            {
-                _viewModel.Description = _viewModel.EPGItem.Title;
-                _viewModel.DetailedDescription = _viewModel.EPGItem.Description;
-                _viewModel.TimeDescription = _viewModel.EPGItem.Start.ToString("HH:mm") + " - " + _viewModel.EPGItem.Finish.ToString("HH:mm");
-                _viewModel.EPGProgress = _viewModel.EPGItem.Progress;
-            }
+            await Task.Run(() => {
+
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (_viewModel.EPGItem == null)
+                    {
+                        _viewModel.Description = String.Empty;
+                        _viewModel.DetailedDescription = String.Empty;
+                        _viewModel.TimeDescription = String.Empty;
+                        _viewModel.EPGProgress = 0;
+                    }
+                    else
+                    {
+                        _viewModel.Description = _viewModel.EPGItem.Title;
+                        _viewModel.DetailedDescription = _viewModel.EPGItem.Description;
+                        _viewModel.TimeDescription = _viewModel.EPGItem.Start.ToString("HH:mm") + " - " + _viewModel.EPGItem.Finish.ToString("HH:mm");
+                        _viewModel.EPGProgress = _viewModel.EPGItem.Progress;                        
+                    }
+                });
+            });            
         }
 
         public void SetMediaUrl(MediaDetail detail)
