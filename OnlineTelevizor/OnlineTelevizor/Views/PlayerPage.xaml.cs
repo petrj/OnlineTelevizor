@@ -1,4 +1,5 @@
-﻿using LibVLCSharp.Shared;
+﻿using Android.OS;
+using LibVLCSharp.Shared;
 using LoggerService;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.Services;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using TVAPI;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using static Android.OS.PowerManager;
 
 namespace OnlineTelevizor.Views
 {
@@ -23,7 +25,7 @@ namespace OnlineTelevizor.Views
         MediaPlayer _mediaPlayer;
         Media _media = null;
         bool _fullscreen = false;
-        bool _playInProgress = false;        
+        bool _playInProgress = false;
 
         public Command CheckStreamCommand { get; set; }
 
@@ -171,7 +173,7 @@ namespace OnlineTelevizor.Views
 
         public void Start()
         {
-            _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);
+            _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);            
             videoView.MediaPlayer.Play(_media);
 
             _viewModel.AudioViewVisible = true;

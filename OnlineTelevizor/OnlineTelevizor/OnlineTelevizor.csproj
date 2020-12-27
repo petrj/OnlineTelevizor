@@ -45,6 +45,9 @@
     <Reference Include="Java.Interop">
       <HintPath>C:\MonoAndroid\v1.0\Java.Interop.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Android">
+      <HintPath>..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v11.0\Mono.Android.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 

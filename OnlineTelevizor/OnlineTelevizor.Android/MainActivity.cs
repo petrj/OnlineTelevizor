@@ -16,6 +16,7 @@ using Android.Content;
 using Android.Graphics;
 using AndroidX.Core.Graphics;
 using Android.Hardware.Input;
+using static Android.OS.PowerManager;
 
 namespace OnlineTelevizor.Droid
 {
@@ -29,6 +30,8 @@ namespace OnlineTelevizor.Droid
         private int _defaultUiOptions;
         private int _fullscreenUiOptions;
 
+        //private WakeLock _wakeLock;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
@@ -40,6 +43,14 @@ namespace OnlineTelevizor.Droid
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity = this;
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+
+            // wake lock - permision WAKE_LOCK required
+            //var pmanager = (PowerManager)this.GetSystemService("power");
+            //_wakeLock = pmanager.NewWakeLock(WakeLockFlags.Partial, "net.petrjanousek.OnlineTelevizor_wakelock");
+            //_wakeLock.SetReferenceCounted(false);
+            //_wakeLock.Acquire();
+            //..
+            //_wakeLock.Release();
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
@@ -114,7 +125,6 @@ namespace OnlineTelevizor.Droid
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
-
             MessagingCenter.Send(keyCode.ToString(), BaseViewModel.KeyMessage);
 
             return base.OnKeyDown(keyCode, e);

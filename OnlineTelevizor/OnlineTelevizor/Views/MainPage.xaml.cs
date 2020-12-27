@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Threading;
 using static OnlineTelevizor.ViewModels.MainPageViewModel;
+using static Android.OS.PowerManager;
 
 namespace OnlineTelevizor.Views
 {

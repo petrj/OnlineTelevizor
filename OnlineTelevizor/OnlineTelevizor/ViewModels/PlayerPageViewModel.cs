@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TVAPI;
 using Xamarin.Forms;
+using static Android.OS.PowerManager;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -26,6 +27,7 @@ namespace OnlineTelevizor.ViewModels
         private int _animePos = 0;
         private bool _animePosIncreasing = true;
         private double _EPGProgress = 0;
+        
 
         public Command RefreshCommand { get; set; }
 
@@ -241,7 +243,7 @@ namespace OnlineTelevizor.ViewModels
             _service = service;
             _loggingService = loggingService;
             _dialogService = dialogService;
-            Config = config;
+            Config = config;            
 
             RefreshCommand = new Command(async () => await Refresh());
 
