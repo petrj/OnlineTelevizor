@@ -92,10 +92,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LibVLCSharp">
-      <Version>3.4.7</Version>
+      <Version>3.4.9</Version>
     </PackageReference>
     <PackageReference Include="LibVLCSharp.Forms">
-      <Version>3.4.7</Version>
+      <Version>3.4.9</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>

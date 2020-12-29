@@ -63,17 +63,17 @@ namespace OnlineTelevizor.Views
             if (!Playing)
             {
                 return;
-            }
+            }            
 
             Device.BeginInvokeOnMainThread(() =>
             {
                 if (!videoView.MediaPlayer.IsPlaying)
                 {
-                    Start();
+                    videoView.MediaPlayer.Play(_media);
                 }
 
                 if (
-                        (_viewModel.AudioViewVisible = (_mediaPlayer.VideoTrack == -1))
+                        (_mediaPlayer.VideoTrack == -1)
                         ||
                         (!string.IsNullOrEmpty(_viewModel.MediaType) && (_viewModel.MediaType.ToLower() == "radio"))
                     )
@@ -105,9 +105,10 @@ namespace OnlineTelevizor.Views
         public bool Playing
         {
             get
-            {
-                //return videoView.MediaPlayer.IsPlaying;
+            {                
                 return _playInProgress;
+
+                //videoView.MediaPlayer.IsPlaying can be false in case of internet disconnection
             }
         }
 
@@ -143,14 +144,11 @@ namespace OnlineTelevizor.Views
             _viewModel.ChannelId = detail.ChanneldID;
             _viewModel.EPGItem = detail.CurrentEPGItem;
 
-            UpdateEPG();
-
             if (Playing)
             {
-                videoView.MediaPlayer.Stop();
-                _media = new Media(_libVLC, detail.MediaUrl, FromType.FromLocation);
+                Stop();
 
-                videoView.MediaPlayer.Play(_media);
+                Start();
             }
         }
 
@@ -158,7 +156,16 @@ namespace OnlineTelevizor.Views
         {
             base.OnAppearing();
 
-            Start();
+            Start();            
+            
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                Thread.Sleep(500);
+
+                CheckStreamCommand.Execute(null);
+            }).Start();
 
             if (!_fullscreen)
             {
@@ -183,17 +190,7 @@ namespace OnlineTelevizor.Views
             _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);            
             videoView.MediaPlayer.Play(_media);
 
-            _viewModel.AudioViewVisible = true;
             _playInProgress = true;
-
-            new Thread(() =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                Thread.Sleep(1000); // 1s
-
-                CheckStreamCommand.Execute(null);
-            }).Start();
         }
 
         public void Stop()
@@ -210,15 +207,20 @@ namespace OnlineTelevizor.Views
                 // workaround for black screen after resume (only audio is playing)
                 // TODO: resume video without reinitializing
 
-                if (_mediaPlayer.VideoTrack != -1)
+                Device.BeginInvokeOnMainThread(() =>
                 {
-                    Stop();
+                    if (_mediaPlayer.VideoTrack != -1)
+                    {
+                        var pos = videoView.MediaPlayer.Position;
+                        videoView.MediaPlayer.Stop();                                          
 
-                    VideoStackLayout.Children.Remove(videoView);
-                    VideoStackLayout.Children.Add(videoView);
-
-                    Start();
-                }
+                        VideoStackLayout.Children.Remove(videoView);
+                        VideoStackLayout.Children.Add(videoView);
+                        
+                        videoView.MediaPlayer.Play();
+                        videoView.MediaPlayer.Position = pos;
+                    }                
+                });
             }
         }
 
