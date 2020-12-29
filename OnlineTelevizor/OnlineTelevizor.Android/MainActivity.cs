@@ -79,6 +79,38 @@ namespace OnlineTelevizor.Droid
                 SetFullScreen(false);
             });
 
+            MessagingCenter.Subscribe<SettingsPage>(this, BaseViewModel.CheckBatterySettings, (sender) =>
+            {
+                try
+                {
+                    var pm = (PowerManager)Android.App.Application.Context.GetSystemService(Context.PowerService);
+                    bool ignoring = pm.IsIgnoringBatteryOptimizations("net.petrjanousek.OnlineTelevizor");
+
+                    if (!ignoring)
+                    {
+                        MessagingCenter.Send<string>(string.Empty, BaseViewModel.RequestBatterySettings);
+                    }
+                } catch (Exception ex)
+                {
+
+                }
+            });
+
+            MessagingCenter.Subscribe<SettingsPage>(this, BaseViewModel.SetBatterySettings, (sender) =>
+            {
+                try
+                {
+                    var intent = new Intent();
+                    intent.SetAction(Android.Provider.Settings.ActionIgnoreBatteryOptimizationSettings);
+                    intent.SetFlags(ActivityFlags.NewTask);
+                    Android.App.Application.Context.StartActivity(intent);
+                }
+                catch (Exception ex)
+                {
+
+                }
+            });
+
             // prevent sleep:
             Window window = (Forms.Context as Activity).Window;
             window.AddFlags(WindowManagerFlags.KeepScreenOn);

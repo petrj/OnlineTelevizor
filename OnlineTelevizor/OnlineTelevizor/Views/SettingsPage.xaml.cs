@@ -34,6 +34,9 @@ namespace OnlineTelevizor.Views
 
             BindingContext = _viewModel = new SettingsViewModel(loggingService, config, dialogService, service);
 
+            PlayOnBackgroundSwitch.Toggled += PlayOnBackgroundSwitch_Toggled;
+            UseInternalPlayerSwitch.Toggled += PlayOnBackgroundSwitch_Toggled;
+
             if (Device.RuntimePlatform == Device.UWP)
             {
                 UsernameEntry.TextColor = Color.Black;
@@ -45,6 +48,22 @@ namespace OnlineTelevizor.Views
 
                 FontSizeLabel.IsVisible = false;
                 FontSizePicker.IsVisible = false;
+            }
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.RequestBatterySettings, async (sender) =>
+            {
+                if (await _dialogService.Confirm("Při použití interního přehrávače na pozadí je nutné zajistit, aby se aplikace kvůli optimalizaci baterie neukončovala. Přejít do nastavení?"))
+                {
+                    MessagingCenter.Send<SettingsPage>(this, BaseViewModel.SetBatterySettings);
+                }
+            });
+        }
+
+        private void PlayOnBackgroundSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (_config.PlayOnBackground && _config.InternalPlayer)
+            {
+                MessagingCenter.Send<SettingsPage>(this, BaseViewModel.CheckBatterySettings);
             }
         }
 

@@ -26,6 +26,10 @@ namespace OnlineTelevizor.ViewModels
         public const string ShowDetailMessage = "ShowDetailMessage";
         public const string ToastMessage = "ShowToastMessage";
         public const string ShowConfiguration = "ShowConfiguration";
+        
+        public const string CheckBatterySettings = "CheckBatterySettings";
+        public const string RequestBatterySettings = "RequestBatterySettings";
+        public const string SetBatterySettings = "SetBatterySettings ";
 
         public IOnlineTelevizorConfiguration Config { get; set; }
 

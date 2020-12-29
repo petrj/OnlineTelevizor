@@ -5,4 +5,5 @@
 	<application android:label="OnlineTelevizor" android:icon="@drawable/Icon"></application>
 	<uses-feature android:name="android.hardware.usb.host" />
 	<uses-permission android:name="com.android.vending.BILLING" />
+	<uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 </manifest>

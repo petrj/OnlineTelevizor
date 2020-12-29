@@ -174,11 +174,11 @@
                         <Label  Grid.Row="2" Grid.Column="0" Text="Nerozdělovat obrazovku při zobrazení na šířku" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
                         <Switch Grid.Row="2" Grid.Column="1" x:Name="DoNotSplitScreenOnLandscapeSwitch" IsToggled="{Binding Config.DoNotSplitScreenOnLandscape, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
 
-                        <Label  Grid.Row="3" Grid.Column="0" Text="Použít interní přehrávač" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Switch Grid.Row="3" Grid.Column="1" x:Name="UseInternalPlayerSwitch" IsToggled="{Binding Config.InternalPlayer, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
-
-                        <Label  Grid.Row="4" Grid.Column="0" Text="Celá obrazovka" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Switch Grid.Row="4" Grid.Column="1" x:Name="FullscreenSwitch" IsToggled="{Binding IsFullScreen, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                        <Label  Grid.Row="3" Grid.Column="0" Text="Celá obrazovka" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Switch Grid.Row="3" Grid.Column="1" x:Name="FullscreenSwitch" IsToggled="{Binding IsFullScreen, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                        
+                        <Label  Grid.Row="4" Grid.Column="0" Text="Použít interní přehrávač" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Switch Grid.Row="4" Grid.Column="1" x:Name="UseInternalPlayerSwitch" IsToggled="{Binding Config.InternalPlayer, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />                        
 
                         <Label  Grid.Row="5" Grid.Column="0" Text="Přehrávat na pozadí (pro interní přehrávač)" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
                         <Switch Grid.Row="5" Grid.Column="1" x:Name="PlayOnBackgroundSwitch" IsToggled="{Binding Config.PlayOnBackground, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
