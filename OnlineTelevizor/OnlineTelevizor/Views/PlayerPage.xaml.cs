@@ -149,6 +149,11 @@ namespace OnlineTelevizor.Views
                 Stop();
 
                 Start();
+
+                Task.Run( async () => 
+                {                    
+                    await UpdateEPG(); 
+                }); 
             }
         }
 
