@@ -80,6 +80,7 @@ namespace OnlineTelevizor.ViewModels
             CheckPurchaseCommand = new Command(async () => await CheckPurchase());
 
             RefreshEPGCommand = new Command(async () => await RefreshEPG());
+
             RefreshChannelsCommand = new Command(async () => await RefreshChannels());
 
             ResetConnectionCommand = new Command(async () => await ResetConnection());
@@ -216,7 +217,7 @@ namespace OnlineTelevizor.ViewModels
         }
 
         private async Task UpdateSelectedChannelEPGDescription()
-        {
+        {            
             if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
             {
                 SelectedChannelEPGDescription = String.Empty;
@@ -252,12 +253,12 @@ namespace OnlineTelevizor.ViewModels
                 if (value != null)
                     Config.LastChannelNumber = value.ChannelNumber;
 
-                OnPropertyChanged(nameof(SelectedItem));
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
                 OnPropertyChanged(nameof(EPGProgressBackgroundColor));
+                OnPropertyChanged(nameof(SelectedItem));
 
-                Task.Run( async () => await UpdateSelectedChannelEPGDescription());
+                Task.Run(async () => await UpdateSelectedChannelEPGDescription());
             }
         }
 
@@ -606,10 +607,10 @@ namespace OnlineTelevizor.ViewModels
         {
             _loggingService.Info($"RefreshChannels");
             _notFilteredChannelsCount = 0;
+            string selectedChannelNumber = null;
 
             try
-            {
-                string selectedChannelNumber = null;
+            {               
                 if (SelectedItem == null)
                 {
                     selectedChannelNumber = Config.LastChannelNumber;
@@ -634,8 +635,6 @@ namespace OnlineTelevizor.ViewModels
                     AllNotFilteredChannels.Clear();
                     _channelById.Clear();
 
-                    var channelByNumber = new Dictionary<string, ChannelItem>();
-
                     foreach (var ch in channels)
                     {
                         AllNotFilteredChannels.Add(ch);
@@ -659,18 +658,6 @@ namespace OnlineTelevizor.ViewModels
 
                         if (!_channelById.ContainsKey(ch.Id))
                             _channelById.Add(ch.Id, ch); // for faster EPG refresh
-
-                        channelByNumber.Add(ch.ChannelNumber, ch); // for channel selecting
-                    }
-
-                    if (!String.IsNullOrEmpty(selectedChannelNumber) && channelByNumber.ContainsKey(selectedChannelNumber))
-                    {
-                        SelectedItem = channelByNumber[selectedChannelNumber];
-                    }
-                    else if (Channels.Count > 0)
-                    {
-                        // selecting first channel
-                        SelectedItem = Channels[0];
                     }
                 }
 
@@ -681,13 +668,19 @@ namespace OnlineTelevizor.ViewModels
 
                 _semaphoreSlim.Release();
 
+                OnPropertyChanged(nameof(SelectedItem));
                 OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
                 OnPropertyChanged(nameof(EPGProgressBackgroundColor));
 
-                await UpdateSelectedChannelEPGDescription();
+                if (selectedChannelNumber != null)
+                {
+                    await SelectChannelByNumber(selectedChannelNumber);
+                }
+
+                await UpdateSelectedChannelEPGDescription();        
             }
         }
 
