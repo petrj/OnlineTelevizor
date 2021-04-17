@@ -678,9 +678,7 @@ namespace OnlineTelevizor.ViewModels
                 if (selectedChannelNumber != null)
                 {
                     await SelectChannelByNumber(selectedChannelNumber);
-                }
-
-                await UpdateSelectedChannelEPGDescription();        
+                }  
             }
         }
 
