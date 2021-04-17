@@ -82,6 +82,19 @@ namespace DVBStreamerAPI
             }
         }
 
+        public async Task<Dictionary<string, List<EPGItem>>> GetChannelsEPG()
+        {
+            var epg = await GetEPG();
+
+            var res = new Dictionary<string, List<EPGItem>>();
+            foreach (var epgItem in epg)
+            {
+                res.Add(epgItem.ChannelId, new List<EPGItem>());
+            }
+
+            return res;
+        }
+
         public async Task<List<Channel>> GetChanels()
         {
             var res = new List<Channel>();

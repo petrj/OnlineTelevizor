@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using System.Globalization;
 using TVAPI;
 using System.Web;
+using System.Linq;
 
 namespace SledovaniTVAPI
 {
@@ -331,6 +332,32 @@ namespace SledovaniTVAPI
         public async Task<string> GetEPGItemDescription(EPGItem epgItem)
         {
             return epgItem.Description;
+        }
+
+        public async Task<Dictionary<string, List<EPGItem>>> GetChannelsEPG()
+        {
+            var epg = await GetEPG();
+
+            var resNotSorted = new Dictionary<string, List<EPGItem>>();
+            var res = new Dictionary<string, List<EPGItem>>();
+
+            foreach (var epgItem in epg)
+            {
+                if (!resNotSorted.ContainsKey(epgItem.ChannelId))
+                {
+                    resNotSorted.Add(epgItem.ChannelId, new List<EPGItem>());
+                }
+
+                resNotSorted[epgItem.ChannelId].Add(epgItem);
+            }
+
+            // sorting each channel
+            foreach (var chId in resNotSorted.Keys)
+            {
+                res.Add(chId, resNotSorted[chId].OrderBy(e => e.Start).ToList());
+            }
+
+            return res;
         }
 
         /// <summary>

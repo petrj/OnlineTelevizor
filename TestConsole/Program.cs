@@ -24,7 +24,7 @@ namespace TestConsole
 
             Console.WriteLine("...");
 
-            /*
+
             var tvService = new KUKITV(loggingService);
 
             if (JSONObject.FileExists("kuki.json"))
@@ -32,8 +32,9 @@ namespace TestConsole
                 var conn = JSONObject.LoadFromFile<DeviceConnection>("kuki.json");
                 tvService.SetConnection(conn.deviceId, null);
             }
-            */
 
+
+            /*
 
             
             var tvService = new SledovaniTV(loggingService);
@@ -50,7 +51,7 @@ namespace TestConsole
                 var conn = JSONObject.LoadFromFile<DeviceConnection>("connection.json");
                 tvService.SetConnection(conn.deviceId, conn.password);
             }
-            
+            */
 
 
             /*
@@ -82,7 +83,7 @@ namespace TestConsole
                     //await tvService.Unlock();
                     //await sledovaniTV.Lock();
 
-
+                    /*
                     var channels = await tvService.GetChanels();
 
                     //Thread.Sleep(2000);
@@ -90,7 +91,7 @@ namespace TestConsole
 
                     foreach (var ch in channels)
                     {
-                        Console.WriteLine(ch.Name);
+                        Console.WriteLine(ch.Name);                    
                         Console.WriteLine("  ID     :" + ch.Id);
                         Console.WriteLine("  EPGID     :" + ch.EPGId);
                         Console.WriteLine("  Number :" + ch.ChannelNumber);
@@ -101,7 +102,9 @@ namespace TestConsole
                         Console.WriteLine("  LogoUrl:" + ch.LogoUrl);
                         Console.WriteLine("-----------------------");
                     }
+                    */
 
+                    /*
                     var epg = await tvService.GetEPG();
 
                     Thread.Sleep(2000);
@@ -113,7 +116,7 @@ namespace TestConsole
                         Console.WriteLine($"EPG         : {epgItem.Title}");
                         Console.WriteLine($"  CH ID     : {epgItem.ChannelId}");
                         Console.WriteLine($"  Time      : {epgItem.Start.ToString("HH.mm")} - {epgItem.Finish.ToString("HH.mm")}");
-                        Console.WriteLine($"  url     : {tvService.GetEPGEventUrl(epgItem)}");
+                        //Console.WriteLine($"  url     : {tvService.GetEPGEventUrl(epgItem)}");
                         
                         //Console.WriteLine($"  Progress  : {epgItem.Progress.ToString("#0.00")}");
                         Console.WriteLine("-----------------------");
@@ -125,6 +128,18 @@ namespace TestConsole
 
                     Console.WriteLine();
                     Console.WriteLine("Press any key");
+                    */
+
+                    var channelsEPG = await tvService.GetChannelsEPG();
+                    foreach (var epg in channelsEPG)
+                    {
+                        Console.WriteLine($"  {epg.Key}");
+                        foreach (var epgItem in epg.Value)
+                        {
+                            var time = epgItem.Start.ToString("hh:mm") + "-" + epgItem.Finish.ToString("hh:mm");
+                            Console.WriteLine($"   {time}  : {epgItem.Title}");
+                        }
+                    }
                 });
 
 

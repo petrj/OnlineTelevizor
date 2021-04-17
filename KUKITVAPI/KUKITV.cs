@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -110,6 +111,32 @@ namespace KUKITVAPI
                 _log.Error(ex, "Login failed");
                 _status = StatusEnum.ConnectionNotAvailable;
             }
+        }
+
+        public async Task<Dictionary<string, List<EPGItem>>> GetChannelsEPG()
+        {
+            var epg = await GetEPG();
+
+            var resNotSorted = new Dictionary<string, List<EPGItem>>();
+            var res = new Dictionary<string, List<EPGItem>>();
+
+            foreach (var epgItem in epg)
+            {
+                if (!resNotSorted.ContainsKey(epgItem.ChannelId))
+                {
+                    resNotSorted.Add(epgItem.ChannelId, new List<EPGItem>());
+                }
+
+                resNotSorted[epgItem.ChannelId].Add(epgItem);
+            }
+
+            // sorting each channel
+            foreach (var chId in resNotSorted.Keys)
+            {
+                res.Add(chId, resNotSorted[chId].OrderBy(e => e.Start).ToList());
+            }
+
+            return res;
         }
 
         public async Task<List<Channel>> GetChanels()

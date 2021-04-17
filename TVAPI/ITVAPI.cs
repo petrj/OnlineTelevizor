@@ -13,11 +13,12 @@ namespace TVAPI
         bool EPGEnabled { get; }
         StatusEnum Status { get; }
         Task Login(bool force = false);
+        Task<List<Channel>> GetChanels();
         Task<List<EPGItem>> GetEPG();
+        Task<Dictionary<string, List<EPGItem>>> GetChannelsEPG();
         Task<string> GetEPGItemDescription(EPGItem epgItem);
         Task<List<Quality>> GetStreamQualities();
         void ResetConnection();
-        Task<List<Channel>> GetChanels();
         Task Unlock();
         Task Lock();
         Task Stop();
