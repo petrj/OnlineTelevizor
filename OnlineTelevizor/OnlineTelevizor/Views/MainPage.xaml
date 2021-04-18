@@ -133,7 +133,9 @@
                                 <Label Grid.Row="2" Grid.Column="1" Text="{Binding EPGTime}" Style="{DynamicResource TimeTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForTime}"/>
                                 <Label Grid.Row="3" Grid.Column="1" MaxLines="1" Grid.ColumnSpan="2" Text="{Binding NextTitle}" Style="{DynamicResource NextTitleTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForNextTitle}"/>
 
-                                <BoxView Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" BackgroundColor="White"/>
+                                <!--BoxView Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" BackgroundColor="White"/-->
+                                <ProgressBar Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Progress="{Binding EPGProgress}" BackgroundColor="White"/>
+
                             </Grid>
 
                         </ViewCell.View>

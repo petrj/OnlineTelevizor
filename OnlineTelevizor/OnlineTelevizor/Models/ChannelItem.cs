@@ -34,24 +34,28 @@ namespace OnlineTelevizor.Models
         public string Type { get; set; }
         public string Group { get; set; }
 
-        public void AddEPGItem(EPGItem epgItem)
+        private void NotifyEPGChange()
         {
-            _EPGItems.Add(epgItem);
             OnPropertyChanged(nameof(CurrentEPGTitle));
             OnPropertyChanged(nameof(EPGTime));
+            OnPropertyChanged(nameof(EPGProgress));
             OnPropertyChanged(nameof(NextTitle));
             OnPropertyChanged(nameof(EPGTimeStart));
             OnPropertyChanged(nameof(EPGTimeFinish));
         }
 
+        public void AddEPGItem(EPGItem epgItem)
+        {
+            _EPGItems.Add(epgItem);
+
+            NotifyEPGChange();
+        }
+
         public void ClearEPG()
         {
             _EPGItems.Clear();
-            OnPropertyChanged(nameof(CurrentEPGTitle));
-            OnPropertyChanged(nameof(EPGTime));
-            OnPropertyChanged(nameof(NextTitle));
-            OnPropertyChanged(nameof(EPGTimeStart));
-            OnPropertyChanged(nameof(EPGTimeFinish));
+
+            NotifyEPGChange();
         }
 
         public string EPGTime
@@ -65,6 +69,18 @@ namespace OnlineTelevizor.Models
                     : epg.Start.ToString("HH:mm")
                         + " - " +
                       epg.Finish.ToString("HH:mm");
+            }
+        }
+
+        public double EPGProgress
+        {
+            get
+            {
+                var epg = CurrentEPGItem;
+
+                return (epg == null)
+                    ? 0
+                    : epg.Progress;
             }
         }
 

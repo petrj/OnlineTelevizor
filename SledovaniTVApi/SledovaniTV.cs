@@ -377,7 +377,7 @@ namespace SledovaniTVAPI
                 {
                     { "PHPSESSID", _session.PHPSESSID },
                     { "detail", "1" },
-                    { "duration", "60" }
+                    { "duration", "180" }
                 };
 
                 var epgString = await SendRequest("epg", ps);

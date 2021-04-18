@@ -730,6 +730,9 @@ namespace OnlineTelevizor.ViewModels
                         {
                             foreach (var epgItem in epg[channelId])
                             {
+                                if (epgItem.Finish < DateTime.Now)
+                                    continue;
+
                                 _channelById[channelId].AddEPGItem(epgItem);
                                 epgItemsCountRead++;
                             }
