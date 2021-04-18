@@ -77,11 +77,10 @@
                         <ColumnDefinition Width="50*" />
                     </Grid.ColumnDefinitions>
 
-                    <!--Label Grid.Row="0" Grid.Column="1" Text="{Binding EPGDate}" Margin="0,0,10,0" HorizontalTextAlignment="End" Style="{DynamicResource DateTimeTextStyle}" FontSize="{Binding FontSizeForDatetime}"/-->
                     <Label Grid.Row="0" Grid.Column="0" Text="{Binding EPGTimeStart}" HorizontalTextAlignment="Start" Style="{DynamicResource DateTimeTextStyle}"  FontSize="{Binding FontSizeForDatetime}"/>
                     <Label Grid.Row="0" Grid.Column="1" Text="{Binding EPGTimeFinish}" Margin="0,0,10,0" HorizontalTextAlignment="End" Style="{DynamicResource DateTimeTextStyle}" FontSize="{Binding FontSizeForDatetime}"/>
 
-                    <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Progress="{Binding EPGProgress}" BackgroundColor="White"/>
+                    <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Progress="{Binding EPGProgress}" ProgressColor="#41b3ff" BackgroundColor="White"/>
 
                 </Grid>
 

@@ -44,7 +44,7 @@
                 <Setter Property="HorizontalOptions" Value="EndAndExpand"/>
                 <Setter Property="FontAttributes" Value="Italic"/>
                 <Setter Property="LineBreakMode" Value="WordWrap"/>
-                <Setter Property="Margin" Value="0,0,0,0"/>
+                <Setter Property="Margin" Value="0,0,5,0"/>
             </Style>
 
             <Style x:Key="InfoLabelStyle" TargetType="Label">
@@ -133,8 +133,7 @@
                                 <Label Grid.Row="2" Grid.Column="1" Text="{Binding EPGTime}" Style="{DynamicResource TimeTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForTime}"/>
                                 <Label Grid.Row="3" Grid.Column="1" MaxLines="1" Grid.ColumnSpan="2" Text="{Binding NextTitle}" Style="{DynamicResource NextTitleTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForNextTitle}"/>
 
-                                <!--BoxView Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" BackgroundColor="White"/-->
-                                <ProgressBar Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Progress="{Binding EPGProgress}" BackgroundColor="White"/>
+                                <ProgressBar Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Progress="{Binding EPGProgress}" ProgressColor="#41b3ff" BackgroundColor="White"/>
 
                             </Grid>
 
