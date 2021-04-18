@@ -51,35 +51,29 @@ namespace OnlineTelevizor.Services
             }
         }
 
-        public async Task<ObservableCollection<EPGItem>> GetEPG()
+
+        public async Task<Dictionary<string, List<EPGItem>>>  GetEPG()
         {
-            var result = new ObservableCollection<EPGItem>();
+            var epg = new Dictionary<string, List<EPGItem>>();
 
             try
             {
-                var epg = await _service.GetEPG();
+                epg = await _service.GetChannelsEPG();
 
                 if (_service.Status == StatusEnum.ConnectionNotAvailable)
                 {
                     // repeat again after 1500 ms
                     await Task.Delay(1500);
-                    epg = await _service.GetEPG();
-                }
-
-                if (_service.Status == StatusEnum.Logged)
-                {
-                    foreach (var ei in epg)
-                    {
-                        result.Add(ei);
-                    }
-                }
+                    epg = await _service.GetChannelsEPG();
+                }                
             }
             catch (Exception ex)
             {
+                epg = new Dictionary<string, List<EPGItem>>();
                 _log.Error(ex, "Error getting EPG");
             }
 
-            return result;
+            return epg;
         }
 
         public async Task<List<QualityItem>> GetStreamQualities()

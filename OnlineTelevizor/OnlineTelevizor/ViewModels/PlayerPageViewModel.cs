@@ -263,18 +263,16 @@ namespace OnlineTelevizor.ViewModels
 
                 if (epg != null)
                 {
-                    foreach (var ei in epg)
+                    if (epg.ContainsKey(_channelId) && epg[_channelId] != null)
                     {
-                        if (ei.ChannelId != _channelId)
-                            continue;
-
-                            // updating channel EPG
-
-                            if (ei.Finish < DateTime.Now || ei.Start > DateTime.Now)
+                        foreach (var epgItem in epg[_channelId])
+                        {
+                            if (epgItem.Finish < DateTime.Now || epgItem.Start > DateTime.Now)
                                 continue; // only current programs
 
-                        EPGItem = ei;
-                        break;
+                            EPGItem = epgItem;
+                            break;
+                        }
                     }
                 }
             }

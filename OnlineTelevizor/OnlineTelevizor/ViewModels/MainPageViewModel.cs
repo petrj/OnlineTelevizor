@@ -410,11 +410,19 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public string FontSizeForNextTitle
+        {
+            get
+            {
+                return GetScaledSize(10).ToString();
+            }
+        }
+
         public string FontSizeForChannelEPG
         {
             get
             {
-                return GetScaledSize(12).ToString();
+                return GetScaledSize(14).ToString();
             }
         }
 
@@ -446,7 +454,15 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                return GetScaledSize(14);
+                return GetScaledSize(15);
+            }
+        }
+
+        public int HeightForNextTitleRow
+        {
+            get
+            {
+                return GetScaledSize(20);
             }
         }
 
@@ -708,20 +724,16 @@ namespace OnlineTelevizor.ViewModels
 
                 if (epg != null)
                 {
-                    foreach (var ei in epg)
+                    foreach (var channelId in epg.Keys)
                     {
-                        epgItemsCountRead++;
-
-                        if (ChannelById.ContainsKey(ei.ChannelId))
+                        if (_channelById.ContainsKey(channelId))
                         {
-                            // updating channel EPG
-
-                            if (ei.Finish < DateTime.Now || ei.Start> DateTime.Now)
-                                continue; // only current programs
-
-                            var ch = ChannelById[ei.ChannelId];
-                            ch.AddEPGItem(ei);
-                        }
+                            foreach (var epgItem in epg[channelId])
+                            {
+                                _channelById[channelId].AddEPGItem(epgItem);
+                                epgItemsCountRead++;
+                            }
+                        }                        
                     }
                 }
             }
@@ -805,12 +817,14 @@ namespace OnlineTelevizor.ViewModels
             OnPropertyChanged(nameof(FontSizeForChannel));
             OnPropertyChanged(nameof(FontSizeForChannelNumber));
             OnPropertyChanged(nameof(FontSizeForTime));
+            OnPropertyChanged(nameof(FontSizeForNextTitle));
             OnPropertyChanged(nameof(FontSizeForTitle));
             OnPropertyChanged(nameof(FontSizeForDescription));
             OnPropertyChanged(nameof(FontSizeForChannelEPG));
             OnPropertyChanged(nameof(HeightForChannelNameRow));
             OnPropertyChanged(nameof(HeightForChannelEPGRow));
             OnPropertyChanged(nameof(HeightForTimeRow));
+            OnPropertyChanged(nameof(HeightForNextTitleRow));
             OnPropertyChanged(nameof(FontSizeForInfoLabel));
             OnPropertyChanged(nameof(WidthForIcon));
         }

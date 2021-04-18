@@ -39,6 +39,7 @@ namespace OnlineTelevizor.Models
             _EPGItems.Add(epgItem);
             OnPropertyChanged(nameof(CurrentEPGTitle));
             OnPropertyChanged(nameof(EPGTime));
+            OnPropertyChanged(nameof(NextTitle));
             OnPropertyChanged(nameof(EPGTimeStart));
             OnPropertyChanged(nameof(EPGTimeFinish));
         }
@@ -48,6 +49,7 @@ namespace OnlineTelevizor.Models
             _EPGItems.Clear();
             OnPropertyChanged(nameof(CurrentEPGTitle));
             OnPropertyChanged(nameof(EPGTime));
+            OnPropertyChanged(nameof(NextTitle));
             OnPropertyChanged(nameof(EPGTimeStart));
             OnPropertyChanged(nameof(EPGTimeFinish));
         }
@@ -63,6 +65,24 @@ namespace OnlineTelevizor.Models
                     : epg.Start.ToString("HH:mm")
                         + " - " +
                       epg.Finish.ToString("HH:mm");
+            }
+        }
+
+        public string NextTitle
+        {
+            get
+            {
+                if (_EPGItems.Count <= 1)
+                    return null;
+
+                var title = _EPGItems[1].Title;
+                if (title != null)
+                {
+                    title = title.Trim();
+                    return $"-> {title}";
+                }
+
+                return null;
             }
         }
 
@@ -100,5 +120,6 @@ namespace OnlineTelevizor.Models
         {
             get { return _EPGItems.Count == 0 ? null : _EPGItems[0]; }
         }
+     
     }
 }
