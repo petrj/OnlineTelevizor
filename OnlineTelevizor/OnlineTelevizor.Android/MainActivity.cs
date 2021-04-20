@@ -17,6 +17,9 @@ using Android.Graphics;
 using AndroidX.Core.Graphics;
 using Android.Hardware.Input;
 using static Android.OS.PowerManager;
+using Plugin.CurrentActivity;
+using Android.Support.Design.Widget;
+using LoggerService;
 
 namespace OnlineTelevizor.Droid
 {
@@ -25,12 +28,10 @@ namespace OnlineTelevizor.Droid
     {
         private App _app;
         private AndroidOnlineTelevizorConfiguration _cfg;
-        private Toast _toastInstance = null;
 
         private int _defaultUiOptions;
         private int _fullscreenUiOptions;
-
-        //private WakeLock _wakeLock;
+        protected ILoggingService _loggingService;        
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -54,11 +55,20 @@ namespace OnlineTelevizor.Droid
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
-            _app = new App(_cfg);
+            if (_cfg.EnableLogging)
+            {
+                _loggingService = new BasicLoggingService(_cfg.LoggingLevel);
+            }
+            else
+            {
+                _loggingService = new DummyLoggingService();
+            }
+
+            _app = new App(_cfg, _loggingService);
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
             {
-                ShowToastMessage(message, "#FFFFFF", "#3F51B5");
+                ShowToastMessage(message);
             });
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.UriMessage, (url) =>
@@ -92,7 +102,7 @@ namespace OnlineTelevizor.Droid
                     }
                 } catch (Exception ex)
                 {
-
+                    _loggingService.Error(ex);
                 }
             });
 
@@ -107,7 +117,7 @@ namespace OnlineTelevizor.Droid
                 }
                 catch (Exception ex)
                 {
-
+                    _loggingService.Error(ex);
                 }
             });
 
@@ -134,13 +144,21 @@ namespace OnlineTelevizor.Droid
 
         private void SetFullScreen(bool on)
         {
-            if (on)
+            try
             {
-                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)_fullscreenUiOptions;
-            } else
+                if (on)
+                {
+                    Window.DecorView.SystemUiVisibility = (StatusBarVisibility)_fullscreenUiOptions;
+                }
+                else
+                {
+                    Window.DecorView.SystemUiVisibility = (StatusBarVisibility)_defaultUiOptions;
+                };
+            }
+            catch (Exception ex)
             {
-                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)_defaultUiOptions;
-            };
+                _loggingService.Error(ex);
+            }
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
@@ -162,25 +180,20 @@ namespace OnlineTelevizor.Droid
             return base.OnKeyDown(keyCode, e);
         }
 
-        private void ShowToastMessage(string message, string foregroundColor = "#FFFFFF", string backgroundColor = "#3F51B5")
+        private void ShowToastMessage(string message)
         {
-            var length = Android.Widget.ToastLength.Short;
+            try
+            {
+                Activity activity = CrossCurrentActivity.Current.Activity;
+                var view = activity.FindViewById(Android.Resource.Id.Content);
 
-            // To dismiss existing toast, otherwise, the screen will be populated with it if the user do so
-            _toastInstance?.Cancel();
-
-            _toastInstance = Toast.MakeText(Android.App.Application.Context, message, length);
-
-            var view = _toastInstance.View;
-            view.Background.SetColorFilter(BlendModeColorFilterCompat.CreateBlendModeColorFilterCompat(Android.Graphics.Color.ParseColor(backgroundColor), BlendModeCompat.SrcIn));
-
-            var textView = (TextView)view.FindViewById(Android.Resource.Id.Message);
-            textView.SetTextColor(Android.Graphics.Color.ParseColor(foregroundColor));
-            textView.TextSize = BaseViewModel.GetScaledSize(_cfg, 25);
-
-            _toastInstance.SetGravity(GravityFlags.Center, 0, 0);
-
-            _toastInstance.Show();
+                var snack = Snackbar.Make(view, message, Snackbar.LengthLong);
+                snack.Show();
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
         }
 
         public void OnInputDeviceAdded(int deviceId)

@@ -63,20 +63,27 @@ namespace OnlineTelevizor.Views
             });
 
             MessagingCenter.Subscribe<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternal, (sender, mediaDetail) =>
-            {
+            {                
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    if (_playerPage == null)
-                        _playerPage = new PlayerPage(_loggingService, _config, _dialogService, _viewModel.TVService);
-
-                    var playing = _playerPage.Playing;
-
-                    _playerPage.SetMediaUrl(mediaDetail);
-
-                    if (!playing)
+                    try
                     {
-                         Navigation.PushModalAsync(_playerPage);
+                        if (_playerPage == null)
+                            _playerPage = new PlayerPage(_loggingService, _config, _dialogService, _viewModel.TVService);
+
+                        var playing = _playerPage.Playing;
+
+                        _playerPage.SetMediaUrl(mediaDetail);
+
+                        if (!playing)
+                        {
+                            Navigation.PushModalAsync(_playerPage);
+                        }
                     }
+                    catch (Exception ex)
+                    {
+                        _loggingService.Error(ex);
+                    }                    
                 });
             });
 
@@ -177,6 +184,7 @@ namespace OnlineTelevizor.Views
         public void OnKeyDown(string key)
         {
             _loggingService.Debug($"OnKeyDown {key}");
+            var lowKey = key.ToLower();
 
             // key events can be consumed only on this MainPage
 
@@ -184,21 +192,45 @@ namespace OnlineTelevizor.Views
             if  (stack[stack.Count - 1].GetType() != typeof(MainPage))
             {
                 // different page on navigation top
+
+                if (stack[stack.Count - 1].GetType() == typeof(ChannelDetailPage))
+                {
+                    if (lowKey == "escape" || 
+                        lowKey == "back" ||
+                        lowKey == "numpadsubtract" ||
+                        lowKey == "f4" ||
+                        lowKey == "mediaplaystop" ||
+                        lowKey == "dpadleft"  ||
+                        lowKey == "pageup" ||
+                        lowKey == "left" ||
+                        lowKey == "a" ||
+                        lowKey == "b" ||
+                        lowKey == "mediaplayprevious" ||
+                        lowKey == "numpad4")
+                    {
+                        // closing detail page
+
+                        Navigation.PopAsync();
+                    }
+                }
+
                 return;
             }
 
-            switch (key.ToLower())
+            switch (lowKey)
             {
                 case "dpaddown":
                 case "buttonr1":
                 case "down":
                 case "s":
+                case "numpad2":
                     Task.Run(async () => await OnKeyDown());
                     break;
                 case "dpadup":
                 case "buttonl1":
                 case "up":
                 case "w":
+                case "numpad8":
                     Task.Run(async () => await OnKeyUp());
                     break;
                 case "dpadleft":
@@ -207,6 +239,7 @@ namespace OnlineTelevizor.Views
                 case "a":
                 case "b":
                 case "mediaplayprevious":
+                case "numpad4":
                     Task.Run(async () => await OnKeyLeft());
                     break;
                 case "pagedown":
@@ -215,6 +248,7 @@ namespace OnlineTelevizor.Views
                 case "d":
                 case "f":
                 case "mediaplaynext":
+                case "numpad6":
                     Task.Run(async () => await OnKeyRight());
                     break;
                 case "dpadcenter":
@@ -222,12 +256,14 @@ namespace OnlineTelevizor.Views
                 case "buttonr2":
                 case "mediaplaypause":
                 case "enter":
-                        Task.Run(async () => await OnKeyPlay());
+                case "numpad5":
+                    Task.Run(async () => await OnKeyPlay());
                     break;
                 //case "back":
                 case "f4":
                 case "escape":
                 case "mediaplaystop":
+                case "numpadsubtract":
                     StopPlayback();
                     break;
                 case "num0":
@@ -272,6 +308,7 @@ namespace OnlineTelevizor.Views
                     break;
                 case "f5":
                 case "del":
+                case "numpad0":
                     Reset();
                     Refresh();
                     break;
@@ -280,6 +317,7 @@ namespace OnlineTelevizor.Views
                 case "guide":
                 case "i":
                 case "g":
+                case "numpadadd":
                     Detail_Clicked(this, null);
                     break;
                 default:

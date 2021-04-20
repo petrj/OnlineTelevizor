@@ -18,20 +18,12 @@ namespace OnlineTelevizor.Views
         protected ILoggingService _loggingService;
         private IOnlineTelevizorConfiguration _config;
 
-        public App(IOnlineTelevizorConfiguration config)
+        public App(IOnlineTelevizorConfiguration config, ILoggingService loggingService)
         {
             InitializeComponent();
 
             _config = config;
-
-            if (_config.EnableLogging)
-            {
-                _loggingService = new BasicLoggingService(_config.LoggingLevel);
-            }
-            else
-            {
-                _loggingService = new DummyLoggingService();
-            }
+            _loggingService = loggingService;
 
             _mainPage = new MainPage(_loggingService, _config);
 

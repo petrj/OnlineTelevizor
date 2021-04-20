@@ -146,11 +146,14 @@ namespace OnlineTelevizor.Views
             _viewModel.ChannelId = detail.ChanneldID;
             _viewModel.EPGItem = detail.CurrentEPGItem;
 
+            var desc = detail.CurrentEPGItem == null ? "" : detail.CurrentEPGItem.Title;
+            MessagingCenter.Send($"\u25B6  {detail.Title} - {desc}", BaseViewModel.ToastMessage);
+
             if (Playing)
             {
                 Stop();
 
-                Start();
+                Start();                
 
                 Task.Run( async () =>
                 {
