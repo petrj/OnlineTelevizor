@@ -200,12 +200,15 @@ namespace OnlineTelevizor.Views
                         lowKey == "numpadsubtract" ||
                         lowKey == "f4" ||
                         lowKey == "mediaplaystop" ||
+                        lowKey == "mediastop" ||                        
                         lowKey == "dpadleft"  ||
                         lowKey == "pageup" ||
                         lowKey == "left" ||
                         lowKey == "a" ||
                         lowKey == "b" ||
                         lowKey == "mediaplayprevious" ||
+                        lowKey == "mediaprevious" ||
+                        lowKey == "del" ||
                         lowKey == "numpad4")
                     {
                         // closing detail page
@@ -239,6 +242,7 @@ namespace OnlineTelevizor.Views
                 case "a":
                 case "b":
                 case "mediaplayprevious":
+                case "mediaprevious":
                 case "numpad4":
                     Task.Run(async () => await OnKeyLeft());
                     break;
@@ -248,6 +252,7 @@ namespace OnlineTelevizor.Views
                 case "d":
                 case "f":
                 case "mediaplaynext":
+                case "medianext":
                 case "numpad6":
                     Task.Run(async () => await OnKeyRight());
                     break;
@@ -263,7 +268,9 @@ namespace OnlineTelevizor.Views
                 case "f4":
                 case "escape":
                 case "mediaplaystop":
+                case "mediastop":
                 case "numpadsubtract":
+                case "del":
                     StopPlayback();
                     break;
                 case "num0":
@@ -306,9 +313,9 @@ namespace OnlineTelevizor.Views
                 case "number9":
                     HandleNumKey(9);
                     break;
-                case "f5":
-                case "del":
+                case "f5":                
                 case "numpad0":
+                case "ctrlleft":
                     Reset();
                     Refresh();
                     break;

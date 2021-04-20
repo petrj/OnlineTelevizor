@@ -184,11 +184,14 @@ namespace OnlineTelevizor.Droid
         {
             try
             {
-                Activity activity = CrossCurrentActivity.Current.Activity;
-                var view = activity.FindViewById(Android.Resource.Id.Content);
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    Activity activity = CrossCurrentActivity.Current.Activity;
+                    var view = activity.FindViewById(Android.Resource.Id.Content);
 
-                var snack = Snackbar.Make(view, message, Snackbar.LengthLong);
-                snack.Show();
+                    var snack = Snackbar.Make(view, message, Snackbar.LengthLong);
+                    snack.Show();
+                });
             }
             catch (Exception ex)
             {

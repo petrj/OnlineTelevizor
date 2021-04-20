@@ -199,7 +199,7 @@ namespace OnlineTelevizor.Views
         {
             _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);
             videoView.MediaPlayer.Play(_media);
-
+        
             _playInProgress = true;
         }
 
