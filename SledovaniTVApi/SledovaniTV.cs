@@ -56,6 +56,13 @@ namespace SledovaniTVAPI
             }
         }
 
+        public bool QualityFilterEnabled
+        {
+            get
+            {
+                return true;
+            }
+        }
         public DeviceConnection Connection
         {
             get
@@ -76,7 +83,7 @@ namespace SledovaniTVAPI
                 return _session.PHPSESSID;
             }
         }
-        
+
         public StatusEnum Status
         {
             get

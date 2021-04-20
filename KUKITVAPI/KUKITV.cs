@@ -55,6 +55,14 @@ namespace KUKITVAPI
             }
         }
 
+        public bool QualityFilterEnabled
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public async Task Login(bool force = false)
         {
             _log.Debug($"Logging to KUKI");

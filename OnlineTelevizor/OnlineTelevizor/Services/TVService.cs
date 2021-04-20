@@ -65,7 +65,7 @@ namespace OnlineTelevizor.Services
                     // repeat again after 1500 ms
                     await Task.Delay(1500);
                     epg = await _service.GetChannelsEPG();
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -226,6 +226,9 @@ namespace OnlineTelevizor.Services
         {
             get
             {
+                if (_service == null)
+                    return StatusEnum.NotInitialized;
+
                 return _service.Status;
             }
         }
@@ -234,7 +237,21 @@ namespace OnlineTelevizor.Services
         {
             get
             {
+                if (_service == null)
+                    return false;
+
                 return _service.EPGEnabled;
+            }
+        }
+
+        public bool QualityFilterEnabled
+        {
+            get
+            {
+                if (_service == null)
+                    return false;
+
+                return _service.QualityFilterEnabled;
             }
         }
     }

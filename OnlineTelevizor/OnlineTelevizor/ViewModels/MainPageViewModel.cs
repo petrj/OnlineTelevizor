@@ -240,6 +240,13 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public bool QualityFilterEnabled
+        {
+            get
+            {
+                return _service.QualityFilterEnabled;
+            }
+        }
 
         public ChannelItem SelectedItem
         {

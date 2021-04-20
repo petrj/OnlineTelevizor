@@ -92,6 +92,25 @@ namespace OnlineTelevizor.Views
             }
 
             ScrollViewChannelEPGDescription.Scrolled += ScrollViewChannelEPGDescription_Scrolled;
+            Appearing += MainPage_Appearing;
+        }
+
+        private void MainPage_Appearing(object sender, EventArgs e)
+        {
+            if (!_viewModel.QualityFilterEnabled)
+            {
+                if (ToolbarItems.Contains(ToolbarItemQuality))
+                {
+                    ToolbarItems.Remove(ToolbarItemQuality);
+                }
+            }
+            else
+            {
+                if (!ToolbarItems.Contains(ToolbarItemQuality))
+                {
+                    ToolbarItems.Insert(3, ToolbarItemQuality);
+                }
+            }
         }
 
         private void ScrollViewChannelEPGDescription_Scrolled(object sender, ScrolledEventArgs e)
