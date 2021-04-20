@@ -27,6 +27,7 @@ namespace OnlineTelevizor.Views
         private PlayerPage _playerPage;
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
+        private bool _firstSelectionAfterStartup = false;
         private string _numberPressed = String.Empty;
 
         public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
@@ -48,6 +49,7 @@ namespace OnlineTelevizor.Views
             });
 
             ChannelsListView.ItemSelected += ChannelsListView_ItemSelected;
+            ChannelsListView.Scrolled += ChannelsListView_Scrolled;
 
             _filterPage = new FilterPage(_loggingService, _config, _viewModel.TVService);
             _filterPage.Disappearing += delegate
@@ -58,7 +60,7 @@ namespace OnlineTelevizor.Views
             MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage, (sender) =>
             {
                 Detail_Clicked(this, null);
-            });            
+            });
 
             MessagingCenter.Subscribe<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternal, (sender, mediaDetail) =>
             {
@@ -129,11 +131,25 @@ namespace OnlineTelevizor.Views
             Task.Run(async () => await _viewModel.Play());
         }
 
+        private void ChannelsListView_Scrolled(object sender, ScrolledEventArgs e)
+        {
+            // workaround for de-highlighting selected item after scroll on startup
+            if (_firstSelectionAfterStartup)
+            {
+                _viewModel.DoNotScrollToChannel = true;
+                var item = _viewModel.SelectedItem;
+                _viewModel.SelectedItem = null;
+                _viewModel.SelectedItem = item;
+                _firstSelectionAfterStartup = false;
+            }
+        }
+
         private void ChannelsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             if (!_viewModel.DoNotScrollToChannel)
             {
-                ChannelsListView.ScrollTo(_viewModel.SelectedItem, ScrollToPosition.MakeVisible, _config.AnimatedScrolling);
+                ChannelsListView.ScrollTo(_viewModel.SelectedItem, ScrollToPosition.MakeVisible, false);
+                _firstSelectionAfterStartup = true;
             }
 
             _viewModel.DoNotScrollToChannel = false;
@@ -300,7 +316,7 @@ namespace OnlineTelevizor.Views
                                 Type = _viewModel.SelectedItem.Type,
                                 CurrentEPGItem = _viewModel.SelectedItem.CurrentEPGItem,
                                 ChanneldID = _viewModel.SelectedItem.Id
-                            }); 
+                            });
                         }
                     });
                 }

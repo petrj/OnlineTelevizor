@@ -171,18 +171,6 @@ namespace OnlineTelevizor.UWP
             }
         }
 
-        public bool AnimatedScrolling
-        {
-            get
-            {
-                return GetSettingValue<bool>("AnimatedScrolling");
-            }
-            set
-            {
-                SaveSettingValue< bool>("AnimatedScrolling", value);
-            }
-        }
-
         public bool DoNotSplitScreenOnLandscape
         {
             get

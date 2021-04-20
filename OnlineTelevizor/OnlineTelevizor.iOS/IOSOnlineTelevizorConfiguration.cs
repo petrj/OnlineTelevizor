@@ -211,18 +211,6 @@ namespace OnlineTelevizor.iOS
             }
         }
 
-        public bool AnimatedScrolling
-        {
-            get
-            {
-                return GetPersistingSettingValue<bool>("AnimatedScrolling");
-            }
-            set
-            {
-                SavePersistingSettingValue<bool>("AnimatedScrolling", value);
-            }
-        }
-
         public bool DoNotSplitScreenOnLandscape
         {
             get

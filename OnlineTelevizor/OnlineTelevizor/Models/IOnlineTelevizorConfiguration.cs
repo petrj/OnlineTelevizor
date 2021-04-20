@@ -49,8 +49,6 @@ namespace OnlineTelevizor.Models
         bool Purchased { get; set; }
         bool NotPurchased { get; }
 
-        bool AnimatedScrolling { get; set; }
-
         bool DoNotSplitScreenOnLandscape { get; set; }
 
         string PurchaseProductId { get; }

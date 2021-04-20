@@ -103,11 +103,11 @@ namespace OnlineTelevizor.ViewModels
             {
                 // select and show program epg detail
 
+                DoNotScrollToChannel = true;
+
                 SelectedItem = item as ChannelItem;
 
                 _loggingService.Info($"Long press (channel {SelectedItem.Name})");
-
-                DoNotScrollToChannel = true;
 
                 if (IsPortrait)
                 {
@@ -217,7 +217,7 @@ namespace OnlineTelevizor.ViewModels
         }
 
         private async Task UpdateSelectedChannelEPGDescription()
-        {            
+        {
             if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
             {
                 SelectedChannelEPGDescription = String.Empty;
@@ -626,7 +626,7 @@ namespace OnlineTelevizor.ViewModels
             string selectedChannelNumber = null;
 
             try
-            {               
+            {
                 if (SelectedItem == null)
                 {
                     selectedChannelNumber = Config.LastChannelNumber;
@@ -694,7 +694,7 @@ namespace OnlineTelevizor.ViewModels
                 if (selectedChannelNumber != null)
                 {
                     await SelectChannelByNumber(selectedChannelNumber);
-                }  
+                }
             }
         }
 
@@ -736,7 +736,7 @@ namespace OnlineTelevizor.ViewModels
                                 _channelById[channelId].AddEPGItem(epgItem);
                                 epgItemsCountRead++;
                             }
-                        }                        
+                        }
                     }
                 }
             }
