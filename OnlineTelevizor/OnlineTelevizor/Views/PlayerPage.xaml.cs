@@ -26,6 +26,7 @@ namespace OnlineTelevizor.Views
         Media _media = null;
         bool _fullscreen = false;
         bool _playInProgress = false;
+        ILoggingService _loggingService;
 
         public Command CheckStreamCommand { get; set; }
 
@@ -43,6 +44,7 @@ namespace OnlineTelevizor.Views
 
             _libVLC = new LibVLC();
             _mediaPlayer = new MediaPlayer(_libVLC) { EnableHardwareDecoding = true };
+            _loggingService = loggingService;
 
             videoView.MediaPlayer = _mediaPlayer;
 
@@ -63,7 +65,7 @@ namespace OnlineTelevizor.Views
             if (!Playing)
             {
                 return;
-            }            
+            }
 
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -82,7 +84,7 @@ namespace OnlineTelevizor.Views
                 } else
                 {
                     _viewModel.AudioViewVisible = false;
-                }                
+                }
             });
 
             await UpdateEPG();
@@ -105,7 +107,7 @@ namespace OnlineTelevizor.Views
         public bool Playing
         {
             get
-            {                
+            {
                 return _playInProgress;
 
                 //videoView.MediaPlayer.IsPlaying can be false in case of internet disconnection
@@ -130,10 +132,10 @@ namespace OnlineTelevizor.Views
                         _viewModel.Description = _viewModel.EPGItem.Title;
                         _viewModel.DetailedDescription = _viewModel.EPGItem.Description;
                         _viewModel.TimeDescription = _viewModel.EPGItem.Start.ToString("HH:mm") + " - " + _viewModel.EPGItem.Finish.ToString("HH:mm");
-                        _viewModel.EPGProgress = _viewModel.EPGItem.Progress;                        
+                        _viewModel.EPGProgress = _viewModel.EPGItem.Progress;
                     }
                 });
-            });            
+            });
         }
 
         public void SetMediaUrl(MediaDetail detail)
@@ -150,10 +152,10 @@ namespace OnlineTelevizor.Views
 
                 Start();
 
-                Task.Run( async () => 
-                {                    
-                    await UpdateEPG(); 
-                }); 
+                Task.Run( async () =>
+                {
+                    await UpdateEPG();
+                });
             }
         }
 
@@ -161,8 +163,8 @@ namespace OnlineTelevizor.Views
         {
             base.OnAppearing();
 
-            Start();            
-            
+            Start();
+
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
@@ -192,7 +194,7 @@ namespace OnlineTelevizor.Views
 
         public void Start()
         {
-            _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);            
+            _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);
             videoView.MediaPlayer.Play(_media);
 
             _playInProgress = true;
@@ -217,14 +219,14 @@ namespace OnlineTelevizor.Views
                     if (_mediaPlayer.VideoTrack != -1)
                     {
                         var pos = videoView.MediaPlayer.Position;
-                        videoView.MediaPlayer.Stop();                                          
+                        videoView.MediaPlayer.Stop();
 
                         VideoStackLayout.Children.Remove(videoView);
                         VideoStackLayout.Children.Add(videoView);
-                        
+
                         videoView.MediaPlayer.Play();
                         videoView.MediaPlayer.Position = pos;
-                    }                
+                    }
                 });
             }
         }
@@ -237,41 +239,54 @@ namespace OnlineTelevizor.Views
 
         private void SwipeGestureRecognizer_Up(object sender, SwipedEventArgs e)
         {
-            int currentVol = _mediaPlayer.Volume / 10;
-
-            if (currentVol != 10)
+            try
             {
-                currentVol += 1;
+                int currentVol = _mediaPlayer.Volume / 10;
 
-                if (currentVol > 10)
+                if (currentVol != 10)
                 {
-                    currentVol = 10;
+                    currentVol += 1;
+
+                    if (currentVol > 10)
+                    {
+                        currentVol = 10;
+                    }
+
+                    _mediaPlayer.Volume = currentVol * 10;
                 }
 
-                _mediaPlayer.Volume = currentVol * 10;
-            }
+                MessagingCenter.Send($"Hlasitost {_mediaPlayer.Volume}%", BaseViewModel.ToastMessage);
 
-            MessagingCenter.Send($"Hlasitost {_mediaPlayer.Volume}%", BaseViewModel.ToastMessage);
+            } catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
         }
 
         private void SwipeGestureRecognizer_Down(object sender, SwipedEventArgs e)
         {
-            int currentVol = _mediaPlayer.Volume / 10;
-
-            if (currentVol != 0)
+            try
             {
-                currentVol -= 1;
+                int currentVol = _mediaPlayer.Volume / 10;
 
-                if (currentVol < 0)
+                if (currentVol != 0)
                 {
-                    currentVol = 0;
+                    currentVol -= 1;
+
+                    if (currentVol < 0)
+                    {
+                        currentVol = 0;
+                    }
+
+                    _mediaPlayer.Volume = currentVol * 10;
                 }
 
-                _mediaPlayer.Volume = currentVol * 10;
+                MessagingCenter.Send($"Hlasitost {_mediaPlayer.Volume}%", BaseViewModel.ToastMessage);
             }
-
-            MessagingCenter.Send($"Hlasitost {_mediaPlayer.Volume}%", BaseViewModel.ToastMessage);
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
         }
-
     }
 }
