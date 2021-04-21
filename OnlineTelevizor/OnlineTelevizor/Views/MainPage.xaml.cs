@@ -63,7 +63,7 @@ namespace OnlineTelevizor.Views
             });
 
             MessagingCenter.Subscribe<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternal, (sender, mediaDetail) =>
-            {                
+            {
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     try
@@ -83,7 +83,7 @@ namespace OnlineTelevizor.Views
                     catch (Exception ex)
                     {
                         _loggingService.Error(ex);
-                    }                    
+                    }
                 });
             });
 
@@ -195,12 +195,12 @@ namespace OnlineTelevizor.Views
 
                 if (stack[stack.Count - 1].GetType() == typeof(ChannelDetailPage))
                 {
-                    if (lowKey == "escape" || 
+                    if (lowKey == "escape" ||
                         lowKey == "back" ||
                         lowKey == "numpadsubtract" ||
                         lowKey == "f4" ||
                         lowKey == "mediaplaystop" ||
-                        lowKey == "mediastop" ||                        
+                        lowKey == "mediastop" ||
                         lowKey == "dpadleft"  ||
                         lowKey == "pageup" ||
                         lowKey == "left" ||
@@ -262,6 +262,8 @@ namespace OnlineTelevizor.Views
                 case "mediaplaypause":
                 case "enter":
                 case "numpad5":
+                case "buttona":
+                case "buttonstart":
                     Task.Run(async () => await OnKeyPlay());
                     break;
                 //case "back":
@@ -271,6 +273,7 @@ namespace OnlineTelevizor.Views
                 case "mediastop":
                 case "numpadsubtract":
                 case "del":
+                case "buttonx":
                     StopPlayback();
                     break;
                 case "num0":
@@ -313,7 +316,7 @@ namespace OnlineTelevizor.Views
                 case "number9":
                     HandleNumKey(9);
                     break;
-                case "f5":                
+                case "f5":
                 case "numpad0":
                 case "ctrlleft":
                     Reset();
@@ -325,6 +328,9 @@ namespace OnlineTelevizor.Views
                 case "i":
                 case "g":
                 case "numpadadd":
+                case "buttonthumbl":
+                case "tab":
+                case "f1":
                     Detail_Clicked(this, null);
                     break;
                 default:
@@ -563,15 +569,23 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"Detail_Clicked");
 
-            if (_viewModel.SelectedItem != null)
+            if (_playerPage != null && _playerPage.Playing)
             {
-                var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService, _viewModel.TVService);
-                detailPage.Channel = _viewModel.SelectedItem;
+                MessagingCenter.Send($"\u25B6  {_playerPage.PlayingChannelName} - {_playerPage.PlayingTitleName}", BaseViewModel.ToastMessage);
+            }
+            else
+            {
+                if (_viewModel.SelectedItem != null)
+                {
+                    var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService, _viewModel.TVService);
+                    detailPage.Channel = _viewModel.SelectedItem;
 
-                await Navigation.PushAsync(detailPage);
-            } else
-            {
-                await _dialogService.Information("Není označen žádný kanál");
+                    await Navigation.PushAsync(detailPage);
+                }
+                else
+                {
+                    await _dialogService.Information("Není označen žádný kanál");
+                }
             }
         }
     }

@@ -153,12 +153,28 @@ namespace OnlineTelevizor.Views
             {
                 Stop();
 
-                Start();                
+                Start();
 
                 Task.Run( async () =>
                 {
                     await UpdateEPG();
                 });
+            }
+        }
+
+        public string PlayingChannelName
+        {
+            get
+            {
+                return _viewModel.Title;
+            }
+        }
+
+        public string PlayingTitleName
+        {
+            get
+            {
+                return _viewModel.EPGItem == null ? String.Empty : _viewModel.EPGItem.Title;
             }
         }
 
@@ -199,7 +215,7 @@ namespace OnlineTelevizor.Views
         {
             _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);
             videoView.MediaPlayer.Play(_media);
-        
+
             _playInProgress = true;
         }
 

@@ -31,7 +31,7 @@ namespace OnlineTelevizor.Droid
 
         private int _defaultUiOptions;
         private int _fullscreenUiOptions;
-        protected ILoggingService _loggingService;        
+        protected ILoggingService _loggingService;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -189,8 +189,14 @@ namespace OnlineTelevizor.Droid
                     Activity activity = CrossCurrentActivity.Current.Activity;
                     var view = activity.FindViewById(Android.Resource.Id.Content);
 
-                    var snack = Snackbar.Make(view, message, Snackbar.LengthLong);
-                    snack.Show();
+                    var snackBar = Snackbar.Make(view, message, Snackbar.LengthLong);
+
+                    var textView = snackBar.View.FindViewById<TextView>(Resource.Id.snackbar_text);
+                    textView.SetTextColor(Android.Graphics.Color.White);
+                    textView.SetTextSize(Android.Util.ComplexUnitType.Pt, BaseViewModel.GetScaledSize(_cfg, 10));
+                    //textView.Gravity = GravityFlags.Center;
+
+                    snackBar.Show();
                 });
             }
             catch (Exception ex)

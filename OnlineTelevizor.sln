@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{E7015148
 		ResizeIconImage.ps1 = ResizeIconImage.ps1
 		ResizeLauncherImage.ps1 = ResizeLauncherImage.ps1
 		undo_pending_changes_and_get_latest_version.sh = undo_pending_changes_and_get_latest_version.sh
+		WifiDebug.bat = WifiDebug.bat
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineTelevizor", "OnlineTelevizor\OnlineTelevizor\OnlineTelevizor.csproj", "{5A88AA4A-DD5E-408F-8146-ABDB06B2CC21}"
