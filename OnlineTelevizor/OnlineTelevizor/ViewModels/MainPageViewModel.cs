@@ -11,7 +11,6 @@ using Xamarin.Forms;
 using System.Threading;
 using Plugin.InAppBilling;
 using TVAPI;
-using Plugin.InAppBilling.Abstractions;
 
 namespace OnlineTelevizor.ViewModels
 {

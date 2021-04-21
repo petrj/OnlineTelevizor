@@ -170,7 +170,6 @@ namespace OnlineTelevizor.Droid
         protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
-            InAppBillingImplementation.HandleActivityResult(requestCode, resultCode, data);
         }
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
