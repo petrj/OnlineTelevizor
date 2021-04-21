@@ -213,15 +213,21 @@ namespace OnlineTelevizor.Views
 
         public void Start()
         {
-            _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);
-            videoView.MediaPlayer.Play(_media);
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);
+                videoView.MediaPlayer.Play(_media);
+            });
 
             _playInProgress = true;
         }
 
         public void Stop()
         {
-            videoView.MediaPlayer.Stop();
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                videoView.MediaPlayer.Stop();
+            });
 
             _playInProgress = false;
         }
