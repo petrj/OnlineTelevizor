@@ -20,6 +20,7 @@ using static Android.OS.PowerManager;
 using Plugin.CurrentActivity;
 using Android.Support.Design.Widget;
 using LoggerService;
+using Xamarin.Essentials;
 
 namespace OnlineTelevizor.Droid
 {
@@ -65,6 +66,7 @@ namespace OnlineTelevizor.Droid
             }
 
             _app = new App(_cfg, _loggingService);
+
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
             {
@@ -191,9 +193,42 @@ namespace OnlineTelevizor.Droid
                     var snackBar = Snackbar.Make(view, message, Snackbar.LengthLong);
 
                     var textView = snackBar.View.FindViewById<TextView>(Resource.Id.snackbar_text);
+                    textView.SetMaxLines(1);
                     textView.SetTextColor(Android.Graphics.Color.White);
-                    textView.SetTextSize(Android.Util.ComplexUnitType.Pt, BaseViewModel.GetScaledSize(_cfg, 10));
-                    //textView.Gravity = GravityFlags.Center;
+
+                    if (DeviceDisplay.MainDisplayInfo.Height < DeviceDisplay.MainDisplayInfo.Width)
+                    {
+                        /*
+                            configuration font size:
+
+                            Normal = 0,      -> 1/10 of screen height
+                            AboveNormal = 1,
+                            Big = 2,
+                            Biger = 3,
+                            VeryBig = 4,
+                            Huge = 5         -> 1/5 of screen height
+
+                          */
+
+                        var ratio = 10 - (int)_cfg.AppFontSize;
+                        textView.SetTextSize(Android.Util.ComplexUnitType.Px, Convert.ToSingle(DeviceDisplay.MainDisplayInfo.Height / ratio));
+                    } else
+                    {
+                        /*
+                            configuration font size:
+
+                            Normal = 0,      -> 1/20 of screen height
+                            AboveNormal = 1,
+                            Big = 2,
+                            Biger = 3,
+                            VeryBig = 4,
+                            Huge = 5         -> 1/10 of screen height
+
+                            */
+
+                        var ratio = 20 - ((int)_cfg.AppFontSize*2);
+                        textView.SetTextSize(Android.Util.ComplexUnitType.Px, Convert.ToSingle(DeviceDisplay.MainDisplayInfo.Height / ratio));
+                    }
 
                     snackBar.Show();
                 });
