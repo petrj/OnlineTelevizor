@@ -11,6 +11,7 @@ using DVBStreamerAPI;
 using KUKITVAPI;
 using LoggerService;
 using Newtonsoft.Json.Linq;
+using O2TVAPI;
 using SledovaniTVAPI;
 using TVAPI;
 
@@ -20,9 +21,29 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            var loggingService = new BasicLoggingService();
+            var loggingService = new FileLoggingService();
+            loggingService.LogFilename = "TestConsole.log";
+            loggingService.WriteToOutput = true;
 
             Console.WriteLine("...");
+
+
+            var tvService = new O2TV(loggingService);
+
+            if (JSONObject.FileExists("O2TV.credentials.json"))
+            {
+                /*                 
+                credentials.json:
+                 {
+                    "Username": "O2TV email",
+                    "password": "some password"
+                 }               
+                */
+
+                var credentials = JSONObject.LoadFromFile<Credentials>("O2TV.credentials.json");
+                tvService.SetConnection(credentials.Username, credentials.Password);
+            }
+
 
             /*
             var tvService = new KUKITV(loggingService);
@@ -34,55 +55,55 @@ namespace TestConsole
             }
             */
 
-                        
-            var tvService = new SledovaniTV(loggingService);
+                /*            
+                var tvService = new SledovaniTV(loggingService);
 
-            if (JSONObject.FileExists("credentials.json"))
-            {
-                var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
-                tvService.SetCredentials(credentials.Username, credentials.Password, credentials.ChildLockPIN);
-            }
+                if (JSONObject.FileExists("credentials.json"))
+                {
+                    var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
+                    tvService.SetCredentials(credentials.Username, credentials.Password, credentials.ChildLockPIN);
+                }
 
-            /*
-            if (JSONObject.FileExists("connection.json"))
-            {
-                var conn = JSONObject.LoadFromFile<DeviceConnection>("connection.json");
-                tvService.SetConnection(conn.deviceId, conn.password);
-            }
-            */
+                */
 
-
-            /*
-              if (JSONObject.FileExists("dvbStreamer.json"))
-              {
-                  var conn = JSONObject.LoadFromFile<DeviceConnection>("dvbStreamer.json");
-                  tvService.SetConnection(conn.deviceId, null);
-              }
-            */
+                /*
+                if (JSONObject.FileExists("connection.json"))
+                {
+                    var conn = JSONObject.LoadFromFile<DeviceConnection>("connection.json");
+                    tvService.SetConnection(conn.deviceId, conn.password);
+                }
+                */
 
 
-            Task.Run(
+                /*
+                  if (JSONObject.FileExists("dvbStreamer.json"))
+                  {
+                      var conn = JSONObject.LoadFromFile<DeviceConnection>("dvbStreamer.json");
+                      tvService.SetConnection(conn.deviceId, null);
+                  }
+                */
+
+
+                Task.Run(
                 async () =>
                 {
 
                     await tvService.Login();
 
-                    if (!JSONObject.FileExists("connection.json"))
-                    {
-                        tvService.Connection.SaveToFile("connection.json");
-                    };
-
+                    /*
                     var qualities = await tvService.GetStreamQualities();
                     foreach (var q in qualities)
                     {
                         Console.WriteLine(q.Name.PadRight(20) + "  " + q.Id.PadLeft(10) + "  " + q.Allowed);
                     }
+                    */
 
                     //await tvService.Unlock();
                     //await sledovaniTV.Lock();
+                    
+                    //var channels = await tvService.GetChanels();
 
                     /*
-                    var channels = await tvService.GetChanels();
 
                     //Thread.Sleep(2000);
                     //channels = await tvService.GetChanels();
@@ -124,10 +145,10 @@ namespace TestConsole
                     Console.WriteLine();
                     Console.WriteLine($"Status: {tvService.Status.ToString()}");
 
-                    Console.WriteLine();
-                    Console.WriteLine("Press any key");
+                    
                     */
 
+                    /*
                     var channelsEPG = await tvService.GetChannelsEPG();
                     foreach (var epg in channelsEPG)
                     {
@@ -138,8 +159,11 @@ namespace TestConsole
                             Console.WriteLine($"   {time}  : {epgItem.Title}");
                         }
                     }
-                });
+                    */
 
+                    Console.WriteLine();
+                    Console.WriteLine("Press any key");
+                });
 
 
             Console.ReadKey();

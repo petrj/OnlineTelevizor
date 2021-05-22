@@ -13,6 +13,8 @@ namespace LoggerService
         private string _logFileName;
         private LoggingLevelEnum _minLevel;
 
+        public bool WriteToOutput { get; set; } = false;
+
         public FileLoggingService(LoggingLevelEnum minLevel = LoggingLevelEnum.Debug)
         {
             MinLevel = minLevel;
@@ -57,6 +59,12 @@ namespace LoggerService
                     {
                         sw.WriteLine(msg);
                     }
+                }
+
+                if (WriteToOutput)
+                {
+                    System.Diagnostics.Debug.WriteLine(msg);
+                    Console.WriteLine(msg);
                 }
             }
             catch (Exception ex)

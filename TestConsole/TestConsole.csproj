@@ -22,7 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ExternalConsole>true</ExternalConsole>
-    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vs4CFD.tmp\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsDC03.tmp\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,7 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vs4CFD.tmp\Release\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsDC03.tmp\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -74,6 +74,10 @@
     <ProjectReference Include="..\LoggerService\LoggerService.csproj">
       <Project>{3d9dd753-5e53-4316-992c-1bed899fe0e0}</Project>
       <Name>LoggerService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\O2TVAPI\O2TVAPI.csproj">
+      <Project>{157df5d1-5cf6-4407-9cb5-5ae41a8be0c8}</Project>
+      <Name>O2TVAPI</Name>
     </ProjectReference>
     <ProjectReference Include="..\SledovaniTVApi\SledovaniTVAPI.csproj">
       <Project>{95468a7c-4400-4101-9a39-166f058b5b0b}</Project>
