@@ -101,18 +101,13 @@ namespace TestConsole
                     //await tvService.Unlock();
                     //await sledovaniTV.Lock();
                     
-                    //var channels = await tvService.GetChanels();
-
-                    /*
-
-                    //Thread.Sleep(2000);
-                    //channels = await tvService.GetChanels();
+                    var channels = await tvService.GetChanels();
 
                     foreach (var ch in channels)
                     {
                         Console.WriteLine(ch.Name);                    
                         Console.WriteLine("  ID     :" + ch.Id);
-                        Console.WriteLine("  EPGID     :" + ch.EPGId);
+                        Console.WriteLine("  EPGID  :" + ch.EPGId);
                         Console.WriteLine("  Number :" + ch.ChannelNumber);
                         Console.WriteLine("  Locked :" + ch.Locked);
                         Console.WriteLine("  Url    :" + ch.Url);
@@ -121,7 +116,7 @@ namespace TestConsole
                         Console.WriteLine("  LogoUrl:" + ch.LogoUrl);
                         Console.WriteLine("-----------------------");
                     }
-                    */
+
 
                     /*
                     var epg = await tvService.GetEPG();
@@ -161,8 +156,8 @@ namespace TestConsole
                     }
                     */
 
-                    Console.WriteLine();
-                    Console.WriteLine("Press any key");
+                    //Console.WriteLine();
+                    //Console.WriteLine("Press any key");
                 });
 
 
