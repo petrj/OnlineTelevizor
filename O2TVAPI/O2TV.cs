@@ -81,8 +81,8 @@ namespace O2TVAPI
                 var getChannelResponseJson = JObject.Parse(getChannelResponse);
 
                 /*
-                  
-                  Response: 
+
+                  Response:
                     {
                         "setup":
                             {
@@ -108,7 +108,7 @@ namespace O2TVAPI
                                     "playStartover":false
                                 }
                             ]
-                    }               
+                    }
                 */
             }
             catch (WebException wex)
@@ -128,6 +128,8 @@ namespace O2TVAPI
 
         public async Task<List<Channel>> GetChanels()
         {
+            _log.Debug("Getting channels");
+
             var res = new List<Channel>();
 
             await Login();
@@ -139,12 +141,12 @@ namespace O2TVAPI
             {
                 var headerPostData = GetUnityHeaderData();
 
-                var getChannelsResponse = await SendRequest("https://api.o2tv.cz/unity/api/v1/channels", "POST", null, headerPostData);
+                var getChannelsResponse = await SendRequest("https://api.o2tv.cz/unity/api/v1/channels", "GET", null, headerPostData);
                 var getChannelsResponseJson = JObject.Parse(getChannelsResponse);
 
                 // https://www.o2tv.cz  +  /assets/images/tv-logos/negative/ct1-hd.png
 
-                /* 
+                /*
                     ...
                     {"channel":
                         {
@@ -190,7 +192,7 @@ namespace O2TVAPI
                             "availableTo":1622397600000
                         }
                 }
-                    ...                  
+                    ...
                  */
 
 
@@ -256,7 +258,7 @@ namespace O2TVAPI
 
         private Dictionary<string, string> GetHeaderData()
         {
-            // header = { 'X-NanguTv-App-Version' : 'Android#6.4.1', 
+            // header = { 'X-NanguTv-App-Version' : 'Android#6.4.1',
             //    'User-Agent' : 'Dalvik/2.1.0',
             //    'Accept-Encoding' : 'gzip',
             //    'Connection' : 'Keep-Alive',
@@ -278,13 +280,13 @@ namespace O2TVAPI
         private Dictionary<string, string> GetUnityHeaderData()
         {
             // header = {
-            // 'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0', 
+            // 'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0',
             // 'Content-Type' : 'application/json'}
 
-            // update({ 
-            // 'x-o2tv-access-token' : str(service['access_token']), 
-            // 'x-o2tv-sdata' : str(service['sdata']), 
-            // 'x-o2tv-device-id' : addon.getSetting('deviceid'), 
+            // update({
+            // 'x-o2tv-access-token' : str(service['access_token']),
+            // 'x-o2tv-sdata' : str(service['sdata']),
+            // 'x-o2tv-device-id' : addon.getSetting('deviceid'),
             // 'x-o2tv-device-name' : addon.getSetting('devicename')})
 
             var header = new Dictionary<string, string>();
@@ -328,10 +330,10 @@ namespace O2TVAPI
                 postData.Add("username", _session.UserName);
                 postData.Add("password", _session.Password);
 
-                _status = StatusEnum.NotInitialized;                
+                _status = StatusEnum.NotInitialized;
 
                 var authResponse = await SendRequest("https://ottmediator.o2tv.cz/ottmediator-war/login", "POST", postData, GetHeaderData());
-            
+
                 var authResponseJson = JObject.Parse(authResponse);
 
                 //{
@@ -347,7 +349,7 @@ namespace O2TVAPI
 
                 if (authResponseJson.HasValue("remote_access_token"))
                 {
-                    _session.RemoteAccessToken = authResponseJson.GetStringValue("remote_access_token");                    
+                    _session.RemoteAccessToken = authResponseJson.GetStringValue("remote_access_token");
                     _log.Debug($"Setting remote access token: {_session.RemoteAccessToken}");
                 }
 
@@ -386,7 +388,7 @@ namespace O2TVAPI
                     var tokenResponse = await SendRequest("https://oauth.o2tv.cz/oauth/token", "POST", tokenPostData, GetHeaderData());
                     var tokenResponseJson = JObject.Parse(tokenResponse);
 
-                    // Response: 
+                    // Response:
                     // {
                     //  "access_token":"value",
                     //  "refresh_token":"value",
@@ -541,7 +543,7 @@ namespace O2TVAPI
                     var billingParams = subscriptionResponseJson.GetValue("billingParams") as JObject;
 
                     if (!billingParams.HasValue("offers") ||
-                        !billingParams.HasValue("tariff") 
+                        !billingParams.HasValue("tariff")
                         )
                     {
                         throw new Exception("Invalid response");
@@ -555,14 +557,24 @@ namespace O2TVAPI
 
                     _log.Debug($"Setting subsription: {_session.Subscription}");
 
-                    var profileHeader = GetUnityHeaderData();
+                    //var profileHeader = GetUnityHeaderData();
 
-                    var profileResponse  = await SendRequest("https://api.o2tv.cz/unity/api/v1/user/profile", "POST", null, profileHeader);
+                    var profileHeader = new Dictionary<string, string>();
+
+                    profileHeader.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0");
+                    profileHeader.Add("Content-Type", "application/json");
+
+                    profileHeader.Add("x-o2tv-access-token", _session.AccessToken);
+                    //header.Add("x-o2tv-sdata", _session.SData);
+                    profileHeader.Add("x-o2tv-device-id", DeviceName);
+                    profileHeader.Add("x-o2tv-device-name", "tvbox");
+
+                    var profileResponse  = await SendRequest("https://api.o2tv.cz/unity/api/v1/user/profile/", "GET", null, profileHeader);
                     var profileResponseJSON = JObject.Parse(profileResponse);
 
-                    /*  Reponse:                           
+                    /*  Reponse:
 
-                    { 
+                    {
                     "code":"value",
                     "sdata":"value",
                     "tariff":"ottRegisteredNonMojeO2Customer",
@@ -570,11 +582,11 @@ namespace O2TVAPI
                     "deviceId":"123456",
 
                     "subscription":
-                        { 
+                        {
                             "hasService":true,
                             "offers":["hbbtv-svod","OTT-devices","PTVS"],
-                            "isO2Identifier":false   
-                        }, 
+                            "isO2Identifier":false
+                        },
                     "details":
                         {
                             "userName":"value",
@@ -609,7 +621,7 @@ namespace O2TVAPI
                                     "value":
                                     "IGNORE"
                                 }
-                        } 
+                        }
                     }   */
 
                     if (!profileResponseJSON.HasValue("sdata") ||
@@ -704,19 +716,19 @@ namespace O2TVAPI
 
             return url;
         }
-       
+
         private async Task<string> SendRequest(string url, string method = "POST", Dictionary<string, string> postData = null, Dictionary<string, string> headers = null)
         {
             try
             {
                 _log.Debug($"Sending request to {url}{Environment.NewLine}---------->");
 
-                var request = (HttpWebRequest)WebRequest.Create(url);                
+                var request = (HttpWebRequest)WebRequest.Create(url);
 
                 request.Method = method;
                 request.ContentType = "application/x-www-form-urlencoded;charset=UTF-8";  //"application /x-www-form-urlencoded";  //"application/x-www-form-urlencoded;charset=UTF-8";
                 request.Accept = "application/json";
-                request.UserAgent = "Dalvik/2.1.0";  // "okhttp/3.10.0";                             
+                request.UserAgent = "Dalvik/2.1.0";  // "okhttp/3.10.0";
                 request.KeepAlive = true;
                 request.Timeout = 10 * 1000; // 10 sec timeout per one request
 
@@ -745,7 +757,7 @@ namespace O2TVAPI
                 _log.Debug($"Timeout: {request.Timeout}");
                 _log.Debug($"ContentType: {request.ContentType}");
                 _log.Debug($"ContentLength: {request.ContentLength}");
-                
+
 
                 if (postData != null)
                 {
@@ -765,7 +777,7 @@ namespace O2TVAPI
                     {
                         _log.Debug($"Header: {request.Headers.Keys[i]}={request.Headers.GetValues(i).FirstOrDefault()}");
                     }
-                }                
+                }
 
                 using (var response = await request.GetResponseAsync() as HttpWebResponse)
                 {
@@ -793,6 +805,6 @@ namespace O2TVAPI
                 _log.Error(ex);
                 throw;
             }
-        }                
+        }
     }
 }

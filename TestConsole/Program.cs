@@ -32,12 +32,12 @@ namespace TestConsole
 
             if (JSONObject.FileExists("O2TV.credentials.json"))
             {
-                /*                 
+                /*
                 credentials.json:
                  {
                     "Username": "O2TV email",
                     "password": "some password"
-                 }               
+                 }
                 */
 
                 var credentials = JSONObject.LoadFromFile<Credentials>("O2TV.credentials.json");
@@ -55,7 +55,7 @@ namespace TestConsole
             }
             */
 
-                /*            
+                /*
                 var tvService = new SledovaniTV(loggingService);
 
                 if (JSONObject.FileExists("credentials.json"))
@@ -100,12 +100,12 @@ namespace TestConsole
 
                     //await tvService.Unlock();
                     //await sledovaniTV.Lock();
-                    
+
                     var channels = await tvService.GetChanels();
 
                     foreach (var ch in channels)
                     {
-                        Console.WriteLine(ch.Name);                    
+                        Console.WriteLine(ch.Name);
                         Console.WriteLine("  ID     :" + ch.Id);
                         Console.WriteLine("  EPGID  :" + ch.EPGId);
                         Console.WriteLine("  Number :" + ch.ChannelNumber);
@@ -131,7 +131,7 @@ namespace TestConsole
                         Console.WriteLine($"  CH ID     : {epgItem.ChannelId}");
                         Console.WriteLine($"  Time      : {epgItem.Start.ToString("HH.mm")} - {epgItem.Finish.ToString("HH.mm")}");
                         //Console.WriteLine($"  url     : {tvService.GetEPGEventUrl(epgItem)}");
-                        
+
                         //Console.WriteLine($"  Progress  : {epgItem.Progress.ToString("#0.00")}");
                         Console.WriteLine("-----------------------");
                     }
@@ -140,7 +140,7 @@ namespace TestConsole
                     Console.WriteLine();
                     Console.WriteLine($"Status: {tvService.Status.ToString()}");
 
-                    
+
                     */
 
                     /*
