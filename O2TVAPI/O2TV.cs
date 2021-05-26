@@ -110,7 +110,36 @@ namespace O2TVAPI
                             ]
                     }
                 */
+
+                if (!getChannelResponseJson.HasValue("playlist"))
+                {
+                    return null;
+                }
+
+                var playList = getChannelResponseJson["playlist"];
+
+                foreach (JObject playListItem in playList)
+                {
+                    if (!playListItem.HasValue("streamUrls"))
+                    {
+                        continue;
+                    }
+
+                    var streamUrls = playListItem["streamUrls"] as JObject;
+
+                    if (!streamUrls.HasValue("main"))
+                    {
+                        continue;
+                    }
+
+                    var url = streamUrls.GetStringValue("main");
+
+                    return url;
+                }
+
+                return null;
             }
+
             catch (WebException wex)
             {
                 _log.Error(wex, "Error while getting channels");
@@ -139,6 +168,10 @@ namespace O2TVAPI
 
             try
             {
+                // logo images:
+
+                var channelImages = new Dictionary<string, string>();
+
                 var headerPostData = GetUnityHeaderData();
 
                 var getChannelsResponse = await SendRequest("https://api.o2tv.cz/unity/api/v1/channels", "GET", null, headerPostData);
@@ -146,55 +179,81 @@ namespace O2TVAPI
 
                 // https://www.o2tv.cz  +  /assets/images/tv-logos/negative/ct1-hd.png
 
-                /*
-                    ...
-                    {"channel":
-                        {
-                            "channelKey":"PremierSportHD",
-                            "name":"Premier Sport HD",
-                            "weight":75,
-                            "npvr":true,
-                            "o2tv":true,
-                            "defaultGroup":false,
-                            "live":false,
-                            "npvrForStartedProgram":true,
-                            "npvrForEndedProgram":true,
-                            "storedMediaDuration":10100,
-                            "epgStartOverlap":0,
-                            "epgEndOverlap":0,
-                            "images":
-                                {
-                                    "color":
-                                        {
-                                            "url":"/assets/images/tv-logos/negative/premier-sport.png"
-                                        },
-                                    "color_115":
-                                        {
-                                            "url":"/assets/images/tv-logos/negative_115/premier-sport.png"
-                                        },
-                                    "blackWhite":
-                                        {
-                                            "url":"/assets/images/tv-logos/win/premier-sport.png"
-                                        }
-                                },
-                            "startOverTvEnabled":true,
-                            "keyForCache":"02b"
-                        },
-                    "live":
-                        {
-                            "epgId":29872071,
-                            "start":1621792800000,
-                            "end":1621803600000,
-                            "npvr":true,
-                            "timeShift":false,
-                            "name":
-                            "UFC Fight Night Font vs Garbrandt",
-                            "availableTo":1622397600000
-                        }
+                if (getChannelsResponseJson.HasValue("result"))
+                {
+                    foreach (JObject result in getChannelsResponseJson["result"])
+                    {
+                        if (!result.HasValue("channel"))
+                            continue;
+
+                        var ch = result["channel"] as JObject;
+
+                        if (!ch.HasValue("images") || !ch.HasValue("channelKey"))
+                            continue;
+
+                        var channleKey = ch.GetStringValue("channelKey");
+
+                        var images = ch["images"] as JObject;
+
+                        if (!images.HasValue("color"))
+                            continue;
+
+                        var colorUrl = images["color"] as JObject;
+
+                        if (!colorUrl.HasValue("url"))
+                            continue;
+
+                        var url = colorUrl.GetStringValue("url");
+
+                        channelImages.Add(channleKey, $"https://www.o2tv.cz{url}");
+                    }
                 }
+
+                /*
+                   {
+	                    "result": [
+		                    {
+			                    "channel": {
+				                    "channelKey": "ČT1 HD",
+				                    "name": "ČT1 HD",
+				                    "weight": 1,
+				                    "npvr": true,
+				                    "o2tv": true,
+				                    "defaultGroup": false,
+				                    "live": false,
+				                    "npvrForStartedProgram": true,
+				                    "npvrForEndedProgram": true,
+				                    "storedMediaDuration": 10100,
+				                    "epgStartOverlap": 1000,
+				                    "epgEndOverlap": 900000,
+				                    "images": {
+					                    "color": {
+						                    "url": "/assets/images/tv-logos/negative/ct1-hd.png"
+					                    },
+					                    "color_115": {
+						                    "url": "/assets/images/tv-logos/negative_115/ct1-hd.png"
+					                    },
+					                    "blackWhite": {
+						                    "url": "/assets/images/tv-logos/win/ct1-hd.png"
+					                    }
+				                    },
+				                    "startOverTvEnabled": true,
+				                    "keyForCache": "001"
+			                    },
+			                    "live": {
+				                    "epgId": 29889305,
+				                    "start": 1622031300000,
+				                    "end": 1622037000000,
+				                    "npvr": true,
+				                    "timeShift": false,
+				                    "name": "Po stopách krve, V HLAVNÍ ROLI ZLOČIN… Petr Schulhoff – 35 let od úmrtí",
+				                    "availableTo": 1622636100000
+			                    }
+		                    },
                     ...
                  */
 
+                // channels stream urls:
 
                 var number = 1;
                 foreach (var ch in _session.LiveChannels)
@@ -207,6 +266,11 @@ namespace O2TVAPI
                     };
 
                     channel.Url = await GetChannelUrl(ch);
+
+                    if (channelImages.ContainsKey(ch))
+                    {
+                        channel.LogoUrl = channelImages[ch];
+                    }
 
                     res.Add(channel);
                     number++;
