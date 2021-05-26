@@ -75,7 +75,7 @@ namespace OnlineTelevizor.Views
                 }
 
                 if (
-                        (_mediaPlayer.VideoTrack == -1)
+                        (_mediaPlayer.VideoTrackCount == 0)
                         ||
                         (!string.IsNullOrEmpty(_viewModel.MediaType) && (_viewModel.MediaType.ToLower() == "radio"))
                     )

@@ -7,8 +7,8 @@ namespace OnlineTelevizor.Models
     public enum TVAPIEnum
     {
         SledovaniTV = 0,
-        KUKI = 1,
-        DVBStreamer = 2,
-        O2TV = 3
+        KUKI = 1,        
+        O2TV = 2,
+        DVBStreamer = 3
     }
 }
