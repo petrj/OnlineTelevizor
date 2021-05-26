@@ -73,6 +73,30 @@ namespace OnlineTelevizor.UWP
             }
         }
 
+        public string O2TVUsername
+        {
+            get
+            {
+                return GetSettingValue<string>("O2TVUsername");                
+            }
+            set
+            {
+                SaveSettingValue<string>("O2TVUsername", value);
+            }
+        }
+
+        public string O2TVPassword
+        {
+            get
+            {
+                return GetSettingValue<string>("O2TVPassword");
+            }
+            set
+            {
+                SaveSettingValue<string>("O2TVPassword", value);
+            }
+        }
+
         public string DVBStreamerUrl
         {
             get

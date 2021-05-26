@@ -8,6 +8,7 @@ namespace OnlineTelevizor.Models
     {
         SledovaniTV = 0,
         KUKI = 1,
-        DVBStreamer = 2
+        DVBStreamer = 2,
+        O2TV = 3
     }
 }

@@ -9,6 +9,8 @@ namespace OnlineTelevizor.Models
     {
         private TVAPIEnum _tvAPI = TVAPIEnum.SledovaniTV;
         private string _kukiSn = "";
+        private string _O2TVUsername = "";
+        private string _O2TVPassword = "";
         private string _DVBStreamerUrl = "";
         private string _username ="";
         private string _password = "";
@@ -36,6 +38,8 @@ namespace OnlineTelevizor.Models
 
         public TVAPIEnum TVApi { get => _tvAPI; set => _tvAPI = value; }
         public string KUKIsn { get => _kukiSn; set => _kukiSn = value; }
+        public string O2TVUsername { get => _O2TVUsername; set => _O2TVUsername = value; }
+        public string O2TVPassword { get => _O2TVPassword; set => _O2TVPassword = value; }
         public string DVBStreamerUrl { get => _DVBStreamerUrl; set => _DVBStreamerUrl = value; }
         public string Username { get => _username; set => _username = value; }
         public string Password { get => _password; set => _password = value; }

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using TVAPI;
 using KUKITVAPI;
 using DVBStreamerAPI;
+using O2TVAPI;
 
 namespace OnlineTelevizor.Services
 {
@@ -47,6 +48,10 @@ namespace OnlineTelevizor.Services
                 case TVAPIEnum.DVBStreamer:
                     _service = new DVBStreamerClient(_log);
                     _service.SetConnection(_config.DVBStreamerUrl, null);
+                    break;
+                case TVAPIEnum.O2TV:
+                    _service = new O2TV(_log);
+                    _service.SetConnection(_config.O2TVUsername, _config.O2TVPassword);
                     break;
             }
         }

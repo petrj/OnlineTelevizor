@@ -58,6 +58,7 @@
                             <x:String>SledovaniTV</x:String>
                             <x:String>Kuki</x:String>
                             <x:String>DVB Streamer</x:String>
+                            <x:String>O2 TV</x:String>
                         </Picker.Items>
                     </Picker>
 
@@ -114,6 +115,22 @@
 
                     <StackLayout Margin="20,10,0,0">
                         <Button Margin="20,10,0,0" Text="Zastavit stream" Command="{Binding StopStreamCommand}" FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
+                    </StackLayout>
+
+                </StackLayout>
+
+                <StackLayout Margin="20,10,20,0" IsVisible="{Binding IsO2TVVisible, Mode=TwoWay}">
+
+                    <Label Text="Přístupové údaje O2 TV" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+
+                    <StackLayout Margin="20,10,0,0">
+                        <Label Text="Uživatelské jméno (email):" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="O2TVUsernameEntry"  Text="{Binding O2TVUsername, Mode=TwoWay}" Placeholder="Zadejte uživatelské jméno" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}"></Entry>
+                    </StackLayout>
+
+                    <StackLayout Margin="20,0,0,0">
+                        <Label Text="Heslo:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="O2TVPasswordEntry"  IsPassword="True" Text="{Binding O2TVPassword, Mode=TwoWay}" Placeholder="Zadejte heslo" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}"></Entry>
                     </StackLayout>
 
                 </StackLayout>

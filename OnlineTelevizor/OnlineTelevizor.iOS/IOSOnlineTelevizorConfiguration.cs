@@ -89,6 +89,30 @@ namespace OnlineTelevizor.iOS
             }
         }
 
+        public string O2TVUsername
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("O2TVUsername");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("O2TVUsername", value);
+            }
+        }
+
+        public string O2TVPassword
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("O2TVPassword");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("O2TVPassword", value);
+            }
+        }
+
         public string DVBStreamerUrl
         {
             get

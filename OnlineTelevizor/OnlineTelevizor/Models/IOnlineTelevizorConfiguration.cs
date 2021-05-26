@@ -16,6 +16,9 @@ namespace OnlineTelevizor.Models
 
         string KUKIsn { get; set; }
 
+        string O2TVUsername { get; set; }
+        string O2TVPassword { get; set; }
+
         string DVBStreamerUrl { get; set; }
 
         //  user settings

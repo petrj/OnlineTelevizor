@@ -197,6 +197,11 @@ namespace OnlineTelevizor.ViewModels
                     String.IsNullOrEmpty(Config.DVBStreamerUrl))
                     return true;
 
+                if (Config.TVApi == TVAPIEnum.O2TV &&
+                    String.IsNullOrEmpty(Config.O2TVUsername) &&
+                    String.IsNullOrEmpty(Config.O2TVPassword))
+                    return true;
+
                 return false;
             }
         }
