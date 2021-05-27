@@ -101,6 +101,7 @@ namespace TestConsole
                     //await tvService.Unlock();
                     //await sledovaniTV.Lock();
 
+
                     var channels = await tvService.GetChanels();
 
                     foreach (var ch in channels)
@@ -118,8 +119,9 @@ namespace TestConsole
                     }
 
 
-                    /*
                     var epg = await tvService.GetEPG();
+
+                    /*
 
                     Thread.Sleep(2000);
 

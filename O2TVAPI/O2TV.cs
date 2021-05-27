@@ -267,7 +267,9 @@ namespace O2TVAPI
                     {
                         Name = ch,
                         Id = ch,
-                        ChannelNumber = number.ToString()
+                        ChannelNumber = number.ToString(),
+                        Type = "O2TV",
+                        Group = "O2TV"
                     };
 
                     channel.Url = await GetChannelUrl(ch);
@@ -302,6 +304,63 @@ namespace O2TVAPI
 
         public async Task<List<EPGItem>> GetEPG()
         {
+            var headerPostData = GetUnityHeaderData();
+
+            var fromUT = (Int64)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalMilliseconds;
+            var toUT = fromUT + 4 * 60 * 60;
+            var channelKey = System.Web.HttpUtility.UrlEncode("ČT sport HD");
+
+            // https://api.o2tv.cz/unity/api/v1/epg/depr/?channelKey=%C4%8CT+sport+HD&from=1622123538777
+
+            var response = await SendRequest($"https://api.o2tv.cz/unity/api/v1/epg/depr/?channelKey={channelKey}&from={fromUT}", "GET", null, headerPostData);
+            var responseJson = JObject.Parse(response);
+
+            /*
+             Response:
+
+            {
+	            "epg": {
+		            "totalCount": 1,
+		            "offset": 0,
+		            "items": [
+			            {
+				            "channel": {
+					            "channelKey": "ČT sport HD",
+					            "name": "ČT sport HD",
+					            "logoUrl": "/assets/images/tv-logos/original/ct-sport-hd.png",
+					            "weight": 76,
+					            "npvr": true,
+					            "o2tv": true,
+					            "defaultGroup": false,
+					            "live": false,
+					            "npvrForStartedProgram": true,
+					            "npvrForEndedProgram": true,
+					            "storedMediaDuration": 10100,
+					            "epgStartOverlap": 1000,
+					            "epgEndOverlap": 900000
+				            },
+				            "programs": [
+					            {
+						            "epgId": 29896663,
+						            "start": 1622130000000,
+						            "end": 1622133600000,
+						            "npvr": true,
+						            "timeShift": false,
+						            "name": "USA - Lotyšsko, Hokej",
+						            "availableTo": 1622734800000
+					            },
+					            {
+						            "epgId": 29896664,
+						            "start": 1622133600000,
+						            "end": 1622144400000,
+						            "npvr": true,
+						            "timeShift": false,
+						            "name": "Švédsko - Česko, Hokej",
+						            "availableTo": 1622738400000
+					            },
+                        .......
+             */
+
             return new List<EPGItem>();
         }
 
