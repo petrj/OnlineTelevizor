@@ -117,9 +117,7 @@ namespace TestConsole
                         Console.WriteLine("  LogoUrl:" + ch.LogoUrl);
                         Console.WriteLine("-----------------------");
                     }
-
-
-                    var epg = await tvService.GetEPG();
+                   
 
                     /*
 
@@ -145,18 +143,18 @@ namespace TestConsole
 
                     */
 
-                    /*
+                    
                     var channelsEPG = await tvService.GetChannelsEPG();
                     foreach (var epg in channelsEPG)
                     {
                         Console.WriteLine($"  {epg.Key}");
                         foreach (var epgItem in epg.Value)
                         {
-                            var time = epgItem.Start.ToString("hh:mm") + "-" + epgItem.Finish.ToString("hh:mm");
+                            var time = epgItem.Start.ToString("dd.MM.yyyy HH:mm") + "-" + epgItem.Finish.ToString("HH:mm");
                             Console.WriteLine($"   {time}  : {epgItem.Title}");
                         }
                     }
-                    */
+                    
 
                     //Console.WriteLine();
                     //Console.WriteLine("Press any key");
