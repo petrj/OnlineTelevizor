@@ -15,6 +15,11 @@ namespace KUKITVAPI
 {
     public class KUKITV : ITVAPI
     {
+        /*
+            source:
+            https://www.xbmc-kodi.cz/prispevek-streamy-kuki-tv
+        */
+
         private ILoggingService _log;
         private StatusEnum _status = StatusEnum.NotInitialized;
         private DeviceConnection _connection = new DeviceConnection();

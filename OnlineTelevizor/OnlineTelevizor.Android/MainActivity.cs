@@ -56,7 +56,6 @@ namespace OnlineTelevizor.Droid
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
-
             if (_cfg.EnableLogging)
             {
                 _loggingService = new BasicLoggingService(_cfg.LoggingLevel);

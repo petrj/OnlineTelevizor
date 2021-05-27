@@ -6,12 +6,13 @@
 Android, UWP a iOS aplikace pro příjem TV a rádia pomocí služeb:
 - SledovaniTV
 - Kuki
+- O2 TV
 <br/>
-- nejedná se o oficiální aplikaci služby SledovaniTV.cz ani Kuki
+- nejedná se o oficiální aplikaci služeb SledovaniTV.cz, Kuki ani O2 TV
 <br/>
 
 - podpora klávesnic a dálkových ovladačů připojených jako klávesnice (usb, bluetooth, pouze Android a UWP)
-- možnost automatického spuštění vybraného kanálu po startu
+- automatické spuštění vybraného kanálu po startu
 - možnost nastavení velikosti písma pro lepší čitelnost na tabletu nebo TV (pouze Android)
 - v Android zařízení se pro přehrávání používá nainstalovaná externí aplikace, případně interní přehrávač (libVLCSharp)
 - v UWP a iOS se pro přehrávání používá VLC
@@ -22,8 +23,9 @@ Android, UWP a iOS aplikace pro příjem TV a rádia pomocí služeb:
 Android, UWP and iOS application for playing internet TV and radio through czech IPTV services
 - SledovaniTV
 - Kuki
+- O2 TV
 <br/>
-- this is not official application of SledovaniTV.cz service or Kuki
+- this is not official application of SledovaniTV.cz, Kuki or O2 TV
 <br/>
 
 - supporting external keyboards and remote controls connected as keyboard (usb, bluetooth, only Android and UWP)

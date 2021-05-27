@@ -15,6 +15,11 @@ namespace O2TVAPI
 {
     public class O2TV :  ITVAPI
     {
+        /*
+            source:
+            https://github.com/waladir/plugin.video.archivo2tv/
+        */
+
         private ILoggingService _log;
         private StatusEnum _status = StatusEnum.NotInitialized;
 

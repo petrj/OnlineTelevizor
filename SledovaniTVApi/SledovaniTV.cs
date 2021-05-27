@@ -17,6 +17,11 @@ namespace SledovaniTVAPI
 {
     public class SledovaniTV : ITVAPI
     {
+        /*
+            source:
+            https://www.xbmc-kodi.cz/prispevek-sledovanitv-cz--648
+        */
+
         private ILoggingService _log;
         private const string ServiceUrl = "http://sledovanitv.cz/api/";
 

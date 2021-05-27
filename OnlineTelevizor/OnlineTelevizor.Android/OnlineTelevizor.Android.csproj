@@ -35,7 +35,6 @@
     <MandroidI18n>Other</MandroidI18n>
     <AndroidSupportedAbis>
     </AndroidSupportedAbis>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsE03A.tmp\Debug\</IntermediateOutputPath>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
