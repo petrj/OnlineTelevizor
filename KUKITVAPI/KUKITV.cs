@@ -520,10 +520,5 @@ namespace KUKITVAPI
         {
             // nothing to stop
         }
-
-        public string GetEPGEventUrl(EPGItem item)
-        {
-            return null;
-        }
     }
 }

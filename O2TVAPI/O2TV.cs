@@ -482,24 +482,105 @@ namespace O2TVAPI
             return res;
         }
 
-        public string GetEPGEventUrl(EPGItem item)
-        {
-            return null;
-        }
-
         public async Task<string> GetEPGItemDescription(EPGItem epgItem)
         {
-            return null;
+            // https://api.o2tv.cz/unity/api/v1/programs/29909804/
+
+            _log.Debug("Getting epg program detail");
+
+            await Login();
+
+            if (_status != StatusEnum.Logged)
+                return null;
+
+            try
+            {
+                var headerPostData = GetUnityHeaderData();
+
+                var url = $"https://api.o2tv.cz/unity/api/v1/programs/{epgItem.EPGId}/";
+
+                var response = await SendRequest(url, "GET", null, headerPostData);
+                var responseJson = JObject.Parse(response);
+
+                /* Response:
+
+                    {
+	                    "name": "Evropský fotbal (233/2019)",
+	                    "channelKey": "O2 Sport HD",
+	                    "shortDescription": "Fotbalový magazín z nejlepších evropských soutěží (Bundesliga, LaLiga, Premier League, Serie A)",
+	                    "logoUrl": "/assets/images/tv-logos/original/o2-sport-hd.png",
+	                    "npvr": true,
+	                    "epgId": 29909804,
+	                    "timeShift": false,
+	                    "picture": "/img/epg/o2_sport_hd/29909804/double.jpg",
+	                    "end": 1622199600000,
+	                    "start": 1622197800000,
+	                    "images": [
+		                    {
+			                    "name": "tvprofi",
+			                    "cover": "/img/epg/o2_sport_hd/29909804/profi_cover.jpg",
+			                    "land": "/img/epg/o2_sport_hd/29909804/profi_land.jpg",
+			                    "coverMini": "/img/epg/o2_sport_hd/29909804/profi_cover_mini.jpg",
+			                    "landMini": "/img/epg/o2_sport_hd/29909804/profi_land_mini.jpg"
+		                    }
+	                    ],
+	                    "longDescription": "",
+	                    "genreInfo": {
+		                    "genres": [
+			                    {
+				                    "name": "Fotbal"
+			                    }
+		                    ]
+	                    },
+	                    "contentType": "sport",
+	                    "availableTo": 1622802600000
+                    }
+
+                */
+
+                var shortDescription = String.Empty;
+                var longDescription = String.Empty;
+
+                if (responseJson.HasValue("shortDescription"))
+                {
+                    shortDescription = responseJson.GetStringValue("shortDescription");
+                }
+
+                if (responseJson.HasValue("longDescription"))
+                {
+                    longDescription = responseJson.GetStringValue("longDescription");
+                }
+
+                var res = shortDescription;
+
+                if ( (shortDescription != String.Empty) && (longDescription != String.Empty))
+                {
+                    return shortDescription + Environment.NewLine + longDescription;
+                } else
+                {
+                    return shortDescription + longDescription;
+                }
+
+            }
+            catch (WebException wex)
+            {
+                _log.Error(wex, "Error while getting epg program detail");
+                //_status = StatusEnum.ConnectionNotAvailable;
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "Error while getting epg program detail");
+                //_status = StatusEnum.GeneralError;
+
+                return null;
+            }
         }
 
         public async Task<List<Quality>> GetStreamQualities()
         {
             return new List<Quality>();
-        }
-
-        public async Task Lock()
-        {
-
         }
 
         private Dictionary<string, string> GetHeaderData()
@@ -913,6 +994,10 @@ namespace O2TVAPI
         }
 
         public async Task Stop()
+        {
+        }
+
+        public async Task Lock()
         {
         }
 

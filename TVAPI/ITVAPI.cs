@@ -23,6 +23,5 @@ namespace TVAPI
         Task Unlock();
         Task Lock();
         Task Stop();
-        string GetEPGEventUrl(EPGItem item);
     }
 }

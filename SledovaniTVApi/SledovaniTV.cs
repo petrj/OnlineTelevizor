@@ -785,11 +785,5 @@ namespace SledovaniTVAPI
         {
             // nothing to stop
         }
-
-        public string GetEPGEventUrl(EPGItem item)
-        {
-            var eventIdEncoded = HttpUtility.UrlEncode(item.EPGId);
-            return $"http://sledovanitv.cz/vlc/api-timeshift/event.m3u8?PHPSESSID={_session.PHPSESSID}&eventId={eventIdEncoded}";
-        }
     }
 }

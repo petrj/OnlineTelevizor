@@ -101,7 +101,6 @@ namespace TestConsole
                     //await tvService.Unlock();
                     //await sledovaniTV.Lock();
 
-
                     var channels = await tvService.GetChanels();
 
                     foreach (var ch in channels)
@@ -118,32 +117,6 @@ namespace TestConsole
                         Console.WriteLine("-----------------------");
                     }
 
-
-                    /*
-
-                    Thread.Sleep(2000);
-
-                    epg = await tvService.GetEPG();
-
-                    foreach (var epgItem in epg)
-                    {
-                        Console.WriteLine($"EPG         : {epgItem.Title}");
-                        Console.WriteLine($"  CH ID     : {epgItem.ChannelId}");
-                        Console.WriteLine($"  Time      : {epgItem.Start.ToString("HH.mm")} - {epgItem.Finish.ToString("HH.mm")}");
-                        //Console.WriteLine($"  url     : {tvService.GetEPGEventUrl(epgItem)}");
-
-                        //Console.WriteLine($"  Progress  : {epgItem.Progress.ToString("#0.00")}");
-                        Console.WriteLine("-----------------------");
-                    }
-                    Console.WriteLine($"EPG items count: {epg.Count}");
-
-                    Console.WriteLine();
-                    Console.WriteLine($"Status: {tvService.Status.ToString()}");
-
-
-                    */
-
-
                     var channelsEPG = await tvService.GetChannelsEPG();
                     foreach (var epg in channelsEPG)
                     {
@@ -151,7 +124,13 @@ namespace TestConsole
                         foreach (var epgItem in epg.Value)
                         {
                             var time = epgItem.Start.ToString("dd.MM.yyyy HH:mm") + "-" + epgItem.Finish.ToString("HH:mm");
-                            Console.WriteLine($"   {time}  : {epgItem.Title}");
+                            Console.WriteLine($"   {time}  : {epgItem.Title}   [{epgItem.EPGId}]");
+
+                            // getting EPG detail:
+
+                            var description = await tvService.GetEPGItemDescription(epgItem);
+
+                            Console.WriteLine($"                                   {description}");
                         }
                     }
 
