@@ -44,12 +44,11 @@ namespace O2TVAPI
             }
         }
 
-
         public bool EPGEnabled
         {
             get
             {
-                return false;
+                return true;
             }
         }
 
@@ -60,7 +59,6 @@ namespace O2TVAPI
                 return false;
             }
         }
-
 
         public StatusEnum Status
         {
@@ -158,7 +156,6 @@ namespace O2TVAPI
 
             return null;
         }
-
 
         public async Task<List<Channel>> GetChanels()
         {
@@ -268,7 +265,7 @@ namespace O2TVAPI
                         Name = ch,
                         Id = ch,
                         ChannelNumber = number.ToString(),
-                        Type = "O2TV",
+                        Type = "TV",
                         Group = "O2TV"
                     };
 
@@ -297,6 +294,34 @@ namespace O2TVAPI
             return res;
         }
 
+        private static DateTime O2UnixTimeToDateTime(Int64 unixMilliSeconds)
+        {
+            var epochStartTime = new DateTime(1970, 1, 1);
+            var date = epochStartTime.AddMilliseconds(unixMilliSeconds);
+
+            // getting local time offset
+            var dtOffset = new DateTimeOffset(DateTime.Now);
+
+            // adding offset
+            date = date.Add(dtOffset.Offset);
+
+            return date;
+        }
+
+        private static Int64 DateTimeToO2UnixTime(DateTime date)
+        {
+            var epochStartTime = new DateTime(1970, 1, 1);
+
+            // getting local time offset
+            var dtOffset = new DateTimeOffset(DateTime.Now);
+
+            date = date.Subtract(dtOffset.Offset);
+
+            var ut = date.Subtract(epochStartTime).TotalMilliseconds;
+
+            return Convert.ToInt64(ut);
+        }
+
         public async Task<Dictionary<string, List<EPGItem>>> GetChannelsEPG()
         {
             _log.Debug("Getting channels EPG");
@@ -310,124 +335,118 @@ namespace O2TVAPI
 
             try
             {
-                
-                //var toUT = fromUT + 4 * 60 * 60;
-                var channelKey = "ČT sport HD";
-                var channelKeyUrlEncoded = System.Web.HttpUtility.UrlEncode(channelKey);
-
-                res.Add(channelKey, new List<EPGItem>());
-
-                var headerPostData = GetUnityHeaderData();
-                var fromUT = Convert.ToInt64(DateTime.Now.AddHours(-4).Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds); 
-                var response = await SendRequest($"https://api.o2tv.cz/unity/api/v1/epg/depr/?channelKey={channelKeyUrlEncoded}&from={fromUT}", "GET", null, headerPostData);
-                var responseJson = JObject.Parse(response);
-
-                if (!responseJson.HasValue("epg"))
-                    throw new Exception($"Invalid response: {response}");
-
-               var epgJson = responseJson.GetValue("epg") as JObject;
-
-                if (!epgJson.HasValue("items"))
-                    throw new Exception($"Invalid response: {response}");
-
-                foreach (JObject epgItem in epgJson.GetValue("items"))
+                foreach (var channelKey in _session.LiveChannels)
                 {
-                    //var epgItems = epgJson.GetValue("items") as JObject;
+                    var channelKeyUrlEncoded = System.Web.HttpUtility.UrlEncode(channelKey);
 
-                    if (!epgItem.HasValue("channel"))
+                    res.Add(channelKey, new List<EPGItem>());
+
+                    var headerPostData = GetUnityHeaderData();
+                    var fromUT = DateTimeToO2UnixTime(DateTime.Now.AddHours(-5));
+                    var toUT = DateTimeToO2UnixTime(DateTime.Now.AddHours(+5));
+
+                    var url = $"https://api.o2tv.cz/unity/api/v1/epg/depr/?channelKey={channelKeyUrlEncoded}&from={fromUT}&to={toUT}";
+
+                    var response = await SendRequest(url, "GET", null, headerPostData);
+                    var responseJson = JObject.Parse(response);
+
+                    if (!responseJson.HasValue("epg"))
                         throw new Exception($"Invalid response: {response}");
 
-                    //var channel = epgItem.GetValue("channel") as JObject;
+                    var epgJson = responseJson.GetValue("epg") as JObject;
 
-                    //if (!channel.HasValue("channelKey"))
-                        //throw new Exception($"Invalid response: {response}");                    
-
-                    if (!epgItem.HasValue("programs"))
+                    if (!epgJson.HasValue("items"))
                         throw new Exception($"Invalid response: {response}");
 
-                    //var epgPrograms = epgItems.GetValue("programs") as JObject;
-
-                    foreach (JObject program in epgItem.GetValue("programs"))
+                    foreach (JObject epgItem in epgJson.GetValue("items"))
                     {
-                        if (
-                            !program.HasValue("epgId") ||
-                            !program.HasValue("start") ||
-                            !program.HasValue("end") ||
-                            !program.HasValue("name")
-                            )
-                         throw new Exception($"Invalid response: {response}");
+                        if (!epgItem.HasValue("channel"))
+                            throw new Exception($"Invalid response: {response}");
 
-                        var startString = program.GetStringValue("start");
-                        var startInt = Int64.Parse(startString);
+                        if (!epgItem.HasValue("programs"))
+                            throw new Exception($"Invalid response: {response}");
 
-                        var finishString = program.GetStringValue("end");
-                        var finishInt = Int64.Parse(finishString);
-
-                        startInt = startInt / 1000; // ms to s
-                        finishInt = finishInt / 1000; // ms to s
-
-                        var startDate = new DateTime(1970, 1, 1).AddHours(+2).AddSeconds(startInt);  // UTC+2?
-                        var finishDate = new DateTime(1970, 1, 1).AddHours(+2).AddSeconds(finishInt);  // UTC+2?
-
-                        var item = new EPGItem()
+                        foreach (JObject program in epgItem.GetValue("programs"))
                         {
-                            ChannelId = channelKey,
-                            Title = program.GetStringValue("name"),
-                            Start = startDate,
-                            Finish = finishDate,
-                            EPGId = program.GetStringValue("epgId")
-                        };
+                            if (
+                                !program.HasValue("epgId") ||
+                                !program.HasValue("start") ||
+                                !program.HasValue("end") ||
+                                !program.HasValue("name")
+                                )
+                                throw new Exception($"Invalid response: {response}");
 
-                        res[channelKey].Add(item);
+                            var startString = program.GetStringValue("start");
+                            var startInt = Int64.Parse(startString);
+
+                            var finishString = program.GetStringValue("end");
+                            var finishInt = Int64.Parse(finishString);
+
+                            var startDate = O2UnixTimeToDateTime(startInt);
+                            var finishDate = O2UnixTimeToDateTime(finishInt);
+
+                            if (finishDate < DateTime.Now)
+                                continue; // program has already finished
+
+                            var item = new EPGItem()
+                            {
+                                ChannelId = channelKey,
+                                Title = program.GetStringValue("name"),
+                                Start = startDate,
+                                Finish = finishDate,
+                                EPGId = program.GetStringValue("epgId")
+                            };
+
+                            res[channelKey].Add(item);
+                        }
                     }
 
+                    /*
+                     Response:
+
+                    {
+                        "epg": {
+                            "totalCount": 1,
+                            "offset": 0,
+                            "items": [
+                                {
+                                    "channel": {
+                                        "channelKey": "ČT sport HD",
+                                        "name": "ČT sport HD",
+                                        "logoUrl": "/assets/images/tv-logos/original/ct-sport-hd.png",
+                                        "weight": 76,
+                                        "npvr": true,
+                                        "o2tv": true,
+                                        "defaultGroup": false,
+                                        "live": false,
+                                        "npvrForStartedProgram": true,
+                                        "npvrForEndedProgram": true,
+                                        "storedMediaDuration": 10100,
+                                        "epgStartOverlap": 1000,
+                                        "epgEndOverlap": 900000
+                                    },
+                                    "programs": [
+                                        {
+                                            "epgId": 29896663,
+                                            "start": 1622130000000,
+                                            "end": 1622133600000,
+                                            "npvr": true,
+                                            "timeShift": false,
+                                            "name": "USA - Lotyšsko, Hokej",
+                                            "availableTo": 1622734800000
+                                        },
+                                        {
+                                            "epgId": 29896664,
+                                            "start": 1622133600000,
+                                            "end": 1622144400000,
+                                            "npvr": true,
+                                            "timeShift": false,
+                                            "name": "Švédsko - Česko, Hokej",
+                                            "availableTo": 1622738400000
+                                        },
+                                .......
+                     */
                 }
-
-                /*
-                 Response:
-
-                {
-                    "epg": {
-                        "totalCount": 1,
-                        "offset": 0,
-                        "items": [
-                            {
-                                "channel": {
-                                    "channelKey": "ČT sport HD",
-                                    "name": "ČT sport HD",
-                                    "logoUrl": "/assets/images/tv-logos/original/ct-sport-hd.png",
-                                    "weight": 76,
-                                    "npvr": true,
-                                    "o2tv": true,
-                                    "defaultGroup": false,
-                                    "live": false,
-                                    "npvrForStartedProgram": true,
-                                    "npvrForEndedProgram": true,
-                                    "storedMediaDuration": 10100,
-                                    "epgStartOverlap": 1000,
-                                    "epgEndOverlap": 900000
-                                },
-                                "programs": [
-                                    {
-                                        "epgId": 29896663,
-                                        "start": 1622130000000,
-                                        "end": 1622133600000,
-                                        "npvr": true,
-                                        "timeShift": false,
-                                        "name": "USA - Lotyšsko, Hokej",
-                                        "availableTo": 1622734800000
-                                    },
-                                    {
-                                        "epgId": 29896664,
-                                        "start": 1622133600000,
-                                        "end": 1622144400000,
-                                        "npvr": true,
-                                        "timeShift": false,
-                                        "name": "Švédsko - Česko, Hokej",
-                                        "availableTo": 1622738400000
-                                    },
-                            .......
-                 */
             }
             catch (WebException wex)
             {
@@ -445,9 +464,22 @@ namespace O2TVAPI
 
         public async Task<List<EPGItem>> GetEPG()
         {
+            var res = new List<EPGItem>();
 
+            var epg = await GetChannelsEPG();
 
-            return new List<EPGItem>();
+            foreach (var kvp in epg)
+            {
+                if (kvp.Value != null && kvp.Value.Count>0)
+                {
+                    foreach (var epgItem in kvp.Value)
+                    {
+                        res.Add(epgItem);
+                    }
+                }
+            }
+
+            return res;
         }
 
         public string GetEPGEventUrl(EPGItem item)
@@ -472,16 +504,6 @@ namespace O2TVAPI
 
         private Dictionary<string, string> GetHeaderData()
         {
-            // header = { 'X-NanguTv-App-Version' : 'Android#6.4.1',
-            //    'User-Agent' : 'Dalvik/2.1.0',
-            //    'Accept-Encoding' : 'gzip',
-            //    'Connection' : 'Keep-Alive',
-            //    'Content-Type' : 'application/x-www-form-urlencoded;charset=UTF-8',
-            //    'X-NanguTv-Device-Id' : addon.getSetting('deviceid'),
-            //    'X-NanguTv-Device-Name' : addon.getSetting('devicename')}
-
-            // update: header.update({ 'X-NanguTv-Access-Token' : str(service['access_token']), 'X-NanguTv-Device-Id' : addon.getSetting('deviceid')})
-
             var header = new Dictionary<string, string>();
             header.Add("X-NanguTv-Device-Name", "tvbox");
             header.Add("X-NanguTv-Device-Id", DeviceName);
@@ -493,16 +515,6 @@ namespace O2TVAPI
 
         private Dictionary<string, string> GetUnityHeaderData()
         {
-            // header = {
-            // 'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0',
-            // 'Content-Type' : 'application/json'}
-
-            // update({
-            // 'x-o2tv-access-token' : str(service['access_token']),
-            // 'x-o2tv-sdata' : str(service['sdata']),
-            // 'x-o2tv-device-id' : addon.getSetting('deviceid'),
-            // 'x-o2tv-device-name' : addon.getSetting('devicename')})
-
             var header = new Dictionary<string, string>();
 
             header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0");
@@ -898,17 +910,14 @@ namespace O2TVAPI
 
         public void SetCredentials(string username, string password, string childLockPIN = null)
         {
-
         }
 
         public async Task Stop()
         {
-
         }
 
         public async Task Unlock()
         {
-
         }
 
         private string GetRequestsString(Dictionary<string, string> p)
