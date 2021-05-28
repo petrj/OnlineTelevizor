@@ -55,7 +55,7 @@ namespace OnlineTelevizor.Droid
             //_wakeLock.Release();
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
-
+            
             if (_cfg.EnableLogging)
             {
                 _loggingService = new BasicLoggingService(_cfg.LoggingLevel);
@@ -193,42 +193,46 @@ namespace OnlineTelevizor.Droid
                     var snackBar = Snackbar.Make(view, message, Snackbar.LengthLong);
 
                     var textView = snackBar.View.FindViewById<TextView>(Resource.Id.snackbar_text);
-                    textView.SetMaxLines(1);
+
+                    var minTextSize = textView.TextSize; // 16
+                    
                     textView.SetTextColor(Android.Graphics.Color.White);
 
-                    if (DeviceDisplay.MainDisplayInfo.Height < DeviceDisplay.MainDisplayInfo.Width)
-                    {
-                        /*
+                    var screenHeightRate = 0;
+
+                    /*
                             configuration font size:
 
-                            Normal = 0,      -> 1/10 of screen height
+                            Normal = 0,     
                             AboveNormal = 1,
                             Big = 2,
                             Biger = 3,
                             VeryBig = 4,
-                            Huge = 5         -> 1/5 of screen height
+                            Huge = 5        
 
                           */
 
-                        var ratio = 10 - (int)_cfg.AppFontSize;
-                        textView.SetTextSize(Android.Util.ComplexUnitType.Px, Convert.ToSingle(DeviceDisplay.MainDisplayInfo.Height / ratio));
-                    } else
+                    if (DeviceDisplay.MainDisplayInfo.Height < DeviceDisplay.MainDisplayInfo.Width)
                     {
-                        /*
-                            configuration font size:
+                        // Landscape
 
-                            Normal = 0,      -> 1/20 of screen height
-                            AboveNormal = 1,
-                            Big = 2,
-                            Biger = 3,
-                            VeryBig = 4,
-                            Huge = 5         -> 1/10 of screen height
-
-                            */
-
-                        var ratio = 20 - ((int)_cfg.AppFontSize*2);
-                        textView.SetTextSize(Android.Util.ComplexUnitType.Px, Convert.ToSingle(DeviceDisplay.MainDisplayInfo.Height / ratio));
+                        screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 10.0);
+                        textView.SetMaxLines(2);
                     }
+                    else
+                    {
+                        // Portrait
+
+                        screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 20.0);
+                        textView.SetMaxLines(4);
+                    }
+
+                    var fontSizeRange = screenHeightRate - minTextSize;
+                    var fontSizePerValue = fontSizeRange/5;
+
+                    var fontSize = minTextSize + (int)_cfg.AppFontSize * fontSizePerValue;
+
+                    textView.SetTextSize(Android.Util.ComplexUnitType.Px, Convert.ToSingle(fontSize));
 
                     snackBar.Show();
                 });

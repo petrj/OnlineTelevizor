@@ -144,10 +144,10 @@ namespace OnlineTelevizor.Views
             _viewModel.Title = detail.Title;
             _viewModel.MediaType = detail.Type;
             _viewModel.ChannelId = detail.ChanneldID;
-            _viewModel.EPGItem = detail.CurrentEPGItem;
+            _viewModel.EPGItem = detail.CurrentEPGItem;            
 
             var desc = detail.CurrentEPGItem == null ? "" : detail.CurrentEPGItem.Title;
-            MessagingCenter.Send($"\u25B6  {detail.Title} - {desc}", BaseViewModel.ToastMessage);
+            MessagingCenter.Send($"{detail.Title}\r\n\u25B6 {desc}", BaseViewModel.ToastMessage);
 
             if (Playing)
             {
