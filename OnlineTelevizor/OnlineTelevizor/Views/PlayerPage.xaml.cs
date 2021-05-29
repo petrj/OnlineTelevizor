@@ -147,7 +147,12 @@ namespace OnlineTelevizor.Views
             _viewModel.EPGItem = detail.CurrentEPGItem;            
 
             var desc = detail.CurrentEPGItem == null ? "" : detail.CurrentEPGItem.Title;
-            MessagingCenter.Send($"{detail.Title}\r\n\u25B6 {desc}", BaseViewModel.ToastMessage);
+            var msg = $"\u25B6  {detail.Title}";
+            if (!string.IsNullOrEmpty(desc))
+            {
+                msg += $" - {desc}";
+            }
+            MessagingCenter.Send(msg, BaseViewModel.ToastMessage);
 
             if (Playing)
             {

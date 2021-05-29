@@ -14,12 +14,11 @@ function Create-APK
        [Parameter(Mandatory=$true)]
        $msbuild,
 
-	   [ValidateSet("16", "27")]
+	   [ValidateSet("16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30")]
        $MinSdkVersion,
 
-	   [ValidateSet("16", "27")]
+	   [ValidateSet("16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30")]
 	   $TargetSdkVersion,
-
 
 	   [ValidateSet("Release", "Debug")]
 	   $Target = "Release"
@@ -77,10 +76,10 @@ function Create-APK
     }
 }
 
-$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
+$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe"
 if (-not (Test-Path $msbuild))
 {
-    $msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe"
+    $msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\msbuild.exe"
 }
 
 # restore nuget packages
@@ -94,5 +93,5 @@ if (-not (Test-Path -Path "nuget.exe"))
 
 .\nuget.exe restore .\OnlineTelevizor.sln
 
-Create-APK -ProjFileName "$scriptPath\OnlineTelevizor\OnlineTelevizor.Android\OnlineTelevizor.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 27 -msbuild $msbuild | Move-Item -Destination  . -Verbose -Force
-Create-APK -ProjFileName "$scriptPath\OnlineTelevizor\OnlineTelevizor.Android\OnlineTelevizor.Android.csproj" -MinSdkVersion 16 -TargetSdkVersion 27 -msbuild $msbuild -Target "Debug" | Move-Item -Destination  . -Verbose -Force
+Create-APK -ProjFileName "$scriptPath\OnlineTelevizor\OnlineTelevizor.Android\OnlineTelevizor.Android.csproj" -MinSdkVersion 18 -TargetSdkVersion 30 -msbuild $msbuild | Move-Item -Destination  . -Verbose -Force
+Create-APK -ProjFileName "$scriptPath\OnlineTelevizor\OnlineTelevizor.Android\OnlineTelevizor.Android.csproj" -MinSdkVersion 18 -TargetSdkVersion 30 -msbuild $msbuild -Target "Debug" | Move-Item -Destination  . -Verbose -Force

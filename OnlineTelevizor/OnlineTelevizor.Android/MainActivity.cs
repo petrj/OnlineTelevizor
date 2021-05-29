@@ -55,7 +55,7 @@ namespace OnlineTelevizor.Droid
             //_wakeLock.Release();
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
-            
+
             if (_cfg.EnableLogging)
             {
                 _loggingService = new BasicLoggingService(_cfg.LoggingLevel);
@@ -216,14 +216,14 @@ namespace OnlineTelevizor.Droid
                     {
                         // Landscape
 
-                        screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 10.0);
+                        screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 16.0);
                         textView.SetMaxLines(2);
                     }
                     else
                     {
                         // Portrait
 
-                        screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 20.0);
+                        screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 32.0);
                         textView.SetMaxLines(4);
                     }
 

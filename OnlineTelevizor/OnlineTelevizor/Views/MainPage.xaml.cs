@@ -571,7 +571,13 @@ namespace OnlineTelevizor.Views
 
             if (_playerPage != null && _playerPage.Playing)
             {
-                MessagingCenter.Send($"{_playerPage.PlayingChannelName}\r\n\u25B6  {_playerPage.PlayingTitleName}", BaseViewModel.ToastMessage);
+                var msg = $"\u25B6  {_playerPage.PlayingChannelName}";
+                if (!string.IsNullOrEmpty(_playerPage.PlayingTitleName))
+                {
+                    msg += $" - {_playerPage.PlayingTitleName}";
+                }
+
+                MessagingCenter.Send(msg, BaseViewModel.ToastMessage);
             }
             else
             {
