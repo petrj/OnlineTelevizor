@@ -920,7 +920,7 @@ namespace OnlineTelevizor.ViewModels
                 await _dialogService.ConfirmSingleButton("Nejsou vyplněny přihlašovací údaje" +
                     Environment.NewLine +
                     Environment.NewLine +
-                    "Pro sledování živého vysílání je nutné být uživatelem SledovaniTV.cz nebo Kuki a v nastavení musí být vyplněny odpovídající přihlašovací údaje k těmto službám.",
+                    "Pro sledování živého vysílání je nutné být uživatelem SledovaniTV.cz, Kuki nebo O2 TV a v nastavení musí být vyplněny odpovídající přihlašovací údaje k těmto službám.",
                     "Online Televizor", "Přejít do nastavení");
 
                 MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowConfiguration);
