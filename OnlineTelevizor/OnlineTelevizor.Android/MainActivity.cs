@@ -41,10 +41,13 @@ namespace OnlineTelevizor.Droid
 
             base.OnCreate(savedInstanceState);
 
-            Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
-            Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity = this;
+            Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);            
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+
+            var context = Xamarin.Essentials.Platform.AppContext;
+            var activity = Xamarin.Essentials.Platform.CurrentActivity;
 
             // wake lock - permision WAKE_LOCK required
             //var pmanager = (PowerManager)this.GetSystemService("power");
@@ -52,7 +55,7 @@ namespace OnlineTelevizor.Droid
             //_wakeLock.SetReferenceCounted(false);
             //_wakeLock.Acquire();
             //..
-            //_wakeLock.Release();
+            //_wakeLock.Release();            
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
             _cfg.DebugMode = false;            
@@ -172,8 +175,7 @@ namespace OnlineTelevizor.Droid
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
         {
-            base.OnActivityResult(requestCode, resultCode, data);
-            InAppBillingImplementation.HandleActivityResult(requestCode, resultCode, data);
+            base.OnActivityResult(requestCode, resultCode, data);            
         }
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)

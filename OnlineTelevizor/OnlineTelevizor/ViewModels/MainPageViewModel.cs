@@ -11,7 +11,6 @@ using Xamarin.Forms;
 using System.Threading;
 using Plugin.InAppBilling;
 using TVAPI;
-using Plugin.InAppBilling.Abstractions;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -840,7 +839,7 @@ namespace OnlineTelevizor.ViewModels
         }
 
         public async Task CheckPurchase()
-        {
+        {          
             _loggingService.Info($"Checking purchase");
 
             if (Config.DebugMode)

@@ -12,7 +12,6 @@ using Plugin.Permissions.Abstractions;
 using Plugin.InAppBilling;
 using System.Collections.ObjectModel;
 using System.Reflection;
-using Plugin.InAppBilling.Abstractions;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -227,7 +226,7 @@ namespace OnlineTelevizor.ViewModels
                     return;
                 }
 
-                var purchase = await CrossInAppBilling.Current.PurchaseAsync(Config.PurchaseProductId, ItemType.InAppPurchase, "apppayload");
+                var purchase = await CrossInAppBilling.Current.PurchaseAsync(Config.PurchaseProductId, ItemType.InAppPurchase);
                 if (purchase == null)
                 {
                     _loggingService.Info($"Not purchased");
