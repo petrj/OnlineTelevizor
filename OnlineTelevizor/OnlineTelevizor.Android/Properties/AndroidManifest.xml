@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="net.petrjanousek.OnlineTelevizor" android:installLocation="preferExternal" android:versionCode="30" android:versionName="30.0">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="net.petrjanousek.OnlineTelevizor" android:installLocation="preferExternal" android:versionCode="33" android:versionName="33.0">
 	<uses-sdk android:minSdkVersion="18" android:targetSdkVersion="30" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<application android:label="OnlineTelevizor" android:icon="@drawable/Icon"></application>

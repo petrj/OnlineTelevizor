@@ -206,13 +206,6 @@ namespace OnlineTelevizor.ViewModels
 
         protected async Task Pay()
         {
-            if (Config.DebugMode)
-            {
-                Config.Purchased = true;
-                IsPurchased = true;
-                return;
-            }
-
             try
             {
                 _loggingService.Debug($"Paying product id: {Config.PurchaseProductId}");
@@ -230,7 +223,7 @@ namespace OnlineTelevizor.ViewModels
                 if (purchase == null)
                 {
                     _loggingService.Info($"Not purchased");
-                    //await _dialogService.Information("Platba nebyla uskutečněna.");
+                    //await _dialogService.Information("Platba nebyla uskutečněna.");                 
                 }
                 else
                 {

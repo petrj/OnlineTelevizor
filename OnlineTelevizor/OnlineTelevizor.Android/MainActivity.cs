@@ -58,7 +58,6 @@ namespace OnlineTelevizor.Droid
             //_wakeLock.Release();            
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
-            _cfg.DebugMode = false;            
 
             if (_cfg.EnableLogging)
             {

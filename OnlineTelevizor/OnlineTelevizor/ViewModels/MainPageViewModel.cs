@@ -842,11 +842,6 @@ namespace OnlineTelevizor.ViewModels
         {          
             _loggingService.Info($"Checking purchase");
 
-            if (Config.DebugMode)
-            {
-                return;
-            }
-
             try
             {
                 // contacting service
