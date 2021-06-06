@@ -34,5 +34,11 @@ namespace OnlineTelevizor.Services
             var dp = DialogPage == null ? Application.Current.MainPage : DialogPage;
             await dp.DisplayAlert(title, message, "OK");
         }
+
+        public async Task<string> Select(List<string> options, string title = "Výběr", string cancel = "Zpět")
+        {
+            var dp = DialogPage == null ? Application.Current.MainPage : DialogPage;
+            return await dp.DisplayActionSheet(title, cancel, null, options.ToArray());
+        }        
     }
 }

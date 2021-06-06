@@ -33,6 +33,8 @@ namespace OnlineTelevizor.ViewModels
 
         private string _selectedChannelEPGDescription = String.Empty;
 
+        private CastService _castService = null;
+
         public enum SelectedPartEnum
         {
             ChannelsList = 0,
@@ -96,22 +98,81 @@ namespace OnlineTelevizor.ViewModels
             BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 60);
         }
 
-        private void LongPress(object item)
+        public async Task LongPressAction(ChannelItem item)
+        {
+            SelectedItem = item as ChannelItem;
+
+            string optionCancel = "Zpět";
+            string optionPlay = "Spustit";
+            string optionCast = "Odeslat";
+            string optionStopCast = "Zastavit odesílání";
+            string optionDetail = "Zobrazit detail";
+
+            var actions = new List<string>() { optionPlay };
+
+            if (_castService != null && _castService.IsCasting())
+            {
+                actions.Add(optionStopCast);
+            }
+            else
+            {
+                actions.Add(optionCast);
+            }
+
+            if (IsPortrait)
+            {
+                actions.Add(optionDetail);
+            }
+
+            var selectedvalue = await _dialogService.Select(actions, (item as ChannelItem).Name, optionCancel);
+
+            if (selectedvalue == optionCancel)
+            {
+                return;
+            }
+            else if (selectedvalue == optionPlay)
+            {
+                await Play();
+            }
+            else if (selectedvalue == optionDetail)
+            {
+                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
+            }
+            else if (selectedvalue == optionCast)
+            {
+                try
+                {
+                    if (_castService == null)
+                    {
+                        _castService = new CastService(_dialogService);
+                        await Task.Delay(500);
+                    }
+
+                    await _castService.StartCasting(SelectedItem.Url);
+                }
+                catch
+                {
+                    await _dialogService.Information("Odeslání se nezdařilo");
+                }
+            }
+            else if (selectedvalue == optionStopCast)
+            {
+                try
+                {
+                    _castService.StopCasting();
+                }
+                catch
+                {
+                    await _dialogService.Information("Zastavení odeslání se nezdařilo");
+                }
+            }
+        }
+
+        public async void LongPress(object item)
         {
             if (item != null && item is ChannelItem)
             {
-                // select and show program epg detail
-
-                DoNotScrollToChannel = true;
-
-                SelectedItem = item as ChannelItem;
-
-                _loggingService.Info($"Long press (channel {SelectedItem.Name})");
-
-                if (IsPortrait)
-                {
-                    MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
-                }
+                await LongPressAction(item as ChannelItem);
             }
         }
 

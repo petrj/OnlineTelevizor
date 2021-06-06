@@ -48,7 +48,7 @@ namespace OnlineTelevizor.Views
                 OnKeyDown(key);
             });
 
-            ChannelsListView.ItemSelected += ChannelsListView_ItemSelected;
+            ChannelsListView.ItemSelected += ChannelsListView_ItemSelected; 
             ChannelsListView.Scrolled += ChannelsListView_Scrolled;
 
             _filterPage = new FilterPage(_loggingService, _config, _viewModel.TVService);
@@ -59,7 +59,10 @@ namespace OnlineTelevizor.Views
 
             MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage, (sender) =>
             {
-                Detail_Clicked(this, null);
+                var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService, _viewModel.TVService);
+                detailPage.Channel = _viewModel.SelectedItem;
+
+                Navigation.PushAsync(detailPage);
             });
 
             MessagingCenter.Subscribe<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternal, (sender, mediaDetail) =>
@@ -394,8 +397,6 @@ namespace OnlineTelevizor.Views
             }).Start();
         }
 
-
-
         public void Reset()
         {
             _loggingService.Info($"Reset");
@@ -583,10 +584,10 @@ namespace OnlineTelevizor.Views
             {
                 if (_viewModel.SelectedItem != null)
                 {
-                    var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService, _viewModel.TVService);
-                    detailPage.Channel = _viewModel.SelectedItem;
-
-                    await Navigation.PushAsync(detailPage);
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        _viewModel.LongPress(_viewModel.SelectedItem);
+                    });
                 }
                 else
                 {

@@ -221,7 +221,7 @@ namespace OnlineTelevizor.Views
             Device.BeginInvokeOnMainThread(() =>
             {
                 _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);
-                videoView.MediaPlayer.Play(_media);
+                videoView.MediaPlayer.Play(_media);                
             });
 
             _playInProgress = true;

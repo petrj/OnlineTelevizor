@@ -58,6 +58,12 @@ namespace OnlineTelevizor.ViewModels
         {
             foreach (var q in Qualities)
             {
+                if (String.IsNullOrEmpty(Config.StreamQuality) && String.IsNullOrEmpty(q.Id))
+                {
+                    SelectedItem = q;
+                    break;
+                }
+
                 if ((!String.IsNullOrEmpty(Config.StreamQuality)) && (q.Id == Config.StreamQuality))
                 {
                     SelectedItem = q;
@@ -76,6 +82,12 @@ namespace OnlineTelevizor.ViewModels
             {
                 Qualities.Clear();
 
+                Qualities.Add(new QualityItem()
+                {
+                    Id = "",
+                    Name = "Auto"
+                });
+
                 var qualities = await _service.GetStreamQualities();
 
                 foreach (var q in qualities)
@@ -92,7 +104,10 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(IsBusy));
                 OnPropertyChanged(nameof(Qualities));
 
-                SelectQualityByConfg();
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    SelectQualityByConfg();
+                });
             }
         }
     }
