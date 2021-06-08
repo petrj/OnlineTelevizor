@@ -703,6 +703,11 @@ namespace OnlineTelevizor.ViewModels
                     selectedChannelNumber = SelectedItem.ChannelNumber;
                 }
 
+                if (selectedChannelNumber == null)
+                {
+                    selectedChannelNumber = "1";
+                }
+
                 OnPropertyChanged(nameof(StatusLabel));
 
                 await _semaphoreSlim.WaitAsync();
