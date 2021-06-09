@@ -119,6 +119,16 @@ namespace OnlineTelevizor.Views
                 ToolbarItemSettings_Clicked(this, null);
             });
 
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.CastingStarted, (sender) =>
+            {
+                _viewModel.IsCasting = true;
+            });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.CastingStopped, (sender) =>
+            {
+                _viewModel.IsCasting = false;
+            });
+
             if (Device.RuntimePlatform == Device.UWP ||
                 Device.RuntimePlatform == Device.iOS)
             {

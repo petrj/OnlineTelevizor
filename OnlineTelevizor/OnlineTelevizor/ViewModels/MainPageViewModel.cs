@@ -17,10 +17,12 @@ namespace OnlineTelevizor.ViewModels
     public class MainPageViewModel : BaseViewModel
     {
         private TVService _service;
-        private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);        
 
         public ObservableCollection<ChannelItem> Channels { get; set; } = new ObservableCollection<ChannelItem>();
         public ObservableCollection<ChannelItem> AllNotFilteredChannels { get; set; } = new ObservableCollection<ChannelItem>();
+
+        public bool IsCasting { get; set; }  = false;
 
         private Dictionary<string, ChannelItem> _channelById { get; set; } = new Dictionary<string, ChannelItem>();
 
@@ -108,14 +110,14 @@ namespace OnlineTelevizor.ViewModels
 
             var actions = new List<string>() { optionPlay };
 
-            //if (_castService != null && _castService.IsCasting())
-            //{
+            if (IsCasting)
+            {
                 actions.Add(optionStopCast);
-            //}
-            //else
-            //{
+            }
+            else
+            {
                 actions.Add(optionCast);
-            //}
+            }
 
             if (IsPortrait)
             {

@@ -44,6 +44,8 @@ namespace OnlineTelevizor.Views
                 _mediaPlayer.Play(media);
             }
 
+            MessagingCenter.Send(String.Empty, BaseViewModel.CastingStarted);
+
             await Navigation.PopAsync();
         }
 
@@ -56,6 +58,8 @@ namespace OnlineTelevizor.Views
         {
             if (_mediaPlayer != null)
                 _mediaPlayer.Stop();
+
+            MessagingCenter.Send(String.Empty, BaseViewModel.CastingStopped);
         }
 
         public string Url
