@@ -41,7 +41,7 @@ namespace OnlineTelevizor.Droid
 
             base.OnCreate(savedInstanceState);
 
-            Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);            
+            Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
@@ -55,7 +55,7 @@ namespace OnlineTelevizor.Droid
             //_wakeLock.SetReferenceCounted(false);
             //_wakeLock.Acquire();
             //..
-            //_wakeLock.Release();            
+            //_wakeLock.Release();
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
@@ -174,7 +174,7 @@ namespace OnlineTelevizor.Droid
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
         {
-            base.OnActivityResult(requestCode, resultCode, data);            
+            base.OnActivityResult(requestCode, resultCode, data);
         }
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
@@ -198,7 +198,7 @@ namespace OnlineTelevizor.Droid
                     var textView = snackBar.View.FindViewById<TextView>(Resource.Id.snackbar_text);
 
                     var minTextSize = textView.TextSize; // 16
-                    
+
                     textView.SetTextColor(Android.Graphics.Color.White);
 
                     var screenHeightRate = 0;
@@ -206,12 +206,12 @@ namespace OnlineTelevizor.Droid
                     /*
                             configuration font size:
 
-                            Normal = 0,     
+                            Normal = 0,
                             AboveNormal = 1,
                             Big = 2,
                             Biger = 3,
                             VeryBig = 4,
-                            Huge = 5        
+                            Huge = 5
 
                           */
 

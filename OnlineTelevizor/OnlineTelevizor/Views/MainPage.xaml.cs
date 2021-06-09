@@ -25,6 +25,7 @@ namespace OnlineTelevizor.Views
 
         private FilterPage _filterPage;
         private PlayerPage _playerPage;
+        private CastRenderersPage _renderersPage;
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private bool _firstSelectionAfterStartup = false;
@@ -48,7 +49,7 @@ namespace OnlineTelevizor.Views
                 OnKeyDown(key);
             });
 
-            ChannelsListView.ItemSelected += ChannelsListView_ItemSelected; 
+            ChannelsListView.ItemSelected += ChannelsListView_ItemSelected;
             ChannelsListView.Scrolled += ChannelsListView_Scrolled;
 
             _filterPage = new FilterPage(_loggingService, _config, _viewModel.TVService);
@@ -63,6 +64,29 @@ namespace OnlineTelevizor.Views
                 detailPage.Channel = _viewModel.SelectedItem;
 
                 Navigation.PushAsync(detailPage);
+            });
+
+            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowRenderers, (sender) =>
+            {
+                if (_viewModel.SelectedItem == null)
+                    return;
+
+                if (_renderersPage == null)
+                {
+                    _renderersPage = new CastRenderersPage(_loggingService, _config);
+                }
+
+                _renderersPage.Url = _viewModel.SelectedItem.Url;
+
+                Navigation.PushAsync(_renderersPage);
+            });
+
+            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.StopCasting, (sender) =>
+            {
+                if (_renderersPage != null)
+                {
+                    _renderersPage.StopCasting();
+                }
             });
 
             MessagingCenter.Subscribe<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternal, (sender, mediaDetail) =>

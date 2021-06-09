@@ -33,8 +33,6 @@ namespace OnlineTelevizor.ViewModels
 
         private string _selectedChannelEPGDescription = String.Empty;
 
-        private CastService _castService = null;
-
         public enum SelectedPartEnum
         {
             ChannelsList = 0,
@@ -103,21 +101,21 @@ namespace OnlineTelevizor.ViewModels
             SelectedItem = item as ChannelItem;
 
             string optionCancel = "Zpět";
-            string optionPlay = "Spustit";
-            string optionCast = "Odeslat";
+            string optionPlay = "Spustit ..";
+            string optionCast = "Odeslat ..";
             string optionStopCast = "Zastavit odesílání";
-            string optionDetail = "Zobrazit detail";
+            string optionDetail = "Zobrazit detail ..";
 
             var actions = new List<string>() { optionPlay };
 
-            if (_castService != null && _castService.IsCasting())
-            {
+            //if (_castService != null && _castService.IsCasting())
+            //{
                 actions.Add(optionStopCast);
-            }
-            else
-            {
+            //}
+            //else
+            //{
                 actions.Add(optionCast);
-            }
+            //}
 
             if (IsPortrait)
             {
@@ -140,31 +138,11 @@ namespace OnlineTelevizor.ViewModels
             }
             else if (selectedvalue == optionCast)
             {
-                try
-                {
-                    if (_castService == null)
-                    {
-                        _castService = new CastService(_dialogService);
-                        await Task.Delay(500);
-                    }
-
-                    await _castService.StartCasting(SelectedItem.Url);
-                }
-                catch
-                {
-                    await _dialogService.Information("Odeslání se nezdařilo");
-                }
+                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowRenderers);
             }
             else if (selectedvalue == optionStopCast)
             {
-                try
-                {
-                    _castService.StopCasting();
-                }
-                catch
-                {
-                    await _dialogService.Information("Zastavení odeslání se nezdařilo");
-                }
+                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.StopCasting);
             }
         }
 
@@ -905,7 +883,7 @@ namespace OnlineTelevizor.ViewModels
         }
 
         public async Task CheckPurchase()
-        {          
+        {
             _loggingService.Info($"Checking purchase");
 
             try

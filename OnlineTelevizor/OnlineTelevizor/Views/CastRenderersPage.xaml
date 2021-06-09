@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OnlineTelevizor.Views.CastRenderersPage"
+             BackgroundColor="Black"
+             Title="Odeslat do zařízení">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="ListItemLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="Margin" Value="15,5,5,5"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="ListViewStyle" TargetType="ListView">
+                <Setter Property="SeparatorVisibility" Value="Default"/>
+                <Setter Property="SeparatorColor" Value="White"/>
+                <Setter Property="HasUnevenRows" Value="True"/>
+                <Setter Property="IsPullToRefreshEnabled" Value="True"/>
+                <Setter Property="VerticalOptions" Value="FillAndExpand"/>
+            </Style>
+
+            <Style x:Key="CaptionStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="NoteStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+            </Style>
+
+            <Style x:Key="IconStyle" TargetType="Image">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="Margin" Value="5,0,10,0"/>
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout Margin="20,10,20,0">
+
+        <Label Text="Dostupná zařízení:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForText}"/>
+
+        <ListView x:Name="RenderersView"
+                            ItemsSource="{Binding Renderers}"
+                            ItemTapped="Renderer_Tapped"
+                            CachingStrategy="RecycleElement"
+                            IsPullToRefreshEnabled="False"
+                            Style="{StaticResource ListViewStyle}">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.View>
+                            <Grid>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="50" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="50" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" Style="{DynamicResource ListItemLabelStyle}" FontSize="{Binding Source={x:Reference RenderersView}, Path=BindingContext.FontSizeForRendererItem}" />
+                                <Image Grid.Row="0" Grid.Column="1" Source="{Binding IconUri}" Style="{DynamicResource IconStyle}"/>
+
+                            </Grid>
+
+                        </ViewCell.View>
+
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+        <Label Text="Hledání dostupných zařízení stále probíhá ..." Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForNote}"/>
+        <ActivityIndicator IsRunning="true" />
+
+    </StackLayout>
+
+</ContentPage>
