@@ -28,24 +28,23 @@ namespace TestConsole
             Console.WriteLine("...");
 
 
+            /*
             var tvService = new O2TV(loggingService);
 
             if (JSONObject.FileExists("O2TV.credentials.json"))
-            {
-                /*
-                credentials.json:
-                 {
-                    "Username": "O2TV email",
-                    "password": "some password"
-                 }
-                */
+            {                
+                //credentials.json:
+                // {
+                //    "Username": "O2TV email",
+                //    "password": "some password"
+                // }             
 
                 var credentials = JSONObject.LoadFromFile<Credentials>("O2TV.credentials.json");
                 tvService.SetConnection(credentials.Username, credentials.Password);
             }
+            */
 
-
-            /*
+            
             var tvService = new KUKITV(loggingService);
 
             if (JSONObject.FileExists("kuki.json"))
@@ -53,7 +52,7 @@ namespace TestConsole
                 var conn = JSONObject.LoadFromFile<DeviceConnection>("kuki.json");
                 tvService.SetConnection(conn.deviceId, null);
             }
-            */
+            
 
                 /*
                 var tvService = new SledovaniTV(loggingService);
@@ -117,6 +116,7 @@ namespace TestConsole
                         Console.WriteLine("-----------------------");
                     }
 
+                    /*
                     var channelsEPG = await tvService.GetChannelsEPG();
                     foreach (var epg in channelsEPG)
                     {
@@ -133,7 +133,7 @@ namespace TestConsole
                             Console.WriteLine($"                                   {description}");
                         }
                     }
-
+                    */
 
                     //Console.WriteLine();
                     //Console.WriteLine("Press any key");

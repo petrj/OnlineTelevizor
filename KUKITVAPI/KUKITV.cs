@@ -209,7 +209,12 @@ namespace KUKITVAPI
                         Group = ""
                     };
 
+                    
                     ch.LogoUrl = $"https://www.kuki.cz/media/chlogo/{ch.Id}.png";
+
+                    // white logo images
+                    //var logo = chJson.GetStringValue("epg_logo");
+                    //ch.LogoUrl = $"https://media.kuki.cz/imagefactory/channel_logo/channel-info-panel/fhd/{logo}";
 
                     var porn = chJson.GetStringValue("porn");
                     if (porn.ToLower() != "false")
