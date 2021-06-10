@@ -1,4 +1,5 @@
-﻿using OnlineTelevizor.Models;
+﻿using LoggerService;
+using OnlineTelevizor.Models;
 using OnlineTelevizor.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace OnlineTelevizor.UWP
         {
             this.InitializeComponent();
 
-            LoadApplication(new OnlineTelevizor.Views.App(new UWPOnlineTelevizorConfiguration()));
+            LoadApplication(new OnlineTelevizor.Views.App(new UWPOnlineTelevizorConfiguration(), new DummyLoggingService()));
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.UriMessage, (url) =>
             {

@@ -54,6 +54,8 @@ namespace OnlineTelevizor.UWP
 
                 Xamarin.Forms.Forms.Init(e);
 
+                FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
+
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
                     //TODO: Load state from previously suspended application

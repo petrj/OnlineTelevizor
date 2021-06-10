@@ -46,6 +46,8 @@ namespace OnlineTelevizor.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
+
             var context = Xamarin.Essentials.Platform.AppContext;
             var activity = Xamarin.Essentials.Platform.CurrentActivity;
 

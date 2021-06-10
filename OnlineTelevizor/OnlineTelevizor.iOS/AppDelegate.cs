@@ -6,6 +6,7 @@ using AVFoundation;
 using AVKit;
 using CoreGraphics;
 using Foundation;
+using LoggerService;
 using MediaPlayer;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.ViewModels;
@@ -31,6 +32,8 @@ namespace OnlineTelevizor.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
+
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.UriMessage, (url) =>
             {
@@ -83,7 +86,7 @@ namespace OnlineTelevizor.iOS
                     });
             });            
 
-            LoadApplication(new App(new IOSOnlineTelevizorConfiguration()));
+            LoadApplication(new App(new IOSOnlineTelevizorConfiguration(), new DummyLoggingService()));
 
             return base.FinishedLaunching(app, options);
         }
