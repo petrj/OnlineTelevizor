@@ -17,7 +17,7 @@ namespace OnlineTelevizor.ViewModels
     public class MainPageViewModel : BaseViewModel
     {
         private TVService _service;
-        private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);        
+        private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public ObservableCollection<ChannelItem> Channels { get; set; } = new ObservableCollection<ChannelItem>();
         public ObservableCollection<ChannelItem> AllNotFilteredChannels { get; set; } = new ObservableCollection<ChannelItem>();
@@ -174,13 +174,13 @@ namespace OnlineTelevizor.ViewModels
         {
             _loggingService.Info($"Selecting channel by number {number}");
 
-            await _semaphoreSlim.WaitAsync();
-
             await Task.Run(
-                () =>
+                async () =>
                 {
                     try
                     {
+                        await _semaphoreSlim.WaitAsync();
+
                         // looking for channel by its number:
                         foreach (var ch in Channels)
                         {

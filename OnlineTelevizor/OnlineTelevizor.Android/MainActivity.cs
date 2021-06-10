@@ -49,14 +49,6 @@ namespace OnlineTelevizor.Droid
             var context = Xamarin.Essentials.Platform.AppContext;
             var activity = Xamarin.Essentials.Platform.CurrentActivity;
 
-            // wake lock - permision WAKE_LOCK required
-            //var pmanager = (PowerManager)this.GetSystemService("power");
-            //_wakeLock = pmanager.NewWakeLock(WakeLockFlags.Partial, "net.petrjanousek.OnlineTelevizor_wakelock");
-            //_wakeLock.SetReferenceCounted(false);
-            //_wakeLock.Acquire();
-            //..
-            //_wakeLock.Release();
-
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
             if (_cfg.EnableLogging)

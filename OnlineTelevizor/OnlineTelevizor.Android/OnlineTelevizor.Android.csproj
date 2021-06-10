@@ -49,6 +49,7 @@
     <AndroidSigningKeyStore>C:\Users\Jean Luc Picard\AppData\Local\Xamarin\Mono for Android\Keystore\PJsAndroidKeyStore\PJsAndroidKeyStore.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>
     </AndroidSigningStorePass>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vs4887.tmp\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -59,7 +60,7 @@
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsE03A.tmp\Release\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vs4887.tmp\Release\</IntermediateOutputPath>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
@@ -84,7 +85,7 @@
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsE03A.tmp\Debug - Live Player\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vs4887.tmp\Debug - Live Player\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />

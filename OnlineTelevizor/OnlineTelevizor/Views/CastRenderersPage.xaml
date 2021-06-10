@@ -79,7 +79,7 @@
 
         </ListView>
 
-        <Label Text="Hledání dostupných zařízení stále probíhá ..." Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForNote}"/>
+        <Label Text="Hledání dostupných zařízení ..." Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForNote}"/>
         <ActivityIndicator IsRunning="true" />
 
     </StackLayout>
