@@ -899,7 +899,8 @@ namespace OnlineTelevizor.ViewModels
                 Title = SelectedItem.Name,
                 Type = SelectedItem.Type,
                 CurrentEPGItem = SelectedItem.CurrentEPGItem,
-                ChanneldID = SelectedItem.Id
+                ChanneldID = SelectedItem.Id,
+                LogoUrl = SelectedItem.LogoUrl
             });
         }
 

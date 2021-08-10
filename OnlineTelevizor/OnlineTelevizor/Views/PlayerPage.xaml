@@ -20,6 +20,12 @@
             <Style x:Key="AudioImageStyle" TargetType="Label">
                 <Setter Property="HorizontalOptions" Value="Center"/>
                 <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="Margin" Value="2,2,2,2"/>
+            </Style>
+
+            <Style x:Key="LogoImageStyle" TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
                 <Setter Property="Margin" Value="20,20,20,20"/>
             </Style>
 
@@ -29,10 +35,17 @@
     <ContentPage.Content>
         <StackLayout x:Name="VideoStackLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <vlc:VideoView IsVisible="{Binding VideoViewVisible}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView"  />            
-            <StackLayout x:Name="AudioOnlyStackLayout" IsVisible="{Binding AudioViewVisible}" Margin="20,20,20,20" >                
-                    <Label x:Name="AudioOnlyText" Text="{Binding Title}" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding FontSizeForChannel}" />
-                    <Label x:Name="AudioOnlyDescription" Text="{Binding Description}" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding FontSizeForDescription}" />                
-                    <Image Source="{Binding AudioIcon}" x:Name="AudioOnlyImage" Style="{DynamicResource AudioImageStyle}" />
+            <StackLayout x:Name="AudioOnlyStackLayout" IsVisible="{Binding AudioViewVisible}" Margin="20,20,20,20" >
+
+                    <StackLayout 
+                        Orientation="Horizontal"
+                        HorizontalOptions="Center">
+                        <Label x:Name="AudioOnlyText" Text="{Binding Title}" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding FontSizeForChannel}" />
+                        <Image Source="{Binding AudioIcon}" x:Name="AudioOnlyImage" Style="{DynamicResource AudioImageStyle}" HeightRequest="35" MinimumHeightRequest="35" />
+                </StackLayout>                               
+                
+                    <Label x:Name="AudioOnlyDescription" Text="{Binding Description}" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding FontSizeForDescription}" />
+                    <Image Source="{Binding LogoIcon}" x:Name="LogoIconImage" Style="{DynamicResource LogoImageStyle}" HeightRequest="100" MinimumHeightRequest="100" />
                     <Label x:Name="AudioOnlyTimeDescription" Text="{Binding TimeDescription}" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding FontSizeForDetailedDescription}"/>
                 <Grid Margin="0,10,0,10">
                     <Grid.RowDefinitions>

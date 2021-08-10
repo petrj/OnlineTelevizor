@@ -21,6 +21,7 @@ namespace OnlineTelevizor.ViewModels
         private string _description;
         private string _timeDescription;
         private string _detailedDescription;
+        private string _logoIcon;
         private string _mediaType;
         private string _channelId;
         private EPGItem _epgItem;
@@ -38,6 +39,20 @@ namespace OnlineTelevizor.ViewModels
             {
                 return "Audio" + _animePos.ToString();
             }        
+        }
+
+        public string LogoIcon
+        {
+            get
+            {
+                return _logoIcon;
+            }
+            set
+            {
+                _logoIcon = value;
+
+                OnPropertyChanged(nameof(LogoIcon));
+            }
         }
 
         public void Anime()
@@ -182,7 +197,7 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(DetailedDescription));
             }
         }
-
+ 
         public bool VideoViewVisible
         {
             get

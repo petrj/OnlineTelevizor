@@ -144,7 +144,8 @@ namespace OnlineTelevizor.Views
             _viewModel.Title = detail.Title;
             _viewModel.MediaType = detail.Type;
             _viewModel.ChannelId = detail.ChanneldID;
-            _viewModel.EPGItem = detail.CurrentEPGItem;            
+            _viewModel.EPGItem = detail.CurrentEPGItem;
+            _viewModel.LogoIcon = detail.LogoUrl;
 
             var desc = detail.CurrentEPGItem == null ? "" : detail.CurrentEPGItem.Title;
             var msg = $"\u25B6  {detail.Title}";
