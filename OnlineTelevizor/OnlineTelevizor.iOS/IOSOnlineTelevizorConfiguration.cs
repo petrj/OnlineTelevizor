@@ -297,6 +297,42 @@ namespace OnlineTelevizor.iOS
             { }
         }
 
+        public bool PurchaseTokenSent
+        {
+            get
+            {
+                return true;
+            }
+            set
+            {
+                
+            }
+        }
+
+        public string PurchaseToken
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                
+            }
+        }
+
+        public bool PurchaseTokenSent
+        {
+            get
+            {
+                return true;
+            }
+            set
+            {
+                
+            }
+        }
+
         public bool NotPurchased
         {
             get

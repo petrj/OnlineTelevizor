@@ -283,6 +283,18 @@ namespace OnlineTelevizor.UWP
             }
         }
 
+        public bool PurchaseTokenSent
+        {
+            get
+            {
+                return true;
+            }
+            set
+            {
+
+            }
+        }
+
         public bool NotPurchased
         {
             get

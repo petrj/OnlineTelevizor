@@ -10,7 +10,7 @@ using Xamarin.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using System.Text.RegularExpressions;
-
+using Plugin.InAppBilling;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -146,6 +146,100 @@ namespace OnlineTelevizor.ViewModels
         }
 
         #endregion
+
+
+        protected async Task<InAppBillingPurchase> GetPurchase()
+        {
+            var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
+            foreach (var purchase in purchases)
+            {
+                if (purchase.ProductId == Config.PurchaseProductId &&
+                    purchase.State == PurchaseState.Purchased)
+                {
+                    return purchase;
+                }
+            }
+
+            return null;
+        }
+
+        public async Task CheckPurchase()
+        {
+            _loggingService.Info($"Checking purchase");
+
+            try
+            {
+                // contacting service
+
+                var connected = await CrossInAppBilling.Current.ConnectAsync();
+
+                if (!connected)
+                {
+                    _loggingService.Info($"Connection to AppBilling service failed");
+                    //await _dialogService.Information("Nepodařilo se ověřit stav zaplacení plné verze.");
+                    return;
+                }                
+                
+                var purchase = await GetPurchase();
+                if (purchase != null)
+                { 
+                        Config.Purchased = true;
+
+                        if (!purchase.IsAcknowledged || !Config.PurchaseTokenSent)
+                        {
+                            await AcknowledgePurchase(purchase.PurchaseToken);
+                        }
+
+                        _loggingService.Debug($"App purchased (InAppBillingPurchase)");
+                    
+                        _loggingService.Debug($"Purchase AutoRenewing: {purchase.AutoRenewing}");
+                        _loggingService.Debug($"Purchase Payload: {purchase.Payload}");
+                        _loggingService.Debug($"Purchase PurchaseToken: {purchase.PurchaseToken}");
+                        _loggingService.Debug($"Purchase State: {purchase.State}");
+                        _loggingService.Debug($"Purchase TransactionDateUtc: {purchase.TransactionDateUtc}");
+                        _loggingService.Debug($"Purchase ConsumptionState: {purchase.ConsumptionState}");
+                }
+
+                //if (purchase == null && Config.Purchased)
+                //{
+                //    _loggingService.Debug($"Purchase refunded?");
+                //    Config.Purchased = false;
+                //}
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex, "Error while checking purchase");
+            }
+            finally
+            {
+                await CrossInAppBilling.Current.DisconnectAsync();
+            }
+        }
+
+        protected async Task AcknowledgePurchase(string token)
+        {
+            _loggingService.Debug($"Acknowledge purchase token: {token}");
+
+            try
+            {
+                var acknowledged = await CrossInAppBilling.Current.AcknowledgePurchaseAsync(token);
+
+                if (acknowledged)
+                {
+                    Config.PurchaseTokenSent = true;
+                    _loggingService.Info($"Successfully acknowledged");
+                }
+                else
+                {
+                    _loggingService.Info($"Acknowledge failed");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex, "Acknowledge error");
+            }            
+        }
 
         public async Task PlayStream(MediaDetail mediaDetail)
         {

@@ -237,6 +237,19 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+
+        public bool PurchaseTokenSent
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("PurchaseTokenSent");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("PurchaseTokenSent", value);
+            }
+        }
+
         public bool NotPurchased
         {
             get

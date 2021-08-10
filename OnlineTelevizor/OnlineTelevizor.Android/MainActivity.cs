@@ -51,7 +51,7 @@ namespace OnlineTelevizor.Droid
             var context = Xamarin.Essentials.Platform.AppContext;
             var activity = Xamarin.Essentials.Platform.CurrentActivity;
 
-            _cfg = new AndroidOnlineTelevizorConfiguration();
+            _cfg = new AndroidOnlineTelevizorConfiguration();     
 
             if (_cfg.EnableLogging)
             {

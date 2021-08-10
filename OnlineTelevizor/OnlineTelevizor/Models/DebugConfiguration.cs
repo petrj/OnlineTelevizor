@@ -31,6 +31,8 @@ namespace OnlineTelevizor.Models
         private bool _doNotSplitScreenOnLandscape = true;
         private LoggingLevelEnum _loggingLevel;
         private bool _purchased = true;
+        private bool _purchaseTokenSent = true;
+
         private bool _dDebugMode = true;
         private string _dDeviceId;
         private string _dDevicePassword;
@@ -60,6 +62,8 @@ namespace OnlineTelevizor.Models
         public bool EnableLogging { get => _enableLogging; set => _enableLogging = value; }
         public LoggingLevelEnum LoggingLevel { get => _loggingLevel; set => _loggingLevel = value; }
         public bool Purchased { get => _purchased; set => _purchased = value; }
+
+        public bool PurchaseTokenSent { get => _purchaseTokenSent; set => _purchaseTokenSent = value; }
 
         public bool NotPurchased => !Purchased;
         public string PurchaseProductId => "onlinetelevizor.full";

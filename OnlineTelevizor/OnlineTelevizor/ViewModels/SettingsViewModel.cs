@@ -174,22 +174,17 @@ namespace OnlineTelevizor.ViewModels
                 if (connected)
                 {
                     // check InAppBillingPurchase
-                    var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
-                    foreach (var purchase in purchases)
-                    {
-                        if (purchase.ProductId == Config.PurchaseProductId &&
-                            purchase.State == PurchaseState.Purchased)
-                        {
-                            sb.AppendLine("");
-                            sb.AppendLine("");
-                            sb.AppendLine($"Zakoupena plná verze");
-                            sb.AppendLine("");
-                            sb.AppendLine($"Datum : {purchase.TransactionDateUtc}");
-                            sb.AppendLine($"Id objednávky: {purchase.Id}");
 
-                            break;
-                        }
-                    }
+                    var purchase = await GetPurchase();
+                    if (purchase != null)
+                    {
+                        sb.AppendLine("");
+                        sb.AppendLine("");
+                        sb.AppendLine($"Zakoupena plná verze");
+                        sb.AppendLine("");
+                        sb.AppendLine($"Datum : {purchase.TransactionDateUtc}");
+                        sb.AppendLine($"Id objednávky: {purchase.Id}");
+                    }                    
                 }
             }
             catch (Exception ex)
@@ -238,7 +233,11 @@ namespace OnlineTelevizor.ViewModels
                     _loggingService.Info($"Purchase AutoRenewing: {purchase.AutoRenewing}");
 
                     Config.Purchased = true;
-                    IsPurchased = true;
+                    Config.PurchaseTokenSent = false;
+
+                    await AcknowledgePurchase(purchase.PurchaseToken);
+
+                    IsPurchased = true;          
 
                     //await _dialogService.Information("Platba byla úspěšně provedena.");
                 }

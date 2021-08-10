@@ -50,7 +50,10 @@ namespace OnlineTelevizor.Models
         LoggingLevelEnum LoggingLevel { get; set; }
 
         bool Purchased { get; set; }
-        bool NotPurchased { get; }
+
+        bool PurchaseTokenSent { get; set; }
+
+        bool NotPurchased { get; }          
 
         bool DoNotSplitScreenOnLandscape { get; set; }
 

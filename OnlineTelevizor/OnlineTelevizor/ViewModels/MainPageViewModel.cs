@@ -884,64 +884,7 @@ namespace OnlineTelevizor.ViewModels
             OnPropertyChanged(nameof(WidthForIcon));
         }
 
-        public async Task CheckPurchase()
-        {
-            _loggingService.Info($"Checking purchase");
-
-            try
-            {
-                // contacting service
-
-                var connected = await CrossInAppBilling.Current.ConnectAsync();
-
-                if (!connected)
-                {
-                    _loggingService.Info($"Connection to AppBilling service failed");
-                    //await _dialogService.Information("Nepodařilo se ověřit stav zaplacení plné verze.");
-                    return;
-                }
-
-                bool purchased = false;
-
-                // check InAppBillingPurchase
-                var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
-                foreach (var purchase in purchases)
-                {
-                    if (purchase.ProductId == Config.PurchaseProductId &&
-                        purchase.State == PurchaseState.Purchased)
-                    {
-                        Config.Purchased = true;
-                        purchased = true;
-
-                        _loggingService.Debug($"Already purchased (InAppBillingPurchase)");
-
-                        _loggingService.Debug($"Purchase AutoRenewing: {purchase.AutoRenewing}");
-                        _loggingService.Debug($"Purchase Payload: {purchase.Payload}");
-                        _loggingService.Debug($"Purchase PurchaseToken: {purchase.PurchaseToken}");
-                        _loggingService.Debug($"Purchase State: {purchase.State}");
-                        _loggingService.Debug($"Purchase TransactionDateUtc: {purchase.TransactionDateUtc}");
-                        _loggingService.Debug($"Purchase ConsumptionState: {purchase.ConsumptionState}");
-
-                        break;
-                    }
-                }
-
-                if (!purchased && Config.Purchased)
-                {
-                    _loggingService.Debug($"Purchase refunded?");
-                    Config.Purchased = false;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                _loggingService.Error(ex, "Error while checking purchase");
-            }
-            finally
-            {
-                await CrossInAppBilling.Current.DisconnectAsync();
-            }
-        }
+       
 
         public async Task Play()
         {
