@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vlc="clr-namespace:LibVLCSharp.Forms.Shared;assembly=LibVLCSharp.Forms"
              mc:Ignorable="d"
-             x:Class="OnlineTelevizor.Views.PlayerPage">
+             x:Class="OnlineTelevizor.Views.PlayerPage" xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -50,7 +50,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Row="0" Grid.Column="0" Source="{Binding LogoIcon}" x:Name="LogoIconImage" Style="{DynamicResource LogoImageStyle}" Aspect="AspectFit" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                    <ffimageloading:CachedImage Grid.Row="0" Grid.Column="0" Source="{Binding LogoIcon}" Style="{DynamicResource LogoImageStyle}" Aspect="AspectFit" DownsampleToViewSize="false"  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  DownsampleHeight="150" LoadingPlaceholder="Empty.png"/>
                 </Grid>
 
                 <ScrollView>
