@@ -176,13 +176,23 @@ namespace OnlineTelevizor.ViewModels
                     // check InAppBillingPurchase
 
                     var purchase = await GetPurchase();
-                    if (purchase != null)
+                    if (purchase != null &&  purchase.State == PurchaseState.Purchased)
                     {
                         sb.AppendLine("");
                         sb.AppendLine("");
                         sb.AppendLine($"Zakoupena plná verze");
                         sb.AppendLine("");
                         sb.AppendLine($"Datum : {purchase.TransactionDateUtc}");
+                        sb.AppendLine($"Id objednávky: {purchase.Id}");
+                    }
+                    if (purchase != null && purchase.State == PurchaseState.PaymentPending)
+                    {
+                        sb.AppendLine("");
+                        sb.AppendLine("");
+                        sb.AppendLine($"Plná verze zakoupena,");
+                        sb.AppendLine($"čeká se na potvrzení platby");
+                        sb.AppendLine("");
+                        sb.AppendLine("");
                         sb.AppendLine($"Id objednávky: {purchase.Id}");
                     }
                 }
@@ -232,14 +242,21 @@ namespace OnlineTelevizor.ViewModels
                     _loggingService.Info($"Purchase ConsumptionState: {purchase.ConsumptionState.ToString()}");
                     _loggingService.Info($"Purchase AutoRenewing: {purchase.AutoRenewing}");
 
-                    Config.Purchased = true;
-                    Config.PurchaseTokenSent = false;
+                    if (purchase.State == PurchaseState.Purchased)
+                    {
+                        Config.Purchased = true;
+                        Config.PurchaseTokenSent = false;
 
-                    await AcknowledgePurchase(purchase.PurchaseToken);
+                        await AcknowledgePurchase(purchase.PurchaseToken);
 
-                    IsPurchased = true;
-
-                    //await _dialogService.Information("Platba byla úspěšně provedena.");
+                        IsPurchased = true;
+                    } else if (purchase.State == PurchaseState.PaymentPending)
+                    {
+                        await _dialogService.Information($"Platba byla úspěšně provedena, čeká se na její potvrzení.{Environment.NewLine}Kontrola potvrzení platby proběhne po případném znovu spuštění aplikace.");
+                    } else
+                    {
+                        await _dialogService.Information($"Při provedení platby došlo k chybě.");
+                    }
                 }
             }
             catch (Exception ex)

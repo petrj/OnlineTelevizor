@@ -155,8 +155,7 @@ namespace OnlineTelevizor.ViewModels
             var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
             foreach (var purchase in purchases)
             {
-                if (purchase.ProductId == Config.PurchaseProductId &&
-                    purchase.State == PurchaseState.Purchased)
+                if (purchase.ProductId == Config.PurchaseProductId)
                 {
                     return purchase;
                 }
@@ -185,28 +184,31 @@ namespace OnlineTelevizor.ViewModels
                 var purchase = await GetPurchase();
                 if (purchase != null)
                 {
-                    Config.Purchased = true;
-
-                    if (!purchase.IsAcknowledged || !Config.PurchaseTokenSent)
+                    if (purchase.State == PurchaseState.Purchased)
                     {
-                        await AcknowledgePurchase(purchase.PurchaseToken);
+                        Config.Purchased = true;
+                    } else
+                    {
+                        Config.Purchased = false;
                     }
 
-                    _loggingService.Debug($"App purchased (InAppBillingPurchase)");
+                    if (Config.Purchased)
+                    {
+                        if (!purchase.IsAcknowledged || !Config.PurchaseTokenSent)
+                        {
+                            await AcknowledgePurchase(purchase.PurchaseToken);
+                        }
 
-                    _loggingService.Debug($"Purchase AutoRenewing: {purchase.AutoRenewing}");
-                    _loggingService.Debug($"Purchase Payload: {purchase.Payload}");
-                    _loggingService.Debug($"Purchase PurchaseToken: {purchase.PurchaseToken}");
-                    _loggingService.Debug($"Purchase State: {purchase.State}");
-                    _loggingService.Debug($"Purchase TransactionDateUtc: {purchase.TransactionDateUtc}");
-                    _loggingService.Debug($"Purchase ConsumptionState: {purchase.ConsumptionState}");
+                        _loggingService.Debug($"App purchased (InAppBillingPurchase)");
+
+                        _loggingService.Debug($"Purchase AutoRenewing: {purchase.AutoRenewing}");
+                        _loggingService.Debug($"Purchase Payload: {purchase.Payload}");
+                        _loggingService.Debug($"Purchase PurchaseToken: {purchase.PurchaseToken}");
+                        _loggingService.Debug($"Purchase State: {purchase.State}");
+                        _loggingService.Debug($"Purchase TransactionDateUtc: {purchase.TransactionDateUtc}");
+                        _loggingService.Debug($"Purchase ConsumptionState: {purchase.ConsumptionState}");
+                    }
                 }
-
-                //if (purchase == null && Config.Purchased)
-                //{
-                //    _loggingService.Debug($"Purchase refunded?");
-                //    Config.Purchased = false;
-                //}
             }
             catch (Exception ex)
             {
