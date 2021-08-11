@@ -58,6 +58,24 @@ namespace OnlineTelevizor.Views
                 _viewModel.RefreshCommand.Execute(null);
             };
 
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.PlayNext, (msg) =>
+            {
+                Task.Run(async () =>
+                {
+                    await _viewModel.SelectNextChannel();
+                    await _viewModel.Play();
+                });
+            });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.PlayPrevious, (msg) =>
+            {
+                Task.Run(async () =>
+                {
+                    await _viewModel.SelectPreviousChannel();
+                    await _viewModel.Play();
+                });
+            });
+
             MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage, (sender) =>
             {
                 var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService, _viewModel.TVService);

@@ -22,6 +22,8 @@ namespace OnlineTelevizor.ViewModels
         public const string EnableFullScreen = "EnableFullScreen";
         public const string DisableFullScreen = "DisableFullScreen";
         public const string PlayInternal = "PlayInternal";
+        public const string PlayNext = "PlayNext";
+        public const string PlayPrevious = "PlayPrevious";
         public const string KeyMessage = "KeyDownMessage";
         public const string ShowDetailMessage = "ShowDetailMessage";
         public const string ShowRenderers = "ShowRenderers";
@@ -178,26 +180,26 @@ namespace OnlineTelevizor.ViewModels
                     _loggingService.Info($"Connection to AppBilling service failed");
                     //await _dialogService.Information("Nepodařilo se ověřit stav zaplacení plné verze.");
                     return;
-                }                
-                
+                }
+
                 var purchase = await GetPurchase();
                 if (purchase != null)
-                { 
-                        Config.Purchased = true;
+                {
+                    Config.Purchased = true;
 
-                        if (!purchase.IsAcknowledged || !Config.PurchaseTokenSent)
-                        {
-                            await AcknowledgePurchase(purchase.PurchaseToken);
-                        }
+                    if (!purchase.IsAcknowledged || !Config.PurchaseTokenSent)
+                    {
+                        await AcknowledgePurchase(purchase.PurchaseToken);
+                    }
 
-                        _loggingService.Debug($"App purchased (InAppBillingPurchase)");
-                    
-                        _loggingService.Debug($"Purchase AutoRenewing: {purchase.AutoRenewing}");
-                        _loggingService.Debug($"Purchase Payload: {purchase.Payload}");
-                        _loggingService.Debug($"Purchase PurchaseToken: {purchase.PurchaseToken}");
-                        _loggingService.Debug($"Purchase State: {purchase.State}");
-                        _loggingService.Debug($"Purchase TransactionDateUtc: {purchase.TransactionDateUtc}");
-                        _loggingService.Debug($"Purchase ConsumptionState: {purchase.ConsumptionState}");
+                    _loggingService.Debug($"App purchased (InAppBillingPurchase)");
+
+                    _loggingService.Debug($"Purchase AutoRenewing: {purchase.AutoRenewing}");
+                    _loggingService.Debug($"Purchase Payload: {purchase.Payload}");
+                    _loggingService.Debug($"Purchase PurchaseToken: {purchase.PurchaseToken}");
+                    _loggingService.Debug($"Purchase State: {purchase.State}");
+                    _loggingService.Debug($"Purchase TransactionDateUtc: {purchase.TransactionDateUtc}");
+                    _loggingService.Debug($"Purchase ConsumptionState: {purchase.ConsumptionState}");
                 }
 
                 //if (purchase == null && Config.Purchased)
@@ -238,7 +240,7 @@ namespace OnlineTelevizor.ViewModels
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "Acknowledge error");
-            }            
+            }
         }
 
         public async Task PlayStream(MediaDetail mediaDetail)

@@ -184,7 +184,7 @@ namespace OnlineTelevizor.ViewModels
                         sb.AppendLine("");
                         sb.AppendLine($"Datum : {purchase.TransactionDateUtc}");
                         sb.AppendLine($"Id objednávky: {purchase.Id}");
-                    }                    
+                    }
                 }
             }
             catch (Exception ex)
@@ -218,7 +218,7 @@ namespace OnlineTelevizor.ViewModels
                 if (purchase == null)
                 {
                     _loggingService.Info($"Not purchased");
-                    //await _dialogService.Information("Platba nebyla uskutečněna.");                 
+                    //await _dialogService.Information("Platba nebyla uskutečněna.");
                 }
                 else
                 {
@@ -237,7 +237,7 @@ namespace OnlineTelevizor.ViewModels
 
                     await AcknowledgePurchase(purchase.PurchaseToken);
 
-                    IsPurchased = true;          
+                    IsPurchased = true;
 
                     //await _dialogService.Information("Platba byla úspěšně provedena.");
                 }

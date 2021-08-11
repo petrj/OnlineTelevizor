@@ -53,6 +53,12 @@ namespace OnlineTelevizor.Views
 
             BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 5);
             BackgroundCommandWorker.RunInBackground(AnimeIconCommand, 1, 1);
+
+            LogoIconImage.SizeChanged += (sender, e) =>
+            {
+                if (LogoIconImage.Height > 150)
+                    LogoIconImage.HeightRequest = 150;
+            };
         }
 
         private async Task Anime()
@@ -222,7 +228,7 @@ namespace OnlineTelevizor.Views
             Device.BeginInvokeOnMainThread(() =>
             {
                 _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);
-                videoView.MediaPlayer.Play(_media);                
+                videoView.MediaPlayer.Play(_media);
             });
 
             _playInProgress = true;
@@ -270,54 +276,12 @@ namespace OnlineTelevizor.Views
 
         private void SwipeGestureRecognizer_Up(object sender, SwipedEventArgs e)
         {
-            try
-            {
-                int currentVol = _mediaPlayer.Volume / 10;
-
-                if (currentVol != 10)
-                {
-                    currentVol += 1;
-
-                    if (currentVol > 10)
-                    {
-                        currentVol = 10;
-                    }
-
-                    _mediaPlayer.Volume = currentVol * 10;
-                }
-
-                MessagingCenter.Send($"Hlasitost {_mediaPlayer.Volume}%", BaseViewModel.ToastMessage);
-
-            } catch (Exception ex)
-            {
-                _loggingService.Error(ex);
-            }
+            MessagingCenter.Send(String.Empty, BaseViewModel.PlayPrevious);
         }
 
         private void SwipeGestureRecognizer_Down(object sender, SwipedEventArgs e)
         {
-            try
-            {
-                int currentVol = _mediaPlayer.Volume / 10;
-
-                if (currentVol != 0)
-                {
-                    currentVol -= 1;
-
-                    if (currentVol < 0)
-                    {
-                        currentVol = 0;
-                    }
-
-                    _mediaPlayer.Volume = currentVol * 10;
-                }
-
-                MessagingCenter.Send($"Hlasitost {_mediaPlayer.Volume}%", BaseViewModel.ToastMessage);
-            }
-            catch (Exception ex)
-            {
-                _loggingService.Error(ex);
-            }
+            MessagingCenter.Send(String.Empty, BaseViewModel.PlayNext);
         }
     }
 }
