@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              x:Class="OnlineTelevizor.Views.ChannelDetailPage"
              BackgroundColor="Black"
              Title="Detail programu">
@@ -32,8 +33,8 @@
 
             <Style x:Key="IconStyle" TargetType="Image">
                 <Setter Property="BackgroundColor" Value="Transparent"/>
-                <Setter Property="VerticalOptions" Value="Center"/>
-                <Setter Property="HorizontalOptions" Value="End"/>
+                <Setter Property="VerticalOptions" Value="FillAndExpand"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
             </Style>
 
             <Style x:Key="PageBackgroundStyle" TargetType="ScrollView">
@@ -56,11 +57,20 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
 
                     <Label Grid.Row="0" Grid.Column="0" Text="{Binding ChannelName}"  Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding FontSizeForChannel}"/>
-                    <Image Grid.Row="0" Grid.Column="1" Source="{Binding LogoUrl}" Style="{DynamicResource IconStyle}"/>
+
+                    <Grid Grid.Row="0" Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="80" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80" />
+                        </Grid.ColumnDefinitions>
+                        <ffimageloading:CachedImage  Grid.Row="0" Grid.Column="0" Source="{Binding LogoUrl}" Style="{DynamicResource IconStyle}" DownsampleToViewSize="false" Aspect="AspectFit" DownsampleHeight="80" LoadingPlaceholder="Empty.png" />
+                    </Grid>                    
 
                     <BoxView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="White"/>
                 </Grid>
