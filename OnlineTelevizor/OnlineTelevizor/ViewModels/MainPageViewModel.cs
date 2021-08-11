@@ -672,6 +672,9 @@ namespace OnlineTelevizor.ViewModels
             _notFilteredChannelsCount = 0;
             string selectedChannelNumber = null;
 
+            if (!_firstRefresh)
+                DoNotScrollToChannel = true;
+
             try
             {
                 if (SelectedItem == null)
@@ -747,6 +750,8 @@ namespace OnlineTelevizor.ViewModels
                 {
                     await SelectChannelByNumber(selectedChannelNumber);
                 }
+
+                DoNotScrollToChannel = false;
             }
         }
 
@@ -884,7 +889,7 @@ namespace OnlineTelevizor.ViewModels
             OnPropertyChanged(nameof(WidthForIcon));
         }
 
-       
+
 
         public async Task Play()
         {

@@ -28,7 +28,7 @@
             <Style x:Key="LogoImageStyle" TargetType="Label">
                 <Setter Property="HorizontalOptions" Value="Center"/>
                 <Setter Property="VerticalOptions" Value="Center"/>
-                <Setter Property="Margin" Value="20,20,20,20"/>
+                <Setter Property="Margin" Value="5,5,5,5"/>
             </Style>
 
         </ResourceDictionary>
@@ -42,7 +42,16 @@
                 <Label x:Name="AudioOnlyText" Text="{Binding Title}" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding FontSizeForChannel}" />
 
                 <Label x:Name="AudioOnlyDescription" Text="{Binding Description}" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding FontSizeForDescription}" />
-                <Image Source="{Binding LogoIcon}" x:Name="LogoIconImage" Style="{DynamicResource LogoImageStyle}" Aspect="AspectFit" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" />
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="150" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Row="0" Grid.Column="0" Source="{Binding LogoIcon}" x:Name="LogoIconImage" Style="{DynamicResource LogoImageStyle}" Aspect="AspectFit" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                </Grid>
 
                 <ScrollView>
                     <StackLayout>

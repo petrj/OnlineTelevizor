@@ -53,12 +53,6 @@ namespace OnlineTelevizor.Views
 
             BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 5);
             BackgroundCommandWorker.RunInBackground(AnimeIconCommand, 1, 1);
-
-            LogoIconImage.SizeChanged += (sender, e) =>
-            {
-                if (LogoIconImage.Height > 150)
-                    LogoIconImage.HeightRequest = 150;
-            };
         }
 
         private async Task Anime()
