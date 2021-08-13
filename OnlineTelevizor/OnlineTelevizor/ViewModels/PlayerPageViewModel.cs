@@ -25,10 +25,10 @@ namespace OnlineTelevizor.ViewModels
         private string _mediaType;
         private string _channelId;
         private EPGItem _epgItem;
-        private int _animePos = 0;
+        private int _animePos = 2;
         private bool _animePosIncreasing = true;
         private double _EPGProgress = 0;
-        
+
 
         public Command RefreshCommand { get; set; }
 
@@ -38,7 +38,7 @@ namespace OnlineTelevizor.ViewModels
             get
             {
                 return "Audio" + _animePos.ToString();
-            }        
+            }
         }
 
         public string LogoIcon
@@ -75,7 +75,10 @@ namespace OnlineTelevizor.ViewModels
                 }
             }
 
-            OnPropertyChanged(nameof(AudioIcon));
+            try
+            {
+                OnPropertyChanged(nameof(AudioIcon));
+            } catch {  /* UWP platform fix */ }
         }
 
         public string MediaUrl
@@ -197,7 +200,7 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(DetailedDescription));
             }
         }
- 
+
         public bool VideoViewVisible
         {
             get
@@ -258,7 +261,7 @@ namespace OnlineTelevizor.ViewModels
             _service = service;
             _loggingService = loggingService;
             _dialogService = dialogService;
-            Config = config;            
+            Config = config;
 
             RefreshCommand = new Command(async () => await Refresh());
 
@@ -270,7 +273,7 @@ namespace OnlineTelevizor.ViewModels
             await _semaphoreSlim.WaitAsync();
 
             IsBusy = true;
-        
+
             try
             {
 
@@ -298,7 +301,7 @@ namespace OnlineTelevizor.ViewModels
             finally
             {
                 IsBusy = false;
-                OnPropertyChanged(nameof(IsBusy));  
+                OnPropertyChanged(nameof(IsBusy));
 
                 _semaphoreSlim.Release();
             }

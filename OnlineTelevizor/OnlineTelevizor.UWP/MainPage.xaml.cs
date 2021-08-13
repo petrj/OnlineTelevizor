@@ -91,7 +91,8 @@ namespace OnlineTelevizor.UWP
               new Action(
                   async () =>
                   {
-                      await Launcher.LaunchUriAsync(new Uri($"vlc://openstream/?from=url&url={url}"));
+                      var uri = new Uri($"vlc://openstream/?from=url&url={System.Web.HttpUtility.UrlEncode(url)}");
+                      await Launcher.LaunchUriAsync(uri);
                   }));
         }
     }
