@@ -211,6 +211,13 @@ namespace OnlineTelevizor.ViewModels
 
         protected async Task Pay()
         {
+
+#if DEBUG
+    Config.Purchased = true;
+    Config.PurchaseTokenSent = true;
+    IsPurchased = true;
+#endif
+
             try
             {
                 _loggingService.Debug($"Paying product id: {Config.PurchaseProductId}");

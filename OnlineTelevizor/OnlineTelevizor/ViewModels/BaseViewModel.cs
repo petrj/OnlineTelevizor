@@ -56,7 +56,7 @@ namespace OnlineTelevizor.ViewModels
                     return Convert.ToInt32(Math.Round(normalSize * 1.12));
                 case AppFontSizeEnum.Big:
                     return Convert.ToInt32(Math.Round(normalSize * 1.25));
-                case AppFontSizeEnum.Biger:
+                case AppFontSizeEnum.Bigger:
                     return Convert.ToInt32(Math.Round(normalSize * 1.5));
                 case AppFontSizeEnum.VeryBig:
                     return Convert.ToInt32(Math.Round(normalSize * 1.75));
@@ -167,6 +167,10 @@ namespace OnlineTelevizor.ViewModels
         public async Task CheckPurchase()
         {
             _loggingService.Info($"Checking purchase");
+
+#if DEBUG
+    return; // no check in debug mode, purchased state is managed by configuration
+#endif
 
             try
             {

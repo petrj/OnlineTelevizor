@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{E7015148
 		BuildAPK.ps1 = BuildAPK.ps1
 		Clear.bat = Clear.bat
 		Clear.ps1 = Clear.ps1
+		OnlineTelevizor.configuration.json = OnlineTelevizor.configuration.json
 		ResizeIconImage.ps1 = ResizeIconImage.ps1
 		ResizeLauncherImage.ps1 = ResizeLauncherImage.ps1
 		undo_pending_changes_and_get_latest_version.sh = undo_pending_changes_and_get_latest_version.sh

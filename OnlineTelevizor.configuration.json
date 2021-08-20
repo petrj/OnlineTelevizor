@@ -1,0 +1,17 @@
+{
+	"SledovaniTV":
+	{
+		"username": "email",
+		"password": "password"
+	},
+	"O2TV":
+	{
+		"username": "email",
+		"password": "password"
+	},
+	"internalPlayer": true,
+	"TVAPI" : "SledovaniTV",
+	"fullscreen": true,
+	"fontSize": "Bigger",
+	"purchased": false
+}

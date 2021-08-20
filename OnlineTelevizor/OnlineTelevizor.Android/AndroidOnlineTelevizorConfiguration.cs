@@ -1,11 +1,13 @@
 ﻿using Android.Content;
 using Android.Preferences;
 using LoggerService;
+using Newtonsoft.Json.Linq;
 using OnlineTelevizor.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Text;
 using Xamarin.Forms;
 
@@ -49,7 +51,7 @@ namespace OnlineTelevizor.Droid
             {
                 SavePersistingSettingValue<string>("O2TVPassword", value);
             }
-        }        
+        }
 
         public string DVBStreamerUrl
         {
@@ -364,6 +366,85 @@ namespace OnlineTelevizor.Droid
         {
             get { return GetPersistingSettingValue<string>("DevicePassword"); }
             set { SavePersistingSettingValue<string>("DevicePassword", value); }
+        }
+
+        private static string DownloadDataAsString(string url)
+        {
+            string result = string.Empty;
+
+            var wc = new WebClient();
+            using (MemoryStream stream = new MemoryStream(wc.DownloadData(url)))
+            {
+                using (var sr = new StreamReader(stream, Encoding.UTF8))
+                {
+                    string line = null;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        result += line;
+                    }
+                    sr.Close();
+                }
+                stream.Close();
+            }
+
+            return result;
+        }
+
+        private static T GetTypedJObject<T>(JObject obj, string paramName)
+        {
+            if (obj.TryGetValue(paramName, out var token))
+            {
+                return obj.SelectToken(paramName).Value<T>();
+            }
+
+            return default(T);
+        }
+
+        public void LoadCredentails(string url)
+        {
+            try
+            {
+                string credentials = DownloadDataAsString(url);
+
+                var credentialsJson = JObject.Parse(credentials);
+
+                if (credentialsJson.TryGetValue("SledovaniTV", out var sledovaniTVToken))
+                {
+                    Username = GetTypedJObject<string>(sledovaniTVToken as JObject, "username");
+                    Password = GetTypedJObject<string>(sledovaniTVToken as JObject, "password");
+                }
+
+                if (credentialsJson.TryGetValue("O2TV", out var O2TVToken))
+                {
+                    O2TVUsername = GetTypedJObject<string>(O2TVToken as JObject, "username");
+                    O2TVPassword = GetTypedJObject<string>(O2TVToken as JObject, "password");
+                }
+
+                if (credentialsJson.GetValue("internalPlayer") != null)
+                    InternalPlayer = GetTypedJObject<bool>(credentialsJson, "internalPlayer");
+
+                if (credentialsJson.GetValue("fullscreen") != null)
+                    Fullscreen = GetTypedJObject<bool>(credentialsJson, "fullscreen");
+
+                if (credentialsJson.GetValue("purchased") != null)
+                    Purchased = GetTypedJObject<bool>(credentialsJson, "purchased");
+
+                var TVAPIAsString = GetTypedJObject<string>(credentialsJson, "TVAPI");
+                if ((!string.IsNullOrEmpty(TVAPIAsString)) && (Enum.TryParse(typeof(TVAPIEnum), TVAPIAsString, out var api)))
+                {
+                    TVApi = (TVAPIEnum)api;
+                }
+
+                var fontSizeAsString = GetTypedJObject<string>(credentialsJson, "fontSize");
+                if ((!string.IsNullOrEmpty(fontSizeAsString)) && (Enum.TryParse(typeof(AppFontSizeEnum), fontSizeAsString, out var fs)))
+                {
+                    AppFontSize = (AppFontSizeEnum)fs;
+                }
+
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 }

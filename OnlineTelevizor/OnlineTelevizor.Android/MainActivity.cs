@@ -53,6 +53,10 @@ namespace OnlineTelevizor.Droid
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
+#if DEBUG
+    _cfg.LoadCredentails("http://10.0.0.7/OnlineTelevizor.configuration.json");
+#endif
+
             if (_cfg.EnableLogging)
             {
                 _loggingService = new BasicLoggingService(_cfg.LoggingLevel);
