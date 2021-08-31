@@ -400,7 +400,7 @@ namespace OnlineTelevizor.Droid
             return default(T);
         }
 
-        public void LoadCredentails(string url)
+        public bool LoadCredentails(string url)
         {
             try
             {
@@ -441,9 +441,12 @@ namespace OnlineTelevizor.Droid
                     AppFontSize = (AppFontSizeEnum)fs;
                 }
 
+                return true;
+
             } catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                return false;
             }
         }
     }

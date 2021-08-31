@@ -45,11 +45,9 @@
     </AndroidTlsProvider>
     <AndroidHttpClientHandlerType>
     </AndroidHttpClientHandlerType>
-    <AndroidKeyStore>false</AndroidKeyStore>
-    <AndroidSigningKeyStore>C:\Users\Jean Luc Picard\AppData\Local\Xamarin\Mono for Android\Keystore\PJsAndroidKeyStore\PJsAndroidKeyStore.keystore</AndroidSigningKeyStore>
+    <AndroidKeyStore>false</AndroidKeyStore>    
     <AndroidSigningStorePass>
-    </AndroidSigningStorePass>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsC011.tmp\Debug\</IntermediateOutputPath>
+    </AndroidSigningStorePass>    
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
