@@ -372,8 +372,12 @@ namespace OnlineTelevizor.Droid
         {
             string result = string.Empty;
 
-            var wc = new WebClient();
-            using (MemoryStream stream = new MemoryStream(wc.DownloadData(url)))
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Timeout = 500;
+            request.ReadWriteTimeout = 500;
+            var wresp = (HttpWebResponse)request.GetResponse();
+
+            using (var stream = wresp.GetResponseStream())
             {
                 using (var sr = new StreamReader(stream, Encoding.UTF8))
                 {
@@ -400,10 +404,26 @@ namespace OnlineTelevizor.Droid
             return default(T);
         }
 
+        private bool EmptyCredentials
+        {
+            get
+            {
+                return
+                    String.IsNullOrEmpty(Username) &&
+                    String.IsNullOrEmpty(Password) &&
+                    String.IsNullOrEmpty(KUKIsn) &&
+                    String.IsNullOrEmpty(O2TVUsername) &&
+                    String.IsNullOrEmpty(O2TVPassword);
+            }
+        }
+
         public bool LoadCredentails(string url)
         {
             try
             {
+                if (!EmptyCredentials)
+                    return true;
+
                 string credentials = DownloadDataAsString(url);
 
                 var credentialsJson = JObject.Parse(credentials);
@@ -418,6 +438,11 @@ namespace OnlineTelevizor.Droid
                 {
                     O2TVUsername = GetTypedJObject<string>(O2TVToken as JObject, "username");
                     O2TVPassword = GetTypedJObject<string>(O2TVToken as JObject, "password");
+                }
+
+                if (credentialsJson.TryGetValue("KUKI", out var KUKIToken))
+                {
+                    KUKIsn = GetTypedJObject<string>(KUKIToken as JObject, "KUKIsn");
                 }
 
                 if (credentialsJson.GetValue("internalPlayer") != null)
