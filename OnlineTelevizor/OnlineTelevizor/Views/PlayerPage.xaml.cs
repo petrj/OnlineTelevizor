@@ -112,6 +112,15 @@ namespace OnlineTelevizor.Views
 
                 //videoView.MediaPlayer.IsPlaying can be false in case of internet disconnection
             }
+            set
+            {
+                _playInProgress = value;
+
+                if (!_playInProgress)
+                {
+                    MessagingCenter.Send<PlayerPage>(this, BaseViewModel.StopPlayInternalNotification);
+                }
+            }
         }
 
         private async Task UpdateEPG()
@@ -225,7 +234,7 @@ namespace OnlineTelevizor.Views
                 videoView.MediaPlayer.Play(_media);
             });
 
-            _playInProgress = true;
+            Playing = true;
         }
 
         public void Stop()
@@ -235,7 +244,7 @@ namespace OnlineTelevizor.Views
                 videoView.MediaPlayer.Stop();
             });
 
-            _playInProgress = false;
+            Playing = false;
         }
 
         public void Resume()

@@ -45,9 +45,9 @@
     </AndroidTlsProvider>
     <AndroidHttpClientHandlerType>
     </AndroidHttpClientHandlerType>
-    <AndroidKeyStore>false</AndroidKeyStore>    
+    <AndroidKeyStore>false</AndroidKeyStore>
     <AndroidSigningStorePass>
-    </AndroidSigningStorePass>    
+    </AndroidSigningStorePass>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -138,6 +138,9 @@
     <PackageReference Include="Plugin.InAppBilling">
       <Version>4.0.2</Version>
     </PackageReference>
+    <PackageReference Include="Plugin.LocalNotification">
+      <Version>8.0.2</Version>
+    </PackageReference>
     <PackageReference Include="VideoLAN.LibVLC.Android">
       <Version>3.2.0</Version>
     </PackageReference>
@@ -209,6 +212,10 @@
     <ProjectReference Include="..\..\LoggerService\LoggerService.csproj">
       <Project>{3D9DD753-5E53-4316-992C-1BED899FE0E0}</Project>
       <Name>LoggerService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TVAPI\TVAPI.csproj">
+      <Project>{E5102B85-87A1-4ABC-B720-CB97925266FB}</Project>
+      <Name>TVAPI</Name>
     </ProjectReference>
     <ProjectReference Include="..\OnlineTelevizor\OnlineTelevizor.csproj">
       <Project>{5a88aa4a-dd5e-408f-8146-abdb06b2cc21}</Project>
@@ -306,6 +313,11 @@
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\Empty.png">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\raw\notification.mp3">
+      <CustomToolNamespace>MSBuild:UpdateGeneratedFiles</CustomToolNamespace>
     </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

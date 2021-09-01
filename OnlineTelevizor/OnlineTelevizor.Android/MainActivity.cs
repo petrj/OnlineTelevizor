@@ -21,6 +21,8 @@ using Plugin.CurrentActivity;
 using Android.Support.Design.Widget;
 using LoggerService;
 using Xamarin.Essentials;
+using Plugin.LocalNotification;
+using System.Threading.Tasks;
 
 namespace OnlineTelevizor.Droid
 {
@@ -125,6 +127,30 @@ namespace OnlineTelevizor.Droid
                 }
             });
 
+            MessagingCenter.Subscribe<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternalNotification, (sender, mediaDetail) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    try
+                    {
+                        Task.Run(async () => await ShowPlayingNotification(mediaDetail));
+                    }
+                    catch (Exception ex)
+                    {
+                        _loggingService.Error(ex);
+                    }
+                });
+            });
+
+            MessagingCenter.Subscribe<PlayerPage>(this, BaseViewModel.StopPlayInternalNotification, (sender) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    StopPlayingNotification();
+
+                });
+            });
+
             // prevent sleep:
             Window window = (Forms.Context as Activity).Window;
             window.AddFlags(WindowManagerFlags.KeepScreenOn);
@@ -143,7 +169,48 @@ namespace OnlineTelevizor.Droid
                 SetFullScreen(true);
             }
 
+            NotificationCenter.CreateNotificationChannel();
+
             LoadApplication(_app);
+
+            NotificationCenter.NotifyNotificationTapped(Intent);
+        }
+
+        protected override void OnNewIntent(Intent intent)
+        {
+            NotificationCenter.NotifyNotificationTapped(intent);
+            base.OnNewIntent(intent);
+        }
+
+        private async Task ShowPlayingNotification(MediaDetail mediaDetail)
+        {
+            string subTitle = String.Empty;
+            if (mediaDetail.CurrentEPGItem != null)
+            {
+                subTitle = mediaDetail.CurrentEPGItem.Title;
+            }
+
+            var notification = new NotificationRequest
+            {
+                NotificationId = 100,
+                Title = mediaDetail.Title,
+                Description = subTitle,
+                ReturningData = "NotificationTap",
+                CategoryType = NotificationCategoryType.Status,
+                Sound = "notification" // TODO: still playing default notification sound, is there any other way how to disable notification sound?
+            };
+
+            notification.Android.VisibilityType = Plugin.LocalNotification.AndroidOption.AndroidVisibilityType.Public;
+
+            await NotificationCenter.Current.Show(notification);
+        }
+
+        private void StopPlayingNotification()
+        {
+            new NotificationRequest
+            {
+                NotificationId = 100
+            }.Cancel();
         }
 
         private void SetFullScreen(bool on)
