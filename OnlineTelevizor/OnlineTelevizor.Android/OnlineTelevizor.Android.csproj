@@ -138,9 +138,6 @@
     <PackageReference Include="Plugin.InAppBilling">
       <Version>4.0.2</Version>
     </PackageReference>
-    <PackageReference Include="Plugin.LocalNotification">
-      <Version>8.0.2</Version>
-    </PackageReference>
     <PackageReference Include="VideoLAN.LibVLC.Android">
       <Version>3.2.0</Version>
     </PackageReference>
@@ -177,6 +174,7 @@
     <Compile Include="AndroidPressedEffect.cs" />
     <Compile Include="CustomSharedPreferencesObject.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="NotificationHelper.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

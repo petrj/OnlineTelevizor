@@ -26,7 +26,12 @@ foreach ($folder in `
 		"OnlineTelevizor\OnlineTelevizor.iOS\bin",
 		"OnlineTelevizor\OnlineTelevizor.iOS\obj",
         ".\TestConsole\bin",
-		".\TestConsole\obj"
+		".\TestConsole\obj",
+        "SledovaniTV.DownloadEvent\bin",
+        "SledovaniTV.DownloadEvent\obj",
+        "O2TVAPI\bin",
+        "O2TVAPI\obj",
+        "SledovaniTV.DownloadEvent\.vs"
      ))
 {
     $fullPath = [System.IO.Path]::Combine($scriptPath,$folder)
