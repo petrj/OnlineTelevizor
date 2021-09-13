@@ -178,22 +178,31 @@ namespace OnlineTelevizor.Droid
 
         private async Task ShowPlayingNotification(MediaDetail mediaDetail)
         {
-            string subTitle = String.Empty;
-            if (mediaDetail.CurrentEPGItem != null)
+            try
             {
-                subTitle = mediaDetail.CurrentEPGItem.Title;
-            }
+                string subTitle = String.Empty;
+                if (mediaDetail.CurrentEPGItem != null)
+                {
+                    subTitle = mediaDetail.CurrentEPGItem.Title;
+                }
 
-#if DEBUG
-            _notificationHelper.ShowNotification(mediaDetail.Title, subTitle);
-#endif
+                _notificationHelper.ShowNotification(mediaDetail.Title, subTitle);
+            } catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
         }
 
         private void StopPlayingNotification()
         {
-#if DEBUG
-            _notificationHelper.CloseNotification();
-#endif
+            try
+            {
+                _notificationHelper.CloseNotification();
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
         }
 
         private void SetFullScreen(bool on)

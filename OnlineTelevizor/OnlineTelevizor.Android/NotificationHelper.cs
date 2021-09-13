@@ -3,6 +3,7 @@ using Android.Content;
 using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
+using Android.Support.V4.App;
 using Android.Views;
 using Android.Widget;
 using System;
@@ -48,7 +49,18 @@ namespace OnlineTelevizor.Droid
                      .SetContentTitle(title)
                      .SetContentText(body)
                      .SetSmallIcon(SmallIcon)
-                     .SetAutoCancel(false);
+                     .SetAutoCancel(false)
+                     //.SetPriority(NotificationCompat.PriorityLow)
+                     //.SetVibrate(new long[] { 0,0} )
+                     .SetVisibility(NotificationVisibility.Public);
+
+            var notificationIntent = Application.Context.PackageManager?.GetLaunchIntentForPackage(Application.Context.PackageName);
+
+            notificationIntent.SetFlags(ActivityFlags.SingleTop);
+
+            var pendingIntent = PendingIntent.GetActivity(Application.Context, _notificationId, notificationIntent,
+                PendingIntentFlags.CancelCurrent);
+            notificationBuilder.SetContentIntent(pendingIntent);
 
             NotificationManager.Notify(_notificationId, notificationBuilder.Build());
         }
