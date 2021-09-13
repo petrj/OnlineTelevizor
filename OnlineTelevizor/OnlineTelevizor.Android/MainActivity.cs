@@ -192,7 +192,7 @@ namespace OnlineTelevizor.Droid
         private void StopPlayingNotification()
         {
 #if DEBUG
-            // TODO: close notification
+            _notificationHelper.CloseNotification();
 #endif
         }
 

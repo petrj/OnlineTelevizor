@@ -274,7 +274,7 @@ namespace OnlineTelevizor.ViewModels
                 if (Config.InternalPlayer)
                 {
                     MessagingCenter.Send<BaseViewModel, MediaDetail> (this, BaseViewModel.PlayInternal, mediaDetail);
-                    MessagingCenter.Send<BaseViewModel, MediaDetail> (this, BaseViewModel.PlayInternalNotification, mediaDetail);
+                    MessagingCenter.Send<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternalNotification, mediaDetail);
                 }
                 else
                 {

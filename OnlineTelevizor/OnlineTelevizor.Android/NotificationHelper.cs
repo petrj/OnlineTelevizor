@@ -52,5 +52,10 @@ namespace OnlineTelevizor.Droid
 
             NotificationManager.Notify(_notificationId, notificationBuilder.Build());
         }
+
+        public void CloseNotification()
+        {
+            NotificationManager.Cancel(_notificationId);
+        }
     }
 }

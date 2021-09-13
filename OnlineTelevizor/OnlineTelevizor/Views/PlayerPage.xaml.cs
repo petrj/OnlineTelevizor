@@ -115,11 +115,6 @@ namespace OnlineTelevizor.Views
             set
             {
                 _playInProgress = value;
-
-                if (!_playInProgress)
-                {
-                    MessagingCenter.Send<PlayerPage>(this, BaseViewModel.StopPlayInternalNotification);
-                }
             }
         }
 
@@ -224,6 +219,8 @@ namespace OnlineTelevizor.Views
             {
                 OnDoubleTapped(this, null);
             }
+
+            MessagingCenter.Send<PlayerPage>(this, BaseViewModel.StopPlayInternalNotification);
         }
 
         public void Start()
@@ -232,9 +229,8 @@ namespace OnlineTelevizor.Views
             {
                 _media = new Media(_libVLC, _viewModel.MediaUrl, FromType.FromLocation);
                 videoView.MediaPlayer.Play(_media);
+                Playing = true;
             });
-
-            Playing = true;
         }
 
         public void Stop()
@@ -242,9 +238,8 @@ namespace OnlineTelevizor.Views
             Device.BeginInvokeOnMainThread(() =>
             {
                 videoView.MediaPlayer.Stop();
+                Playing = false;
             });
-
-            Playing = false;
         }
 
         public void Resume()
