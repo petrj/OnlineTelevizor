@@ -181,12 +181,16 @@ namespace OnlineTelevizor.Droid
             try
             {
                 string subTitle = String.Empty;
+                string detail = String.Empty;
                 if (mediaDetail.CurrentEPGItem != null)
                 {
                     subTitle = mediaDetail.CurrentEPGItem.Title;
+                    detail = mediaDetail.CurrentEPGItem.Start.ToString("HH:mm")
+                        + " - " +
+                      mediaDetail.CurrentEPGItem.Finish.ToString("HH:mm");
                 }
 
-                _notificationHelper.ShowNotification(mediaDetail.Title, subTitle);
+                _notificationHelper.ShowNotification(mediaDetail.Title, subTitle, detail);
             } catch (Exception ex)
             {
                 _loggingService.Error(ex);

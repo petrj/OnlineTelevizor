@@ -37,21 +37,22 @@ namespace OnlineTelevizor.Droid
 
         public NotificationHelper(Context context) : base(context)
         {
-            var channel = new NotificationChannel(_channelId, GetString(noti_channel_default), NotificationImportance.Default);
-            channel.LightColor = Color.Green;
-            channel.LockscreenVisibility = NotificationVisibility.Private;
+            var channel = new NotificationChannel(_channelId, GetString(noti_channel_default), NotificationImportance.Low);
+            channel.LockscreenVisibility = NotificationVisibility.Public;
+            channel.SetVibrationPattern(new long[] { 0, 0 });
+            channel.SetSound(null, null);
             NotificationManager.CreateNotificationChannel(channel);
         }
 
-        public void ShowNotification(string title, string body)
+        public void ShowNotification(string title, string body, string detail)
         {
             var notificationBuilder = new Notification.Builder(ApplicationContext, _channelId)
-                     .SetContentTitle(title)
-                     .SetContentText(body)
-                     .SetSmallIcon(SmallIcon)
+                     .SetContentTitle(body)
+                     .SetContentText(detail)
+                     .SetSubText(title)
+                     .SetSmallIcon(Resource.Drawable.Icon)
                      .SetAutoCancel(false)
-                     //.SetPriority(NotificationCompat.PriorityLow)
-                     //.SetVibrate(new long[] { 0,0} )
+                     .SetOngoing(true)
                      .SetVisibility(NotificationVisibility.Public);
 
             var notificationIntent = Application.Context.PackageManager?.GetLaunchIntentForPackage(Application.Context.PackageName);
