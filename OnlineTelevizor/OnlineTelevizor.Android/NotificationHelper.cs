@@ -37,23 +37,32 @@ namespace OnlineTelevizor.Droid
 
         public NotificationHelper(Context context) : base(context)
         {
-            var channel = new NotificationChannel(_channelId, GetString(noti_channel_default), NotificationImportance.Low);
-            channel.LockscreenVisibility = NotificationVisibility.Public;
-            channel.SetVibrationPattern(new long[] { 0, 0 });
-            channel.SetSound(null, null);
-            NotificationManager.CreateNotificationChannel(channel);
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                // Notification channels are new in API 26 (and not a part of the
+                // support library). There is no need to create a notification
+                // channel on older versions of Android.
+
+                var channel = new NotificationChannel(_channelId, GetString(noti_channel_default), NotificationImportance.Low);
+                channel.LockscreenVisibility = NotificationVisibility.Public;
+                channel.SetVibrationPattern(new long[] { 0, 0 });
+                channel.SetSound(null, null);
+                NotificationManager.CreateNotificationChannel(channel);
+            }
         }
 
         public void ShowNotification(string title, string body, string detail)
         {
-            var notificationBuilder = new Notification.Builder(ApplicationContext, _channelId)
+            var notificationBuilder = new NotificationCompat.Builder(ApplicationContext, _channelId)
                      .SetContentTitle(body)
                      .SetContentText(detail)
                      .SetSubText(title)
-                     .SetSmallIcon(Resource.Drawable.Icon)
+                     .SetSmallIcon(Resource.Drawable.SmallIcon)
                      .SetAutoCancel(false)
                      .SetOngoing(true)
-                     .SetVisibility(NotificationVisibility.Public);
+                     .SetSound(null)
+                     .SetVibrate(new long[] { 0, 0 })                     
+                     .SetVisibility((int)NotificationVisibility.Public);
 
             var notificationIntent = Application.Context.PackageManager?.GetLaunchIntentForPackage(Application.Context.PackageName);
 

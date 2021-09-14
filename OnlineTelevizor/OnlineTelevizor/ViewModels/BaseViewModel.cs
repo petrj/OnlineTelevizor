@@ -23,6 +23,7 @@ namespace OnlineTelevizor.ViewModels
         public const string DisableFullScreen = "DisableFullScreen";
         public const string PlayInternal = "PlayInternal";
         public const string PlayInternalNotification = "PlayInternalNotification";
+        public const string UpdateInternalNotification = "UpdateInternalNotification";
         public const string StopPlayInternalNotification = "StopPlayInternalNotification";
         public const string PlayNext = "PlayNext";
         public const string PlayPrevious = "PlayPrevious";
@@ -274,7 +275,11 @@ namespace OnlineTelevizor.ViewModels
                 if (Config.InternalPlayer)
                 {
                     MessagingCenter.Send<BaseViewModel, MediaDetail> (this, BaseViewModel.PlayInternal, mediaDetail);
-                    MessagingCenter.Send<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternalNotification, mediaDetail);
+
+                    if (Config.PlayOnBackground)
+                    {
+                        MessagingCenter.Send<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternalNotification, mediaDetail);
+                    }
                 }
                 else
                 {

@@ -417,12 +417,12 @@ namespace OnlineTelevizor.Droid
             }
         }
 
-        public bool LoadCredentails(string url)
+        public bool? LoadCredentails(string url)
         {
             try
             {
                 if (!EmptyCredentials)
-                    return true;
+                    return null;
 
                 string credentials = DownloadDataAsString(url);
 

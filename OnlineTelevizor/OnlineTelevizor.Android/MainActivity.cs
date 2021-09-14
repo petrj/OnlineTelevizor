@@ -58,8 +58,21 @@ namespace OnlineTelevizor.Droid
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
 #if DEBUG
-            if (!_cfg.LoadCredentails("http://localhost:8080/OnlineTelevizor.configuration.json"))
-                _cfg.LoadCredentails("http://10.0.0.7/OnlineTelevizor.configuration.json");
+            var loaded = _cfg.LoadCredentails("http://localhost:8080/OnlineTelevizor.configuration.json");
+            if (loaded.HasValue)
+            {
+                if (loaded.Value)
+                {
+                    ShowToastMessage("Configuration loaded from localhost");
+                }
+                else
+                {
+                    if (_cfg.LoadCredentails("http://10.0.0.7/OnlineTelevizor.configuration.json").Value)
+                    {
+                        ShowToastMessage("Configuration loaded from 10.0.0.7");
+                    }
+                }
+            }
 #endif
 
             if (_cfg.EnableLogging)
@@ -133,14 +146,15 @@ namespace OnlineTelevizor.Droid
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    try
-                    {
-                        Task.Run(async () => await ShowPlayingNotification(mediaDetail));
-                    }
-                    catch (Exception ex)
-                    {
-                        _loggingService.Error(ex);
-                    }
+                    Task.Run(async () => await ShowPlayingNotification(mediaDetail));
+                });
+            });
+
+            MessagingCenter.Subscribe<PlayerPage, MediaDetail>(this, BaseViewModel.UpdateInternalNotification, (sender, mediaDetail) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    Task.Run(async () => await ShowPlayingNotification(mediaDetail));
                 });
             });
 
@@ -149,7 +163,6 @@ namespace OnlineTelevizor.Droid
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     StopPlayingNotification();
-
                 });
             });
 

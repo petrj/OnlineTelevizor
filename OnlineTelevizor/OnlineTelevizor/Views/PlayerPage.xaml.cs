@@ -24,11 +24,14 @@ namespace OnlineTelevizor.Views
         LibVLC _libVLC = null;
         MediaPlayer _mediaPlayer;
         Media _media = null;
+        IOnlineTelevizorConfiguration _config;
         bool _fullscreen = false;
         bool _playInProgress = false;
         ILoggingService _loggingService;
 
         public Command CheckStreamCommand { get; set; }
+
+        public Command UpdateNotificationCommand { get; set; }
 
         public Command AnimeIconCommand { get; set; }
 
@@ -42,6 +45,7 @@ namespace OnlineTelevizor.Views
 
             Core.Initialize();
 
+            _config = config;
             _libVLC = new LibVLC();
             _mediaPlayer = new MediaPlayer(_libVLC) { EnableHardwareDecoding = true };
             _loggingService = loggingService;
@@ -49,15 +53,47 @@ namespace OnlineTelevizor.Views
             videoView.MediaPlayer = _mediaPlayer;
 
             CheckStreamCommand = new Command(async () => await CheckStream());
+            UpdateNotificationCommand = new Command(async () => await UpdateNotification());
             AnimeIconCommand = new Command(async () => await Anime());
 
             BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 5);
+            BackgroundCommandWorker.RunInBackground(UpdateNotificationCommand, 10, 5);
             BackgroundCommandWorker.RunInBackground(AnimeIconCommand, 1, 1);
         }
 
         private async Task Anime()
         {
             await Task.Run( () => { _viewModel.Anime(); } );
+        }
+
+        private async Task UpdateNotification()
+        {
+            if (!Playing)
+            {
+                return;
+            }
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (_viewModel.EPGItem != null)
+                {
+                    
+                    _viewModel.Description = _viewModel.EPGItem.Title;
+                    _viewModel.DetailedDescription = _viewModel.EPGItem.Description;
+                    _viewModel.TimeDescription = _viewModel.EPGItem.Start.ToString("HH:mm") + " - " + _viewModel.EPGItem.Finish.ToString("HH:mm");
+                    _viewModel.EPGProgress = _viewModel.EPGItem.Progress;
+
+                    MessagingCenter.Send<PlayerPage, MediaDetail>(this, BaseViewModel.UpdateInternalNotification, new MediaDetail()
+                    {
+                        MediaUrl = _viewModel.MediaUrl,
+                        Title = _viewModel.Title,
+                        Type = _viewModel.MediaType,
+                        CurrentEPGItem = _viewModel.EPGItem,
+                        ChanneldID = _viewModel.ChannelId,
+                        LogoUrl = _viewModel.LogoIcon
+                    });
+                }                
+            });
         }
 
         private async Task CheckStream()
@@ -88,7 +124,6 @@ namespace OnlineTelevizor.Views
             });
 
             await UpdateEPG();
-
         }
 
         public void OnDoubleTapped(object sender, EventArgs e)
@@ -137,7 +172,7 @@ namespace OnlineTelevizor.Views
                         _viewModel.DetailedDescription = _viewModel.EPGItem.Description;
                         _viewModel.TimeDescription = _viewModel.EPGItem.Start.ToString("HH:mm") + " - " + _viewModel.EPGItem.Finish.ToString("HH:mm");
                         _viewModel.EPGProgress = _viewModel.EPGItem.Progress;
-                    }
+                    }                   
                 });
             });
         }
@@ -220,7 +255,10 @@ namespace OnlineTelevizor.Views
                 OnDoubleTapped(this, null);
             }
 
-            MessagingCenter.Send<PlayerPage>(this, BaseViewModel.StopPlayInternalNotification);
+            if (_config.PlayOnBackground)
+            {
+                MessagingCenter.Send<PlayerPage>(this, BaseViewModel.StopPlayInternalNotification);
+            }
         }
 
         public void Start()

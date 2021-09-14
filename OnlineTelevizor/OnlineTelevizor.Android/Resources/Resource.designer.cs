@@ -9468,10 +9468,13 @@ namespace OnlineTelevizor.Droid
 			public const int SettingsSelected = 2131165536;
 			
 			// aapt resource value: 0x7F070161
-			public const int tooltip_frame_dark = 2131165537;
+			public const int SmallIcon = 2131165537;
 			
 			// aapt resource value: 0x7F070162
-			public const int tooltip_frame_light = 2131165538;
+			public const int tooltip_frame_dark = 2131165538;
+			
+			// aapt resource value: 0x7F070163
+			public const int tooltip_frame_light = 2131165539;
 			
 			static Drawable()
 			{
