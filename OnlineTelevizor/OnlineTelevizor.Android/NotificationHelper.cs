@@ -53,6 +53,29 @@ namespace OnlineTelevizor.Droid
 
         public void ShowNotification(string title, string body, string detail)
         {
+            var notificationIntent = Application.Context.PackageManager?.GetLaunchIntentForPackage(Application.Context.PackageName);
+            notificationIntent.SetFlags(ActivityFlags.SingleTop);
+            var pendingIntent = PendingIntent.GetActivity(Application.Context, _notificationId, notificationIntent, PendingIntentFlags.CancelCurrent);
+
+            var stopIntent = new Intent(Application.Context, typeof(OnlineTelevizorBroadcastReceiver));
+            stopIntent.SetAction("Stop");
+
+            var stopPendingIntent = PendingIntent.GetBroadcast(
+                Application.Context,
+                _notificationId,
+                stopIntent,
+                PendingIntentFlags.CancelCurrent
+            );
+
+            var quitIntent = new Intent(Application.Context, typeof(OnlineTelevizorBroadcastReceiver));
+            quitIntent.SetAction("Quit");
+            var quitPendingIntent = PendingIntent.GetBroadcast(
+                Application.Context,
+                _notificationId,
+                quitIntent,
+                PendingIntentFlags.CancelCurrent
+            );
+
             var notificationBuilder = new NotificationCompat.Builder(ApplicationContext, _channelId)
                      .SetContentTitle(body)
                      .SetContentText(detail)
@@ -61,16 +84,11 @@ namespace OnlineTelevizor.Droid
                      .SetAutoCancel(false)
                      .SetOngoing(true)
                      .SetSound(null)
-                     .SetVibrate(new long[] { 0, 0 })                     
-                     .SetVisibility((int)NotificationVisibility.Public);
-
-            var notificationIntent = Application.Context.PackageManager?.GetLaunchIntentForPackage(Application.Context.PackageName);
-
-            notificationIntent.SetFlags(ActivityFlags.SingleTop);
-
-            var pendingIntent = PendingIntent.GetActivity(Application.Context, _notificationId, notificationIntent,
-                PendingIntentFlags.CancelCurrent);
-            notificationBuilder.SetContentIntent(pendingIntent);
+                     .SetVibrate(new long[] { 0, 0 })
+                     .AddAction(new NotificationCompat.Action(Resource.Drawable.Stop, "Zastavit přehrávání", stopPendingIntent))
+                     .AddAction(new NotificationCompat.Action(Resource.Drawable.Quit, "Ukončit", quitPendingIntent))
+                     .SetVisibility((int)NotificationVisibility.Public)
+                     .SetContentIntent(pendingIntent);
 
             NotificationManager.Notify(_notificationId, notificationBuilder.Build());
         }

@@ -33,6 +33,7 @@ namespace OnlineTelevizor.ViewModels
         public const string CastingStarted = "CastingStarted";
         public const string CastingStopped = "CastingStopped";
         public const string StopCasting = "StopCasting";
+        public const string StopPlay = "StopPlay";
         public const string ToastMessage = "ShowToastMessage";
         public const string ShowConfiguration = "ShowConfiguration";
 

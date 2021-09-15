@@ -147,8 +147,13 @@ namespace OnlineTelevizor.Views
                 _viewModel.IsCasting = false;
             });
 
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.StopPlay, async (sender) =>
+            {
+                StopPlayback();
+            });
+
             if (Device.RuntimePlatform == Device.UWP ||
-                Device.RuntimePlatform == Device.iOS)
+            Device.RuntimePlatform == Device.iOS)
             {
                 ChannelsListView.ItemTapped += ChannelsListView_ItemTapped;
             }
