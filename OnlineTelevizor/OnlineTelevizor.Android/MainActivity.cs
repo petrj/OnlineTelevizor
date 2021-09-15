@@ -57,7 +57,7 @@ namespace OnlineTelevizor.Droid
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
-#if DEBUG
+#if LOADCONFIG
             var loaded = _cfg.LoadCredentails("http://localhost:8080/OnlineTelevizor.configuration.json");
             if (loaded.HasValue)
             {
@@ -158,7 +158,7 @@ namespace OnlineTelevizor.Droid
                 });
             });
 
-            MessagingCenter.Subscribe<PlayerPage>(this, BaseViewModel.StopPlayInternalNotification, (sender) =>
+            MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.StopPlayInternalNotification, (sender) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {

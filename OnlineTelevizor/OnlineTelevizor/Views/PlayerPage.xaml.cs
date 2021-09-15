@@ -68,7 +68,7 @@ namespace OnlineTelevizor.Views
 
         private async Task UpdateNotification()
         {
-            if (!Playing)
+            if (!Playing || !_config.PlayOnBackground)
             {
                 return;
             }
@@ -257,7 +257,7 @@ namespace OnlineTelevizor.Views
 
             if (_config.PlayOnBackground)
             {
-                MessagingCenter.Send<PlayerPage>(this, BaseViewModel.StopPlayInternalNotification);
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotification);
             }
         }
 
