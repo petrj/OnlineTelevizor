@@ -143,11 +143,23 @@ namespace OnlineTelevizor.Droid
         {
             get
             {
-                return GetPersistingSettingValue<bool>("InternalPlayer");
+                return !ExternalPlayer;
             }
             set
             {
-                SavePersistingSettingValue<bool>("InternalPlayer", value);
+                ExternalPlayer = !value;
+            }
+        }
+
+        private bool ExternalPlayer
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("ExternalPlayer");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("ExternalPlayer", value);
             }
         }
 
