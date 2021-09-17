@@ -460,6 +460,9 @@ namespace OnlineTelevizor.Droid
                 if (credentialsJson.GetValue("internalPlayer") != null)
                     InternalPlayer = GetTypedJObject<bool>(credentialsJson, "internalPlayer");
 
+                if (credentialsJson.GetValue("playOnBackground") != null)
+                    PlayOnBackground = GetTypedJObject<bool>(credentialsJson, "playOnBackground");
+
                 if (credentialsJson.GetValue("fullscreen") != null)
                     Fullscreen = GetTypedJObject<bool>(credentialsJson, "fullscreen");
 

@@ -27,9 +27,8 @@ namespace OnlineTelevizor.Droid
                     MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlay);
                 }
                 if (intent.Action == "Quit")
-                { 
-                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotification);
-                    Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
+                {
+                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit);                    
                 }
             } catch (Exception ex)
             {

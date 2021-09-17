@@ -25,6 +25,7 @@ namespace OnlineTelevizor.ViewModels
         public const string PlayInternalNotification = "PlayInternalNotification";
         public const string UpdateInternalNotification = "UpdateInternalNotification";
         public const string StopPlayInternalNotification = "StopPlayInternalNotification";
+        public const string StopPlayInternalNotificationAndQuit = "StopPlayInternalNotificationAndQuit";
         public const string PlayNext = "PlayNext";
         public const string PlayPrevious = "PlayPrevious";
         public const string KeyMessage = "KeyDownMessage";

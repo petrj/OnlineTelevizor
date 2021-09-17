@@ -166,6 +166,16 @@ namespace OnlineTelevizor.Droid
                 });
             });
 
+
+            MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit, (sender) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    StopPlayingNotification();
+                    Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
+                });
+            });            
+
             // prevent sleep:
             Window window = (Forms.Context as Activity).Window;
             window.AddFlags(WindowManagerFlags.KeepScreenOn);
