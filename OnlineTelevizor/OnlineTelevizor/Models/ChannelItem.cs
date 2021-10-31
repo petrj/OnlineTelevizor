@@ -43,6 +43,8 @@ namespace OnlineTelevizor.Models
                 if (IsCasting)
                     return "Cast.png";
 
+                //return "Rec.png";
+
                 return null;
             }
         }

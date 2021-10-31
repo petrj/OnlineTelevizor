@@ -11,6 +11,7 @@ using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using System.Text.RegularExpressions;
 using Plugin.InAppBilling;
+using System.IO;
 
 namespace OnlineTelevizor.ViewModels
 {

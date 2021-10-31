@@ -410,5 +410,13 @@ namespace OnlineTelevizor.UWP
             get { return GetSettingValue<string>("DevicePassword"); }
             set { SaveSettingValue<string>("DevicePassword", value); }
         }
+
+        public string OutputDirectory
+        {
+            get
+            {
+                return null;
+            }
+        }
     }
 }

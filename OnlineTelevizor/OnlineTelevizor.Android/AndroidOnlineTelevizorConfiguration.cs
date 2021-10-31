@@ -429,6 +429,40 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        public string OutputDirectory
+        {
+            get
+            {
+                try
+                {
+                    // internal storage - always writable directory
+                    try
+                    {
+                        var pathToExternalMediaDirs = Android.App.Application.Context.GetExternalMediaDirs();
+
+                        if (pathToExternalMediaDirs.Length == 0)
+                            throw new DirectoryNotFoundException();
+
+                        return pathToExternalMediaDirs[0].AbsolutePath;
+                    }
+                    catch
+                    {
+                        // fallback for older API:
+
+                        var internalStorageDir = Android.App.Application.Context.GetExternalFilesDir(Environment.SpecialFolder.MyDocuments.ToString());
+
+                        return internalStorageDir.AbsolutePath;
+                    }
+                }
+                catch
+                {
+                    var dir = Android.App.Application.Context.GetExternalFilesDir("");
+
+                    return dir.AbsolutePath;
+                }
+            }
+        }
+
         public bool? LoadCredentails(string url)
         {
             try

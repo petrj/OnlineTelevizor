@@ -64,5 +64,7 @@ namespace OnlineTelevizor.Models
         // private cached login credentailes
         string DeviceId { get; set; }
         string DevicePassword { get; set; }
+
+        string OutputDirectory { get; }
     }
 }

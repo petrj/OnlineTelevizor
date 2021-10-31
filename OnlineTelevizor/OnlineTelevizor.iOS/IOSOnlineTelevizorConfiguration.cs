@@ -321,18 +321,6 @@ namespace OnlineTelevizor.iOS
             }
         }
 
-        public bool PurchaseTokenSent
-        {
-            get
-            {
-                return true;
-            }
-            set
-            {
-                
-            }
-        }
-
         public bool NotPurchased
         {
             get
@@ -447,6 +435,14 @@ namespace OnlineTelevizor.iOS
         {
             get { return GetPersistingSettingValue<string>("DevicePassword"); }
             set { SavePersistingSettingValue<string>("DevicePassword", value); }
+        }
+
+        public string OutputDirectory
+        {
+            get
+            {
+                return null;
+            }
         }
     }
 }
