@@ -37,6 +37,8 @@ namespace OnlineTelevizor.ViewModels
         public const string StopPlay = "StopPlay";
         public const string ToastMessage = "ShowToastMessage";
         public const string ShowConfiguration = "ShowConfiguration";
+        public const string StartCastNotification = "StartCastNotification";
+        public const string StopCastNotification = "StopCastNotification";
 
         public const string CheckBatterySettings = "CheckBatterySettings";
         public const string RequestBatterySettings = "RequestBatterySettings";

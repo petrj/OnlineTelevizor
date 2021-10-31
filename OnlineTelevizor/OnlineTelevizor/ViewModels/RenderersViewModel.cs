@@ -37,7 +37,7 @@ namespace OnlineTelevizor.ViewModels
             _rendererDiscoverer = new RendererDiscoverer(_libVLC);
 
             // register callback when a new renderer is found
-            _rendererDiscoverer.ItemAdded += RendererDiscoverer_ItemAdded;
+            _rendererDiscoverer.ItemAdded += RendererDiscoverer_ItemAdded;            
 
             // start discovery on the local network
             _rendererDiscoverer.Start();

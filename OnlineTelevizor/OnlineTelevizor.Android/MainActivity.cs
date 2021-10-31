@@ -174,7 +174,12 @@ namespace OnlineTelevizor.Droid
                     StopPlayingNotification();
                     Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
                 });
-            });            
+            });
+
+            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.CastingStarted, (sender, channel) =>
+            {
+               
+            });
 
             // prevent sleep:
             Window window = (Forms.Context as Activity).Window;

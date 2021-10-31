@@ -34,6 +34,24 @@ namespace OnlineTelevizor.Models
         public string Type { get; set; }
         public string Group { get; set; }
 
+        public bool IsCasting { get; set; } = false;
+
+        public string StateIcon
+        {
+            get
+            {
+                if (IsCasting)
+                    return "Cast.png";
+
+                return null;
+            }
+        }
+
+        public void NotifyStateChange()
+        {
+            OnPropertyChanged(nameof(StateIcon));
+        }
+
         private void NotifyEPGChange()
         {
             OnPropertyChanged(nameof(CurrentEPGTitle));
@@ -95,7 +113,7 @@ namespace OnlineTelevizor.Models
                 if (title != null)
                 {
                     title = title.Trim();
-                    return $"\u23ed\u2001 {title}";
+                    return $"-> {title}";
                 }
 
                 return null;

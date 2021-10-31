@@ -167,11 +167,29 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
-        public async Task SelectChannelByNumber(string number)
+        public async Task NotifyCastChannel(string channelNumber, bool castingStart)
+        {
+            foreach (var ch in Channels)
+            {
+                ch.IsCasting = false;
+            }           
+
+            IsCasting = castingStart;
+
+            var channel = await SelectChannelByNumber(channelNumber);
+
+            if (channel != null)
+            {
+                channel.IsCasting = castingStart;
+                channel.NotifyStateChange();
+            }
+        }
+
+        public async Task<ChannelItem> SelectChannelByNumber(string number)
         {
             _loggingService.Info($"Selecting channel by number {number}");
 
-            await Task.Run(
+            return await Task.Run(
                 async () =>
                 {
                     try
@@ -184,9 +202,11 @@ namespace OnlineTelevizor.ViewModels
                             if (ch.ChannelNumber == number)
                             {
                                 SelectedItem = ch;
-                                break;
+                                return ch;                                
                             }
                         }
+
+                        return null;
                     }
                     finally
                     {

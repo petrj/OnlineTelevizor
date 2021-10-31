@@ -19,8 +19,10 @@ namespace OnlineTelevizor.Views
     {
         private RenderersViewModel _viewModel;
         private MediaPlayer _mediaPlayer;
-
-        private string  _url;
+        private ChannelItem _channel;
+        private Command CheckCastingCommand { get; set; }
+        private bool _castingStarted = false;
+            
 
         public CastRenderersPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
@@ -29,22 +31,37 @@ namespace OnlineTelevizor.Views
             var dialogService = new DialogService(this);
 
             BindingContext = _viewModel = new RenderersViewModel(loggingService, config, dialogService);
+
+            CheckCastingCommand = new Command(async () => await CheckCasting());
+
+            BackgroundCommandWorker.RunInBackground(CheckCastingCommand, 10, 5);
+        }
+
+        private async Task CheckCasting()
+        {
+            if (_castingStarted && !IsCasting())
+            {
+                MessagingCenter.Send(_channel.ChannelNumber, BaseViewModel.CastingStopped);
+                _castingStarted = false;
+            }
         }
 
         private async void Renderer_Tapped(object sender, ItemTappedEventArgs e)
         {
             // create new media
-            using (var media = new Media(_viewModel.LibVLC, new Uri(Url)))
+            using (var media = new Media(_viewModel.LibVLC, new Uri(_channel.Url)))
             {
                 // create the mediaplayer
                 _mediaPlayer = new MediaPlayer(_viewModel.LibVLC);
 
-                _mediaPlayer.SetRenderer(e.Item as RendererItem);
+                _mediaPlayer.SetRenderer(e.Item as RendererItem);                
 
                 _mediaPlayer.Play(media);
             }
 
-            MessagingCenter.Send(String.Empty, BaseViewModel.CastingStarted);
+            MessagingCenter.Send<BaseViewModel,ChannelItem>(_viewModel, BaseViewModel.CastingStarted, _channel);
+
+            _castingStarted = true;
 
             await Navigation.PopAsync();
         }
@@ -59,18 +76,20 @@ namespace OnlineTelevizor.Views
             if (_mediaPlayer != null)
                 _mediaPlayer.Stop();
 
-            MessagingCenter.Send(String.Empty, BaseViewModel.CastingStopped);
+            _castingStarted = false;
+
+            MessagingCenter.Send(_channel.ChannelNumber, BaseViewModel.CastingStopped);
         }
 
-        public string Url
+        public ChannelItem Channel
         {
             get
             {
-                return _url;
+                return _channel;
             }
             set
             {
-                _url = value;
+                _channel = value;
             }
         }
     }

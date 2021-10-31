@@ -94,7 +94,7 @@ namespace OnlineTelevizor.Views
                     _renderersPage = new CastRenderersPage(_loggingService, _config);
                 }
 
-                _renderersPage.Url = _viewModel.SelectedItem.Url;
+                _renderersPage.Channel = _viewModel.SelectedItem;
 
                 Navigation.PushAsync(_renderersPage);
             });
@@ -137,14 +137,20 @@ namespace OnlineTelevizor.Views
                 ToolbarItemSettings_Clicked(this, null);
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.CastingStarted, (sender) =>
+            MessagingCenter.Subscribe<BaseViewModel,ChannelItem>(this, BaseViewModel.CastingStarted, (sender, channel) =>
             {
-                _viewModel.IsCasting = true;
+                Task.Run(async () =>
+                {
+                    await _viewModel.NotifyCastChannel(channel.ChannelNumber, true);                    
+                });                    
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.CastingStopped, (sender) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.CastingStopped, (channelNumber) =>
             {
-                _viewModel.IsCasting = false;
+                Task.Run(async () =>
+                {
+                    await _viewModel.NotifyCastChannel(channelNumber, false);
+                });
             });
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.StopPlay, async (sender) =>
