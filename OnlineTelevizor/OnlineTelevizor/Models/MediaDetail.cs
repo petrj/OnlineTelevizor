@@ -11,7 +11,8 @@ namespace OnlineTelevizor.Models
         public string Title { get; set; }
         public string Type { get; set; }
         public string ChanneldID { get; set; }
-        public EPGItem CurrentEPGItem { get; set; }        
+        public EPGItem CurrentEPGItem { get; set; }
+        public EPGItem NextEPGItem { get; set; }
         public string LogoUrl { get; set; }
     }
 }

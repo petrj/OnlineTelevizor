@@ -32,5 +32,17 @@ namespace TVAPI
                 return 1 - futureSecs/totalSecs;
             }
         }
+
+        public string Time
+        {
+            get
+            {
+                if (Finish == DateTime.MinValue || Start == DateTime.MinValue ||
+                    Finish == DateTime.MaxValue || Finish == DateTime.MaxValue)
+                    return String.Empty;
+
+                return $"{Start.ToString("HH:mm")}-{Finish.ToString("HH:mm")}";
+            }
+        }
     }
 }

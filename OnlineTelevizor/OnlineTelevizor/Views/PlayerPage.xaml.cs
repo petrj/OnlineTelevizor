@@ -21,13 +21,14 @@ namespace OnlineTelevizor.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PlayerPage : ContentPage
     {
-        LibVLC _libVLC = null;
-        MediaPlayer _mediaPlayer;
-        Media _media = null;
-        IOnlineTelevizorConfiguration _config;
-        bool _fullscreen = false;
-        bool _playInProgress = false;
-        ILoggingService _loggingService;
+        private LibVLC _libVLC = null;
+        private MediaPlayer _mediaPlayer;
+        private Media _media = null;
+        private IOnlineTelevizorConfiguration _config;
+        private bool _fullscreen = false;
+        private bool _playInProgress = false;
+        private ILoggingService _loggingService;
+        private DateTime _lastSingleClicked = DateTime.MinValue;
 
         public Command CheckStreamCommand { get; set; }
 
@@ -125,6 +126,12 @@ namespace OnlineTelevizor.Views
 
             await UpdateEPG();
         }
+        
+
+        public void OnSingleTapped(object sender, EventArgs e)
+        {
+            ShowJustPlayingNotification();
+        }
 
         public void OnDoubleTapped(object sender, EventArgs e)
         {
@@ -184,15 +191,12 @@ namespace OnlineTelevizor.Views
             _viewModel.MediaType = detail.Type;
             _viewModel.ChannelId = detail.ChanneldID;
             _viewModel.EPGItem = detail.CurrentEPGItem;
+            _viewModel.NextEPGItem = detail.NextEPGItem;
             _viewModel.LogoIcon = detail.LogoUrl;
 
-            var desc = detail.CurrentEPGItem == null ? "" : detail.CurrentEPGItem.Title;
-            var msg = $"\u25B6  {detail.Title}";
-            if (!string.IsNullOrEmpty(desc))
-            {
-                msg += $" - {desc}";
-            }
-            MessagingCenter.Send(msg, BaseViewModel.ToastMessage);
+            _lastSingleClicked = DateTime.MinValue;
+
+            ShowJustPlayingNotification();
 
             if (Playing)
             {
@@ -205,6 +209,50 @@ namespace OnlineTelevizor.Views
                     await UpdateEPG();
                 });
             }
+        }
+
+        public void ShowJustPlayingNotification()
+        {
+            bool showCurrent;
+            string msg;
+
+            if (( (DateTime.Now-_lastSingleClicked).TotalSeconds>5) ||
+                _viewModel.NextEPGItem == null)
+            {
+                showCurrent = true;
+            } else
+            {
+                showCurrent = false;
+            }            
+
+            if (showCurrent)
+            {
+                msg = $"\u25B6  {_viewModel.Title}";
+
+                if (_viewModel.EPGItem != null &&
+                _viewModel.EPGItem.Start < DateTime.Now &&
+                _viewModel.EPGItem.Finish > DateTime.Now &&
+                !string.IsNullOrEmpty(_viewModel.EPGItem.Title))
+                {
+                    msg += $" - {_viewModel.EPGItem.Title}";
+                }
+
+                _lastSingleClicked = DateTime.Now;
+            } else
+            {                
+                if (_viewModel.NextEPGItem != null &&
+                    !string.IsNullOrEmpty(_viewModel.NextEPGItem.Title))
+                {
+                    msg = $"\u23ed\u2001 {_viewModel.NextEPGItem.Start.ToString("HH:mm")} - {_viewModel.NextEPGItem.Title}";
+                } else
+                {
+                    msg = $"\u25B6  {_viewModel.Title}";
+                }
+
+                _lastSingleClicked = DateTime.MinValue;
+            }
+
+            MessagingCenter.Send(msg, BaseViewModel.ToastMessage);            
         }
 
         public string PlayingChannelName

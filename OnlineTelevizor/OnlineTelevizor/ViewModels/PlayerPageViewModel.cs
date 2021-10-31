@@ -25,6 +25,7 @@ namespace OnlineTelevizor.ViewModels
         private string _mediaType;
         private string _channelId;
         private EPGItem _epgItem;
+        private EPGItem _nextEpgItem;
         private int _animePos = 2;
         private bool _animePosIncreasing = true;
         private double _EPGProgress = 0;
@@ -106,6 +107,20 @@ namespace OnlineTelevizor.ViewModels
                 _epgItem = value;
 
                 OnPropertyChanged(nameof(EPGItem));
+            }
+        }
+
+        public EPGItem NextEPGItem
+        {
+            get
+            {
+                return _nextEpgItem;
+            }
+            set
+            {
+                _nextEpgItem = value;
+
+                OnPropertyChanged(nameof(NextEPGItem));
             }
         }
 
@@ -276,6 +291,20 @@ namespace OnlineTelevizor.ViewModels
 
             try
             {
+                if (!
+                    (EPGItem != null && 
+                    EPGItem.Start<DateTime.Now &&
+                    EPGItem.Finish>DateTime.Now))
+                {
+                    EPGItem = null;
+                }
+
+                if (EPGItem != null &&
+                    NextEPGItem != null &&
+                    NextEPGItem.Start != EPGItem.Finish)
+                {
+                    NextEPGItem = null;
+                }
 
                 var epg = await _service.GetEPG();
 
@@ -283,6 +312,8 @@ namespace OnlineTelevizor.ViewModels
                 {
                     if (epg.ContainsKey(_channelId) && epg[_channelId] != null)
                     {
+                        // looking for current item
+
                         foreach (var epgItem in epg[_channelId])
                         {
                             if (epgItem.Finish < DateTime.Now || epgItem.Start > DateTime.Now)
@@ -290,6 +321,20 @@ namespace OnlineTelevizor.ViewModels
 
                             EPGItem = epgItem;
                             break;
+                        }
+
+                        // looking for next item
+
+                        if (EPGItem != null)
+                        {
+                            foreach (var epgItem in epg[_channelId])
+                            {
+                                if (epgItem.Start == EPGItem.Finish)
+                                {
+                                    NextEPGItem = epgItem;
+                                    break;
+                                }         
+                            }
                         }
                     }
                 }

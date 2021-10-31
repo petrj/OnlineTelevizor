@@ -82,6 +82,7 @@
 
             </StackLayout>
             <StackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" />
                 <TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" />
                 <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped"/>
                 <SwipeGestureRecognizer Direction="Right" Swiped="SwipeGestureRecognizer_Swiped"/>

@@ -95,13 +95,23 @@ namespace OnlineTelevizor.Models
                 if (title != null)
                 {
                     title = title.Trim();
-                    return $"-> {title}";
+                    return $"\u23ed\u2001 {title}";
                 }
 
                 return null;
             }
         }
 
+        public EPGItem NextEPGItem
+        {
+            get
+            {
+                if (_EPGItems.Count <= 1)
+                    return null;                
+
+                return _EPGItems[1];
+            }
+        }
 
         public string EPGTimeStart
         {

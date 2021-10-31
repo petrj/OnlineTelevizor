@@ -29,7 +29,7 @@ namespace OnlineTelevizor.Views
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private bool _firstSelectionAfterStartup = false;
-        private string _numberPressed = String.Empty;
+        private string _numberPressed = String.Empty;        
 
         public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
@@ -445,6 +445,7 @@ namespace OnlineTelevizor.Views
                                 Title = _viewModel.SelectedItem.Name,
                                 Type = _viewModel.SelectedItem.Type,
                                 CurrentEPGItem = _viewModel.SelectedItem.CurrentEPGItem,
+                                NextEPGItem = _viewModel.SelectedItem.NextEPGItem,
                                 ChanneldID = _viewModel.SelectedItem.Id,
                                 LogoUrl = _viewModel.SelectedItem.LogoUrl
                             });
@@ -630,13 +631,7 @@ namespace OnlineTelevizor.Views
 
             if (_playerPage != null && _playerPage.Playing)
             {
-                var msg = $"\u25B6  {_playerPage.PlayingChannelName}";
-                if (!string.IsNullOrEmpty(_playerPage.PlayingTitleName))
-                {
-                    msg += $" - {_playerPage.PlayingTitleName}";
-                }
-
-                MessagingCenter.Send(msg, BaseViewModel.ToastMessage);
+                _playerPage.ShowJustPlayingNotification();
             }
             else
             {
