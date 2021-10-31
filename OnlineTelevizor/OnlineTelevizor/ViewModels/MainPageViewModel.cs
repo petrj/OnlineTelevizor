@@ -118,11 +118,8 @@ namespace OnlineTelevizor.ViewModels
             {
                 actions.Add(optionCast);
             }
-
-            if (IsPortrait)
-            {
-                actions.Add(optionDetail);
-            }
+           
+            actions.Add(optionDetail);           
 
             var selectedvalue = await _dialogService.Select(actions, (item as ChannelItem).Name, optionCancel);
 
