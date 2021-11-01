@@ -158,7 +158,7 @@ namespace OnlineTelevizor.ViewModels
                 using (var fileStream = new FileStream(outputFileName, FileMode.Create))
                 {
 
-                    int bytesToRead = 10000;
+                    int bytesToRead = 10240;
                     byte[] buffer = new Byte[bytesToRead];
 
                     var fileReq = HttpWebRequest.Create(_recordingChannel.Url);
@@ -171,11 +171,10 @@ namespace OnlineTelevizor.ViewModels
                     {
                         length = stream.Read(buffer, 0, bytesToRead);
 
-                        fileStream.Write(buffer, 0, bytesToRead);
+                        fileStream.Write(buffer, 0, length);
 
                         //Clear the buffer
                         buffer = new Byte[bytesToRead];
-
 
                         var freespaceGB = Convert.ToInt64(Config.UsableSpace / 1000000000);
 
@@ -183,7 +182,7 @@ namespace OnlineTelevizor.ViewModels
                         {
                             throw new Exception("Nedosatatek volného místa");
                         }
-                    } while (IsRecording && length > 0); //Repeat until no data is read
+                    } while (IsRecording && stream.CanRead);
 
                     fileStream.Flush();
                     fileStream.Close();
