@@ -77,7 +77,7 @@ namespace OnlineTelevizor.UWP
         {
             get
             {
-                return GetSettingValue<string>("O2TVUsername");                
+                return GetSettingValue<string>("O2TVUsername");
             }
             set
             {
@@ -416,6 +416,14 @@ namespace OnlineTelevizor.UWP
             get
             {
                 return null;
+            }
+        }
+
+        public long UsableSpace
+        {
+            get
+            {
+                return -1;
             }
         }
     }

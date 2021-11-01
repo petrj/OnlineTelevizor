@@ -305,7 +305,7 @@ namespace OnlineTelevizor.iOS
             }
             set
             {
-                
+
             }
         }
 
@@ -317,7 +317,7 @@ namespace OnlineTelevizor.iOS
             }
             set
             {
-                
+
             }
         }
 
@@ -442,6 +442,14 @@ namespace OnlineTelevizor.iOS
             get
             {
                 return null;
+            }
+        }
+
+        public long UsableSpace
+        {
+            get
+            {
+                return -1;
             }
         }
     }

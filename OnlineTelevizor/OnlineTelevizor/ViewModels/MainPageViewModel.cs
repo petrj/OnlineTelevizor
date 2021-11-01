@@ -175,6 +175,13 @@ namespace OnlineTelevizor.ViewModels
                         //Clear the buffer
                         buffer = new Byte[bytesToRead];
 
+
+                        var freespaceGB = Convert.ToInt64(Config.UsableSpace / 1000000000);
+
+                        if (freespaceGB < 1)
+                        {
+                            throw new Exception("Nedosatatek volného místa");
+                        }
                     } while (IsRecording && length > 0); //Repeat until no data is read
 
                     fileStream.Flush();
@@ -316,6 +323,21 @@ namespace OnlineTelevizor.ViewModels
 
             if (recordStart)
             {
+                if (!Config.Purchased)
+                {
+                    await _dialogService.Information("Nahrávání je funkční jen v plné verzi");
+                    return;
+                }
+
+                var freespace = Config.UsableSpace;
+                var freespaceGB = Convert.ToInt64(freespace / 1000000000);
+
+                if (freespaceGB < 1)
+                {
+                    await _dialogService.Information("Nahrávání není možné, je vyžadováno alespoň 1 GB volného místa");
+                    return;
+                }
+
                 // confirm
                 var msg = $"Soubor bude uložen do složky {Config.OutputDirectory}{System.Environment.NewLine}{System.Environment.NewLine}";
 

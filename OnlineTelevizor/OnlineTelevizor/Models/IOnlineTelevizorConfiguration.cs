@@ -53,7 +53,7 @@ namespace OnlineTelevizor.Models
 
         bool PurchaseTokenSent { get; set; }
 
-        bool NotPurchased { get; }          
+        bool NotPurchased { get; }
 
         bool DoNotSplitScreenOnLandscape { get; set; }
 
@@ -66,5 +66,7 @@ namespace OnlineTelevizor.Models
         string DevicePassword { get; set; }
 
         string OutputDirectory { get; }
+
+        long UsableSpace { get; }
     }
 }

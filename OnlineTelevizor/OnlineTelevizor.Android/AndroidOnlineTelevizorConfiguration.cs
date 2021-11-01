@@ -463,6 +463,20 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        public long UsableSpace
+        {
+            get
+            {
+                try
+                {
+                    return Android.OS.Environment.ExternalStorageDirectory.UsableSpace;
+                } catch (Exception ex)
+                {
+                    return -1;
+                }
+            }
+        }
+
         public bool? LoadCredentails(string url)
         {
             try
