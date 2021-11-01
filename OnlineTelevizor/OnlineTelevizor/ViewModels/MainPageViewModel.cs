@@ -42,6 +42,7 @@ namespace OnlineTelevizor.ViewModels
 
         private string _selectedChannelEPGDescription = String.Empty;
         private ChannelItem _recordingChannel = null;
+        private ChannelItem _castingChannel = null;
 
         public enum SelectedPartEnum
         {
@@ -312,6 +313,14 @@ namespace OnlineTelevizor.ViewModels
             {
                 channel.IsCasting = castingStart;
                 channel.NotifyStateChange();
+
+                if (castingStart)
+                {
+                    _castingChannel = channel;
+                } else
+                {
+                    _castingChannel = null;
+                }
             }
         }
 
@@ -949,6 +958,20 @@ namespace OnlineTelevizor.ViewModels
                             (Config.ChannelFilterName != "*") &&
                             !ch.Name.ToLower().Contains(Config.ChannelFilterName.ToLower()))
                             continue;
+
+                        if (IsRecording &&
+                            _recordingChannel != null &&
+                            _recordingChannel.ChannelNumber == ch.ChannelNumber)
+                        {
+                            ch.IsRecording = true;
+                        }
+
+                        if (IsCasting &&
+                            _castingChannel!= null &&
+                            _castingChannel.ChannelNumber == ch.ChannelNumber)
+                        {
+                            ch.IsCasting = true;
+                        }
 
                         Channels.Add(ch);
 
