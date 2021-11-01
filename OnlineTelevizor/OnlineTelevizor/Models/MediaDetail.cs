@@ -7,6 +7,22 @@ namespace OnlineTelevizor.Models
 {
     public class MediaDetail
     {
+        public MediaDetail()
+        {
+
+        }
+
+        public MediaDetail(ChannelItem channel)
+        {
+            MediaUrl = channel.Url;
+            Title = channel.Name;
+            Type = channel.Type;
+            ChanneldID = channel.Id;
+            CurrentEPGItem = channel.CurrentEPGItem;
+            NextEPGItem = channel.NextEPGItem;
+            LogoUrl = channel.LogoUrl;
+        }
+
         public string MediaUrl { get; set;  }
         public string Title { get; set; }
         public string Type { get; set; }

@@ -29,7 +29,7 @@ namespace OnlineTelevizor.Views
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private bool _firstSelectionAfterStartup = false;
-        private string _numberPressed = String.Empty;        
+        private string _numberPressed = String.Empty;
 
         public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
@@ -141,8 +141,8 @@ namespace OnlineTelevizor.Views
             {
                 Task.Run(async () =>
                 {
-                    await _viewModel.NotifyCastChannel(channel.ChannelNumber, true);                    
-                });                    
+                    await _viewModel.NotifyCastChannel(channel.ChannelNumber, true);
+                });
             });
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.CastingStopped, (channelNumber) =>
@@ -156,6 +156,14 @@ namespace OnlineTelevizor.Views
             MessagingCenter.Subscribe<string>(this, BaseViewModel.StopPlay, async (sender) =>
             {
                 StopPlayback();
+            });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.StopRecord, async (sender) =>
+            {
+                await Task.Run(async () =>
+                {
+                    await _viewModel.RecordChannel(false);
+                });
             });
 
             if (Device.RuntimePlatform == Device.UWP ||

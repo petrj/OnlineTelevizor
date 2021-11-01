@@ -40,6 +40,10 @@ namespace OnlineTelevizor.ViewModels
         public const string ShowConfiguration = "ShowConfiguration";
         public const string StartCastNotification = "StartCastNotification";
         public const string StopCastNotification = "StopCastNotification";
+        public const string RecordNotificationMessage = "RecordNotification";
+        public const string UpdateRecordNotificationMessage = "UpdateRecordNotification";
+        public const string StopRecordNotificationMessage = "StopRecordNotification";
+        public const string StopRecord = "StopRecord";
 
         public const string CheckBatterySettings = "CheckBatterySettings";
         public const string RequestBatterySettings = "RequestBatterySettings";

@@ -35,6 +35,7 @@ namespace OnlineTelevizor.Models
         public string Group { get; set; }
 
         public bool IsCasting { get; set; } = false;
+        public bool IsRecording { get; set; } = false;
 
         public string StateIcon
         {
@@ -43,7 +44,8 @@ namespace OnlineTelevizor.Models
                 if (IsCasting)
                     return "Cast.png";
 
-                //return "Rec.png";
+                if (IsRecording)
+                    return "Rec.png";
 
                 return null;
             }
@@ -127,7 +129,7 @@ namespace OnlineTelevizor.Models
             get
             {
                 if (_EPGItems.Count <= 1)
-                    return null;                
+                    return null;
 
                 return _EPGItems[1];
             }
@@ -152,7 +154,7 @@ namespace OnlineTelevizor.Models
                 var epg = CurrentEPGItem;
 
                 return (epg == null)
-                    ? null                  
+                    ? null
                     : epg.Finish.ToString("HH:mm");
             }
         }
@@ -166,6 +168,6 @@ namespace OnlineTelevizor.Models
         {
             get { return _EPGItems.Count == 0 ? null : _EPGItems[0]; }
         }
-     
+
     }
 }

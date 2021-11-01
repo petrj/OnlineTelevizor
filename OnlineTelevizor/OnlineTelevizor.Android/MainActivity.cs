@@ -167,6 +167,31 @@ namespace OnlineTelevizor.Droid
             });
 
 
+            MessagingCenter.Subscribe<BaseViewModel, MediaDetail>(this, BaseViewModel.RecordNotificationMessage, (sender, mediaDetail) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    Task.Run(async () => await ShowRecordNotification(mediaDetail));
+                });
+            });
+
+            MessagingCenter.Subscribe<PlayerPage, MediaDetail>(this, BaseViewModel.UpdateRecordNotificationMessage, (sender, mediaDetail) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    Task.Run(async () => await ShowRecordNotification(mediaDetail));
+                });
+            });
+
+            MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.StopRecordNotificationMessage, (sender) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    StopRecordNotification();
+                });
+            });
+
+
             MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit, (sender) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
@@ -174,11 +199,6 @@ namespace OnlineTelevizor.Droid
                     StopPlayingNotification();
                     Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
                 });
-            });
-
-            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.CastingStarted, (sender, channel) =>
-            {
-               
             });
 
             // prevent sleep:
@@ -218,8 +238,27 @@ namespace OnlineTelevizor.Droid
                       mediaDetail.CurrentEPGItem.Finish.ToString("HH:mm");
                 }
 
-                _notificationHelper.ShowNotification(mediaDetail.Title, subTitle, detail);
+                _notificationHelper.ShowPlayNotification(1, mediaDetail.Title, subTitle, detail);
             } catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
+        }
+
+        private async Task ShowRecordNotification(MediaDetail mediaDetail)
+        {
+            try
+            {
+                string subTitle = String.Empty;
+                string detail = "Probíhá nahrávání";
+                if (mediaDetail.CurrentEPGItem != null)
+                {
+                    subTitle = mediaDetail.CurrentEPGItem.Title;
+                }
+
+                _notificationHelper.ShowRecordNotification(2, mediaDetail.Title, subTitle, detail);
+            }
+            catch (Exception ex)
             {
                 _loggingService.Error(ex);
             }
@@ -229,7 +268,19 @@ namespace OnlineTelevizor.Droid
         {
             try
             {
-                _notificationHelper.CloseNotification();
+                _notificationHelper.CloseNotification(1);
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
+        }
+
+        private void StopRecordNotification()
+        {
+            try
+            {
+                _notificationHelper.CloseNotification(2);
             }
             catch (Exception ex)
             {

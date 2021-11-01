@@ -197,7 +197,7 @@
                         <Label  Grid.Row="3" Grid.Column="0" Text="Použít interní přehrávač" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
                         <Switch Grid.Row="3" Grid.Column="1" x:Name="UseInternalPlayerSwitch" IsToggled="{Binding Config.InternalPlayer, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
 
-                        <Label  Grid.Row="4" Grid.Column="0" Text="Přehrávat na pozadí (pro interní přehrávač)" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Label  Grid.Row="4" Grid.Column="0" Text="Běh na pozadí" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
                         <Switch Grid.Row="4" Grid.Column="1" x:Name="PlayOnBackgroundSwitch" IsToggled="{Binding Config.PlayOnBackground, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
 
                     </Grid>

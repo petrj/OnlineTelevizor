@@ -78,7 +78,7 @@ namespace OnlineTelevizor.Views
             {
                 if (_viewModel.EPGItem != null)
                 {
-                    
+
                     _viewModel.Description = _viewModel.EPGItem.Title;
                     _viewModel.DetailedDescription = _viewModel.EPGItem.Description;
                     _viewModel.TimeDescription = _viewModel.EPGItem.Start.ToString("HH:mm") + " - " + _viewModel.EPGItem.Finish.ToString("HH:mm");
@@ -93,7 +93,7 @@ namespace OnlineTelevizor.Views
                         ChanneldID = _viewModel.ChannelId,
                         LogoUrl = _viewModel.LogoIcon
                     });
-                }                
+                }
             });
         }
 
@@ -126,7 +126,7 @@ namespace OnlineTelevizor.Views
 
             await UpdateEPG();
         }
-        
+
 
         public void OnSingleTapped(object sender, EventArgs e)
         {
@@ -179,7 +179,7 @@ namespace OnlineTelevizor.Views
                         _viewModel.DetailedDescription = _viewModel.EPGItem.Description;
                         _viewModel.TimeDescription = _viewModel.EPGItem.Start.ToString("HH:mm") + " - " + _viewModel.EPGItem.Finish.ToString("HH:mm");
                         _viewModel.EPGProgress = _viewModel.EPGItem.Progress;
-                    }                   
+                    }
                 });
             });
         }
@@ -223,7 +223,7 @@ namespace OnlineTelevizor.Views
             } else
             {
                 showCurrent = false;
-            }            
+            }
 
             if (showCurrent)
             {
@@ -239,11 +239,11 @@ namespace OnlineTelevizor.Views
 
                 _lastSingleClicked = DateTime.Now;
             } else
-            {                
+            {
                 if (_viewModel.NextEPGItem != null &&
                     !string.IsNullOrEmpty(_viewModel.NextEPGItem.Title))
                 {
-                    msg = $"\u23ed\u2001 {_viewModel.NextEPGItem.Start.ToString("HH:mm")} - {_viewModel.NextEPGItem.Title}";
+                    msg = $"-> {_viewModel.NextEPGItem.Start.ToString("HH:mm")} - {_viewModel.NextEPGItem.Title}";
                 } else
                 {
                     msg = $"\u25B6  {_viewModel.Title}";
@@ -252,7 +252,7 @@ namespace OnlineTelevizor.Views
                 _lastSingleClicked = DateTime.MinValue;
             }
 
-            MessagingCenter.Send(msg, BaseViewModel.ToastMessage);            
+            MessagingCenter.Send(msg, BaseViewModel.ToastMessage);
         }
 
         public string PlayingChannelName

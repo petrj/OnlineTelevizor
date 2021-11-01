@@ -52,7 +52,7 @@ namespace OnlineTelevizor.Views
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.RequestBatterySettings, async (sender) =>
             {
-                if (await _dialogService.Confirm("Při použití interního přehrávače na pozadí je nutné zajistit, aby se aplikace kvůli optimalizaci baterie neukončovala. Přejít do nastavení?"))
+                if (await _dialogService.Confirm("Při běhu na pozadí je nutné zajistit, aby se aplikace kvůli optimalizaci baterie neukončovala. Přejít do nastavení?"))
                 {
                     MessagingCenter.Send<SettingsPage>(this, BaseViewModel.SetBatterySettings);
                 }

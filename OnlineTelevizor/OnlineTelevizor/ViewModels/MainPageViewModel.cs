@@ -11,6 +11,9 @@ using Xamarin.Forms;
 using System.Threading;
 using Plugin.InAppBilling;
 using TVAPI;
+using System.ComponentModel;
+using System.Net;
+using System.IO;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -21,10 +24,14 @@ namespace OnlineTelevizor.ViewModels
 
         public ObservableCollection<ChannelItem> Channels { get; set; } = new ObservableCollection<ChannelItem>();
         public ObservableCollection<ChannelItem> AllNotFilteredChannels { get; set; } = new ObservableCollection<ChannelItem>();
+        public Command UpdateRecordNotificationCommand { get; set; }
 
         public bool IsCasting { get; set; }  = false;
+        public bool IsRecording { get; set; } = false;
 
         private Dictionary<string, ChannelItem> _channelById { get; set; } = new Dictionary<string, ChannelItem>();
+
+        private BackgroundWorker _recordingBackgroundWorker = new BackgroundWorker();
 
         private ChannelItem _selectedItem;
         private bool _firstRefresh = true;
@@ -34,6 +41,7 @@ namespace OnlineTelevizor.ViewModels
         private bool _emptyCredentialsChecked = false;
 
         private string _selectedChannelEPGDescription = String.Empty;
+        private ChannelItem _recordingChannel = null;
 
         public enum SelectedPartEnum
         {
@@ -76,6 +84,8 @@ namespace OnlineTelevizor.ViewModels
             _dialogService = dialogService;
             Config = config;
 
+            _recordingBackgroundWorker.DoWork += _recordingBackgroundWorker_DoWork;
+
             RefreshCommand = new Command(async () => await Refresh());
 
             CheckPurchaseCommand = new Command(async () => await CheckPurchase());
@@ -91,11 +101,99 @@ namespace OnlineTelevizor.ViewModels
             LongPressCommand = new Command(LongPress);
             ShortPressCommand = new Command(ShortPress);
 
+            UpdateRecordNotificationCommand = new Command(async () => await UpdateRecordNotification());
+
             // refreshing every hour with no start delay
             BackgroundCommandWorker.RunInBackground(RefreshCommand, 3600, 0);
 
             // refreshing EPG every min with 60s start delay
             BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 60);
+
+            // update record notification
+            BackgroundCommandWorker.RunInBackground(UpdateRecordNotificationCommand, 10, 5);
+        }
+
+        private async Task UpdateRecordNotification()
+        {
+            await Task.Run(() =>
+            {
+               try
+               {
+                   if (!IsRecording || _recordingChannel == null || !Config.PlayOnBackground)
+                       return;
+
+                   ChannelItem channel = null;
+
+                   foreach (var ch in Channels)
+                   {
+                       if (ch.ChannelNumber == _recordingChannel.ChannelNumber)
+                       {
+                           channel = ch;
+                           break;
+                       }
+                   }
+
+                   if (channel == null)
+                       return;
+
+                   MessagingCenter.Send<BaseViewModel, MediaDetail>(this, BaseViewModel.UpdateRecordNotificationMessage, new MediaDetail(channel));
+
+               }
+               catch (Exception ex)
+               {
+                   _loggingService.Error(ex);
+               }
+           });
+        }
+
+        private void _recordingBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Stream stream = null;
+
+            var outputFileName = Path.Combine(Config.OutputDirectory, $"{_recordingChannel.Name} {DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss")}.ts");
+
+            try
+            {
+                using (var fileStream = new FileStream(outputFileName, FileMode.Create))
+                {
+
+                    int bytesToRead = 10000;
+                    byte[] buffer = new Byte[bytesToRead];
+
+                    var fileReq = HttpWebRequest.Create(_recordingChannel.Url);
+                    var fileResp = (HttpWebResponse)fileReq.GetResponse();
+
+                    stream = fileResp.GetResponseStream();
+
+                    int length;
+                    do
+                    {
+                        length = stream.Read(buffer, 0, bytesToRead);
+
+                        fileStream.Write(buffer, 0, bytesToRead);
+
+                        //Clear the buffer
+                        buffer = new Byte[bytesToRead];
+
+                    } while (IsRecording && length > 0); //Repeat until no data is read
+
+                    fileStream.Flush();
+                    fileStream.Close();
+                }
+
+            } catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+                RecordChannel(false);
+            } finally
+            {
+                if (stream != null)
+                {
+                    //Close the input stream
+                    stream.Close();
+                    stream.Dispose();
+                }
+            }
         }
 
         public async Task LongPressAction(ChannelItem item)
@@ -108,18 +206,28 @@ namespace OnlineTelevizor.ViewModels
             string optionStopCast = "Zastavit odesílání";
             string optionDetail = "Zobrazit detail ..";
 
+            string optionRecord = "Nahrávat do souboru ..";
+            string optionStopRecord = "Zastavit nahrávání";
+
             var actions = new List<string>() { optionPlay };
+
+            if (!IsCasting && !IsRecording)
+            {
+                actions.Add(optionCast);
+                actions.Add(optionRecord);
+            }
+
+            if (IsRecording)
+            {
+                actions.Add(optionStopRecord);
+            }
 
             if (IsCasting)
             {
                 actions.Add(optionStopCast);
             }
-            else
-            {
-                actions.Add(optionCast);
-            }
-           
-            actions.Add(optionDetail);           
+
+            actions.Add(optionDetail);
 
             var selectedvalue = await _dialogService.Select(actions, (item as ChannelItem).Name, optionCancel);
 
@@ -142,6 +250,14 @@ namespace OnlineTelevizor.ViewModels
             else if (selectedvalue == optionStopCast)
             {
                 MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.StopCasting);
+            }
+            else if (selectedvalue == optionRecord)
+            {
+                await RecordChannel(true);
+            }
+            else if (selectedvalue == optionStopRecord)
+            {
+                await RecordChannel(false);
             }
         }
 
@@ -171,8 +287,15 @@ namespace OnlineTelevizor.ViewModels
         {
             foreach (var ch in Channels)
             {
-                ch.IsCasting = false;
-            }           
+                if (ch.IsCasting)
+                {
+                    ch.IsCasting = false;
+                    ch.NotifyStateChange();
+                } else
+                {
+                    ch.IsCasting = false;
+                }
+            }
 
             IsCasting = castingStart;
 
@@ -182,6 +305,69 @@ namespace OnlineTelevizor.ViewModels
             {
                 channel.IsCasting = castingStart;
                 channel.NotifyStateChange();
+            }
+        }
+
+        public async Task RecordChannel(bool recordStart)
+        {
+            var channel = SelectedItem;
+            if (channel == null)
+                return;
+
+            if (recordStart)
+            {
+                // confirm
+                var msg = $"Soubor bude uložen do složky {Config.OutputDirectory}{System.Environment.NewLine}{System.Environment.NewLine}";
+
+                if (!Config.PlayOnBackground)
+                {
+                    msg += $"Pozor, v konfiguraci není povolen běh na pozadí, po opuštění aplikace bude přehrávání ukončeno!{System.Environment.NewLine}{System.Environment.NewLine}";
+                }
+
+                msg += $"Zahájit nahrávání kanálu {channel.Name}?";
+
+                var confirm = await _dialogService.Confirm(msg);
+                if (!confirm)
+                    return;
+            }
+
+            foreach (var ch in Channels)
+            {
+                if (ch.IsRecording)
+                {
+                    ch.IsRecording = false;
+                    ch.NotifyStateChange();
+                } else
+                {
+                    ch.IsRecording = false;
+                }
+            }
+
+            IsRecording = recordStart;
+
+            channel.IsRecording = recordStart;
+            channel.NotifyStateChange();
+
+            if (recordStart)
+            {
+                _recordingChannel = channel;
+                _recordingBackgroundWorker.RunWorkerAsync();
+
+                MessagingCenter.Send("Bylo zahájeno nahrávání", BaseViewModel.ToastMessage);
+
+                if (Config.PlayOnBackground)
+                {
+                    MessagingCenter.Send<BaseViewModel, MediaDetail>(this, BaseViewModel.RecordNotificationMessage, new MediaDetail(channel));
+                }
+            } else
+            {
+                _recordingChannel = null;
+                MessagingCenter.Send("Nahrávání bylo ukončeno", BaseViewModel.ToastMessage);
+
+                if (Config.PlayOnBackground)
+                {
+                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopRecordNotificationMessage);
+                }
             }
         }
 
@@ -202,7 +388,7 @@ namespace OnlineTelevizor.ViewModels
                             if (ch.ChannelNumber == number)
                             {
                                 SelectedItem = ch;
-                                return ch;                                
+                                return ch;
                             }
                         }
 
