@@ -35,7 +35,7 @@ Android, UWP and iOS application for playing internet TV and radio through czech
 - in Android using installed external player or internal player based on libVLCSharp
 - in UWP and iOS using VLC player 
 - only live broadcasting
-- possibility to record stream to file (for Android and only to internal stograge)
+- possibility to record stream to file (for Android and only to internal storage)
 - supported Android 4.4 and higher for architectures: armeabi, armeabi-v7a, x86, x86_x64, arm64-v8a
 
 <img src="https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Screenshot.png" width="400" alt="Screenshot"/>
