@@ -176,7 +176,7 @@ namespace OnlineTelevizor.Views
             Appearing += MainPage_Appearing;
         }
 
-        private void MainPage_Appearing(object sender, EventArgs e)
+        private async void MainPage_Appearing(object sender, EventArgs e)
         {
             if (!_viewModel.QualityFilterEnabled)
             {
@@ -196,7 +196,7 @@ namespace OnlineTelevizor.Views
 
         private void ScrollViewChannelEPGDescription_Scrolled(object sender, ScrolledEventArgs e)
         {
-            if (_viewModel.SelectedPart != SelectedPartEnum.EPGDetail)
+            if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
             {
                 // ScrollViewChannelEPGDescription got focus unexpectedly
                 // hiding to lost focus
@@ -224,6 +224,8 @@ namespace OnlineTelevizor.Views
                 LayoutGrid.ColumnDefinitions[0].Width = new GridLength(width);
                 LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0);
             }
+
+            _viewModel.NotifyToolBarChange();
         }
 
         private void ChannelsListView_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -255,6 +257,29 @@ namespace OnlineTelevizor.Views
             _viewModel.DoNotScrollToChannel = false;
         }
 
+        private static bool LeavePageKey(string lowKey)
+        {
+            if (lowKey == "escape" ||
+                       lowKey == "back" ||
+                       lowKey == "numpadsubtract" ||
+                       lowKey == "f4" ||
+                       lowKey == "mediaplaystop" ||
+                       lowKey == "mediastop" ||
+                       lowKey == "dpadleft" ||
+                       lowKey == "pageup" ||
+                       lowKey == "a" ||
+                       lowKey == "b" ||
+                       lowKey == "mediaplayprevious" ||
+                       lowKey == "mediaprevious" ||
+                       lowKey == "del" ||
+                       lowKey == "numpad4")
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public void OnKeyDown(string key)
         {
             _loggingService.Debug($"OnKeyDown {key}");
@@ -269,24 +294,36 @@ namespace OnlineTelevizor.Views
 
                 if (stack[stack.Count - 1].GetType() == typeof(ChannelDetailPage))
                 {
-                    if (lowKey == "escape" ||
-                        lowKey == "back" ||
-                        lowKey == "numpadsubtract" ||
-                        lowKey == "f4" ||
-                        lowKey == "mediaplaystop" ||
-                        lowKey == "mediastop" ||
-                        lowKey == "dpadleft"  ||
-                        lowKey == "pageup" ||
-                        lowKey == "left" ||
-                        lowKey == "a" ||
-                        lowKey == "b" ||
-                        lowKey == "mediaplayprevious" ||
-                        lowKey == "mediaprevious" ||
-                        lowKey == "del" ||
-                        lowKey == "numpad4")
+                    if (LeavePageKey(lowKey))
                     {
                         // closing detail page
+                        Navigation.PopAsync();
+                    }
+                }
 
+                if (stack[stack.Count - 1].GetType() == typeof(FilterPage))
+                {
+                    if (LeavePageKey(lowKey))
+                    {
+                        // closing filter page
+                        Navigation.PopAsync();
+                    }
+                }
+
+                if (stack[stack.Count - 1].GetType() == typeof(QualitiesPage))
+                {
+                    if (LeavePageKey(lowKey))
+                    {
+                        // closing quality page
+                        Navigation.PopAsync();
+                    }
+                }
+
+                if (stack[stack.Count - 1].GetType() == typeof(SettingsPage))
+                {
+                    if (LeavePageKey(lowKey))
+                    {
+                        // closing settings page
                         Navigation.PopAsync();
                     }
                 }
@@ -538,9 +575,39 @@ namespace OnlineTelevizor.Views
 
         private async Task OnKeyPlay()
         {
-            if (!Playing)
+            if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList ||
+                _viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
             {
-                await _viewModel.Play();
+                if (!Playing)
+                {
+                    await _viewModel.Play();
+                }
+            }
+            else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (_viewModel.SelectedToolbarItemName == "ToolbarItemSettings")
+                    {
+                        ToolbarItemSettings_Clicked(this, null);
+                    }
+                    else if (_viewModel.SelectedToolbarItemName == "ToolbarItemInfo")
+                    {
+                        Detail_Clicked(this, null);
+                    }
+                    else if (_viewModel.SelectedToolbarItemName == "ToolbarItemQuality")
+                    {
+                        ToolbarItemQuality_Clicked(this, null);
+                    }
+                    else if (_viewModel.SelectedToolbarItemName == "ToolbarItemFilter")
+                    {
+                        ToolbarItemFilter_Clicked(this, null);
+                    }
+                });
+
+                _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                _viewModel.SelectedToolbarItemName = null;
+                await _viewModel.SelectNextChannel();
             }
         }
 
@@ -548,19 +615,20 @@ namespace OnlineTelevizor.Views
         {
             if (!Playing)
             {
-                if (_viewModel.IsPortrait)
+                if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
                 {
-                    // no EPG detail on right
-                    await _viewModel.SelectPreviousChannel(10);
+                    _viewModel.SelectedPart = SelectedPartEnum.ToolBar;
+                    _viewModel.SelectedToolbarItemName = "ToolbarItemSettings";
+                    _viewModel.NotifyToolBarChange();
                 }
-                else
+                else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
                 {
-                    // EPG detail on right
-                    if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
-                    {
-                        await ScrollViewChannelEPGDescription.ScrollToAsync(0, 0, false);
-                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
-                    }
+                    await ScrollViewChannelEPGDescription.ScrollToAsync(0, 0, false);
+                    _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                }
+                else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
+                {
+                    SelecPreviousToolBarItem();
                 }
             }
             else
@@ -574,18 +642,30 @@ namespace OnlineTelevizor.Views
         {
             if (!Playing)
             {
-                if (_viewModel.IsPortrait)
+                if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
                 {
-                    // no EPG detail on right
-                    await _viewModel.SelectNextChannel(10);
-                }
-                else
-                {
-                    // EPG detail on right
-                    if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
+                    if (_viewModel.IsPortrait)
                     {
+                        // no EPG detail on right
+                        _viewModel.SelectedPart = SelectedPartEnum.ToolBar;
+                        _viewModel.SelectedToolbarItemName = "ToolbarItemFilter";
+                        _viewModel.NotifyToolBarChange();
+                    }
+                    else
+                    {
+                        // EPG detail on right
                         _viewModel.SelectedPart = SelectedPartEnum.EPGDetail;
                     }
+                }
+                else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
+                {
+                    SelectNextToolBarItem(true);
+                }
+                else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
+                {
+                    _viewModel.SelectedPart = SelectedPartEnum.ToolBar;
+                    _viewModel.SelectedToolbarItemName = "ToolbarItemFilter";
+                    _viewModel.NotifyToolBarChange();
                 }
             }
             else
@@ -602,9 +682,15 @@ namespace OnlineTelevizor.Views
                 if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
                 {
                     await _viewModel.SelectNextChannel();
-                } else
+                } else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
                 {
                     await ScrollViewChannelEPGDescription.ScrollToAsync(ScrollViewChannelEPGDescription.ScrollX, ScrollViewChannelEPGDescription.ScrollY + 10+(int)_config.AppFontSize, false);
+                }
+                else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
+                {
+                    _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                    _viewModel.SelectedToolbarItemName = null;
+                    _viewModel.NotifyToolBarChange();
                 }
             }
             else
@@ -620,11 +706,23 @@ namespace OnlineTelevizor.Views
             {
                 if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
                 {
-                    await _viewModel.SelectPreviousChannel();
+                    if (_viewModel.StandingOnStart)
+                    {
+                        _viewModel.SelectedPart = SelectedPartEnum.ToolBar;
+                        SelectNextToolBarItem(true);
+                    }
+                    else
+                    {
+                        await _viewModel.SelectPreviousChannel();
+                    }
                 }
-                else
+                else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
                 {
                     await ScrollViewChannelEPGDescription.ScrollToAsync(ScrollViewChannelEPGDescription.ScrollX, ScrollViewChannelEPGDescription.ScrollY - (10 + (int)_config.AppFontSize), false);
+                }
+                else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
+                {
+                    SelectNextToolBarItem(false);
                 }
             }
             else
@@ -632,6 +730,70 @@ namespace OnlineTelevizor.Views
                 await _viewModel.SelectPreviousChannel();
                 await _viewModel.Play();
             }
+        }
+
+        private void SelecPreviousToolBarItem()
+        {
+            if (_viewModel.SelectedToolbarItemName == null)
+            {
+                _viewModel.SelectedToolbarItemName = "ToolbarItemSettings";
+            }
+            else
+            if (_viewModel.SelectedToolbarItemName == "ToolbarItemSettings")
+            {
+                _viewModel.SelectedToolbarItemName = "ToolbarItemInfo";
+            }
+            else
+            if (_viewModel.SelectedToolbarItemName == "ToolbarItemInfo")
+            {
+                _viewModel.SelectedToolbarItemName = "ToolbarItemQuality";
+            }
+            else
+            if (_viewModel.SelectedToolbarItemName == "ToolbarItemQuality")
+            {
+                _viewModel.SelectedToolbarItemName = "ToolbarItemFilter";
+            }
+            else
+            if (_viewModel.SelectedToolbarItemName == "ToolbarItemFilter")
+            {
+                _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                _viewModel.SelectedToolbarItemName = null;
+            }
+
+            _viewModel.NotifyToolBarChange();
+        }
+
+        private void SelectNextToolBarItem(bool canExitToolBar)
+        {
+            if (_viewModel.SelectedToolbarItemName == null)
+            {
+                _viewModel.SelectedToolbarItemName = "ToolbarItemSettings";
+            } else
+            if (_viewModel.SelectedToolbarItemName == "ToolbarItemSettings")
+            {
+                if (canExitToolBar)
+                {
+                    _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                    _viewModel.SelectedToolbarItemName = null;
+                } else
+                {
+                    _viewModel.SelectedToolbarItemName = "ToolbarItemFilter";
+                }
+            } else
+            if (_viewModel.SelectedToolbarItemName == "ToolbarItemFilter")
+            {
+                _viewModel.SelectedToolbarItemName = "ToolbarItemQuality";
+            } else
+            if (_viewModel.SelectedToolbarItemName == "ToolbarItemQuality")
+            {
+                _viewModel.SelectedToolbarItemName = "ToolbarItemInfo";
+            } else
+            if (_viewModel.SelectedToolbarItemName == "ToolbarItemInfo")
+            {
+                _viewModel.SelectedToolbarItemName = "ToolbarItemSettings";
+            }
+
+            _viewModel.NotifyToolBarChange();
         }
 
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)

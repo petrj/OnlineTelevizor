@@ -51,6 +51,8 @@ namespace OnlineTelevizor.ViewModels
             ToolBar = 2
         }
 
+        public string SelectedToolbarItemName { get; set; } = null;
+
         private SelectedPartEnum _selectedPart = SelectedPartEnum.ChannelsList;
 
         public TVService TVService
@@ -432,6 +434,25 @@ namespace OnlineTelevizor.ViewModels
                 });
         }
 
+        public bool StandingOnStart
+        {
+            get
+            {
+                if (SelectedItem == null)
+                    return true;
+
+                foreach (var ch in Channels)
+                {
+                    if (ch == SelectedItem)
+                        return true;
+
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
         public string SelectedChannelEPGTitle
         {
             get
@@ -476,22 +497,26 @@ namespace OnlineTelevizor.ViewModels
                 _selectedPart = value;
 
                 OnPropertyChanged(nameof(EPGDescriptionBackgroundColor));
-
-                OnPropertyChanged(nameof(ToolbarItemFilterIcon));
-                OnPropertyChanged(nameof(ToolbarItemQualityIcon));
-                OnPropertyChanged(nameof(ToolbarItemInfoIcon));
-                OnPropertyChanged(nameof(ToolbarItemSettingsIcon));
+                NotifyToolBarChange();
             }
+        }
+
+        public void NotifyToolBarChange()
+        {
+            OnPropertyChanged(nameof(ToolbarItemFilterIcon));
+            OnPropertyChanged(nameof(ToolbarItemQualityIcon));
+            OnPropertyChanged(nameof(ToolbarItemInfoIcon));
+            OnPropertyChanged(nameof(ToolbarItemSettingsIcon));
         }
 
         public Color EPGDescriptionBackgroundColor
         {
             get
             {
-                if (SelectedPart == SelectedPartEnum.ChannelsList)
-                    return Color.Black;
+                if (SelectedPart == SelectedPartEnum.EPGDetail )
+                    return Color.FromHex("005996");
 
-                return Color.FromHex("005996");
+                return Color.Black;
             }
         }
 
@@ -1181,6 +1206,9 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
+                if (SelectedToolbarItemName == "ToolbarItemFilter")
+                    return "FilterSelected.png";
+
                 return "Filter.png";
             }
         }
@@ -1189,6 +1217,9 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
+                if (SelectedToolbarItemName == "ToolbarItemQuality")
+                    return "QualitySelected.png";
+
                 return "Quality.png";
             }
         }
@@ -1197,6 +1228,9 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
+                if (SelectedToolbarItemName == "ToolbarItemInfo")
+                    return "MenuSelected.png";
+
                 return "Menu.png";
             }
         }
@@ -1205,6 +1239,9 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
+                if (SelectedToolbarItemName == "ToolbarItemSettings")
+                    return "SettingsSelected.png";
+
                 return "Settings.png";
             }
         }
