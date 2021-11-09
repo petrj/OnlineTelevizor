@@ -47,7 +47,8 @@ namespace OnlineTelevizor.ViewModels
         public enum SelectedPartEnum
         {
             ChannelsList = 0,
-            EPGDetail = 1
+            EPGDetail = 1,
+            ToolBar = 2
         }
 
         private SelectedPartEnum _selectedPart = SelectedPartEnum.ChannelsList;
@@ -475,6 +476,11 @@ namespace OnlineTelevizor.ViewModels
                 _selectedPart = value;
 
                 OnPropertyChanged(nameof(EPGDescriptionBackgroundColor));
+
+                OnPropertyChanged(nameof(ToolbarItemFilterIcon));
+                OnPropertyChanged(nameof(ToolbarItemQualityIcon));
+                OnPropertyChanged(nameof(ToolbarItemInfoIcon));
+                OnPropertyChanged(nameof(ToolbarItemSettingsIcon));
             }
         }
 
@@ -482,7 +488,7 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                if (_selectedPart == SelectedPartEnum.ChannelsList)
+                if (SelectedPart == SelectedPartEnum.ChannelsList)
                     return Color.Black;
 
                 return Color.FromHex("005996");
