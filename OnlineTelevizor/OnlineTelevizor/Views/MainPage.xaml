@@ -175,10 +175,9 @@
     </Grid>
 
     <ContentPage.ToolbarItems>
-        <!--ToolbarItem x:Name="ToolbarItemRefresh" Text="Obnovit" Command="{Binding RefreshCommand}" Icon="Refresh.png"   /-->
-        <ToolbarItem x:Name="ToolbarItemFilter" Text="Filtr" Clicked="ToolbarItemFilter_Clicked" Icon="Filter.png"/>
-        <ToolbarItem x:Name="ToolbarItemQuality" Text="Kvalita" Clicked="ToolbarItemQuality_Clicked" Icon="Quality.png"/>
-        <ToolbarItem x:Name="ToolbarItemInfo" Text="Info" Clicked="Detail_Clicked" Icon="Menu.png" />
-        <ToolbarItem x:Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked" Icon="Settings.png" />
+        <ToolbarItem x:Name="ToolbarItemFilter" Text="Filtr" Clicked="ToolbarItemFilter_Clicked" Icon="{Binding ToolbarItemFilterIcon}"/>
+        <ToolbarItem x:Name="ToolbarItemQuality" Text="Kvalita" Clicked="ToolbarItemQuality_Clicked" Icon="{Binding ToolbarItemQualityIcon}"/>
+        <ToolbarItem x:Name="ToolbarItemInfo" Text="Info" Clicked="Detail_Clicked" Icon="{Binding ToolbarItemInfoIcon}" />
+        <ToolbarItem x:Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked" Icon="{Binding ToolbarItemSettingsIcon}" />
     </ContentPage.ToolbarItems>
 </ContentPage >

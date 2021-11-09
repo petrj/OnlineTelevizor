@@ -125,16 +125,25 @@
     <Content Include="Audio3.png">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Cast.png" />
     <Content Include="ClearFilter.png" />
     <Content Include="Empty.png" />
     <Content Include="Filter.png" />
+    <Content Include="FilterSelected.png" />
     <Content Include="Icon.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-200.png" />
     <Content Include="Assets\LargeTile.scale-400.png" />
     <Content Include="Info.png" />
+    <Content Include="InfoSelected.png" />
+    <Content Include="Menu.png" />
+    <Content Include="MenuSelected.png" />
     <Content Include="Quality.png" />
+    <Content Include="QualitySelected.png" />
+    <Content Include="Quit.png" />
+    <Content Include="Rec.png" />
     <Content Include="Refresh.png" />
+    <Content Include="RefreshSelected.png" />
     <Content Include="Settings.png" />
     <Content Include="Assets\SmallTile.scale-100.png" />
     <Content Include="Assets\SmallTile.scale-200.png" />
@@ -161,6 +170,9 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
     <Content Include="Properties\Default.rd.xml" />
+    <Content Include="SettingsSelected.png" />
+    <Content Include="SmallIcon.png" />
+    <Content Include="Stop.png" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

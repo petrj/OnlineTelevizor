@@ -301,6 +301,9 @@ namespace OnlineTelevizor.Views
                 case "down":
                 case "s":
                 case "numpad2":
+#if DEBUG
+                case "volumedown":
+#endif
                     Task.Run(async () => await OnKeyDown());
                     break;
                 case "dpadup":
@@ -308,6 +311,9 @@ namespace OnlineTelevizor.Views
                 case "up":
                 case "w":
                 case "numpad8":
+#if DEBUG
+                case "volumeup":
+#endif
                     Task.Run(async () => await OnKeyUp());
                     break;
                 case "dpadleft":

@@ -1136,8 +1136,6 @@ namespace OnlineTelevizor.ViewModels
             OnPropertyChanged(nameof(WidthForIcon));
         }
 
-
-
         public async Task Play()
         {
             if (SelectedItem == null)
@@ -1171,6 +1169,38 @@ namespace OnlineTelevizor.ViewModels
             }
 
             _emptyCredentialsChecked = true;
+        }
+
+        public string ToolbarItemFilterIcon
+        {
+            get
+            {
+                return "Filter.png";
+            }
+        }
+
+        public string ToolbarItemQualityIcon
+        {
+            get
+            {
+                return "Quality.png";
+            }
+        }
+
+        public string ToolbarItemInfoIcon
+        {
+            get
+            {
+                return "Menu.png";
+            }
+        }
+
+        public string ToolbarItemSettingsIcon
+        {
+            get
+            {
+                return "Settings.png";
+            }
         }
     }
 }

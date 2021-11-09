@@ -211,5 +211,22 @@
     <Content Include="Icon.ico" />
     <BundleResource Include="Resources\Audio.png" />
     <BundleResource Include="Resources\Empty.png" />
+    <BundleResource Include="Resources\Audio0.png" />
+    <BundleResource Include="Resources\Audio1.png" />
+    <BundleResource Include="Resources\Audio2.png" />
+    <BundleResource Include="Resources\Audio3.png" />
+    <BundleResource Include="Resources\Cast.png" />
+    <BundleResource Include="Resources\FilterSelected.png" />
+    <BundleResource Include="Resources\Icon.png" />
+    <BundleResource Include="Resources\InfoSelected.png" />
+    <BundleResource Include="Resources\Menu.png" />
+    <BundleResource Include="Resources\MenuSelected.png" />
+    <BundleResource Include="Resources\QualitySelected.png" />
+    <BundleResource Include="Resources\Quit.png" />
+    <BundleResource Include="Resources\Rec.png" />
+    <BundleResource Include="Resources\RefreshSelected.png" />
+    <BundleResource Include="Resources\SettingsSelected.png" />
+    <BundleResource Include="Resources\SmallIcon.png" />
+    <BundleResource Include="Resources\Stop.png" />
   </ItemGroup>
 </Project>
