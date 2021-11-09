@@ -17,6 +17,7 @@ namespace OnlineTelevizor.Views
     public partial class FilterPage : ContentPage
     {
         private FilterPageViewModel _viewModel;
+        private View _lastFocusedView = null;
 
         public FilterPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, TVService service)
         {
@@ -24,7 +25,20 @@ namespace OnlineTelevizor.Views
 
             var dialogService = new DialogService(this);
 
+            GroupPicker.Unfocused += GroupPicker_Unfocused;
+            TypePicker.Unfocused += TypePicker_Unfocused;
+
             BindingContext = _viewModel = new FilterPageViewModel(loggingService, config, dialogService, service);
+        }
+
+        private void TypePicker_Unfocused(object sender, FocusEventArgs e)
+        {
+            FocusView(ChannelNameEntry);
+        }
+
+        private void GroupPicker_Unfocused(object sender, FocusEventArgs e)
+        {
+            FocusView(TypePicker);;
         }
 
         protected override void OnAppearing()
@@ -33,6 +47,29 @@ namespace OnlineTelevizor.Views
 
             _viewModel.NotifyFontSizeChange();
             _viewModel.RefreshCommand.Execute(null);
+        }
+
+        private void FocusView(View view)
+        {
+            view.Focus();
+            _lastFocusedView = view;
+        }
+
+        public void SelectNextItem()
+        {
+            if (_lastFocusedView == ChannelNameEntry)
+            {
+                FocusView(GroupPicker);
+            }
+            else
+            if (_lastFocusedView == GroupPicker)
+            {
+                FocusView(TypePicker);
+            }
+            else
+            {
+                FocusView(ChannelNameEntry);
+            }
         }
     }
 }

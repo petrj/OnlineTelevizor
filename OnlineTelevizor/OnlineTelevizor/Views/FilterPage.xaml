@@ -13,7 +13,7 @@
             </Style>
 
             <Style x:Key="CaptionLabelStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="#41b3ff"/>                
+                <Setter Property="TextColor" Value="#41b3ff"/>
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
             </Style>
 
@@ -33,9 +33,9 @@
 
     <ContentPage.Content>
 
-        <ScrollView Style="{StaticResource PageBackgroundStyle}">
+        <ScrollView Style="{StaticResource PageBackgroundStyle}" x:Name="MainScrollView">
 
-            <StackLayout>                
+            <StackLayout>
 
                 <StackLayout Margin="20,10,20,0">
 
@@ -45,8 +45,8 @@
                            Color="White" />
 
                     <StackLayout Margin="20,10,0,0">
-                        <Label Text="Název:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
-                        <Entry  Margin="20,0,0,0" Text="{Binding ChannelNameFilter, Mode=TwoWay}" Placeholder="Zadejte název kanálu nebo jeho část" PlaceholderColor="Gray" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}"/>
+                        <Label x:Name="ChannelNameLabel" Text="Název:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
+                        <Entry  x:Name="ChannelNameEntry" Margin="20,0,0,0" Text="{Binding ChannelNameFilter, Mode=TwoWay}" Placeholder="Zadejte název kanálu nebo jeho část" PlaceholderColor="Gray" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}"/>
                     </StackLayout>
 
                     <StackLayout Margin="20,0,0,0">
@@ -56,7 +56,7 @@
                             x:Name="GroupPicker"
                             FontSize="{Binding FontSizeForPicker}"
                             SelectedItem="{Binding SelectedGroupItem, Mode=TwoWay}"
-                            Style="{StaticResource CommonPickerTextStyle}"                            
+                            Style="{StaticResource CommonPickerTextStyle}"
                             ItemsSource="{Binding Groups}"
                             ItemDisplayBinding="{Binding GUIName}"/>
                     </StackLayout>

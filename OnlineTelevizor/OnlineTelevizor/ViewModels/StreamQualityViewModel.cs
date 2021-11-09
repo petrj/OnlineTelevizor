@@ -42,6 +42,9 @@ namespace OnlineTelevizor.ViewModels
             {
                 _selectedItem = value;
 
+                if (value != null)
+                    Config.StreamQuality = value.Id;
+
                 OnPropertyChanged(nameof(SelectedItem));
             }
         }
@@ -70,6 +73,57 @@ namespace OnlineTelevizor.ViewModels
                     break;
                 }
             }
+        }
+
+        public async Task SelectNextItem()
+        {
+            await _semaphoreSlim.WaitAsync();
+
+            await Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        if (Qualities.Count == 0)
+                            return;
+
+                        if (SelectedItem == null)
+                        {
+                            SelectedItem = Qualities[0];
+                        }
+                        else
+                        {
+                            bool next = false;
+
+                            for (var i = 0; i < Qualities.Count; i++)
+                            {
+                                var ch = Qualities[i];
+
+                                if (next)
+                                {
+                                    SelectedItem = ch;
+                                    break;
+                                }
+                                else
+                                {
+                                    if (ch == SelectedItem)
+                                    {
+                                        next = true;
+
+                                        if (i == Qualities.Count-1)
+                                        {
+                                            SelectedItem = Qualities[0];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        _semaphoreSlim.Release();
+                    };
+                });
         }
 
         private async Task Refresh()

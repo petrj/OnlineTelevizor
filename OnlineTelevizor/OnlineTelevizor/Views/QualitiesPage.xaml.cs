@@ -13,16 +13,16 @@ using Xamarin.Forms.Xaml;
 
 namespace OnlineTelevizor.Views
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class QualitiesPage : ContentPage
-	{
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class QualitiesPage : ContentPage
+    {
         private StreamQualityViewModel _viewModel;
         private IOnlineTelevizorConfiguration _config;
 
 
-        public QualitiesPage (ILoggingService loggingService, IOnlineTelevizorConfiguration config, TVService service)
-		{
-			InitializeComponent ();
+        public QualitiesPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, TVService service)
+        {
+            InitializeComponent();
 
             _config = config;
             var dialogService = new DialogService(this);
@@ -39,11 +39,16 @@ namespace OnlineTelevizor.Views
 
         private async void Quality_Tapped(object sender, ItemTappedEventArgs e)
         {
-            await Task.Run( () =>
-            {
-                var qualityItem = e.Item as QualityItem;
-                _config.StreamQuality = qualityItem.Id;
-            });
+            await Task.Run(() =>
+           {
+               var qualityItem = e.Item as QualityItem;
+               _config.StreamQuality = qualityItem.Id;
+           });
+        }
+
+        public async void SelectNextItem()
+        {
+            await _viewModel.SelectNextItem();
         }
     }
 }

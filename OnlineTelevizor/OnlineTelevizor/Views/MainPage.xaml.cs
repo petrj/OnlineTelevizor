@@ -265,14 +265,30 @@ namespace OnlineTelevizor.Views
                        lowKey == "f4" ||
                        lowKey == "mediaplaystop" ||
                        lowKey == "mediastop" ||
-                       lowKey == "dpadleft" ||
                        lowKey == "pageup" ||
                        lowKey == "a" ||
                        lowKey == "b" ||
                        lowKey == "mediaplayprevious" ||
                        lowKey == "mediaprevious" ||
                        lowKey == "del" ||
-                       lowKey == "numpad4")
+                       lowKey == "numpad4" ||
+                       lowKey == "left" ||
+                       lowKey == "dpadleft"
+                )
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool SelectNextItemKey(string lowKey)
+        {
+            if (lowKey == "right" ||
+                lowKey == "dpadright" ||
+                lowKey == "mediaplaynext" ||
+                lowKey == "medianext"
+                )
             {
                 return true;
             }
@@ -308,6 +324,12 @@ namespace OnlineTelevizor.Views
                         // closing filter page
                         Navigation.PopAsync();
                     }
+
+                    if (_filterPage != null)
+                    {
+                        if (SelectNextItemKey(lowKey))
+                            _filterPage.SelectNextItem();
+                    }
                 }
 
                 if (stack[stack.Count - 1].GetType() == typeof(QualitiesPage))
@@ -317,6 +339,11 @@ namespace OnlineTelevizor.Views
                         // closing quality page
                         Navigation.PopAsync();
                     }
+
+                    var qualityPage = stack[stack.Count - 1] as QualitiesPage;
+
+                    if (SelectNextItemKey(lowKey))
+                        qualityPage.SelectNextItem();
                 }
 
                 if (stack[stack.Count - 1].GetType() == typeof(SettingsPage))
@@ -548,31 +575,6 @@ namespace OnlineTelevizor.Views
             _viewModel.RefreshCommand.Execute(null);
         }
 
-        private async void ToolbarItemSettings_Clicked(object sender, EventArgs e)
-        {
-            _loggingService.Info($"ToolbarItemSettings_Clicked");
-
-            var settingsPage = new SettingsPage(_loggingService, _config, _dialogService, _viewModel.TVService);
-            settingsPage.FillAutoPlayChannels(_viewModel.AllNotFilteredChannels);
-
-            settingsPage.Disappearing += delegate
-            {
-                _viewModel.ResetConnectionCommand.Execute(null);
-                _viewModel.RefreshCommand.Execute(null);
-            };
-
-            await Navigation.PushAsync(settingsPage);
-        }
-
-        private async void ToolbarItemQuality_Clicked(object sender, EventArgs e)
-        {
-            _loggingService.Info($"ToolbarItemQuality_Clicked");
-
-            var qualitiesPage = new QualitiesPage(_loggingService, _config, _viewModel.TVService);
-
-            await Navigation.PushAsync(qualitiesPage);
-        }
-
         private async Task OnKeyPlay()
         {
             if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList ||
@@ -801,6 +803,31 @@ namespace OnlineTelevizor.Views
             _loggingService.Info($"ToolbarItemFilter_Clicked");
 
             await Navigation.PushAsync(_filterPage);
+        }
+
+        private async void ToolbarItemSettings_Clicked(object sender, EventArgs e)
+        {
+            _loggingService.Info($"ToolbarItemSettings_Clicked");
+
+            var settingsPage = new SettingsPage(_loggingService, _config, _dialogService, _viewModel.TVService);
+            settingsPage.FillAutoPlayChannels(_viewModel.AllNotFilteredChannels);
+
+            settingsPage.Disappearing += delegate
+            {
+                _viewModel.ResetConnectionCommand.Execute(null);
+                _viewModel.RefreshCommand.Execute(null);
+            };
+
+            await Navigation.PushAsync(settingsPage);
+        }
+
+        private async void ToolbarItemQuality_Clicked(object sender, EventArgs e)
+        {
+            _loggingService.Info($"ToolbarItemQuality_Clicked");
+
+            var qualitiesPage = new QualitiesPage(_loggingService, _config, _viewModel.TVService);
+
+            await Navigation.PushAsync(qualitiesPage);
         }
 
         private async void Detail_Clicked(object sender, EventArgs e)
