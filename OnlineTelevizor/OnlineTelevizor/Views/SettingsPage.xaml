@@ -142,6 +142,7 @@
                     <StackLayout Margin="20,10,0,0">
                         <Label  Text="Automaticky spustit po startu:"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
                         <Picker
+                            x:Name="LastChannelAutoPlayPicker"
                             Margin="20,0,0,0"
                             FontSize="{Binding FontSizeForPicker}"
                             Style="{StaticResource CommonPickerTextStyle}"
@@ -202,8 +203,8 @@
 
                     </Grid>
 
-                    <Button Margin="20,10,0,0" Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
-                    <Button Margin="20,10,0,0" Text="O aplikaci" Command="{Binding AboutCommand}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
+                    <Button x:Name="PayButton" Margin="20,10,0,0" Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
+                    <Button x:Name="AboutButton" Margin="20,10,0,0" Text="O aplikaci" Command="{Binding AboutCommand}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
 
                 </StackLayout>
 

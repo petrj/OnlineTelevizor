@@ -48,7 +48,7 @@
     <AndroidKeyStore>false</AndroidKeyStore>
     <AndroidSigningStorePass>
     </AndroidSigningStorePass>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF576.tmp\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsBB3B.tmp\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -59,7 +59,7 @@
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF576.tmp\Release\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsBB3B.tmp\Release\</IntermediateOutputPath>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
@@ -85,34 +85,34 @@
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF576.tmp\Debug - Live Player\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsBB3B.tmp\Debug - Live Player\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF576.tmp\x64\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsBB3B.tmp\x64\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF576.tmp\x86\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsBB3B.tmp\x86\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF576.tmp\ARM\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsBB3B.tmp\ARM\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF576.tmp\x64\Release\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsBB3B.tmp\x64\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF576.tmp\x86\Release\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsBB3B.tmp\x86\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF576.tmp\ARM\Release\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsBB3B.tmp\ARM\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - Live Player|x64'">
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF576.tmp\x64\Debug - Live Player\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsBB3B.tmp\x64\Debug - Live Player\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - Live Player|x86'">
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF576.tmp\x86\Debug - Live Player\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsBB3B.tmp\x86\Debug - Live Player\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - Live Player|ARM'">
-    <IntermediateOutputPath>C:\Users\JEANLU~1\AppData\Local\Temp\vsF576.tmp\ARM\Debug - Live Player\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\PJANOU~1\AppData\Local\Temp\vsBB3B.tmp\ARM\Debug - Live Player\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />

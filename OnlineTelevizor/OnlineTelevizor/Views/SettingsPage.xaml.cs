@@ -22,7 +22,8 @@ namespace OnlineTelevizor.Views
         private SettingsViewModel _viewModel;
         private IOnlineTelevizorConfiguration _config;
         private ILoggingService _loggingService;
-        IDialogService _dialogService;
+        private IDialogService _dialogService;
+        private View _lastFocusedView = null;
 
         public SettingsPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
         {
@@ -57,6 +58,39 @@ namespace OnlineTelevizor.Views
                     MessagingCenter.Send<SettingsPage>(this, BaseViewModel.SetBatterySettings);
                 }
             });
+
+            TVAPIPicker.Unfocused += TVAPIPicker_Unfocused;
+            LastChannelAutoPlayPicker.Unfocused += LastChannelAutoPlayPicker_Unfocused;
+            FontSizePicker.Unfocused += FontSizePicker_Unfocused;
+        }
+
+        private void FontSizePicker_Unfocused(object sender, FocusEventArgs e)
+        {
+            FocusView(ShowAdultChannelsSwitch);
+        }
+
+        private void LastChannelAutoPlayPicker_Unfocused(object sender, FocusEventArgs e)
+        {
+            FocusView(FontSizePicker);
+        }
+
+        private void TVAPIPicker_Unfocused(object sender, FocusEventArgs e)
+        {
+            switch (_viewModel.Config.TVApi)
+            {
+                case TVAPIEnum.SledovaniTV:
+                    FocusView(UsernameEntry);
+                    break;
+                case TVAPIEnum.KUKI:
+                    FocusView(SNEntry);
+                    break;
+                case TVAPIEnum.O2TV:
+                    FocusView(O2TVUsernameEntry);
+                    break;
+                case TVAPIEnum.DVBStreamer:
+                    FocusView(DVBStreamerUrlEntry);
+                    break;
+            }
         }
 
         private void PlayOnBackgroundSwitch_Toggled(object sender, ToggledEventArgs e)
@@ -90,7 +124,78 @@ namespace OnlineTelevizor.Views
                 if (TVAPIPicker.Items.Contains("DVB Streamer"))
                     TVAPIPicker.Items.Remove("DVB Streamer");
             }
+        }
 
+        private void FocusView(View view)
+        {
+            view.Focus();
+            _lastFocusedView = view;
+        }
+
+        public void SelectNextItem()
+        {
+            if (_lastFocusedView == UsernameEntry)
+            {
+                FocusView(PasswordEntry);
+            }
+            else if (_lastFocusedView == PasswordEntry)
+            {
+                FocusView(PinEntry);
+            }
+            else if (_lastFocusedView == PinEntry)
+            {
+                FocusView(LastChannelAutoPlayPicker);
+            }
+            else if (_lastFocusedView == O2TVUsernameEntry)
+            {
+                FocusView(O2TVPasswordEntry);
+            }
+            else if (_lastFocusedView == SNEntry)
+            {
+                FocusView(LastChannelAutoPlayPicker);
+            }
+            else if (_lastFocusedView == O2TVPasswordEntry)
+            {
+                FocusView(LastChannelAutoPlayPicker);
+            }
+            else if (_lastFocusedView == DVBStreamerUrlEntry)
+            {
+                FocusView(LastChannelAutoPlayPicker);
+            }
+            else if (_lastFocusedView == ShowAdultChannelsSwitch)
+            {
+                FocusView(DoNotSplitScreenOnLandscapeSwitch);
+            }
+            else if (_lastFocusedView == DoNotSplitScreenOnLandscapeSwitch)
+            {
+                FocusView(FullscreenSwitch);
+            }
+            else if (_lastFocusedView == FullscreenSwitch)
+            {
+                FocusView(UseInternalPlayerSwitch);
+            }
+            else if (_lastFocusedView == UseInternalPlayerSwitch)
+            {
+                FocusView(PlayOnBackgroundSwitch);
+            }
+            else if (_lastFocusedView == PlayOnBackgroundSwitch)
+            {
+                if (_viewModel.IsPurchased)
+                {
+                    FocusView(AboutButton);
+                } else
+                {
+                    FocusView(PayButton);
+                }
+            }
+            else if (_lastFocusedView == PayButton)
+            {
+                FocusView(AboutButton);
+            }
+            else
+            {
+                FocusView(TVAPIPicker);
+            }
         }
     }
 }

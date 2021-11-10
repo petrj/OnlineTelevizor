@@ -353,6 +353,11 @@ namespace OnlineTelevizor.Views
                         // closing settings page
                         Navigation.PopAsync();
                     }
+
+                    var settingsPage = stack[stack.Count - 1] as SettingsPage;
+
+                    if (SelectNextItemKey(lowKey))
+                        settingsPage.SelectNextItem();
                 }
 
                 return;
@@ -587,29 +592,43 @@ namespace OnlineTelevizor.Views
             }
             else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
             {
-                Device.BeginInvokeOnMainThread(() =>
+
+                if (_viewModel.SelectedToolbarItemName == "ToolbarItemSettings")
                 {
-                    if (_viewModel.SelectedToolbarItemName == "ToolbarItemSettings")
+                    Device.BeginInvokeOnMainThread(() =>
                     {
                         ToolbarItemSettings_Clicked(this, null);
-                    }
-                    else if (_viewModel.SelectedToolbarItemName == "ToolbarItemInfo")
+                        _viewModel.SelectedToolbarItemName = null;
+                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                    });
+                }
+                else if (_viewModel.SelectedToolbarItemName == "ToolbarItemInfo")
+                {
+                    Device.BeginInvokeOnMainThread(() =>
                     {
                         Detail_Clicked(this, null);
-                    }
-                    else if (_viewModel.SelectedToolbarItemName == "ToolbarItemQuality")
+                        _viewModel.SelectedToolbarItemName = null;
+                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                    });
+                }
+                else if (_viewModel.SelectedToolbarItemName == "ToolbarItemQuality")
+                {
+                    Device.BeginInvokeOnMainThread(() =>
                     {
                         ToolbarItemQuality_Clicked(this, null);
-                    }
-                    else if (_viewModel.SelectedToolbarItemName == "ToolbarItemFilter")
+                        _viewModel.SelectedToolbarItemName = null;
+                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                    });
+                }
+                else if (_viewModel.SelectedToolbarItemName == "ToolbarItemFilter")
+                {
+                    Device.BeginInvokeOnMainThread(() =>
                     {
                         ToolbarItemFilter_Clicked(this, null);
-                    }
-                });
-
-                _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
-                _viewModel.SelectedToolbarItemName = null;
-                await _viewModel.SelectNextChannel();
+                        _viewModel.SelectedToolbarItemName = null;
+                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                    });
+                }
             }
         }
 
