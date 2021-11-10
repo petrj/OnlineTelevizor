@@ -260,20 +260,26 @@ namespace OnlineTelevizor.Views
         private static bool LeavePageKey(string lowKey)
         {
             if (lowKey == "escape" ||
-                       lowKey == "back" ||
-                       lowKey == "numpadsubtract" ||
-                       lowKey == "f4" ||
-                       lowKey == "mediaplaystop" ||
-                       lowKey == "mediastop" ||
-                       lowKey == "pageup" ||
-                       lowKey == "a" ||
-                       lowKey == "b" ||
-                       lowKey == "mediaplayprevious" ||
-                       lowKey == "mediaprevious" ||
-                       lowKey == "del" ||
-                       lowKey == "numpad4" ||
-                       lowKey == "left" ||
-                       lowKey == "dpadleft"
+                    lowKey == "back" ||
+                    lowKey == "numpadsubtract" ||
+                    lowKey == "f4" ||
+                    lowKey == "mediaplaystop" ||
+                    lowKey == "mediastop" ||
+                    lowKey == "pageup" ||
+                    lowKey == "a" ||
+                    lowKey == "b" ||
+                    lowKey == "mediaplayprevious" ||
+                    lowKey == "mediaprevious" ||
+                    lowKey == "del" ||
+                    lowKey == "numpad4" ||
+                    lowKey == "left" ||
+                    lowKey == "dpadleft" ||
+                    lowKey == "dpadup" ||
+                    lowKey == "buttonl1" ||
+                    lowKey == "up" ||
+                    lowKey == "w" ||
+                    lowKey == "numpad8" ||
+                    lowKey == "f3"
                 )
             {
                 return true;
@@ -287,7 +293,13 @@ namespace OnlineTelevizor.Views
             if (lowKey == "right" ||
                 lowKey == "dpadright" ||
                 lowKey == "mediaplaynext" ||
-                lowKey == "medianext"
+                lowKey == "medianext" ||
+                lowKey == "dpaddown" ||
+                lowKey == "buttonr1" ||
+                lowKey == "down" ||
+                lowKey == "s" ||
+                lowKey == "numpad2" ||
+                lowKey == "f2"
                 )
             {
                 return true;
@@ -588,6 +600,9 @@ namespace OnlineTelevizor.Views
                 if (!Playing)
                 {
                     await _viewModel.Play();
+                } else
+                {
+                    _playerPage.ShowJustPlayingNotification();
                 }
             }
             else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
