@@ -189,7 +189,7 @@ namespace OnlineTelevizor.Views
             {
                 if (!ToolbarItems.Contains(ToolbarItemQuality))
                 {
-                    ToolbarItems.Insert(3, ToolbarItemQuality);
+                    ToolbarItems.Insert(1, ToolbarItemQuality);
                 }
             }
         }
@@ -270,7 +270,6 @@ namespace OnlineTelevizor.Views
                     lowKey == "b" ||
                     lowKey == "mediaplayprevious" ||
                     lowKey == "mediaprevious" ||
-                    lowKey == "del" ||
                     lowKey == "numpad4" ||
                     lowKey == "left" ||
                     lowKey == "dpadleft" ||
@@ -680,7 +679,7 @@ namespace OnlineTelevizor.Views
             {
                 if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
                 {
-                    if (_viewModel.IsPortrait)
+                    if (_viewModel.IsPortrait || _viewModel.Channels.Count == 0)
                     {
                         // no EPG detail on right
                         _viewModel.SelectedPart = SelectedPartEnum.ToolBar;
@@ -782,7 +781,13 @@ namespace OnlineTelevizor.Views
             else
             if (_viewModel.SelectedToolbarItemName == "ToolbarItemInfo")
             {
-                _viewModel.SelectedToolbarItemName = "ToolbarItemQuality";
+                if (_viewModel.QualityFilterEnabled)
+                {
+                    _viewModel.SelectedToolbarItemName = "ToolbarItemQuality";
+                } else
+                {
+                    _viewModel.SelectedToolbarItemName = "ToolbarItemFilter";
+                }
             }
             else
             if (_viewModel.SelectedToolbarItemName == "ToolbarItemQuality")
@@ -818,7 +823,13 @@ namespace OnlineTelevizor.Views
             } else
             if (_viewModel.SelectedToolbarItemName == "ToolbarItemFilter")
             {
-                _viewModel.SelectedToolbarItemName = "ToolbarItemQuality";
+                if (_viewModel.QualityFilterEnabled)
+                {
+                    _viewModel.SelectedToolbarItemName = "ToolbarItemQuality";
+                } else
+                {
+                    _viewModel.SelectedToolbarItemName = "ToolbarItemInfo";
+                }
             } else
             if (_viewModel.SelectedToolbarItemName == "ToolbarItemQuality")
             {

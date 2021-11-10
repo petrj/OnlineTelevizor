@@ -503,10 +503,13 @@ namespace OnlineTelevizor.ViewModels
 
         public void NotifyToolBarChange()
         {
-            OnPropertyChanged(nameof(ToolbarItemFilterIcon));
-            OnPropertyChanged(nameof(ToolbarItemQualityIcon));
-            OnPropertyChanged(nameof(ToolbarItemInfoIcon));
-            OnPropertyChanged(nameof(ToolbarItemSettingsIcon));
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                OnPropertyChanged(nameof(ToolbarItemFilterIcon));
+                OnPropertyChanged(nameof(ToolbarItemQualityIcon));
+                OnPropertyChanged(nameof(ToolbarItemInfoIcon));
+                OnPropertyChanged(nameof(ToolbarItemSettingsIcon));
+            });
         }
 
         public Color EPGDescriptionBackgroundColor
