@@ -28,6 +28,7 @@ namespace OnlineTelevizor.Views
         private CastRenderersPage _renderersPage;
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
+        private DateTime _lastBackPressedTime = DateTime.MinValue;
         private bool _firstSelectionAfterStartup = false;
         private string _numberPressed = String.Empty;
 
@@ -381,7 +382,10 @@ namespace OnlineTelevizor.Views
                 case "down":
                 case "s":
                 case "numpad2":
+                case "tab":
                 case "f2":
+                case "mediaplaynext":
+                case "medianext":
                     Task.Run(async () => await OnKeyDown());
                     break;
                 case "dpadup":
@@ -390,6 +394,8 @@ namespace OnlineTelevizor.Views
                 case "w":
                 case "numpad8":
                 case "f3":
+                case "mediaplayprevious":
+                case "mediaprevious":
                     Task.Run(async () => await OnKeyUp());
                     break;
                 case "dpadleft":
@@ -397,8 +403,6 @@ namespace OnlineTelevizor.Views
                 case "left":
                 case "a":
                 case "b":
-                case "mediaplayprevious":
-                case "mediaprevious":
                 case "numpad4":
                     Task.Run(async () => await OnKeyLeft());
                     break;
@@ -407,14 +411,14 @@ namespace OnlineTelevizor.Views
                 case "right":
                 case "d":
                 case "f":
-                case "mediaplaynext":
-                case "medianext":
                 case "numpad6":
                     Task.Run(async () => await OnKeyRight());
                     break;
+                case "f6":
                 case "dpadcenter":
                 case "space":
                 case "buttonr2":
+                case "mediaplay":
                 case "mediaplaypause":
                 case "enter":
                 case "numpad5":
@@ -424,13 +428,28 @@ namespace OnlineTelevizor.Views
                     break;
                 //case "back":
                 case "f4":
+                case "f7":
                 case "escape":
                 case "mediaplaystop":
+                case "mediapause":
+                case "mediaclose":
                 case "mediastop":
                 case "numpadsubtract":
                 case "del":
                 case "buttonx":
                     StopPlayback();
+                    break;
+                case "buttonl2":
+                case "info":
+                case "guide":
+                case "i":
+                case "g":
+                case "numpadadd":
+                case "buttonthumbl":
+                case "f1":
+                case "f8":
+                case "menu":
+                    Detail_Clicked(this, null);
                     break;
                 case "num0":
                 case "number0":
@@ -478,24 +497,11 @@ namespace OnlineTelevizor.Views
                     Reset();
                     Refresh();
                     break;
-                case "buttonl2":
-                case "info":
-                case "guide":
-                case "i":
-                case "g":
-                case "numpadadd":
-                case "buttonthumbl":
-                case "tab":
-                case "f1":
-                    Detail_Clicked(this, null);
-                    break;
                 default:
                     {
-                        if (_config.DebugMode)
-                        {
-                            _loggingService.Debug($"Unbound key down: {key}");
-                            MessagingCenter.Send($"Unbound key down: {key}", BaseViewModel.ToastMessage);
-                        }
+#if DEBUG
+    MessagingCenter.Send($"Unbound key down: {key}", BaseViewModel.ToastMessage);
+#endif
                     }
                     break;
             }
@@ -896,6 +902,19 @@ namespace OnlineTelevizor.Views
                 {
                     await _dialogService.Information("Není označen žádný kanál");
                 }
+            }
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            if ((_lastBackPressedTime == DateTime.MinValue) || ((DateTime.Now-_lastBackPressedTime).TotalSeconds>5))
+            {
+                MessagingCenter.Send($"Stiskněte ještě jednou pro ukončení", BaseViewModel.ToastMessage);
+                _lastBackPressedTime = DateTime.Now;
+                return true;
+            } else
+            {
+                return false;
             }
         }
     }
