@@ -100,6 +100,24 @@ li a:visited
   text-decoration:none	
 }
 
+body a
+{
+  color: #00008B;
+  font-family:Tahoma, sans serif;
+  font-size:14px;
+  font-weight:normal;	
+  text-decoration:none
+}
+
+body a:visited
+{
+  color: #00008B;
+  font-family:Tahoma, sans serif;
+  font-size:14px;
+  font-weight:normal;
+  text-decoration:none	
+}
+
 table
 {
     width:550px;
@@ -144,7 +162,9 @@ td
 
 footer
 {
-    background-color:#412cff;            
+    background-color:#412cff;
+    text-align:center;
+    vertical-align:center;
 }
 
 footer a
@@ -156,7 +176,12 @@ footer a
     text-decoration:none;
     margin-right:20px;
     margin-left:20px;
+}
 
+footer a:visited
+{
+  color: white;
+  text-decoration:none	
 }
 
 .language
