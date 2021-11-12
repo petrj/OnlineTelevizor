@@ -321,6 +321,11 @@ namespace OnlineTelevizor.Droid
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
+            if (e.IsLongPress)
+            {
+                MessagingCenter.Send(keyCode.ToString(), BaseViewModel.KeyLongMessage);
+            }
+
             MessagingCenter.Send(keyCode.ToString(), BaseViewModel.KeyMessage);
 
             return base.OnKeyDown(keyCode, e);

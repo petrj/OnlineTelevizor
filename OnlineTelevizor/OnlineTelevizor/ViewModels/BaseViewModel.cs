@@ -30,6 +30,7 @@ namespace OnlineTelevizor.ViewModels
         public const string PlayNext = "PlayNext";
         public const string PlayPrevious = "PlayPrevious";
         public const string KeyMessage = "KeyDownMessage";
+        public const string KeyLongMessage = "KeyLongMessage";
         public const string ShowDetailMessage = "ShowDetailMessage";
         public const string ShowRenderers = "ShowRenderers";
         public const string CastingStarted = "CastingStarted";

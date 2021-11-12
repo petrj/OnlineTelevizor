@@ -29,6 +29,8 @@ namespace OnlineTelevizor.Views
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private DateTime _lastBackPressedTime = DateTime.MinValue;
+        private DateTime _lastKeyLongPressedTime = DateTime.MinValue;
+        private DateTime _lastPageAppearedTime = DateTime.MinValue;
         private bool _firstSelectionAfterStartup = false;
         private string _numberPressed = String.Empty;
 
@@ -48,6 +50,11 @@ namespace OnlineTelevizor.Views
             MessagingCenter.Subscribe<string>(this, BaseViewModel.KeyMessage, (key) =>
             {
                 OnKeyDown(key);
+            });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.KeyLongMessage, (key) =>
+            {
+                _lastKeyLongPressedTime = DateTime.Now;
             });
 
             ChannelsListView.ItemSelected += ChannelsListView_ItemSelected;
@@ -179,6 +186,8 @@ namespace OnlineTelevizor.Views
 
         private async void MainPage_Appearing(object sender, EventArgs e)
         {
+            _lastPageAppearedTime = DateTime.Now;
+
             if (!_viewModel.QualityFilterEnabled)
             {
                 if (ToolbarItems.Contains(ToolbarItemQuality))
@@ -382,11 +391,11 @@ namespace OnlineTelevizor.Views
                 case "down":
                 case "s":
                 case "numpad2":
-                case "tab":
                 case "f2":
                 case "mediaplaynext":
                 case "medianext":
-                    Task.Run(async () => await OnKeyDown());
+                case "moveend":
+                    Task.Run(async () => await OnKeyDown(1));
                     break;
                 case "dpadup":
                 case "buttonl1":
@@ -396,22 +405,29 @@ namespace OnlineTelevizor.Views
                 case "f3":
                 case "mediaplayprevious":
                 case "mediaprevious":
-                    Task.Run(async () => await OnKeyUp());
+                case "movehome":
+                    Task.Run(async () => await OnKeyUp(1));
+                    break;
+                case "pagedown":
+                    Task.Run(async () => await OnKeyDown(10));
+                    break;
+                case "pageup":
+                    Task.Run(async () => await OnKeyUp(10));
                     break;
                 case "dpadleft":
-                case "pageup":
                 case "left":
                 case "a":
                 case "b":
                 case "numpad4":
+                case "leftbracket":
                     Task.Run(async () => await OnKeyLeft());
                     break;
-                case "pagedown":
                 case "dpadright":
                 case "right":
                 case "d":
                 case "f":
                 case "numpad6":
+                case "rightbracket":
                     Task.Run(async () => await OnKeyRight());
                     break;
                 case "f6":
@@ -422,8 +438,13 @@ namespace OnlineTelevizor.Views
                 case "mediaplaypause":
                 case "enter":
                 case "numpad5":
+                case "numpadenter":
                 case "buttona":
                 case "buttonstart":
+                case "capslock":
+                case "comma":
+                case "semicolon":
+                case "grave":
                     Task.Run(async () => await OnKeyPlay());
                     break;
                 //case "back":
@@ -436,7 +457,13 @@ namespace OnlineTelevizor.Views
                 case "mediastop":
                 case "numpadsubtract":
                 case "del":
+                case "forwarddel":
+                case "delete":
                 case "buttonx":
+                case "altleft":
+                case "minus":
+                case "period":
+                case "apostrophe":
                     StopPlayback();
                     break;
                 case "buttonl2":
@@ -449,51 +476,65 @@ namespace OnlineTelevizor.Views
                 case "f1":
                 case "f8":
                 case "menu":
+                case "tab":
+                case "equals":
+                case "slash":
+                case "backslash":
+                case "insert":
                     Detail_Clicked(this, null);
                     break;
+                case "0":
                 case "num0":
                 case "number0":
                     HandleNumKey(0);
                     break;
+                case "1":
                 case "num1":
                 case "number1":
                     HandleNumKey(1);
                     break;
+                case "2":
                 case "num2":
                 case "number2":
                     HandleNumKey(2);
                     break;
+                case "3":
                 case "num3":
                 case "number3":
                     HandleNumKey(3);
                     break;
+                case "4":
                 case "num4":
                 case "number4":
                     HandleNumKey(4);
                     break;
+                case "5":
                 case "num5":
                 case "number5":
                     HandleNumKey(5);
                     break;
+                case "6":
                 case "num6":
                 case "number6":
                     HandleNumKey(6);
                     break;
+                case "7":
                 case "num7":
                 case "number7":
                     HandleNumKey(7);
                     break;
+                case "8":
                 case "num8":
                 case "number8":
                     HandleNumKey(8);
                     break;
+                case "9":
                 case "num9":
                 case "number9":
                     HandleNumKey(9);
                     break;
                 case "f5":
                 case "numpad0":
-                case "ctrlleft":
                     Reset();
                     Refresh();
                     break;
@@ -685,7 +726,7 @@ namespace OnlineTelevizor.Views
             {
                 if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
                 {
-                    if (_viewModel.IsPortrait || _viewModel.Channels.Count == 0)
+                    if (_viewModel.IsPortrait || _viewModel.Channels.Count == 0 || String.IsNullOrEmpty(_viewModel.SelectedChannelEPGDescription))
                     {
                         // no EPG detail on right
                         _viewModel.SelectedPart = SelectedPartEnum.ToolBar;
@@ -716,13 +757,13 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        private async Task OnKeyDown()
+        private async Task OnKeyDown(int step)
         {
             if (!Playing)
             {
                 if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
                 {
-                    await _viewModel.SelectNextChannel();
+                    await _viewModel.SelectNextChannel(step);
                 } else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
                 {
                     await ScrollViewChannelEPGDescription.ScrollToAsync(ScrollViewChannelEPGDescription.ScrollX, ScrollViewChannelEPGDescription.ScrollY + 10+(int)_config.AppFontSize, false);
@@ -736,12 +777,12 @@ namespace OnlineTelevizor.Views
             }
             else
             {
-                await _viewModel.SelectNextChannel();
+                await _viewModel.SelectNextChannel(step);
                 await _viewModel.Play();
             }
         }
 
-        private async Task OnKeyUp()
+        private async Task OnKeyUp(int step)
         {
             if (!Playing)
             {
@@ -754,7 +795,7 @@ namespace OnlineTelevizor.Views
                     }
                     else
                     {
-                        await _viewModel.SelectPreviousChannel();
+                        await _viewModel.SelectPreviousChannel(step);
                     }
                 }
                 else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
@@ -768,7 +809,7 @@ namespace OnlineTelevizor.Views
             }
             else
             {
-                await _viewModel.SelectPreviousChannel();
+                await _viewModel.SelectPreviousChannel(step);
                 await _viewModel.Play();
             }
         }
@@ -885,7 +926,7 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"Detail_Clicked");
 
-            if (_playerPage != null && _playerPage.Playing)
+            if (Playing)
             {
                 _playerPage.ShowJustPlayingNotification();
             }
@@ -907,6 +948,19 @@ namespace OnlineTelevizor.Views
 
         protected override bool OnBackButtonPressed()
         {
+            // this event is called immediately after Navigation.PopAsync();
+            if (_lastPageAppearedTime != DateTime.MinValue && ((DateTime.Now - _lastPageAppearedTime).TotalSeconds < 3))
+            {
+                // ignoring this event
+                return true;
+            }
+
+            if ((_lastKeyLongPressedTime != DateTime.MinValue) && ((DateTime.Now - _lastKeyLongPressedTime).TotalSeconds < 3))
+            {
+                // long press back
+                return false;
+            }
+
             if ((_lastBackPressedTime == DateTime.MinValue) || ((DateTime.Now-_lastBackPressedTime).TotalSeconds>5))
             {
                 MessagingCenter.Send($"Stiskněte ještě jednou pro ukončení", BaseViewModel.ToastMessage);
