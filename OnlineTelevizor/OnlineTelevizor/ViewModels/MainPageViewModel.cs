@@ -45,6 +45,8 @@ namespace OnlineTelevizor.ViewModels
         private ChannelItem _recordingChannel = null;
         private ChannelItem _castingChannel = null;
 
+        private MediaDetail _playingMedia = null;
+
 
         public enum SelectedPartEnum
         {
@@ -472,6 +474,22 @@ namespace OnlineTelevizor.ViewModels
                     return String.Empty;
 
                 return SelectedItem.CurrentEPGItem.Title;
+            }
+        }
+
+        public string ViewPreviewDescription
+        {
+            get
+            {
+                if (SelectedItem == null)
+                    return String.Empty;
+
+                if (SelectedItem.CurrentEPGItem == null)
+                {
+                    return SelectedItem.Name;
+                }
+
+                return $"{SelectedItem.Name} - {SelectedItem.CurrentEPGItem.Title}";
             }
         }
 

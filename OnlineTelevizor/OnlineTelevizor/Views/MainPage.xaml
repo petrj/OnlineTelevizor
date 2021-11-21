@@ -192,7 +192,7 @@
                 </ScrollView>
 
             <StackLayout Grid.Row="3" Grid.Column="0" x:Name="VideoStackLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                <vlc:VideoView IsVisible="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView" Margin="0,0,0,0" />
+                <vlc:VideoView IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView" Margin="0,0,0,0" />
                 <StackLayout.GestureRecognizers>
                     <!--TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" /-->
                     <!--TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" /-->
@@ -203,7 +203,7 @@
                 </StackLayout.GestureRecognizers>
             </StackLayout>
 
-            <Label Grid.Row="4" Grid.Column="0" x:Name="ViewPreviewLabel" Text="" IsVisible="False" Style="{DynamicResource VideoPreviewTextStyle}" FontSize="{Binding FontSizeForNextTitle}"  Margin="5,5,5,5"/>
+            <Label Grid.Row="4" Grid.Column="0" x:Name="ViewPreviewLabel" Text="{Binding ViewPreviewDescription}" IsVisible="True" Style="{DynamicResource VideoPreviewTextStyle}" FontSize="{Binding FontSizeForNextTitle}"  Margin="5,5,5,5"/>
         </Grid>
 
         <StackLayout  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="45" HorizontalOptions="Fill"  BackgroundColor="#262626" Margin="0,0,0,0">

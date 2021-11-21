@@ -38,7 +38,97 @@ namespace OnlineTelevizor.Views
         private LibVLC _libVLC = null;
         private MediaPlayer _mediaPlayer;
         private Media _media = null;
-        private MediaDetail _playPreviewProgressMedia = null;
+
+
+        private PlayingStateEnum _playingState = PlayingStateEnum.Stopped;
+
+        public enum PlayingStateEnum
+        {
+            Stopped = 0,
+            PlayingInternal = 1,
+            PlayingInPreview = 2,
+            PlayingExternal = 3
+        }
+
+        public PlayingStateEnum PlayingState
+        {
+            get
+            {
+                return _playingState;
+            }
+            set
+            {
+                _playingState = value;
+
+                switch (_playingState)
+                {
+                    case PlayingStateEnum.PlayingInternal:
+                        LayoutGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Absolute);
+                        LayoutGrid.ColumnDefinitions[1].Width = new GridLength(100, GridUnitType.Star);
+
+                        LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
+
+                        StackLayoutEPGDetail.RowDefinitions[0].Height = new GridLength(0);
+                        StackLayoutEPGDetail.RowDefinitions[1].Height = new GridLength(0);
+                        StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(0);
+                        StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(100, GridUnitType.Star);
+                        StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0);
+
+                        ProgresssBarGrid.IsVisible = false;
+
+                        NavigationPage.SetHasNavigationBar(this, false);
+                    break;
+                    case PlayingStateEnum.PlayingInPreview:
+                        if (_viewModel.IsPortrait)
+                        {
+                            LayoutGrid.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
+                            LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Absolute);
+                        }
+                        else
+                        {
+                            LayoutGrid.ColumnDefinitions[0].Width = new GridLength(50, GridUnitType.Star);
+                            LayoutGrid.ColumnDefinitions[1].Width = new GridLength(50, GridUnitType.Star);
+                        }
+
+                        LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Auto);
+
+                        StackLayoutEPGDetail.RowDefinitions[0].Height = new GridLength(19, GridUnitType.Star);
+                        StackLayoutEPGDetail.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
+                        StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(40, GridUnitType.Star);
+                        StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(35, GridUnitType.Star);
+                        StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(5, GridUnitType.Star);
+
+                        ProgresssBarGrid.IsVisible = true;
+
+                        NavigationPage.SetHasNavigationBar(this, true);
+                        break;
+                    case PlayingStateEnum.Stopped:
+                        if (_viewModel.IsPortrait)
+                        {
+                            LayoutGrid.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
+                            LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Absolute);
+                        }
+                        else
+                        {
+                            LayoutGrid.ColumnDefinitions[0].Width = new GridLength(50, GridUnitType.Star);
+                            LayoutGrid.ColumnDefinitions[1].Width = new GridLength(50, GridUnitType.Star);
+                        }
+
+                        LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Auto);
+
+                        StackLayoutEPGDetail.RowDefinitions[0].Height = new GridLength(19, GridUnitType.Star);
+                        StackLayoutEPGDetail.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
+                        StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(80, GridUnitType.Star);
+                        StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(0);
+                        StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0);
+
+                        ProgresssBarGrid.IsVisible = true;
+
+                        NavigationPage.SetHasNavigationBar(this, true);
+                    break;
+                }
+            }
+        }
 
         public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
@@ -155,7 +245,7 @@ namespace OnlineTelevizor.Views
                 });
                 */
 
-                PlayInternal(mediaDetail);
+                ActionPlay(mediaDetail);
 
             });
 
@@ -193,6 +283,8 @@ namespace OnlineTelevizor.Views
                 });
             });
 
+            PlayingState = PlayingStateEnum.Stopped;
+
             ScrollViewChannelEPGDescription.Scrolled += ScrollViewChannelEPGDescription_Scrolled;
             Appearing += MainPage_Appearing;
             Disappearing += MainPage_Disappearing;
@@ -205,53 +297,17 @@ namespace OnlineTelevizor.Views
 
         private void _playerPage_Disappearing(object sender, EventArgs e)
         {
-            StartPreviewVideo(_playerPage.GetMediaUrl());
-        }
 
-        public bool PreviewVideoPlaying
-        {
-            get
-            {
-                return _playPreviewProgressMedia != null;
-            }
         }
 
         private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
         {
-            StopPreviewVideo();
-        }
-
-        public void StartPreviewVideo(MediaDetail mediaDetail)
-        {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                if (!_viewModel.IsPortrait && _config.InternalPlayer)
-                {
-                    _media = new Media(_libVLC, mediaDetail.MediaUrl, FromType.FromLocation);
-
-                    videoView.MediaPlayer.Play(_media);
-
-                    if (mediaDetail.Position >= 0)
-                        videoView.MediaPlayer.Position = mediaDetail.Position;
-
-                    _playPreviewProgressMedia = mediaDetail;
-
-                    ViewPreviewLabel.Text = mediaDetail.Title;
-                    if (mediaDetail.CurrentEPGItem != null &&
-                        !string.IsNullOrEmpty(mediaDetail.CurrentEPGItem.Title))
-                    {
-                        ViewPreviewLabel.Text += " - " + mediaDetail.CurrentEPGItem.Title;
-                    }
-
-                    ViewPreviewLabel.IsVisible = true;
-                    videoView.IsVisible = true;
-                }
-            });
+            ActionStop();
         }
 
         public void StopPreviewVideo()
         {
-            Device.BeginInvokeOnMainThread(() =>
+           /* Device.BeginInvokeOnMainThread(() =>
             {
                 if (PreviewVideoPlaying)
                 {
@@ -285,7 +341,7 @@ namespace OnlineTelevizor.Views
 
                     NavigationPage.SetHasNavigationBar(this, true);
                 }
-            });
+            });*/
         }
 
         private async void MainPage_Appearing(object sender, EventArgs e)
@@ -343,20 +399,59 @@ namespace OnlineTelevizor.Views
             //LayoutGrid.ColumnDefinitions[1].Width = new GridLength(width / 2.0);
 
             _viewModel.NotifyToolBarChange();
+
+            // updating layout
+            var state = PlayingState;
+            PlayingState = state;
         }
 
-        public void PlayInternal(MediaDetail mediaDetail)
+        public void ActionStop()
         {
+            if (_config.InternalPlayer)
+            {
+                if (PlayingState == PlayingStateEnum.PlayingInternal)
+                {
+                    PlayingState = PlayingStateEnum.PlayingInPreview;
+                } else
+                if (PlayingState == PlayingStateEnum.PlayingInPreview)
+                {
+                    videoView.MediaPlayer.Stop();
+                    PlayingState = PlayingStateEnum.Stopped;
+                }
+            } else
+            {
+                PlayingState = PlayingStateEnum.Stopped;
+            }
+        }
+
+        public void ActionPlay(MediaDetail mediaDetail)
+        {
+            if (_config.InternalPlayer)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
+                    {
+                        videoView.MediaPlayer.Stop();
+                    }
+
+                    _media = new Media(_libVLC, mediaDetail.MediaUrl, FromType.FromLocation);
+                    videoView.MediaPlayer.Play(_media);
+                    PlayingState = PlayingStateEnum.PlayingInternal;
+                });
+
+            } else
+            {
+                MessagingCenter.Send(mediaDetail.MediaUrl, BaseViewModel.UriMessage);
+            }
+            /*
+
             Device.BeginInvokeOnMainThread(() =>
             {
                 if (_config.InternalPlayer)
                 {
                     _media = new Media(_libVLC, mediaDetail.MediaUrl, FromType.FromLocation);
-
                     videoView.MediaPlayer.Play(_media);
-
-                    if (mediaDetail.Position >= 0)
-                        videoView.MediaPlayer.Position = mediaDetail.Position;
 
                     _playPreviewProgressMedia = mediaDetail;
 
@@ -385,7 +480,7 @@ namespace OnlineTelevizor.Views
 
                     NavigationPage.SetHasNavigationBar(this, false);
                 }
-            });
+            });*/
         }
 
         private void ChannelsListView_Scrolled(object sender, ScrolledEventArgs e)
