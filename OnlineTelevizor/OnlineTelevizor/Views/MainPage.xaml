@@ -86,17 +86,23 @@
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
             </Style>
 
+            <Style x:Key="LayoutGridStyle" TargetType="Grid">
+                <Setter Property="Margin" Value="0,0,0,0"/>
+                <Setter Property="Padding" Value="0,0,0,0"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+                <Setter Property="VerticalOptions" Value="FillAndExpand"/>
+            </Style>
+
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid x:Name="LayoutGrid">
+    <Grid x:Name="LayoutGrid" Style="{DynamicResource LayoutGridStyle}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50*" />
-            <ColumnDefinition Width="1" />
             <ColumnDefinition Width="50*" />
         </Grid.ColumnDefinitions>
 
@@ -156,7 +162,7 @@
 
         </ListView>
 
-            <Grid  x:Name="StackLayoutEPGDetail" Grid.Row="0" Grid.Column="1" Margin="10,10,10,0">
+        <Grid x:Name="StackLayoutEPGDetail" Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" Padding="0,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="19*" />
                     <RowDefinition Height="1*" />
@@ -168,9 +174,9 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Row="0" Grid.Column="0" Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"/>
+            <Label Grid.Row="0" Grid.Column="0" Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"  Margin="5,5,5,5"/>
 
-                <Grid Grid.Row="1" Grid.Column="0"  Margin="0,0,0,0">
+                <Grid Grid.Row="1" Grid.Column="0"  Margin="0,0,0,0" x:Name="ProgresssBarGrid">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1" />
                     </Grid.RowDefinitions>
@@ -181,16 +187,26 @@
                     <ProgressBar Grid.Row="0" Grid.Column="0" Progress="{Binding SelectedChannelEPGProgress}" BackgroundColor="{Binding EPGProgressBackgroundColor}" />
                 </Grid>
 
-                <ScrollView Grid.Row="2" Grid.Column="0" x:Name="ScrollViewChannelEPGDescription" BackgroundColor="{Binding EPGDescriptionBackgroundColor}"  HorizontalOptions="StartAndExpand" VerticalOptions="Start">
+                <ScrollView Grid.Row="2" Grid.Column="0" x:Name="ScrollViewChannelEPGDescription" BackgroundColor="{Binding EPGDescriptionBackgroundColor}"  HorizontalOptions="StartAndExpand" VerticalOptions="Start"  Margin="5,5,5,5">
                     <Label x:Name="LabelChannelEPGDescription" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
                 </ScrollView>
 
-                <vlc:VideoView Grid.Row="3" Grid.Column="0" IsVisible="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView" Margin="10,10,10,0"/>
+            <StackLayout Grid.Row="3" Grid.Column="0" x:Name="VideoStackLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <vlc:VideoView IsVisible="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView" Margin="0,0,0,0" />
+                <StackLayout.GestureRecognizers>
+                    <!--TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" /-->
+                    <!--TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" /-->
+                    <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped"/>
+                    <SwipeGestureRecognizer Direction="Right" Swiped="SwipeGestureRecognizer_Swiped"/>
+                    <!--SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Up"/-->
+                    <!--SwipeGestureRecognizer Direction="Down" Swiped="SwipeGestureRecognizer_Down"/-->
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
 
-                <Label Grid.Row="4" Grid.Column="0" x:Name="ViewPreviewLabel" Text="" IsVisible="False" Style="{DynamicResource VideoPreviewTextStyle}" FontSize="{Binding FontSizeForNextTitle}" />
+            <Label Grid.Row="4" Grid.Column="0" x:Name="ViewPreviewLabel" Text="" IsVisible="False" Style="{DynamicResource VideoPreviewTextStyle}" FontSize="{Binding FontSizeForNextTitle}"  Margin="5,5,5,5"/>
         </Grid>
 
-        <StackLayout  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="45" HorizontalOptions="Fill"  BackgroundColor="#262626">
+        <StackLayout  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="45" HorizontalOptions="Fill"  BackgroundColor="#262626" Margin="0,0,0,0">
             <Label Text="{Binding StatusLabel}"  x:Name="StatusLabel" Style="{DynamicResource InfoLabelStyle}" FontSize="{Binding FontSizeForInfoLabel}"/>
         </StackLayout>
 
