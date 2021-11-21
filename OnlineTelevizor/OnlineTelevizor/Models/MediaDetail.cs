@@ -23,6 +23,7 @@ namespace OnlineTelevizor.Models
             LogoUrl = channel.LogoUrl;
         }
 
+        public float Position { get; set; }
         public string MediaUrl { get; set;  }
         public string Title { get; set; }
         public string Type { get; set; }

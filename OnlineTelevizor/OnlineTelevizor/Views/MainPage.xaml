@@ -5,6 +5,7 @@
              x:Class="OnlineTelevizor.Views.MainPage"
              BackgroundColor="Black"
              NavigationPage.TitleIcon="Icon.png"
+             xmlns:vlc="clr-namespace:LibVLCSharp.Forms.Shared;assembly=LibVLCSharp.Forms"
              xmlns:local2="clr-namespace:OnlineTelevizor" xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
 
     <ContentPage.Resources>
@@ -40,11 +41,20 @@
 
             <Style x:Key="NextTitleTextStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="VerticalTextAlignment" Value="Center"/>
-                <Setter Property="HorizontalOptions" Value="EndAndExpand"/>
+                <Setter Property="VerticalTextAlignment" Value="Start"/>
+                <Setter Property="HorizontalOptions" Value="StartAndExpand"/>
                 <Setter Property="FontAttributes" Value="Italic"/>
                 <Setter Property="LineBreakMode" Value="WordWrap"/>
                 <Setter Property="Margin" Value="0,0,5,0"/>
+            </Style>
+
+            <Style x:Key="VideoPreviewTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="FontAttributes" Value="Italic"/>
+                <Setter Property="LineBreakMode" Value="WordWrap"/>
+                <Setter Property="Margin" Value="0,0,0,0"/>
             </Style>
 
             <Style x:Key="InfoLabelStyle" TargetType="Label">
@@ -146,27 +156,39 @@
 
         </ListView>
 
-        <StackLayout x:Name="StackLayoutEPGDetail" Grid.Row="0" Grid.Column="1" Margin="10,10,10,10">
-
-            <Label Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"/>
-
-            <Grid Margin="0,10,0,10">
+            <Grid  x:Name="StackLayoutEPGDetail" Grid.Row="0" Grid.Column="1" Margin="10,10,10,0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1" />
-                </Grid.RowDefinitions>
+                    <RowDefinition Height="19*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="40*" />
+                    <RowDefinition Height="35*" />
+                    <RowDefinition Height="5*" />
+            </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <ProgressBar Grid.Row="0" Grid.Column="0" Progress="{Binding SelectedChannelEPGProgress}" BackgroundColor="{Binding EPGProgressBackgroundColor}" />
-            </Grid>
+                <Label Grid.Row="0" Grid.Column="0" Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"/>
 
+                <Grid Grid.Row="1" Grid.Column="0"  Margin="0,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-            <ScrollView x:Name="ScrollViewChannelEPGDescription" BackgroundColor="{Binding EPGDescriptionBackgroundColor}" >
-                <Label x:Name="LabelChannelEPGDescription" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
-            </ScrollView>
+                    <ProgressBar Grid.Row="0" Grid.Column="0" Progress="{Binding SelectedChannelEPGProgress}" BackgroundColor="{Binding EPGProgressBackgroundColor}" />
+                </Grid>
 
-        </StackLayout>
+                <ScrollView Grid.Row="2" Grid.Column="0" x:Name="ScrollViewChannelEPGDescription" BackgroundColor="{Binding EPGDescriptionBackgroundColor}"  HorizontalOptions="StartAndExpand" VerticalOptions="Start">
+                    <Label x:Name="LabelChannelEPGDescription" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
+                </ScrollView>
+
+                <vlc:VideoView Grid.Row="3" Grid.Column="0" IsVisible="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView" Margin="10,10,10,0"/>
+
+                <Label Grid.Row="4" Grid.Column="0" x:Name="ViewPreviewLabel" Text="" IsVisible="False" Style="{DynamicResource VideoPreviewTextStyle}" FontSize="{Binding FontSizeForNextTitle}" />
+        </Grid>
 
         <StackLayout  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="45" HorizontalOptions="Fill"  BackgroundColor="#262626">
             <Label Text="{Binding StatusLabel}"  x:Name="StatusLabel" Style="{DynamicResource InfoLabelStyle}" FontSize="{Binding FontSizeForInfoLabel}"/>

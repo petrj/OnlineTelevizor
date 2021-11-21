@@ -13,6 +13,7 @@ using Xamarin.Forms;
 using System.Threading;
 using static OnlineTelevizor.ViewModels.MainPageViewModel;
 using static Android.OS.PowerManager;
+using LibVLCSharp.Shared;
 
 namespace OnlineTelevizor.Views
 {
@@ -34,6 +35,11 @@ namespace OnlineTelevizor.Views
         private bool _firstSelectionAfterStartup = false;
         private string _numberPressed = String.Empty;
 
+        private LibVLC _libVLC = null;
+        private MediaPlayer _mediaPlayer;
+        private Media _media = null;
+        private MediaDetail _playPreviewProgressMedia = null;
+
         public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
             InitializeComponent();
@@ -42,6 +48,12 @@ namespace OnlineTelevizor.Views
 
             _config = config;
             _loggingService = loggingService;
+
+            Core.Initialize();
+
+            _libVLC = new LibVLC();
+            _mediaPlayer = new MediaPlayer(_libVLC) { EnableHardwareDecoding = true };
+            videoView.MediaPlayer = _mediaPlayer;
 
             _loggingService.Debug($"Initializing MainPage");
 
@@ -132,6 +144,8 @@ namespace OnlineTelevizor.Views
                         {
                             Navigation.PushModalAsync(_playerPage);
                         }
+
+                        _playerPage.Disappearing += _playerPage_Disappearing;
                     }
                     catch (Exception ex)
                     {
@@ -182,6 +196,70 @@ namespace OnlineTelevizor.Views
 
             ScrollViewChannelEPGDescription.Scrolled += ScrollViewChannelEPGDescription_Scrolled;
             Appearing += MainPage_Appearing;
+            Disappearing += MainPage_Disappearing;
+        }
+
+        private void MainPage_Disappearing(object sender, EventArgs e)
+        {
+            StopPreviewVideo();
+        }
+
+        private void _playerPage_Disappearing(object sender, EventArgs e)
+        {
+            StartPreviewVideo(_playerPage.GetMediaUrl());
+        }
+
+        public bool PreviewVideoPlaying
+        {
+            get
+            {
+                return _playPreviewProgressMedia != null;
+            }
+        }
+
+        public void StartPreviewVideo(MediaDetail mediaDetail)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (!_viewModel.IsPortrait && _config.InternalPlayer)
+                {
+                    _media = new Media(_libVLC, mediaDetail.MediaUrl, FromType.FromLocation);
+
+                    videoView.MediaPlayer.Play(_media);
+
+                    if (mediaDetail.Position >= 0)
+                        videoView.MediaPlayer.Position = mediaDetail.Position;
+
+                    _playPreviewProgressMedia = mediaDetail;
+
+                    ViewPreviewLabel.Text = mediaDetail.Title;
+                    if (mediaDetail.CurrentEPGItem != null &&
+                        !string.IsNullOrEmpty(mediaDetail.CurrentEPGItem.Title))
+                    {
+                        ViewPreviewLabel.Text += " - " + mediaDetail.CurrentEPGItem.Title;
+                    }
+
+                    ViewPreviewLabel.IsVisible = true;
+                    videoView.IsVisible = true;
+                }
+            });
+        }
+
+        public void StopPreviewVideo()
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (PreviewVideoPlaying)
+                {
+                    videoView.MediaPlayer.Stop();
+
+                    _playPreviewProgressMedia = null;
+                    videoView.MediaPlayer.Media = null;
+                    videoView.IsVisible = false;
+                    ViewPreviewLabel.IsVisible = false;
+                    ViewPreviewLabel.Text = "";
+                }
+            });
         }
 
         private async void MainPage_Appearing(object sender, EventArgs e)
@@ -391,7 +469,7 @@ namespace OnlineTelevizor.Views
                 case "down":
                 case "s":
                 case "numpad2":
-                case "f2":
+                case "f3":
                 case "mediaplaynext":
                 case "medianext":
                 case "moveend":
@@ -402,7 +480,7 @@ namespace OnlineTelevizor.Views
                 case "up":
                 case "w":
                 case "numpad8":
-                case "f3":
+                case "f2":
                 case "mediaplayprevious":
                 case "mediaprevious":
                 case "movehome":
@@ -464,6 +542,7 @@ namespace OnlineTelevizor.Views
                 case "minus":
                 case "period":
                 case "apostrophe":
+                case "buttonselect":
                     StopPlayback();
                     break;
                 case "buttonl2":
@@ -621,6 +700,8 @@ namespace OnlineTelevizor.Views
                 _playerPage.Stop();
                 Navigation.PopModalAsync();
             }
+
+            StopPreviewVideo();
         }
 
         public void ResumePlayback()
@@ -965,6 +1046,7 @@ namespace OnlineTelevizor.Views
             {
                 MessagingCenter.Send($"Stiskněte ještě jednou pro ukončení", BaseViewModel.ToastMessage);
                 _lastBackPressedTime = DateTime.Now;
+                StopPreviewVideo();
                 return true;
             } else
             {

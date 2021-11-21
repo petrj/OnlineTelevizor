@@ -14,6 +14,7 @@ using TVAPI;
 using System.ComponentModel;
 using System.Net;
 using System.IO;
+using LibVLCSharp.Shared;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -43,6 +44,7 @@ namespace OnlineTelevizor.ViewModels
         private string _selectedChannelEPGDescription = String.Empty;
         private ChannelItem _recordingChannel = null;
         private ChannelItem _castingChannel = null;
+
 
         public enum SelectedPartEnum
         {
@@ -219,6 +221,8 @@ namespace OnlineTelevizor.ViewModels
             string optionRecord = "Nahrávat do souboru ..";
             string optionStopRecord = "Zastavit nahrávání";
 
+            string optionStopApp = "Ukončit aplikaci";
+
             var actions = new List<string>() { optionPlay };
 
             if (!IsCasting && !IsRecording)
@@ -238,6 +242,7 @@ namespace OnlineTelevizor.ViewModels
             }
 
             actions.Add(optionDetail);
+            actions.Add(optionStopApp);
 
             var selectedvalue = await _dialogService.Select(actions, (item as ChannelItem).Name, optionCancel);
 
@@ -268,6 +273,12 @@ namespace OnlineTelevizor.ViewModels
             else if (selectedvalue == optionStopRecord)
             {
                 await RecordChannel(false);
+            }
+            else if (selectedvalue == optionStopApp)
+            {
+                var confirm = await _dialogService.Confirm($"Ukončit aplikaci?");
+                if (confirm)
+                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit);
             }
         }
 
@@ -793,6 +804,14 @@ namespace OnlineTelevizor.ViewModels
             get
             {
                 return GetScaledSize(16).ToString();
+            }
+        }
+
+        public bool VideoViewVisible
+        {
+            get
+            {
+                return true;
             }
         }
 

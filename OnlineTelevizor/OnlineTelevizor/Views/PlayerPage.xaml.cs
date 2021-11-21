@@ -127,7 +127,6 @@ namespace OnlineTelevizor.Views
             await UpdateEPG();
         }
 
-
         public void OnSingleTapped(object sender, EventArgs e)
         {
             ShowJustPlayingNotification();
@@ -182,6 +181,21 @@ namespace OnlineTelevizor.Views
                     }
                 });
             });
+        }
+
+        public MediaDetail GetMediaUrl()
+        {
+            return new MediaDetail()
+            {
+                MediaUrl = _viewModel.MediaUrl,
+                Title = _viewModel.Title,
+                Type = _viewModel.MediaType,
+                ChanneldID = _viewModel.ChannelId,
+                CurrentEPGItem = _viewModel.EPGItem,
+                NextEPGItem = _viewModel.NextEPGItem,
+                LogoUrl = _viewModel.LogoIcon,
+                Position = MediaPosition
+            };
         }
 
         public void SetMediaUrl(MediaDetail detail)
@@ -326,6 +340,20 @@ namespace OnlineTelevizor.Views
                 videoView.MediaPlayer.Stop();
                 Playing = false;
             });
+        }
+
+        public float MediaPosition
+        {
+            get
+            {
+                if (_mediaPlayer.VideoTrack != -1)
+                {
+                    return videoView.MediaPlayer.Position;
+                } else
+                {
+                    return -1;
+                }
+            }
         }
 
         public void Resume()
