@@ -63,23 +63,42 @@ namespace OnlineTelevizor.Views
                 switch (_playingState)
                 {
                     case PlayingStateEnum.PlayingInternal:
-                        LayoutGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Absolute);
-                        LayoutGrid.ColumnDefinitions[1].Width = new GridLength(100, GridUnitType.Star);
 
-                        LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
-
-                        StackLayoutEPGDetail.RowDefinitions[0].Height = new GridLength(0);
-                        StackLayoutEPGDetail.RowDefinitions[1].Height = new GridLength(0);
-                        StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(0);
-                        StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(100, GridUnitType.Star);
-                        StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0);
-
-                        ProgresssBarGrid.IsVisible = false;
-
+                        // turn off tool bar
                         NavigationPage.SetHasNavigationBar(this, false);
-                    break;
+
+                        VideoStackLayout.Layout(new Rectangle(0, 0, ContentPage.Width,ContentPage.Height));
+
+                        VideoStackLayout.IsVisible = true;
+
+                        /*  LayoutGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Absolute);
+                          LayoutGrid.ColumnDefinitions[1].Width = new GridLength(100, GridUnitType.Star);
+
+                          LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
+
+                          StackLayoutEPGDetail.RowDefinitions[0].Height = new GridLength(0);
+                          StackLayoutEPGDetail.RowDefinitions[1].Height = new GridLength(0);
+                          StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(0);
+                          StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(100, GridUnitType.Star);
+                          StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0);
+
+                          ProgresssBarGrid.IsVisible = false;
+
+                          */
+                        break;
                     case PlayingStateEnum.PlayingInPreview:
-                        if (_viewModel.IsPortrait)
+
+                        NavigationPage.SetHasNavigationBar(this, true);
+
+                        VideoStackLayout.Layout(new Rectangle(
+                            ContentPage.Width/2,
+                            (ContentPage.Height - StatusLayout.Height)*2/3 - StatusLayout.Height - ViewPreviewLabel.Height - 10,
+                            ContentPage.Width/2,
+                            ContentPage.Height*1/4));
+
+                        VideoStackLayout.IsVisible = true;
+
+                        /*if (_viewModel.IsPortrait)
                         {
                             LayoutGrid.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
                             LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Absolute);
@@ -98,34 +117,38 @@ namespace OnlineTelevizor.Views
                         StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(35, GridUnitType.Star);
                         StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(5, GridUnitType.Star);
 
-                        ProgresssBarGrid.IsVisible = true;
+                        ProgresssBarGrid.IsVisible = true;*/
 
-                        NavigationPage.SetHasNavigationBar(this, true);
                         break;
                     case PlayingStateEnum.Stopped:
-                        if (_viewModel.IsPortrait)
-                        {
-                            LayoutGrid.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
-                            LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Absolute);
-                        }
-                        else
-                        {
-                            LayoutGrid.ColumnDefinitions[0].Width = new GridLength(50, GridUnitType.Star);
-                            LayoutGrid.ColumnDefinitions[1].Width = new GridLength(50, GridUnitType.Star);
-                        }
-
-                        LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Auto);
-
-                        StackLayoutEPGDetail.RowDefinitions[0].Height = new GridLength(19, GridUnitType.Star);
-                        StackLayoutEPGDetail.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
-                        StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(80, GridUnitType.Star);
-                        StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(0);
-                        StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0);
-
-                        ProgresssBarGrid.IsVisible = true;
 
                         NavigationPage.SetHasNavigationBar(this, true);
-                    break;
+
+                        VideoStackLayout.IsVisible = false;
+
+                        /*   if (_viewModel.IsPortrait)
+                           {
+                               LayoutGrid.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
+                               LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Absolute);
+                           }
+                           else
+                           {
+                               LayoutGrid.ColumnDefinitions[0].Width = new GridLength(50, GridUnitType.Star);
+                               LayoutGrid.ColumnDefinitions[1].Width = new GridLength(50, GridUnitType.Star);
+                           }
+
+                           LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Auto);
+
+                           StackLayoutEPGDetail.RowDefinitions[0].Height = new GridLength(19, GridUnitType.Star);
+                           StackLayoutEPGDetail.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
+                           StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(80, GridUnitType.Star);
+                           StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(0);
+                           StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0);
+
+                           ProgresssBarGrid.IsVisible = true;
+
+                           */
+                        break;
                 }
             }
         }
@@ -366,6 +389,7 @@ namespace OnlineTelevizor.Views
 
         private void ScrollViewChannelEPGDescription_Scrolled(object sender, ScrolledEventArgs e)
         {
+            /*
             if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
             {
                 // ScrollViewChannelEPGDescription got focus unexpectedly
@@ -374,6 +398,7 @@ namespace OnlineTelevizor.Views
                 ScrollViewChannelEPGDescription.IsVisible = false;
                 ScrollViewChannelEPGDescription.IsVisible = true;
             }
+            */
         }
 
         protected override void OnSizeAllocated(double width, double height)
