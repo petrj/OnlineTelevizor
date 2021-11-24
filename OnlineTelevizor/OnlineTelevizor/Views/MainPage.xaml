@@ -99,110 +99,114 @@
 
     <AbsoluteLayout>
 
-    <Grid x:Name="LayoutGrid" Style="{DynamicResource LayoutGridStyle}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50*" />
-            <ColumnDefinition Width="50*" />
-        </Grid.ColumnDefinitions>
-
-        <ListView  Grid.Row="0" Grid.Column="0" x:Name="ChannelsListView"
-                    ItemsSource="{Binding Channels}"
-                    CachingStrategy="RecycleElement"
-                    IsPullToRefreshEnabled="True"
-                    RefreshCommand="{Binding RefreshCommand}"
-                    IsRefreshing="{Binding IsBusy}"
-                    Style="{StaticResource ListViewStyle}"
-                    SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
-
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <ViewCell.View>
-                            <Grid
-                                local2:PressedEffect.LongPressCommand="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.LongPressCommand}"
-                                local2:PressedEffect.LongPressCommandParameter="{Binding .}"
-                                local2:PressedEffect.ShortPressCommand="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.ShortPressCommand}"
-                                local2:PressedEffect.ShortPressCommandParameter="{Binding .}">
-
-                                <Grid.Effects>
-                                    <local2:PressedEffect />
-                                </Grid.Effects>
-
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForChannelNameRow}" />
-                                    <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForChannelEPGRow}" />
-                                    <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForTimeRow}" />
-                                    <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForNextTitleRow}" />
-                                    <RowDefinition Height="1" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="70" />
-                                </Grid.ColumnDefinitions>
-
-                                <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Text="{Binding ChannelNumber}" Style="{DynamicResource ChannelNumberTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannelNumber}" />
-                                <Label Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" Text="{Binding Name}"  LineBreakMode="NoWrap" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannel}" />
-                                <ffimageloading:CachedImage Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding LogoUrl}" Style="{DynamicResource IconStyle}" DownsampleToViewSize="false" DownsampleHeight="50" LoadingPlaceholder = "Empty.png"/>
-                                <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,0" Text="{Binding CurrentEPGTitle}" Style="{DynamicResource ChannelEPGTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannelEPG}"/>
-                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding EPGTime}" Style="{DynamicResource TimeTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForTime}"/>
-                                <Label Grid.Row="3" Grid.Column="1" MaxLines="1" Grid.ColumnSpan="2" Text="{Binding NextTitle}" Style="{DynamicResource NextTitleTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForNextTitle}"/>
-                                <Image Grid.Row="2" Grid.Column="2"  Source="{Binding StateIcon}" Style="{DynamicResource IconStyle}"  HeightRequest="30"/>
-
-                                <ProgressBar Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Progress="{Binding EPGProgress}" ProgressColor="#41b3ff" BackgroundColor="White"/>
-
-                            </Grid>
-
-                        </ViewCell.View>
-
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-
-        </ListView>
-
-        <Grid x:Name="StackLayoutEPGDetail" Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" Padding="0,0,0,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="19*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="80*" />
-                    <RowDefinition Height="0*" />
-                    <RowDefinition Height="0*" />
-                    <!-- video preview - 30% -->
+        <Grid x:Name="LayoutGrid" Style="{DynamicResource LayoutGridStyle}">
+            <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="0" />
+                    <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50*" />
+                <ColumnDefinition Width="50*" />
+            </Grid.ColumnDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"  Margin="5,5,5,5"/>
+            <ListView  Grid.Row="0" Grid.Column="0" x:Name="ChannelsListView"
+                        ItemsSource="{Binding Channels}"
+                        CachingStrategy="RecycleElement"
+                        IsPullToRefreshEnabled="True"
+                        RefreshCommand="{Binding RefreshCommand}"
+                        IsRefreshing="{Binding IsBusy}"
+                        Style="{StaticResource ListViewStyle}"
+                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
 
-                <Grid Grid.Row="1" Grid.Column="0"  Margin="0,0,0,0" x:Name="ProgresssBarGrid">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Grid
+                                    local2:PressedEffect.LongPressCommand="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.LongPressCommand}"
+                                    local2:PressedEffect.LongPressCommandParameter="{Binding .}"
+                                    local2:PressedEffect.ShortPressCommand="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.ShortPressCommand}"
+                                    local2:PressedEffect.ShortPressCommandParameter="{Binding .}">
+
+                                    <Grid.Effects>
+                                        <local2:PressedEffect />
+                                    </Grid.Effects>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForChannelNameRow}" />
+                                        <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForChannelEPGRow}" />
+                                        <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForTimeRow}" />
+                                        <RowDefinition Height="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.HeightForNextTitleRow}" />
+                                        <RowDefinition Height="1" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="70" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Text="{Binding ChannelNumber}" Style="{DynamicResource ChannelNumberTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannelNumber}" />
+                                    <Label Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" Text="{Binding Name}"  LineBreakMode="NoWrap" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannel}" />
+                                    <ffimageloading:CachedImage Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding LogoUrl}" Style="{DynamicResource IconStyle}" DownsampleToViewSize="false" DownsampleHeight="50" LoadingPlaceholder = "Empty.png"/>
+                                    <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,0" Text="{Binding CurrentEPGTitle}" Style="{DynamicResource ChannelEPGTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannelEPG}"/>
+                                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding EPGTime}" Style="{DynamicResource TimeTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForTime}"/>
+                                    <Label Grid.Row="3" Grid.Column="1" MaxLines="1" Grid.ColumnSpan="2" Text="{Binding NextTitle}" Style="{DynamicResource NextTitleTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForNextTitle}"/>
+                                    <Image Grid.Row="2" Grid.Column="2"  Source="{Binding StateIcon}" Style="{DynamicResource IconStyle}"  HeightRequest="30"/>
+
+                                    <ProgressBar Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Progress="{Binding EPGProgress}" ProgressColor="#41b3ff" BackgroundColor="White"/>
+
+                                </Grid>
+
+                            </ViewCell.View>
+
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+
+            <Grid x:Name="StackLayoutEPGDetail" Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" Padding="0,0,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="1" />
+                        <RowDefinition Height="19*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="80*" />
+                        <RowDefinition Height="0*" />
+                        <RowDefinition Height="0*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <ProgressBar Grid.Row="0" Grid.Column="0" Progress="{Binding SelectedChannelEPGProgress}" BackgroundColor="{Binding EPGProgressBackgroundColor}" />
-                </Grid>
+                <Label Grid.Row="0" Grid.Column="0" Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"  Margin="5,5,5,5"/>
 
-                <ScrollView Grid.Row="2" Grid.Column="0" x:Name="ScrollViewChannelEPGDescription" BackgroundColor="{Binding EPGDescriptionBackgroundColor}"  HorizontalOptions="StartAndExpand" VerticalOptions="Start"  Margin="5,5,5,5">
-                    <Label x:Name="LabelChannelEPGDescription" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
-                </ScrollView>
+                    <Grid Grid.Row="1" Grid.Column="0"  Margin="0,0,0,0" x:Name="ProgresssBarGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                <Label Grid.Row="4" Grid.Column="0" x:Name="ViewPreviewLabel" Text="{Binding ViewPreviewDescription}" IsVisible="True" Style="{DynamicResource VideoPreviewTextStyle}" FontSize="{Binding FontSizeForNextTitle}"  Margin="5,5,5,5"/>
+                        <ProgressBar Grid.Row="0" Grid.Column="0" Progress="{Binding SelectedChannelEPGProgress}" BackgroundColor="{Binding EPGProgressBackgroundColor}" />
+                    </Grid>
+
+                    <ScrollView Grid.Row="2" Grid.Column="0" x:Name="ScrollViewChannelEPGDescription" BackgroundColor="{Binding EPGDescriptionBackgroundColor}"  HorizontalOptions="StartAndExpand" VerticalOptions="Start"  Margin="5,5,5,5">
+                        <Label x:Name="LabelChannelEPGDescription" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
+                    </ScrollView>
+
+                    <BoxView Grid.Row="3" Grid.Column="0" x:Name="VideoBoxLandscape" BackgroundColor="Black"/>
+
+                    <Label Grid.Row="4" Grid.Column="0" x:Name="ViewPreviewLabel" Text="{Binding ViewPreviewDescription}" IsVisible="True" Style="{DynamicResource VideoPreviewTextStyle}" FontSize="{Binding FontSizeForNextTitle}"  Margin="5,5,5,5"/>
+            </Grid>
+
+            <BoxView Grid.Row="1" Grid.Column="0" x:Name="VideoBoxPortrait" BackgroundColor="Black"/>
+
+            <StackLayout  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="StatusLayout" Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="45" HorizontalOptions="Fill"  BackgroundColor="#262626" Margin="0,0,0,0">
+                <Label Text="{Binding StatusLabel}"  x:Name="StatusLabel" Style="{DynamicResource InfoLabelStyle}" FontSize="{Binding FontSizeForInfoLabel}"/>
+            </StackLayout>
+
         </Grid>
-
-        <StackLayout  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="StatusLayout" Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="45" HorizontalOptions="Fill"  BackgroundColor="#262626" Margin="0,0,0,0">
-            <Label Text="{Binding StatusLabel}"  x:Name="StatusLabel" Style="{DynamicResource InfoLabelStyle}" FontSize="{Binding FontSizeForInfoLabel}"/>
-        </StackLayout>
-
-    </Grid>
 
     <StackLayout x:Name="VideoStackLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                     AbsoluteLayout.LayoutBounds="1, 1, 0.5, 0.4" AbsoluteLayout.LayoutFlags="All">
