@@ -292,7 +292,7 @@ namespace OnlineTelevizor.ViewModels
             try
             {
                 if (!
-                    (EPGItem != null && 
+                    (EPGItem != null &&
                     EPGItem.Start<DateTime.Now &&
                     EPGItem.Finish>DateTime.Now))
                 {
@@ -333,7 +333,7 @@ namespace OnlineTelevizor.ViewModels
                                 {
                                     NextEPGItem = epgItem;
                                     break;
-                                }         
+                                }
                             }
                         }
                     }

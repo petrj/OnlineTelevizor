@@ -42,11 +42,12 @@ namespace OnlineTelevizor.ViewModels
         private bool _emptyCredentialsChecked = false;
 
         private string _selectedChannelEPGDescription = String.Empty;
+
         private ChannelItem _recordingChannel = null;
         private ChannelItem _castingChannel = null;
 
-        private MediaDetail _playingMedia = null;
-
+        private int _animePos = 2;
+        private bool _animePosIncreasing = true;
 
         public enum SelectedPartEnum
         {
@@ -67,6 +68,14 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public string AudioIcon
+        {
+            get
+            {
+                return "Audio" + _animePos.ToString();
+            }
+        }
+
         public bool IsPortrait { get; set; } = true;
         public bool DoNotScrollToChannel { get; set; } = false;
 
@@ -81,6 +90,8 @@ namespace OnlineTelevizor.ViewModels
 
         public Command LongPressCommand { get; set; }
         public Command ShortPressCommand { get; set; }
+
+        public Command AnimeIconCommand { get; set; }
 
         public MainPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
            : base(loggingService, config, dialogService)
@@ -104,7 +115,9 @@ namespace OnlineTelevizor.ViewModels
 
             ResetConnectionCommand = new Command(async () => await ResetConnection());
 
-            PlayCommand = new Command(async () => await Play());
+            PlayCommand = new Command(async () => await PlaySelectedChannel());
+
+            AnimeIconCommand = new Command(async () => await Anime());
 
             LongPressCommand = new Command(LongPress);
             ShortPressCommand = new Command(ShortPress);
@@ -119,6 +132,36 @@ namespace OnlineTelevizor.ViewModels
 
             // update record notification
             BackgroundCommandWorker.RunInBackground(UpdateRecordNotificationCommand, 10, 5);
+
+            BackgroundCommandWorker.RunInBackground(AnimeIconCommand, 1, 1);
+        }
+
+        private async Task Anime()
+        {
+            if (_animePosIncreasing)
+            {
+                _animePos++;
+                if (_animePos > 3)
+                {
+                    _animePos = 2;
+                    _animePosIncreasing = !_animePosIncreasing;
+                }
+            }
+            else
+            {
+                _animePos--;
+                if (_animePos < 0)
+                {
+                    _animePos = 1;
+                    _animePosIncreasing = !_animePosIncreasing;
+                }
+            }
+
+            try
+            {
+                OnPropertyChanged(nameof(AudioIcon));
+            }
+            catch {  /* UWP platform fix */ }
         }
 
         private async Task UpdateRecordNotification()
@@ -144,7 +187,7 @@ namespace OnlineTelevizor.ViewModels
                    if (channel == null)
                        return;
 
-                   MessagingCenter.Send<BaseViewModel, MediaDetail>(this, BaseViewModel.UpdateRecordNotificationMessage, new MediaDetail(channel));
+                   MessagingCenter.Send<BaseViewModel, ChannelItem>(this, BaseViewModel.UpdateRecordNotificationMessage, channel);
 
                }
                catch (Exception ex)
@@ -212,9 +255,13 @@ namespace OnlineTelevizor.ViewModels
 
         public async Task LongPressAction(ChannelItem item)
         {
-            SelectedItem = item as ChannelItem;
+            if (item != null)
+            {
+                SelectedItem = item as ChannelItem;
+            }
 
             string optionCancel = "Zpět";
+
             string optionPlay = "Spustit ..";
             string optionCast = "Odeslat ..";
             string optionStopCast = "Zastavit odesílání";
@@ -225,9 +272,14 @@ namespace OnlineTelevizor.ViewModels
 
             string optionStopApp = "Ukončit aplikaci";
 
-            var actions = new List<string>() { optionPlay };
+            var actions = new List<string>();
 
-            if (!IsCasting && !IsRecording)
+            if (item != null)
+            {
+                actions.Add(optionPlay);
+            }
+
+            if (item != null && !IsCasting && !IsRecording)
             {
                 actions.Add(optionCast);
                 actions.Add(optionRecord);
@@ -243,7 +295,11 @@ namespace OnlineTelevizor.ViewModels
                 actions.Add(optionStopCast);
             }
 
-            actions.Add(optionDetail);
+            if (item != null)
+            {
+                actions.Add(optionDetail);
+            }
+
             actions.Add(optionStopApp);
 
             var selectedvalue = await _dialogService.Select(actions, (item as ChannelItem).Name, optionCancel);
@@ -254,7 +310,7 @@ namespace OnlineTelevizor.ViewModels
             }
             else if (selectedvalue == optionPlay)
             {
-                await Play();
+                await PlaySelectedChannel();
             }
             else if (selectedvalue == optionDetail)
             {
@@ -302,7 +358,7 @@ namespace OnlineTelevizor.ViewModels
 
                 _loggingService.Info($"Short press (channel {SelectedItem.Name})");
 
-                Task.Run(async () => await Play());
+                Task.Run(async () => await PlaySelectedChannel());
             }
         }
 
@@ -403,7 +459,7 @@ namespace OnlineTelevizor.ViewModels
 
                 if (Config.PlayOnBackground)
                 {
-                    MessagingCenter.Send<BaseViewModel, MediaDetail>(this, BaseViewModel.RecordNotificationMessage, new MediaDetail(channel));
+                    MessagingCenter.Send<BaseViewModel, ChannelItem>(this, BaseViewModel.RecordNotificationMessage, channel);
                 }
             } else
             {
@@ -1159,7 +1215,7 @@ namespace OnlineTelevizor.ViewModels
                 if (ch.ChannelNumber == channelNumber)
                 {
                     SelectedItem = ch;
-                    await Play();
+                    await PlaySelectedChannel();
                     break;
                 }
             }
@@ -1207,23 +1263,14 @@ namespace OnlineTelevizor.ViewModels
             OnPropertyChanged(nameof(WidthForIcon));
         }
 
-        public async Task Play()
+        public async Task PlaySelectedChannel()
         {
             if (SelectedItem == null)
                 return;
 
             _loggingService.Info($"Playing selected channel {SelectedItem.Name}");
 
-            await PlayStream(new MediaDetail()
-            {
-                MediaUrl = SelectedItem.Url,
-                Title = SelectedItem.Name,
-                Type = SelectedItem.Type,
-                CurrentEPGItem = SelectedItem.CurrentEPGItem,
-                NextEPGItem = SelectedItem.NextEPGItem,
-                ChanneldID = SelectedItem.Id,
-                LogoUrl = SelectedItem.LogoUrl
-            });
+            await Play(SelectedItem);
         }
 
         public async Task CheckEmptyCredentials()

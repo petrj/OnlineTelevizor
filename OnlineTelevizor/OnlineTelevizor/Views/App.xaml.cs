@@ -41,7 +41,7 @@ namespace OnlineTelevizor.Views
 
             if (!_config.PlayOnBackground)
             {
-                _mainPage.StopPlayback();
+                _mainPage.ActionStop(true);
             }
 
             _lastSleep = DateTime.Now;

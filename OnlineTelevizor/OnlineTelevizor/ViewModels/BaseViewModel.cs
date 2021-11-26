@@ -54,6 +54,8 @@ namespace OnlineTelevizor.ViewModels
 
         bool isBusy = false;
 
+        private ChannelItem _playingChannel = null;
+
         public BaseViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
         {
             _loggingService = loggingService;
@@ -98,6 +100,12 @@ namespace OnlineTelevizor.ViewModels
         {
             get { return title; }
             set { SetProperty(ref title, value); }
+        }
+
+        public ChannelItem PlayingChannel
+        {
+            get { return _playingChannel; }
+            set { _playingChannel = value; }
         }
 
         #region Permissions
@@ -262,38 +270,40 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
-        public async Task PlayStream(MediaDetail mediaDetail)
+        public async Task Play(ChannelItem channel)
         {
             try
             {
+                PlayingChannel = channel;
+
                 // apply config quality:
                 if (!String.IsNullOrEmpty(Config.StreamQuality))
                 {
                     var configQuality = "quality=" + Config.StreamQuality;
 
-                    var qMatches = Regex.Match(mediaDetail.MediaUrl, "quality=[0-9]{1,4}");
+                    var qMatches = Regex.Match(channel.Url, "quality=[0-9]{1,4}");
                     if (qMatches != null && qMatches.Success)
                     {
-                        mediaDetail.MediaUrl = mediaDetail.MediaUrl.Replace(qMatches.Value, configQuality);
+                        channel.Url = channel.Url.Replace(qMatches.Value, configQuality);
                     }
                     else
                     {
-                        mediaDetail.MediaUrl += "&" + configQuality;
+                        channel.Url += "&" + configQuality;
                     }
                 }
 
                 if (Config.InternalPlayer)
                 {
-                    MessagingCenter.Send<BaseViewModel, MediaDetail> (this, BaseViewModel.PlayInternal, mediaDetail);
+                    MessagingCenter.Send<BaseViewModel, ChannelItem> (this, BaseViewModel.PlayInternal, channel);
 
                     if (Config.PlayOnBackground)
                     {
-                        MessagingCenter.Send<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternalNotification, mediaDetail);
+                        MessagingCenter.Send<BaseViewModel, ChannelItem>(this, BaseViewModel.PlayInternalNotification, channel);
                     }
                 }
                 else
                 {
-                    MessagingCenter.Send(mediaDetail.MediaUrl, BaseViewModel.UriMessage);
+                    MessagingCenter.Send(channel.Url, BaseViewModel.UriMessage);
                 }
             }
             catch (Exception ex)

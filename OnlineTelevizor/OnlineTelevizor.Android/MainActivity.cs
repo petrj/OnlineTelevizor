@@ -143,19 +143,19 @@ namespace OnlineTelevizor.Droid
                 }
             });
 
-            MessagingCenter.Subscribe<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternalNotification, (sender, mediaDetail) =>
+            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.PlayInternalNotification, (sender, channel) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    Task.Run(async () => await ShowPlayingNotification(mediaDetail));
+                    Task.Run(async () => await ShowPlayingNotification(channel));
                 });
             });
 
-            MessagingCenter.Subscribe<PlayerPage, MediaDetail>(this, BaseViewModel.UpdateInternalNotification, (sender, mediaDetail) =>
+            MessagingCenter.Subscribe<PlayerPage, ChannelItem>(this, BaseViewModel.UpdateInternalNotification, (sender, channel) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    Task.Run(async () => await ShowPlayingNotification(mediaDetail));
+                    Task.Run(async () => await ShowPlayingNotification(channel));
                 });
             });
 
@@ -168,19 +168,19 @@ namespace OnlineTelevizor.Droid
             });
 
 
-            MessagingCenter.Subscribe<BaseViewModel, MediaDetail>(this, BaseViewModel.RecordNotificationMessage, (sender, mediaDetail) =>
+            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.RecordNotificationMessage, (sender, channel) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    Task.Run(async () => await ShowRecordNotification(mediaDetail));
+                    Task.Run(async () => await ShowRecordNotification(channel));
                 });
             });
 
-            MessagingCenter.Subscribe<PlayerPage, MediaDetail>(this, BaseViewModel.UpdateRecordNotificationMessage, (sender, mediaDetail) =>
+            MessagingCenter.Subscribe<PlayerPage, ChannelItem>(this, BaseViewModel.UpdateRecordNotificationMessage, (sender, channel) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    Task.Run(async () => await ShowRecordNotification(mediaDetail));
+                    Task.Run(async () => await ShowRecordNotification(channel));
                 });
             });
 
@@ -225,39 +225,39 @@ namespace OnlineTelevizor.Droid
             LoadApplication(_app);
         }
 
-        private async Task ShowPlayingNotification(MediaDetail mediaDetail)
+        private async Task ShowPlayingNotification(ChannelItem channel)
         {
             try
             {
                 string subTitle = String.Empty;
                 string detail = String.Empty;
-                if (mediaDetail.CurrentEPGItem != null)
+                if (channel.CurrentEPGItem != null)
                 {
-                    subTitle = mediaDetail.CurrentEPGItem.Title;
-                    detail = mediaDetail.CurrentEPGItem.Start.ToString("HH:mm")
+                    subTitle = channel.CurrentEPGItem.Title;
+                    detail = channel.CurrentEPGItem.Start.ToString("HH:mm")
                         + " - " +
-                      mediaDetail.CurrentEPGItem.Finish.ToString("HH:mm");
+                      channel.CurrentEPGItem.Finish.ToString("HH:mm");
                 }
 
-                _notificationHelper.ShowPlayNotification(1, mediaDetail.Title, subTitle, detail);
+                _notificationHelper.ShowPlayNotification(1, channel.Name, subTitle, detail);
             } catch (Exception ex)
             {
                 _loggingService.Error(ex);
             }
         }
 
-        private async Task ShowRecordNotification(MediaDetail mediaDetail)
+        private async Task ShowRecordNotification(ChannelItem channel)
         {
             try
             {
                 string subTitle = String.Empty;
                 string detail = "Probíhá nahrávání";
-                if (mediaDetail.CurrentEPGItem != null)
+                if (channel.CurrentEPGItem != null)
                 {
-                    subTitle = mediaDetail.CurrentEPGItem.Title;
+                    subTitle = channel.CurrentEPGItem.Title;
                 }
 
-                _notificationHelper.ShowRecordNotification(2, mediaDetail.Title, subTitle, detail);
+                _notificationHelper.ShowRecordNotification(2, channel.Name, subTitle, detail);
             }
             catch (Exception ex)
             {

@@ -39,8 +39,9 @@ namespace OnlineTelevizor.Views
         private MediaPlayer _mediaPlayer;
         private Media _media = null;
 
-
         private PlayingStateEnum _playingState = PlayingStateEnum.Stopped;
+
+        public Command CheckStreamCommand { get; set; }
 
         public enum PlayingStateEnum
         {
@@ -64,7 +65,6 @@ namespace OnlineTelevizor.Views
             }
         }
 
-
         public void RefreshGUI()
         {
             Device.BeginInvokeOnMainThread(() =>
@@ -80,21 +80,6 @@ namespace OnlineTelevizor.Views
                         VideoStackLayout.Layout(new Rectangle(0, 0, ContentPage.Width, ContentPage.Height));
 
                         VideoStackLayout.IsVisible = true;
-
-                        /*  LayoutGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Absolute);
-                          LayoutGrid.ColumnDefinitions[1].Width = new GridLength(100, GridUnitType.Star);
-
-                          LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
-
-                          StackLayoutEPGDetail.RowDefinitions[0].Height = new GridLength(0);
-                          StackLayoutEPGDetail.RowDefinitions[1].Height = new GridLength(0);
-                          StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(0);
-                          StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(100, GridUnitType.Star);
-                          StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0);
-
-                          ProgresssBarGrid.IsVisible = false;
-
-                          */
                         break;
                     case PlayingStateEnum.PlayingInPreview:
 
@@ -139,17 +124,6 @@ namespace OnlineTelevizor.Views
 
                         VideoStackLayout.IsVisible = true;
 
-                        /*
-                        LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Auto);
-
-                        StackLayoutEPGDetail.RowDefinitions[0].Height = new GridLength(19, GridUnitType.Star);
-                        StackLayoutEPGDetail.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
-                        StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(40, GridUnitType.Star);
-                        StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(35, GridUnitType.Star);
-                        StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(5, GridUnitType.Star);
-
-                        ProgresssBarGrid.IsVisible = true;*/
-
                         break;
                     case PlayingStateEnum.Stopped:
 
@@ -181,31 +155,6 @@ namespace OnlineTelevizor.Views
                         StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0, GridUnitType.Absolute);
 
                         VideoStackLayout.IsVisible = false;
-
-                        /*   if (_viewModel.IsPortrait)
-                           {
-                               LayoutGrid.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
-                               LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Absolute);
-                           }
-                           else
-                           {
-                               LayoutGrid.ColumnDefinitions[0].Width = new GridLength(50, GridUnitType.Star);
-                               LayoutGrid.ColumnDefinitions[1].Width = new GridLength(50, GridUnitType.Star);
-                           }
-
-                           LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Auto);
-
-                           StackLayoutEPGDetail.RowDefinitions[0].Height = new GridLength(19, GridUnitType.Star);
-                           StackLayoutEPGDetail.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
-                           StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(80, GridUnitType.Star);
-                           StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(0);
-                           StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0);
-
-                           ProgresssBarGrid.IsVisible = true;
-
-                           */
-
-
                         break;
                 }
             });
@@ -230,6 +179,25 @@ namespace OnlineTelevizor.Views
 
             BindingContext = _viewModel = new MainPageViewModel(loggingService, config, _dialogService);
 
+            _filterPage = new FilterPage(_loggingService, _config, _viewModel.TVService);
+            _filterPage.Disappearing += delegate
+            {
+                _viewModel.RefreshCommand.Execute(null);
+            };
+
+            ScrollViewChannelEPGDescription.Scrolled += ScrollViewChannelEPGDescription_Scrolled;
+            Appearing += MainPage_Appearing;
+            Disappearing += MainPage_Disappearing;
+
+            ChannelsListView.ItemSelected += ChannelsListView_ItemSelected;
+            ChannelsListView.Scrolled += ChannelsListView_Scrolled;
+
+            PlayingState = PlayingStateEnum.Stopped;
+
+            CheckStreamCommand = new Command(async () => await CheckStream());
+
+            BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 5);
+
             MessagingCenter.Subscribe<string>(this, BaseViewModel.KeyMessage, (key) =>
             {
                 OnKeyDown(key);
@@ -240,21 +208,12 @@ namespace OnlineTelevizor.Views
                 _lastKeyLongPressedTime = DateTime.Now;
             });
 
-            ChannelsListView.ItemSelected += ChannelsListView_ItemSelected;
-            ChannelsListView.Scrolled += ChannelsListView_Scrolled;
-
-            _filterPage = new FilterPage(_loggingService, _config, _viewModel.TVService);
-            _filterPage.Disappearing += delegate
-            {
-                _viewModel.RefreshCommand.Execute(null);
-            };
-
             MessagingCenter.Subscribe<string>(this, BaseViewModel.PlayNext, (msg) =>
             {
                 Task.Run(async () =>
                 {
                     await _viewModel.SelectNextChannel();
-                    await _viewModel.Play();
+                    await _viewModel.PlaySelectedChannel();
                 });
             });
 
@@ -263,7 +222,7 @@ namespace OnlineTelevizor.Views
                 Task.Run(async () =>
                 {
                     await _viewModel.SelectPreviousChannel();
-                    await _viewModel.Play();
+                    await _viewModel.PlaySelectedChannel();
                 });
             });
 
@@ -298,36 +257,9 @@ namespace OnlineTelevizor.Views
                 }
             });
 
-            MessagingCenter.Subscribe<BaseViewModel, MediaDetail>(this, BaseViewModel.PlayInternal, (sender, mediaDetail) =>
+            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.PlayInternal, (sender, channel) =>
             {
-                /*
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    try
-                    {
-                        if (_playerPage == null)
-                            _playerPage = new PlayerPage(_loggingService, _config, _dialogService, _viewModel.TVService);
-
-                        var playing = _playerPage.Playing;
-
-                        _playerPage.SetMediaUrl(mediaDetail);
-
-                        if (!playing)
-                        {
-                            Navigation.PushModalAsync(_playerPage);
-                        }
-
-                        _playerPage.Disappearing += _playerPage_Disappearing;
-                    }
-                    catch (Exception ex)
-                    {
-                        _loggingService.Error(ex);
-                    }
-                });
-                */
-
-                ActionPlay(mediaDetail);
-
+                ActionPlay(channel);
             });
 
             MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowConfiguration, (sender) =>
@@ -353,7 +285,7 @@ namespace OnlineTelevizor.Views
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.StopPlay, async (sender) =>
             {
-                StopPlayback();
+                ActionStop(false);
             });
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.StopRecord, async (sender) =>
@@ -363,66 +295,16 @@ namespace OnlineTelevizor.Views
                     await _viewModel.RecordChannel(false);
                 });
             });
-
-            PlayingState = PlayingStateEnum.Stopped;
-
-            ScrollViewChannelEPGDescription.Scrolled += ScrollViewChannelEPGDescription_Scrolled;
-            Appearing += MainPage_Appearing;
-            Disappearing += MainPage_Disappearing;
         }
 
         private void MainPage_Disappearing(object sender, EventArgs e)
         {
-            StopPreviewVideo();
-        }
-
-        private void _playerPage_Disappearing(object sender, EventArgs e)
-        {
-
+            ActionStop(true);
         }
 
         private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
         {
-            ActionStop();
-        }
-
-        public void StopPreviewVideo()
-        {
-           /* Device.BeginInvokeOnMainThread(() =>
-            {
-                if (PreviewVideoPlaying)
-                {
-                    //videoView.MediaPlayer.Stop();
-
-                    //_playPreviewProgressMedia = null;
-                    //videoView.MediaPlayer.Media = null;
-                    //videoView.IsVisible = false;
-                    //ViewPreviewLabel.IsVisible = false;
-                    //ViewPreviewLabel.Text = "";
-
-                    if (_viewModel.IsPortrait)
-                    {
-                        LayoutGrid.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
-                        LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Absolute);
-                    } else
-                    {
-                        LayoutGrid.ColumnDefinitions[0].Width = new GridLength(50, GridUnitType.Star);
-                        LayoutGrid.ColumnDefinitions[1].Width = new GridLength(50, GridUnitType.Star);
-                    }
-
-                    LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Auto);
-
-                    StackLayoutEPGDetail.RowDefinitions[0].Height = new GridLength(19, GridUnitType.Star);
-                    StackLayoutEPGDetail.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
-                    StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(40, GridUnitType.Star);
-                    StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(35, GridUnitType.Star);
-                    StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(5, GridUnitType.Star);
-
-                    ProgresssBarGrid.IsVisible = true;
-
-                    NavigationPage.SetHasNavigationBar(this, true);
-                }
-            });*/
+            ActionStop(false);
         }
 
         private async void MainPage_Appearing(object sender, EventArgs e)
@@ -461,49 +343,19 @@ namespace OnlineTelevizor.Views
         {
             base.OnSizeAllocated(width, height);
 
-            //_viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
-
             if (width>height)
             {
                 _viewModel.IsPortrait = false;
-            //    LayoutGrid.ColumnDefinitions[0].Width = new GridLength(width/2.0);
-            //    LayoutGrid.ColumnDefinitions[1].Width = new GridLength(width/2.0);
             } else
             {
                 _viewModel.IsPortrait = true;
-
-            //    LayoutGrid.ColumnDefinitions[0].Width = new GridLength(width);
-            //    LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0);
             }
 
-            //LayoutGrid.ColumnDefinitions[0].Width = new GridLength(width / 2.0);
-            //LayoutGrid.ColumnDefinitions[1].Width = new GridLength(width / 2.0);
-
             _viewModel.NotifyToolBarChange();
-
             RefreshGUI();
         }
 
-        public void ActionStop()
-        {
-            if (_config.InternalPlayer)
-            {
-                if (PlayingState == PlayingStateEnum.PlayingInternal)
-                {
-                    PlayingState = PlayingStateEnum.PlayingInPreview;
-                } else
-                if (PlayingState == PlayingStateEnum.PlayingInPreview)
-                {
-                    videoView.MediaPlayer.Stop();
-                    PlayingState = PlayingStateEnum.Stopped;
-                }
-            } else
-            {
-                PlayingState = PlayingStateEnum.Stopped;
-            }
-        }
-
-        public void ActionPlay(MediaDetail mediaDetail)
+        public void ActionPlay(ChannelItem channel)
         {
             if (_config.InternalPlayer)
             {
@@ -514,52 +366,33 @@ namespace OnlineTelevizor.Views
                         videoView.MediaPlayer.Stop();
                     }
 
-                    _media = new Media(_libVLC, mediaDetail.MediaUrl, FromType.FromLocation);
+                    _media = new Media(_libVLC, channel.Url, FromType.FromLocation);
                     videoView.MediaPlayer.Play(_media);
+
                     PlayingState = PlayingStateEnum.PlayingInternal;
                 });
+            }
+        }
 
+
+        public void ActionStop(bool force)
+        {
+            if (_config.InternalPlayer)
+            {
+                if (!force && (PlayingState == PlayingStateEnum.PlayingInternal))
+                {
+                    PlayingState = PlayingStateEnum.PlayingInPreview;
+                } else
+                if (force || (PlayingState == PlayingStateEnum.PlayingInPreview))
+                {
+                    videoView.MediaPlayer.Stop();
+                    PlayingState = PlayingStateEnum.Stopped;
+                    _viewModel.PlayingChannel = null;
+                }
             } else
             {
-                MessagingCenter.Send(mediaDetail.MediaUrl, BaseViewModel.UriMessage);
+                PlayingState = PlayingStateEnum.Stopped;
             }
-            /*
-
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                if (_config.InternalPlayer)
-                {
-                    _media = new Media(_libVLC, mediaDetail.MediaUrl, FromType.FromLocation);
-                    videoView.MediaPlayer.Play(_media);
-
-                    _playPreviewProgressMedia = mediaDetail;
-
-                    ViewPreviewLabel.Text = mediaDetail.Title;
-                    if (mediaDetail.CurrentEPGItem != null &&
-                        !string.IsNullOrEmpty(mediaDetail.CurrentEPGItem.Title))
-                    {
-                        ViewPreviewLabel.Text += " - " + mediaDetail.CurrentEPGItem.Title;
-                    }
-
-                    ViewPreviewLabel.IsVisible = true;
-                    videoView.IsVisible = true;
-
-                    LayoutGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Absolute);
-                    LayoutGrid.ColumnDefinitions[1].Width = new GridLength(100, GridUnitType.Star);
-
-                    LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
-
-                    StackLayoutEPGDetail.RowDefinitions[0].Height = new GridLength(0);
-                    StackLayoutEPGDetail.RowDefinitions[1].Height = new GridLength(0);
-                    StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(0);
-                    StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(100, GridUnitType.Star);
-                    StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0);
-
-                    ProgresssBarGrid.IsVisible = false;
-
-                    NavigationPage.SetHasNavigationBar(this, false);
-                }
-            });*/
         }
 
         private void ChannelsListView_Scrolled(object sender, ScrolledEventArgs e)
@@ -586,7 +419,7 @@ namespace OnlineTelevizor.Views
             _viewModel.DoNotScrollToChannel = false;
         }
 
-        private static bool LeavePageKey(string lowKey)
+        private static bool LeavePageKeyDown(string lowKey)
         {
             if (lowKey == "escape" ||
                     lowKey == "back" ||
@@ -616,7 +449,7 @@ namespace OnlineTelevizor.Views
             return false;
         }
 
-        private static bool SelectNextItemKey(string lowKey)
+        private static bool SelectNextItemKeyDown(string lowKey)
         {
             if (lowKey == "right" ||
                 lowKey == "dpadright" ||
@@ -650,7 +483,7 @@ namespace OnlineTelevizor.Views
 
                 if (stack[stack.Count - 1].GetType() == typeof(ChannelDetailPage))
                 {
-                    if (LeavePageKey(lowKey))
+                    if (LeavePageKeyDown(lowKey))
                     {
                         // closing detail page
                         Navigation.PopAsync();
@@ -659,7 +492,7 @@ namespace OnlineTelevizor.Views
 
                 if (stack[stack.Count - 1].GetType() == typeof(FilterPage))
                 {
-                    if (LeavePageKey(lowKey))
+                    if (LeavePageKeyDown(lowKey))
                     {
                         // closing filter page
                         Navigation.PopAsync();
@@ -667,14 +500,14 @@ namespace OnlineTelevizor.Views
 
                     if (_filterPage != null)
                     {
-                        if (SelectNextItemKey(lowKey))
+                        if (SelectNextItemKeyDown(lowKey))
                             _filterPage.SelectNextItem();
                     }
                 }
 
                 if (stack[stack.Count - 1].GetType() == typeof(QualitiesPage))
                 {
-                    if (LeavePageKey(lowKey))
+                    if (LeavePageKeyDown(lowKey))
                     {
                         // closing quality page
                         Navigation.PopAsync();
@@ -682,13 +515,13 @@ namespace OnlineTelevizor.Views
 
                     var qualityPage = stack[stack.Count - 1] as QualitiesPage;
 
-                    if (SelectNextItemKey(lowKey))
+                    if (SelectNextItemKeyDown(lowKey))
                         qualityPage.SelectNextItem();
                 }
 
                 if (stack[stack.Count - 1].GetType() == typeof(SettingsPage))
                 {
-                    if (LeavePageKey(lowKey))
+                    if (LeavePageKeyDown(lowKey))
                     {
                         // closing settings page
                         Navigation.PopAsync();
@@ -696,7 +529,7 @@ namespace OnlineTelevizor.Views
 
                     var settingsPage = stack[stack.Count - 1] as SettingsPage;
 
-                    if (SelectNextItemKey(lowKey))
+                    if (SelectNextItemKeyDown(lowKey))
                         settingsPage.SelectNextItem();
                 }
 
@@ -714,7 +547,7 @@ namespace OnlineTelevizor.Views
                 case "mediaplaynext":
                 case "medianext":
                 case "moveend":
-                    Task.Run(async () => await OnKeyDown(1));
+                    Task.Run(async () => await ActionKeyDown(1));
                     break;
                 case "dpadup":
                 case "buttonl1":
@@ -725,13 +558,13 @@ namespace OnlineTelevizor.Views
                 case "mediaplayprevious":
                 case "mediaprevious":
                 case "movehome":
-                    Task.Run(async () => await OnKeyUp(1));
+                    Task.Run(async () => await ActionKeyUp(1));
                     break;
                 case "pagedown":
-                    Task.Run(async () => await OnKeyDown(10));
+                    Task.Run(async () => await ActionKeyDown(10));
                     break;
                 case "pageup":
-                    Task.Run(async () => await OnKeyUp(10));
+                    Task.Run(async () => await ActionKeyUp(10));
                     break;
                 case "dpadleft":
                 case "left":
@@ -739,7 +572,7 @@ namespace OnlineTelevizor.Views
                 case "b":
                 case "numpad4":
                 case "leftbracket":
-                    Task.Run(async () => await OnKeyLeft());
+                    Task.Run(async () => await ActionKeyLeft());
                     break;
                 case "dpadright":
                 case "right":
@@ -747,7 +580,7 @@ namespace OnlineTelevizor.Views
                 case "f":
                 case "numpad6":
                 case "rightbracket":
-                    Task.Run(async () => await OnKeyRight());
+                    Task.Run(async () => await ActionKeyRight());
                     break;
                 case "f6":
                 case "dpadcenter":
@@ -764,7 +597,7 @@ namespace OnlineTelevizor.Views
                 case "comma":
                 case "semicolon":
                 case "grave":
-                    Task.Run(async () => await OnKeyPlay());
+                    Task.Run(async () => await ActionKeyOK());
                     break;
                 //case "back":
                 case "f4":
@@ -784,7 +617,7 @@ namespace OnlineTelevizor.Views
                 case "period":
                 case "apostrophe":
                 case "buttonselect":
-                    StopPlayback();
+                    ActionStop(false);
                     break;
                 case "buttonl2":
                 case "info":
@@ -902,16 +735,7 @@ namespace OnlineTelevizor.Views
                                 (_numberPressed == _viewModel.SelectedItem.ChannelNumber)
                            )
                         {
-                            await _viewModel.PlayStream(new MediaDetail()
-                            {
-                                MediaUrl = _viewModel.SelectedItem.Url,
-                                Title = _viewModel.SelectedItem.Name,
-                                Type = _viewModel.SelectedItem.Type,
-                                CurrentEPGItem = _viewModel.SelectedItem.CurrentEPGItem,
-                                NextEPGItem = _viewModel.SelectedItem.NextEPGItem,
-                                ChanneldID = _viewModel.SelectedItem.Id,
-                                LogoUrl = _viewModel.SelectedItem.LogoUrl
-                            });
+                            await _viewModel.Play(_viewModel.SelectedItem);
                         }
                     });
                 }
@@ -930,19 +754,8 @@ namespace OnlineTelevizor.Views
         {
             get
             {
-                return _playerPage != null && _playerPage.Playing;
+                return PlayingState == PlayingStateEnum.PlayingInternal;
             }
-        }
-
-        public void StopPlayback()
-        {
-            if (Playing)
-            {
-                _playerPage.Stop();
-                Navigation.PopModalAsync();
-            }
-
-            StopPreviewVideo();
         }
 
         public void ResumePlayback()
@@ -960,14 +773,14 @@ namespace OnlineTelevizor.Views
             _viewModel.RefreshCommand.Execute(null);
         }
 
-        private async Task OnKeyPlay()
+        private async Task ActionKeyOK()
         {
             if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList ||
                 _viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
             {
                 if (!Playing)
                 {
-                    await _viewModel.Play();
+                    await _viewModel.PlaySelectedChannel();
                 } else
                 {
                     _playerPage.ShowJustPlayingNotification();
@@ -1015,7 +828,7 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        private async Task OnKeyLeft()
+        private async Task ActionKeyLeft()
         {
             if (!Playing)
             {
@@ -1038,11 +851,11 @@ namespace OnlineTelevizor.Views
             else
             {
                 await _viewModel.SelectPreviousChannel();
-                await _viewModel.Play();
+                await _viewModel.PlaySelectedChannel();
             }
         }
 
-        private async Task OnKeyRight()
+        private async Task ActionKeyRight()
         {
             if (!Playing)
             {
@@ -1075,11 +888,11 @@ namespace OnlineTelevizor.Views
             else
             {
                 await _viewModel.SelectNextChannel();
-                await _viewModel.Play();
+                await _viewModel.PlaySelectedChannel();
             }
         }
 
-        private async Task OnKeyDown(int step)
+        private async Task ActionKeyDown(int step)
         {
             if (!Playing)
             {
@@ -1100,11 +913,11 @@ namespace OnlineTelevizor.Views
             else
             {
                 await _viewModel.SelectNextChannel(step);
-                await _viewModel.Play();
+                await _viewModel.PlaySelectedChannel();
             }
         }
 
-        private async Task OnKeyUp(int step)
+        private async Task ActionKeyUp(int step)
         {
             if (!Playing)
             {
@@ -1132,7 +945,7 @@ namespace OnlineTelevizor.Views
             else
             {
                 await _viewModel.SelectPreviousChannel(step);
-                await _viewModel.Play();
+                await _viewModel.PlaySelectedChannel();
             }
         }
 
@@ -1254,17 +1067,7 @@ namespace OnlineTelevizor.Views
             }
             else
             {
-                if (_viewModel.SelectedItem != null)
-                {
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        _viewModel.LongPress(_viewModel.SelectedItem);
-                    });
-                }
-                else
-                {
-                    await _dialogService.Information("Není označen žádný kanál");
-                }
+                _viewModel.LongPress(_viewModel.SelectedItem);
             }
         }
 
@@ -1287,12 +1090,46 @@ namespace OnlineTelevizor.Views
             {
                 MessagingCenter.Send($"Stiskněte ještě jednou pro ukončení", BaseViewModel.ToastMessage);
                 _lastBackPressedTime = DateTime.Now;
-                StopPreviewVideo();
+                ActionStop(false);
                 return true;
             } else
             {
                 return false;
             }
+        }
+
+        private async Task CheckStream()
+        {
+            if (!Playing)
+            {
+                return;
+            }
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (!videoView.MediaPlayer.IsPlaying)
+                {
+                    videoView.MediaPlayer.Play(_media);
+                }
+
+                var radio = _viewModel.PlayingChannel != null
+                            && !string.IsNullOrEmpty(_viewModel.PlayingChannel.Type)
+                            && (_viewModel.PlayingChannel.Type.ToLower() == "radio")
+                            ? true
+                            : false;
+                if (
+                        (_mediaPlayer.VideoTrackCount == 0)
+                        ||
+                        radio
+                   )
+                {
+                    videoView.IsVisible = false;
+                }
+                else
+                {
+                    videoView.IsVisible = true;
+                }
+            });
         }
     }
 }

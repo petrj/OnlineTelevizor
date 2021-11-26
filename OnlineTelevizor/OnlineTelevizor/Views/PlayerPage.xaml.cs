@@ -69,7 +69,7 @@ namespace OnlineTelevizor.Views
 
         private async Task UpdateNotification()
         {
-            if (!Playing || !_config.PlayOnBackground)
+      /*      if (!Playing || !_config.PlayOnBackground)
             {
                 return;
             }
@@ -94,7 +94,7 @@ namespace OnlineTelevizor.Views
                         LogoUrl = _viewModel.LogoIcon
                     });
                 }
-            });
+            });*/
         }
 
         private async Task CheckStream()
@@ -183,7 +183,7 @@ namespace OnlineTelevizor.Views
             });
         }
 
-        public MediaDetail GetMediaUrl()
+  /*      public MediaDetail GetMediaUrl()
         {
             return new MediaDetail()
             {
@@ -224,7 +224,7 @@ namespace OnlineTelevizor.Views
                 });
             }
         }
-
+  */
         public void ShowJustPlayingNotification()
         {
             bool showCurrent;

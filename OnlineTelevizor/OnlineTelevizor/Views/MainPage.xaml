@@ -178,7 +178,7 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                <Label Grid.Row="0" Grid.Column="0" Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"  Margin="5,5,5,5"/>
+                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"  Margin="5,5,5,5"/>
 
                     <Grid Grid.Row="1" Grid.Column="0"  Margin="0,0,0,0" x:Name="ProgresssBarGrid">
                         <Grid.RowDefinitions>
@@ -195,12 +195,16 @@
                         <Label x:Name="LabelChannelEPGDescription" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
                     </ScrollView>
 
-                    <BoxView Grid.Row="3" Grid.Column="0" x:Name="VideoBoxLandscape" BackgroundColor="Black"/>
+                    <StackLayout Grid.Row="3" Grid.Column="0" x:Name="VideoBoxLandscape" BackgroundColor="Black">
+                        <Image Source="{Binding AudioIcon}" x:Name="AudioOnlyImage" Style="{DynamicResource AudioImageStyle}" />
+                    </StackLayout>
 
                     <Label Grid.Row="4" Grid.Column="0" x:Name="ViewPreviewLabel" Text="{Binding ViewPreviewDescription}" IsVisible="True" Style="{DynamicResource VideoPreviewTextStyle}" FontSize="{Binding FontSizeForNextTitle}"  Margin="5,5,5,5"/>
             </Grid>
 
-            <BoxView Grid.Row="1" Grid.Column="0" x:Name="VideoBoxPortrait" BackgroundColor="Black"/>
+            <StackLayout Grid.Row="1" Grid.Column="0" x:Name="VideoBoxPortrait" BackgroundColor="Black">
+                <Image Source="{Binding AudioIcon}" x:Name="AudioOnlyImage2" Style="{DynamicResource AudioImageStyle}" />
+            </StackLayout>
 
             <StackLayout  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="StatusLayout" Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="45" HorizontalOptions="Fill"  BackgroundColor="#262626" Margin="0,0,0,0">
                 <Label Text="{Binding StatusLabel}"  x:Name="StatusLabel" Style="{DynamicResource InfoLabelStyle}" FontSize="{Binding FontSizeForInfoLabel}"/>
