@@ -212,19 +212,19 @@
 
         </Grid>
 
-    <StackLayout x:Name="VideoStackLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-                    AbsoluteLayout.LayoutBounds="1, 1, 0.5, 0.4" AbsoluteLayout.LayoutFlags="All">
-        <vlc:VideoView IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-                        x:Name="videoView" Margin="0,0,0,0"/>
-        <StackLayout.GestureRecognizers>
-            <!--TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" /-->
-            <!--TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" /-->
-            <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped"/>
-            <SwipeGestureRecognizer Direction="Right" Swiped="SwipeGestureRecognizer_Swiped"/>
-            <!--SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Up"/-->
-            <!--SwipeGestureRecognizer Direction="Down" Swiped="SwipeGestureRecognizer_Down"/-->
-        </StackLayout.GestureRecognizers>
-    </StackLayout>
+        <StackLayout x:Name="VideoStackLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+                        AbsoluteLayout.LayoutBounds="1, 1, 0.5, 0.3" AbsoluteLayout.LayoutFlags="All" IsVisible="False">
+            <vlc:VideoView IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+                            x:Name="videoView" Margin="0,0,0,0"/>
+            <StackLayout.GestureRecognizers>
+                <!--TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" /-->
+                <!--TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" /-->
+                <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped"/>
+                <SwipeGestureRecognizer Direction="Right" Swiped="SwipeGestureRecognizer_Swiped"/>
+                <!--SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Up"/-->
+                <!--SwipeGestureRecognizer Direction="Down" Swiped="SwipeGestureRecognizer_Down"/-->
+            </StackLayout.GestureRecognizers>
+        </StackLayout>
 
     </AbsoluteLayout>
 

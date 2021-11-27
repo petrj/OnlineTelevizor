@@ -138,6 +138,7 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task Anime()
         {
+            /*
             if (_animePosIncreasing)
             {
                 _animePos++;
@@ -161,7 +162,10 @@ namespace OnlineTelevizor.ViewModels
             {
                 OnPropertyChanged(nameof(AudioIcon));
             }
-            catch {  /* UWP platform fix */ }
+            catch {
+            // UWP platform fix
+            }
+        */
         }
 
         private async Task UpdateRecordNotification()

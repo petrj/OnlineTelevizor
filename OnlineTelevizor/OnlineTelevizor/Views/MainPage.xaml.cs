@@ -40,6 +40,7 @@ namespace OnlineTelevizor.Views
         private Media _media = null;
 
         private PlayingStateEnum _playingState = PlayingStateEnum.Stopped;
+        private Size _lastAllocatedSize = new Size(-1, -1);
 
         public Command CheckStreamCommand { get; set; }
 
@@ -76,10 +77,16 @@ namespace OnlineTelevizor.Views
                         // turn off tool bar
                         NavigationPage.SetHasNavigationBar(this, false);
 
+                        LayoutGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Absolute);
+                        LayoutGrid.ColumnDefinitions[1].Width = new GridLength(100, GridUnitType.Star);
+
+                        VideoStackLayout.IsVisible = true;
+
+                        videoView.IsVisible = false;
+
                         // overlap LayoutGrid
                         VideoStackLayout.Layout(new Rectangle(0, 0, ContentPage.Width, ContentPage.Height));
 
-                        VideoStackLayout.IsVisible = true;
                         break;
                     case PlayingStateEnum.PlayingInPreview:
 
@@ -122,6 +129,7 @@ namespace OnlineTelevizor.Views
                                 VideoBoxLandscape.Height));
                         }
 
+                        videoView.IsVisible = false;
                         VideoStackLayout.IsVisible = true;
 
                         break;
@@ -196,7 +204,7 @@ namespace OnlineTelevizor.Views
 
             CheckStreamCommand = new Command(async () => await CheckStream());
 
-            BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 5);
+            BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 2);
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.KeyMessage, (key) =>
             {
@@ -341,7 +349,17 @@ namespace OnlineTelevizor.Views
 
         protected override void OnSizeAllocated(double width, double height)
         {
+            System.Diagnostics.Debug.WriteLine($"OnSizeAllocated: {width}/{height}");
+            System.Diagnostics.Debug.WriteLine($"VideoStack Size: {VideoStackLayout.Width}/{VideoStackLayout.Height}");
+
             base.OnSizeAllocated(width, height);
+
+            if (_lastAllocatedSize.Width == width &&
+                _lastAllocatedSize.Height == height)
+            {
+                // no size changed
+                return;
+            }
 
             if (width>height)
             {
@@ -350,6 +368,9 @@ namespace OnlineTelevizor.Views
             {
                 _viewModel.IsPortrait = true;
             }
+
+            _lastAllocatedSize.Width = width;
+            _lastAllocatedSize.Height = height;
 
             _viewModel.NotifyToolBarChange();
             RefreshGUI();
@@ -379,16 +400,20 @@ namespace OnlineTelevizor.Views
         {
             if (_config.InternalPlayer)
             {
-                if (!force && (PlayingState == PlayingStateEnum.PlayingInternal))
+                Device.BeginInvokeOnMainThread(() =>
                 {
-                    PlayingState = PlayingStateEnum.PlayingInPreview;
-                } else
-                if (force || (PlayingState == PlayingStateEnum.PlayingInPreview))
-                {
-                    videoView.MediaPlayer.Stop();
-                    PlayingState = PlayingStateEnum.Stopped;
-                    _viewModel.PlayingChannel = null;
-                }
+                    if (!force && (PlayingState == PlayingStateEnum.PlayingInternal))
+                    {
+                        PlayingState = PlayingStateEnum.PlayingInPreview;
+                    }
+                    else
+                    if (force || (PlayingState == PlayingStateEnum.PlayingInPreview))
+                    {
+                        videoView.MediaPlayer.Stop();
+                        PlayingState = PlayingStateEnum.Stopped;
+                        _viewModel.PlayingChannel = null;
+                    }
+                });
             } else
             {
                 PlayingState = PlayingStateEnum.Stopped;
@@ -1100,7 +1125,7 @@ namespace OnlineTelevizor.Views
 
         private async Task CheckStream()
         {
-            if (!Playing)
+            if (!((PlayingState == PlayingStateEnum.PlayingInternal) || (PlayingState == PlayingStateEnum.PlayingInPreview)))
             {
                 return;
             }
@@ -1123,10 +1148,12 @@ namespace OnlineTelevizor.Views
                         radio
                    )
                 {
+                    //VideoStackLayout.IsVisible = false;
                     videoView.IsVisible = false;
                 }
                 else
                 {
+                    //VideoStackLayout.IsVisible = true;
                     videoView.IsVisible = true;
                 }
             });
