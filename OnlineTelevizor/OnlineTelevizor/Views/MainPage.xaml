@@ -196,14 +196,14 @@
                     </ScrollView>
 
                     <StackLayout Grid.Row="3" Grid.Column="0" x:Name="VideoBoxLandscape" BackgroundColor="Black">
-                        <Image Source="{Binding AudioIcon}" x:Name="AudioOnlyImage" Style="{DynamicResource AudioImageStyle}" />
-                    </StackLayout>
+                        <!--Image Source="{Binding AudioIcon}" x:Name="AudioOnlyImage" Style="{DynamicResource AudioImageStyle}" /-->
+                </StackLayout>
 
                     <Label Grid.Row="4" Grid.Column="0" x:Name="ViewPreviewLabel" Text="{Binding ViewPreviewDescription}" IsVisible="True" Style="{DynamicResource VideoPreviewTextStyle}" FontSize="{Binding FontSizeForNextTitle}"  Margin="5,5,5,5"/>
             </Grid>
 
             <StackLayout Grid.Row="1" Grid.Column="0" x:Name="VideoBoxPortrait" BackgroundColor="Black">
-                <Image Source="{Binding AudioIcon}" x:Name="AudioOnlyImage2" Style="{DynamicResource AudioImageStyle}" />
+                <!--Image Source="{Binding AudioIcon}" x:Name="AudioOnlyImage2" Style="{DynamicResource AudioImageStyle}" /-->
             </StackLayout>
 
             <StackLayout  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="StatusLayout" Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="45" HorizontalOptions="Fill"  BackgroundColor="#262626" Margin="0,0,0,0">
@@ -213,7 +213,7 @@
         </Grid>
 
         <StackLayout x:Name="VideoStackLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-                        AbsoluteLayout.LayoutBounds="1, 1, 0.5, 0.3" AbsoluteLayout.LayoutFlags="All" IsVisible="False">
+                        AbsoluteLayout.LayoutBounds="0.75, 0.75, 0.1, 0.1" AbsoluteLayout.LayoutFlags="All" IsVisible="False">
             <vlc:VideoView IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                             x:Name="videoView" Margin="0,0,0,0"/>
             <StackLayout.GestureRecognizers>

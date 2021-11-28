@@ -129,7 +129,7 @@ namespace OnlineTelevizor.Views
                                 VideoBoxLandscape.Height));
                         }
 
-                        videoView.IsVisible = false;
+                        videoView.IsVisible = true;
                         VideoStackLayout.IsVisible = true;
 
                         break;
@@ -442,6 +442,11 @@ namespace OnlineTelevizor.Views
             }
 
             _viewModel.DoNotScrollToChannel = false;
+
+            if (PlayingState == PlayingStateEnum.PlayingInPreview)
+            {
+                RefreshGUI();
+            }
         }
 
         private static bool LeavePageKeyDown(string lowKey)
