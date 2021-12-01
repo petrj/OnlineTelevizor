@@ -98,20 +98,18 @@ namespace OnlineTelevizor.Views
                             LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Absolute);
 
                             LayoutGrid.RowDefinitions[0].Height = new GridLength(100, GridUnitType.Star);
-                            //LayoutGrid.RowDefinitions[1].Height = new GridLength(20, GridUnitType.Star);
-                            LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute
-                                );
+                            LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
 
                             StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(80, GridUnitType.Star);
                             StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(0, GridUnitType.Absolute);
                             StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0, GridUnitType.Absolute);
 
-                           /* VideoStackLayout.Layout(new Rectangle(
+                            /*VideoStackLayout.Layout(new Rectangle(
                                 0,
                                 VideoBoxPortrait.Y,
                                 VideoBoxPortrait.Width,
                                 VideoBoxPortrait.Height));
-                           */
+                            */
                         }
                         else
                         {
@@ -132,8 +130,6 @@ namespace OnlineTelevizor.Views
                                 ContentPage.Width / 2,
                                 ContentPage.Height / 2));
                             */
-
-
                         }
 
                         videoView.IsVisible = true;
