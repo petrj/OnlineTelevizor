@@ -97,12 +97,11 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <AbsoluteLayout>
+    <RelativeLayout>
 
         <Grid x:Name="LayoutGrid" Style="{DynamicResource LayoutGridStyle}">
             <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="0" />
                     <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -110,14 +109,17 @@
                 <ColumnDefinition Width="50*" />
             </Grid.ColumnDefinitions>
 
-            <ListView  Grid.Row="0" Grid.Column="0" x:Name="ChannelsListView"
+            <ListView   x:Name="ChannelsListView"
                         ItemsSource="{Binding Channels}"
                         CachingStrategy="RecycleElement"
                         IsPullToRefreshEnabled="True"
                         RefreshCommand="{Binding RefreshCommand}"
                         IsRefreshing="{Binding IsBusy}"
                         Style="{StaticResource ListViewStyle}"
-                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        >
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -166,13 +168,12 @@
 
             </ListView>
 
-            <Grid x:Name="StackLayoutEPGDetail" Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" Padding="0,0,0,0">
+            <Grid Grid.Column="1" Grid.Row="0" x:Name="StackLayoutEPGDetail" Margin="0,0,0,0" Padding="0,0,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="19*" />
                         <RowDefinition Height="1*" />
-                        <RowDefinition Height="80*" />
-                        <RowDefinition Height="0*" />
-                        <RowDefinition Height="0*" />
+                        <RowDefinition Height="40*" />
+                        <RowDefinition Height="40*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -195,29 +196,26 @@
                         <Label x:Name="LabelChannelEPGDescription" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
                     </ScrollView>
 
-                    <StackLayout Grid.Row="3" Grid.Column="0" x:Name="VideoBoxLandscape" BackgroundColor="Black">
-                        <!--Image Source="{Binding AudioIcon}" x:Name="AudioOnlyImage" Style="{DynamicResource AudioImageStyle}" /-->
-                </StackLayout>
-
-                    <Label Grid.Row="4" Grid.Column="0" x:Name="ViewPreviewLabel" Text="{Binding ViewPreviewDescription}" IsVisible="True" Style="{DynamicResource VideoPreviewTextStyle}" FontSize="{Binding FontSizeForNextTitle}"  Margin="5,5,5,5"/>
+                    <!--Label Grid.Row="4" Grid.Column="0" x:Name="ViewPreviewLabel" Text="{Binding ViewPreviewDescription}" IsVisible="True" Style="{DynamicResource VideoPreviewTextStyle}" FontSize="{Binding FontSizeForNextTitle}"  Margin="5,5,5,5"/ -->
             </Grid>
-
-            <StackLayout Grid.Row="1" Grid.Column="0" x:Name="VideoBoxPortrait" BackgroundColor="Black">
+            <!--StackLayout x:Name="VideoBoxPortrait" BackgroundColor="Black"-->
                 <!--Image Source="{Binding AudioIcon}" x:Name="AudioOnlyImage2" Style="{DynamicResource AudioImageStyle}" /-->
-            </StackLayout>
+            <!--/StackLayout-->
 
-            <StackLayout  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="StatusLayout" Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="45" HorizontalOptions="Fill"  BackgroundColor="#262626" Margin="0,0,0,0">
+            <StackLayout  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="StatusLayout" Orientation="Horizontal" VerticalOptions="End" MinimumHeightRequest="45" HorizontalOptions="Fill"  BackgroundColor="#262626" Margin="0,0,0,0">
                 <Label Text="{Binding StatusLabel}"  x:Name="StatusLabel" Style="{DynamicResource InfoLabelStyle}" FontSize="{Binding FontSizeForInfoLabel}"/>
             </StackLayout>
 
         </Grid>
 
-        <StackLayout x:Name="VideoStackLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-                     AbsoluteLayout.LayoutBounds="0.95, 0.90, 0.45, 0.3"
-                     AbsoluteLayout.LayoutFlags="XProportional,YProportional,WidthProportional,HeightProportional"
-                     IsVisible="False" BackgroundColor="Black">
-            <vlc:VideoView IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-                            x:Name="videoView" Margin="0,0,0,0"/>
+        <StackLayout x:Name="VideoStackLayout" IsVisible="True" BackgroundColor="Transparent"
+                    RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.6}"
+                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.6}"
+                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.33}"
+                    RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.33}"
+                    >
+            <vlc:VideoView IsVisible="true" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+                                        x:Name="videoView" Margin="0,0,0,0"  BackgroundColor="Transparent"/>
             <StackLayout.GestureRecognizers>
                 <!--TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" /-->
                 <!--TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" /-->
@@ -228,7 +226,7 @@
             </StackLayout.GestureRecognizers>
         </StackLayout>
 
-    </AbsoluteLayout>
+    </RelativeLayout>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem x:Name="ToolbarItemFilter" Text="Filtr" Clicked="ToolbarItemFilter_Clicked" Icon="{Binding ToolbarItemFilterIcon}"/>

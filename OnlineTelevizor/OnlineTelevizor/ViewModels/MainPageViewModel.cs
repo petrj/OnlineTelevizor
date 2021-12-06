@@ -257,13 +257,8 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
-        public async Task LongPressAction(ChannelItem item)
+        public async Task ShowPopupMenu(ChannelItem item)
         {
-            if (item != null)
-            {
-                SelectedItem = item as ChannelItem;
-            }
-
             string optionCancel = "Zpět";
 
             string optionPlay = "Spustit ..";
@@ -348,7 +343,7 @@ namespace OnlineTelevizor.ViewModels
         {
             if (item != null && item is ChannelItem)
             {
-                await LongPressAction(item as ChannelItem);
+                SelectedItem = item as ChannelItem;
             }
         }
 
