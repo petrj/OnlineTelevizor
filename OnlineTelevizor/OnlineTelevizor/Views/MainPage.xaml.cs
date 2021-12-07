@@ -77,15 +77,17 @@ namespace OnlineTelevizor.Views
                         // turn off tool bar
                         NavigationPage.SetHasNavigationBar(this, false);
 
+                        StackLayoutEPGDetailPortrait.IsVisible = false;
+
                         LayoutGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Absolute);
                         LayoutGrid.ColumnDefinitions[1].Width = new GridLength(100, GridUnitType.Star);
 
-                        //VideoStackLayout.IsVisible = true;
+                        VideoStackLayout.IsVisible = true;
 
-                        videoView.IsVisible = false;
+                        //videoView.IsVisible = false;
 
                         // overlap LayoutGrid
-                        //VideoStackLayout.Layout(new Rectangle(0, 0, ContentPage.Width, ContentPage.Height));
+                        VideoStackLayout.Layout(new Rectangle(0, 0, ContentPage.Width, ContentPage.Height));
 
                         break;
                     case PlayingStateEnum.PlayingInPreview:
@@ -94,81 +96,60 @@ namespace OnlineTelevizor.Views
 
                         if (_viewModel.IsPortrait)
                         {
+                            StackLayoutEPGDetailPortrait.IsVisible = true;
+
                             LayoutGrid.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
                             LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Absolute);
 
-                            //LayoutGrid.RowDefinitions[0].Height = new GridLength(100, GridUnitType.Star);
-                            //LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
+                            LayoutGrid.RowDefinitions[0].Height = new GridLength(55, GridUnitType.Star);
+                            LayoutGrid.RowDefinitions[1].Height = new GridLength(45, GridUnitType.Star);
 
-                            //StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(80, GridUnitType.Star);
-                            //StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(0, GridUnitType.Absolute);
-                            //StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0, GridUnitType.Absolute);
-
-                            //VideoStackLayout.Layout(new Rectangle(
-                            //    0,
-                            //    0,
-                            //    320,
-                            //    200));
-
-                             //videoView.Layout(VideoStackLayout.Bounds);
-
+                            StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(80, GridUnitType.Star);
+                            StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(0, GridUnitType.Absolute);
                         }
                         else
                         {
                             LayoutGrid.ColumnDefinitions[0].Width = new GridLength(50, GridUnitType.Star);
                             LayoutGrid.ColumnDefinitions[1].Width = new GridLength(50, GridUnitType.Star);
 
-                            //LayoutGrid.RowDefinitions[0].Height = new GridLength(100, GridUnitType.Star);
-                            //LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
+                            LayoutGrid.RowDefinitions[0].Height = new GridLength(100, GridUnitType.Star);
+                            LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
 
-                            //StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(40, GridUnitType.Star);
-                            //StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(35, GridUnitType.Star);
-                            //StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(5, GridUnitType.Star);
-
-
-                            //VideoStackLayout.Layout(new Rectangle(
-                            //    ContentPage.Width / 2,
-                            //    ContentPage.Height / 2,
-                            //    ContentPage.Width / 2,
-                            //    ContentPage.Height / 2));
-
-                            //videoView.Layout(VideoStackLayout.Bounds);
+                            StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(40, GridUnitType.Star);
+                            StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(40, GridUnitType.Star);
                         }
 
-                        videoView.IsVisible = true;
-                        //VideoStackLayout.IsVisible = true;
+                        VideoStackLayout.IsVisible = true;
 
                         break;
                     case PlayingStateEnum.Stopped:
 
                         NavigationPage.SetHasNavigationBar(this, true);
 
-                        //StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(80, GridUnitType.Star);
-                        //StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(0);
-                        //StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0);
+                        StackLayoutEPGDetailPortrait.IsVisible = false;
 
                         if (_viewModel.IsPortrait)
                         {
-                            //LayoutGrid.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
-                            //LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Absolute);
+                            LayoutGrid.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
+                            LayoutGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Absolute);
 
-                            //LayoutGrid.RowDefinitions[0].Height = new GridLength(100, GridUnitType.Star);
-                            //LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
+                            LayoutGrid.RowDefinitions[0].Height = new GridLength(100, GridUnitType.Star);
+                            LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
                         }
                         else
                         {
-                            //LayoutGrid.ColumnDefinitions[0].Width = new GridLength(50, GridUnitType.Star);
-                            //LayoutGrid.ColumnDefinitions[1].Width = new GridLength(50, GridUnitType.Star);
+                            LayoutGrid.ColumnDefinitions[0].Width = new GridLength(50, GridUnitType.Star);
+                            LayoutGrid.ColumnDefinitions[1].Width = new GridLength(50, GridUnitType.Star);
 
-                            //LayoutGrid.RowDefinitions[0].Height = new GridLength(100, GridUnitType.Star);
-                            //LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
+                            LayoutGrid.RowDefinitions[0].Height = new GridLength(100, GridUnitType.Star);
+                            LayoutGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Absolute);
                         }
 
-                        //StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(80, GridUnitType.Star);
-                        //StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(0, GridUnitType.Absolute);
-                        //StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(0, GridUnitType.Absolute);
+                        StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(80, GridUnitType.Star);
+                        StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(0, GridUnitType.Absolute);
 
-                        //VideoStackLayout.IsVisible = false;
+                        VideoStackLayout.IsVisible = false;
+
                         break;
                 }
             });
@@ -329,6 +310,16 @@ namespace OnlineTelevizor.Views
             ActionStop(false);
         }
 
+        private void OnSingleTapped(object sender, EventArgs e)
+        {
+            ActionTap(1);
+        }
+
+        public void OnDoubleTapped(object sender, EventArgs e)
+        {
+            ActionTap(2);
+        }
+
         private async void MainPage_Appearing(object sender, EventArgs e)
         {
             _lastPageAppearedTime = DateTime.Now;
@@ -409,16 +400,25 @@ namespace OnlineTelevizor.Views
             }
         }
 
+        public void ActionTap(int count)
+        {
+            if (count == 2 && PlayingState == PlayingStateEnum.PlayingInPreview)
+            {
+                PlayingState = PlayingStateEnum.PlayingInternal;
+                RefreshGUI();
+            }
+        }
+
 
         public void ActionStop(bool force)
         {
-            if (_media == null || videoView == null || videoView.MediaPlayer == null)
-                return;
-
             if (_config.InternalPlayer)
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
+                    if (_media == null || videoView == null || videoView.MediaPlayer == null)
+                        return;
+
                     if (!force && (PlayingState == PlayingStateEnum.PlayingInternal))
                     {
                         PlayingState = PlayingStateEnum.PlayingInPreview;
@@ -1148,7 +1148,7 @@ namespace OnlineTelevizor.Views
 
         private async Task CheckStream()
         {
-            if (!((PlayingState == PlayingStateEnum.PlayingInternal) || (PlayingState == PlayingStateEnum.PlayingInPreview)))
+            if ((PlayingState == PlayingStateEnum.Stopped) || (PlayingState == PlayingStateEnum.PlayingExternal))
             {
                 return;
             }
