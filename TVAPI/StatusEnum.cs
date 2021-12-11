@@ -1,10 +1,10 @@
 ﻿using System;
 
 namespace TVAPI
-{   
+{
         public enum StatusEnum
         {
-            GeneralError = -2,   
+            GeneralError = -2,
             ConnectionNotAvailable = -1,
             NotInitialized = 0,
             EmptyCredentials = 1,

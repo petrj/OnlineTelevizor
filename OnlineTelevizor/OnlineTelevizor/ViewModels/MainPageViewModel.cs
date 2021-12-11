@@ -343,7 +343,12 @@ namespace OnlineTelevizor.ViewModels
         {
             if (item != null && item is ChannelItem)
             {
+                var rmb = DoNotScrollToChannel;
+                DoNotScrollToChannel = true;
+
                 SelectedItem = item as ChannelItem;
+
+                DoNotScrollToChannel = rmb;
             }
         }
 
@@ -914,6 +919,7 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+
         private string GetChannelsStatus
         {
             get
@@ -1016,13 +1022,17 @@ namespace OnlineTelevizor.ViewModels
 
             if (_service.Status == StatusEnum.Logged && Channels.Count>0)
             {
-                // auto play?
                 if (_firstRefresh)
                 {
-                    _firstRefresh = false;
+                    // auto play?
                     await AutoPlay();
                 }
+
+                _firstRefresh = false;
             }
+
+            // status notification
+            MessagingCenter.Send(StatusLabel, BaseViewModel.ToastMessage);
         }
 
         private async Task RefreshChannels()
@@ -1049,8 +1059,6 @@ namespace OnlineTelevizor.ViewModels
                 {
                     selectedChannelNumber = "1";
                 }
-
-                OnPropertyChanged(nameof(StatusLabel));
 
                 await _semaphoreSlim.WaitAsync();
 
@@ -1113,7 +1121,6 @@ namespace OnlineTelevizor.ViewModels
                 _semaphoreSlim.Release();
 
                 OnPropertyChanged(nameof(SelectedItem));
-                OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
@@ -1139,8 +1146,6 @@ namespace OnlineTelevizor.ViewModels
             var epgItemsCountRead = 0;
             try
             {
-                OnPropertyChanged(nameof(StatusLabel));
-
                 await _semaphoreSlim.WaitAsync();
 
                 IsBusy = true;
@@ -1176,7 +1181,6 @@ namespace OnlineTelevizor.ViewModels
 
                 _semaphoreSlim.Release();
 
-                OnPropertyChanged(nameof(StatusLabel));
                 OnPropertyChanged(nameof(IsBusy));
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
@@ -1230,8 +1234,6 @@ namespace OnlineTelevizor.ViewModels
 
             try
             {
-                OnPropertyChanged(nameof(StatusLabel));
-
                 await _service.ResetConnection();
             }
             finally
@@ -1240,7 +1242,6 @@ namespace OnlineTelevizor.ViewModels
 
                 _semaphoreSlim.Release();
 
-                OnPropertyChanged(nameof(StatusLabel));
                 NotifyFontSizeChange();
             }
         }
