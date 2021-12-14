@@ -101,8 +101,7 @@
 
         <Grid x:Name="LayoutGrid" Style="{DynamicResource LayoutGridStyle}">
             <Grid.RowDefinitions>
-                    <RowDefinition Height="55*" />
-                    <RowDefinition Height="45*" />
+                    <RowDefinition Height="100*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50*" />
@@ -166,7 +165,7 @@
 
             </ListView>
 
-            <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+            <Grid Grid.Column="1" Grid.Row="0"
                         x:Name="StackLayoutEPGDetail"
                         Margin="0,0,0,0"
                         Padding="0,0,0,0">
@@ -199,45 +198,6 @@
                     </ScrollView>
 
                 </Grid>
-
-
-            <RelativeLayout Grid.Column="0" Grid.Row="1">
-                <Grid   RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0}"
-                        RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0}"
-                        RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5}"
-                        RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"
-                        x:Name="StackLayoutEPGDetailPortrait"
-                        Margin="0,0,0,0"
-                        Padding="0,0,0,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="19*" />
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="80*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"  Margin="5,5,5,5" />
-
-                    <Grid Grid.Row="1" Grid.Column="0"  Margin="0,0,0,0" x:Name="ProgresssBarGridPortrait">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="1" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <ProgressBar Grid.Row="0" Grid.Column="0" Progress="{Binding SelectedChannelEPGProgress}" BackgroundColor="{Binding EPGProgressBackgroundColor}" />
-                    </Grid>
-
-                    <ScrollView Grid.Row="2" Grid.Column="0" x:Name="ScrollViewChannelEPGDescriptionPortrait" BackgroundColor="{Binding EPGDescriptionBackgroundColor}"  HorizontalOptions="StartAndExpand" VerticalOptions="Start"  Margin="5,5,5,5">
-                        <Label x:Name="LabelChannelEPGDescriptionPortrait" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
-                    </ScrollView>
-                </Grid>
-
-            </RelativeLayout>
-
         </Grid>
 
         <StackLayout x:Name="VideoStackLayout" IsVisible="True" BackgroundColor="Transparent"
