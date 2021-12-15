@@ -83,7 +83,7 @@ namespace OnlineTelevizor.Views
                         VideoStackLayout.IsVisible = true;
 
                         // overlap LayoutGrid
-                        VideoStackLayout.LayoutTo(new Rectangle(0, 0, ContentPage.Width, ContentPage.Height));
+                        VideoStackLayout.Layout(new Rectangle(0, 0, ContentPage.Width, ContentPage.Height));
 
                         break;
                     case PlayingStateEnum.PlayingInPreview:
@@ -108,6 +108,9 @@ namespace OnlineTelevizor.Views
                         }
 
                         VideoStackLayout.IsVisible = true;
+                        videoView.IsVisible = false; // count on checkStream
+
+                        CheckStreamCommand.Execute(null);
 
                         break;
                     case PlayingStateEnum.Stopped:
@@ -273,16 +276,19 @@ namespace OnlineTelevizor.Views
                     await _viewModel.RecordChannel(false);
                 });
             });
+
+
+            VideoStackLayout.LayoutChanged += VideoStackLayout_LayoutChanged;
         }
 
-        //private void VideoStackLayout_LayoutChanged(object sender, EventArgs e)
-        //{
+        private void VideoStackLayout_LayoutChanged(object sender, EventArgs e)
+        {
             //System.Diagnostics.Debug.WriteLine($"VideoStackLayout position changed: [{VideoStackLayout.X},{VideoStackLayout.Y}]  {VideoStackLayout.Width} x {VideoStackLayout.Height}");
-        //}
+        }
 
         private void MainPage_Disappearing(object sender, EventArgs e)
         {
-            ActionStop(true);
+            //ActionStop(true);
         }
 
         private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
@@ -575,6 +581,7 @@ namespace OnlineTelevizor.Views
                 case "mediaplaynext":
                 case "medianext":
                 case "moveend":
+        case "camera":
                     Task.Run(async () => await ActionKeyDown(1));
                     break;
                 case "dpadup":
@@ -786,12 +793,31 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        public void ResumePlayback()
+        public void Resume()
         {
-            if (Playing)
+            // workaround for black screen after resume
+            // TODO: resume video without reinitializing
+
+            Device.BeginInvokeOnMainThread(() =>
             {
-                _playerPage.Resume();
-            }
+                float pos = 0;
+                if (PlayingState == PlayingStateEnum.PlayingInPreview ||
+                    PlayingState == PlayingStateEnum.PlayingInternal)
+                {
+                    pos = videoView.MediaPlayer.Position;
+                    videoView.MediaPlayer.Stop();
+                }
+
+                VideoStackLayout.Children.Remove(videoView);
+                VideoStackLayout.Children.Add(videoView);
+
+                if (PlayingState == PlayingStateEnum.PlayingInPreview ||
+                    PlayingState == PlayingStateEnum.PlayingInternal)
+                {
+                    videoView.MediaPlayer.Play();
+                    videoView.MediaPlayer.Position = pos;
+                }
+            });
         }
 
         public void Refresh()
@@ -1135,9 +1161,9 @@ namespace OnlineTelevizor.Views
 
             Device.BeginInvokeOnMainThread(() =>
             {
-                if (!videoView.MediaPlayer.IsPlaying)
+                if (!_mediaPlayer.IsPlaying)
                 {
-                    videoView.MediaPlayer.Play(_media);
+                    _mediaPlayer.Play(_media);
                 }
 
                 var radio = _viewModel.PlayingChannel != null
@@ -1151,37 +1177,49 @@ namespace OnlineTelevizor.Views
                         radio
                    )
                 {
-                    //VideoStackLayout.IsVisible = false;
                     videoView.IsVisible = false;
                 }
                 else
                 {
-                    //VideoStackLayout.IsVisible = true;
+                    PreviewVideoBordersFix();
                     videoView.IsVisible = true;
-
-                    // vlcview borders correction
-
-                    if (PlayingState == PlayingStateEnum.PlayingInPreview && _viewModel.IsPortrait)
-                    {
-                        var originalVideoWidth = _media.Tracks[0].Data.Video.Width;
-                        var originalVideoHeight = _media.Tracks[0].Data.Video.Height;
-                        var aspect = (double)originalVideoWidth / (double)originalVideoHeight;
-                        var newVideoHeight = VideoStackLayout.Width / aspect;
-
-                        var borderHeight = (VideoStackLayout.Height - newVideoHeight) / 2.0;
-
-                        var rect = new Rectangle()
-                        {
-                            Left = VideoStackLayout.X,
-                            Top = VideoStackLayout.Y + borderHeight,
-                            Width = VideoStackLayout.Width,
-                            Height = newVideoHeight
-                        };
-
-                        VideoStackLayout.Layout(rect);
-                    }
                 }
             });
+        }
+
+        private void PreviewVideoBordersFix()
+        {
+            try
+            {
+                if (PlayingState == PlayingStateEnum.PlayingInPreview && _viewModel.IsPortrait &&
+                    _media.Tracks != null &&
+                    _media.Tracks.Length > 0 &&
+                    _mediaPlayer.VideoTrackCount > 0 &&
+                    _mediaPlayer.VideoTrack != -1
+                    )
+                {
+                    var originalVideoWidth = _media.Tracks[0].Data.Video.Width;
+                    var originalVideoHeight = _media.Tracks[0].Data.Video.Height;
+
+                    var aspect = (double)originalVideoWidth / (double)originalVideoHeight;
+                    var newVideoHeight = VideoStackLayout.Width / aspect;
+
+                    var borderHeight = (VideoStackLayout.Height - newVideoHeight) / 2.0;
+
+                    var rect = new Rectangle()
+                    {
+                        Left = VideoStackLayout.X,
+                        Top = VideoStackLayout.Y + borderHeight,
+                        Width = VideoStackLayout.Width,
+                        Height = newVideoHeight
+                    };
+
+                    VideoStackLayout.Layout(rect);
+                }
+            } catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
         }
     }
 }

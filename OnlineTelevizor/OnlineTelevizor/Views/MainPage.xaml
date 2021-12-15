@@ -201,7 +201,7 @@
         </Grid>
 
         <StackLayout x:Name="VideoStackLayout" IsVisible="True" BackgroundColor="Transparent"
-                     AbsoluteLayout.LayoutBounds="1.0,1.0,0.4,0.3" AbsoluteLayout.LayoutFlags="All">
+                     AbsoluteLayout.LayoutBounds="1.0,1.0,0.5,0.3" AbsoluteLayout.LayoutFlags="All">
             <vlc:VideoView IsVisible="true" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                                         x:Name="videoView" Margin="0,0,0,0"  BackgroundColor="Transparent"/>
             <StackLayout.GestureRecognizers>
