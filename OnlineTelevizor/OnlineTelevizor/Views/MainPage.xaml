@@ -97,7 +97,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <AbsoluteLayout>
+    <AbsoluteLayout x:Name="absoluteLayout">
 
         <Grid x:Name="LayoutGrid" Style="{DynamicResource LayoutGridStyle}">
             <Grid.RowDefinitions>
@@ -200,10 +200,10 @@
                 </Grid>
         </Grid>
 
-        <StackLayout x:Name="VideoStackLayout" IsVisible="True" BackgroundColor="Transparent"
+        <StackLayout x:Name="VideoStackLayout" IsVisible="True"
                      AbsoluteLayout.LayoutBounds="1.0,1.0,0.5,0.3" AbsoluteLayout.LayoutFlags="All">
             <vlc:VideoView IsVisible="true" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-                                        x:Name="videoView" Margin="0,0,0,0"  BackgroundColor="Transparent"/>
+                                        x:Name="videoView" Margin="0,0,0,0" />
             <StackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" />
                 <TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" />

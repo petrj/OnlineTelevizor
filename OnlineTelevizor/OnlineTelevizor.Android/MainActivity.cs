@@ -23,6 +23,7 @@ using LoggerService;
 using Xamarin.Essentials;
 using System.Threading.Tasks;
 using Android.Support.V4.App;
+using Android.Support.V4.View;
 
 namespace OnlineTelevizor.Droid
 {
@@ -151,7 +152,7 @@ namespace OnlineTelevizor.Droid
                 });
             });
 
-            MessagingCenter.Subscribe<PlayerPage, ChannelItem>(this, BaseViewModel.UpdateInternalNotification, (sender, channel) =>
+            MessagingCenter.Subscribe<MainPageViewModel, ChannelItem>(this, BaseViewModel.UpdateInternalNotification, (sender, channel) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -176,13 +177,13 @@ namespace OnlineTelevizor.Droid
                 });
             });
 
-            MessagingCenter.Subscribe<PlayerPage, ChannelItem>(this, BaseViewModel.UpdateRecordNotificationMessage, (sender, channel) =>
+            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.UpdateRecordNotificationMessage, (sender, channel) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     Task.Run(async () => await ShowRecordNotification(channel));
                 });
-            });
+            });https://www.youtube.com/watch?v=jqimAYrC3Ro
 
             MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.StopRecordNotificationMessage, (sender) =>
             {

@@ -25,7 +25,6 @@ namespace OnlineTelevizor.Views
         private ILoggingService _loggingService;
 
         private FilterPage _filterPage;
-        private PlayerPage _playerPage;
         private CastRenderersPage _renderersPage;
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
@@ -41,6 +40,9 @@ namespace OnlineTelevizor.Views
 
         private PlayingStateEnum _playingState = PlayingStateEnum.Stopped;
         private Size _lastAllocatedSize = new Size(-1, -1);
+
+        private DateTime _lastSingleClicked = DateTime.MinValue;
+
 
         public Command CheckStreamCommand { get; set; }
 
@@ -380,6 +382,7 @@ namespace OnlineTelevizor.Views
 
                     _media = new Media(_libVLC, channel.Url, FromType.FromLocation);
                     videoView.MediaPlayer.Play(_media);
+                    _viewModel.PlayingChannel = channel;
 
                     PlayingState = PlayingStateEnum.PlayingInternal;
                 });
@@ -393,8 +396,13 @@ namespace OnlineTelevizor.Views
                 PlayingState = PlayingStateEnum.PlayingInternal;
                 RefreshGUI();
             }
-        }
 
+            if (count == 1 &&
+                (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview))
+            {
+                ShowJustPlayingNotification();
+            }
+        }
 
         public void ActionStop(bool force)
         {
@@ -827,17 +835,67 @@ namespace OnlineTelevizor.Views
             _viewModel.RefreshCommand.Execute(null);
         }
 
+        public void ShowJustPlayingNotification()
+        {
+            bool showCurrent;
+            string msg;
+
+            if (((DateTime.Now - _lastSingleClicked).TotalSeconds > 5) ||
+                _viewModel.PlayingChannel == null ||
+                _viewModel.PlayingChannel.NextEPGItem  == null)
+            {
+                showCurrent = true;
+            }
+            else
+            {
+                showCurrent = false;
+            }
+
+            if (showCurrent)
+            {
+                msg = $"\u25B6  {_viewModel.Title}";
+
+                if (_viewModel.PlayingChannel != null &&
+                    _viewModel.PlayingChannel.CurrentEPGItem != null &&
+                _viewModel.PlayingChannel.CurrentEPGItem.Start < DateTime.Now &&
+                _viewModel.PlayingChannel.CurrentEPGItem.Finish > DateTime.Now &&
+                !string.IsNullOrEmpty(_viewModel.PlayingChannel.CurrentEPGItem.Title))
+                {
+                    msg += $" - {_viewModel.PlayingChannel.CurrentEPGItem.Title}";
+                }
+
+                _lastSingleClicked = DateTime.Now;
+            }
+            else
+            {
+                if (_viewModel.PlayingChannel != null &&
+                     _viewModel.PlayingChannel.NextEPGItem != null &&
+                    !string.IsNullOrEmpty(_viewModel.PlayingChannel.NextEPGItem.Title))
+                {
+                    msg = $"-> {_viewModel.PlayingChannel.NextEPGItem.Start.ToString("HH:mm")} - {_viewModel.PlayingChannel.NextEPGItem.Title}";
+                }
+                else
+                {
+                    msg = $"\u25B6  {_viewModel.Title}";
+                }
+
+                _lastSingleClicked = DateTime.MinValue;
+            }
+
+            MessagingCenter.Send(msg, BaseViewModel.ToastMessage);
+        }
+
         private async Task ActionKeyOK()
         {
             if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList ||
                 _viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
             {
-                if (!Playing)
+                if (PlayingState == PlayingStateEnum.PlayingInternal)
                 {
-                    await _viewModel.PlaySelectedChannel();
+                    ShowJustPlayingNotification();
                 } else
                 {
-                    _playerPage.ShowJustPlayingNotification();
+                    await _viewModel.PlaySelectedChannel();
                 }
             }
             else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
@@ -1115,9 +1173,9 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"Detail_Clicked");
 
-            if (Playing)
+            if (PlayingState == PlayingStateEnum.PlayingInternal)
             {
-                _playerPage.ShowJustPlayingNotification();
+                ShowJustPlayingNotification();
             }
             else
             {

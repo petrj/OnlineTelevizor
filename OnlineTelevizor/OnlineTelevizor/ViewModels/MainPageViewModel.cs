@@ -612,6 +612,17 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        private async Task UpdateNotification()
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (PlayingChannel != null)
+                {
+                    MessagingCenter.Send<MainPageViewModel, ChannelItem>(this, BaseViewModel.UpdateInternalNotification, PlayingChannel);
+                }
+            });
+        }
+
         private async Task UpdateSelectedChannelEPGDescription()
         {
             if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
