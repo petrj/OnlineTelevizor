@@ -43,7 +43,6 @@ namespace OnlineTelevizor.Views
 
         private DateTime _lastSingleClicked = DateTime.MinValue;
 
-
         public Command CheckStreamCommand { get; set; }
 
         public enum PlayingStateEnum
@@ -84,8 +83,18 @@ namespace OnlineTelevizor.Views
 
                         VideoStackLayout.IsVisible = true;
 
+                        //LayoutGrid.IsVisible = false;
                         // overlap LayoutGrid
-                        VideoStackLayout.Layout(new Rectangle(0, 0, ContentPage.Width, ContentPage.Height));
+                        ///VideoStackLayout.Layout(new Rectangle(0, 0, ContentPage.Width, ContentPage.Height));
+                        //VideoStackLayout.ForceLayout();
+
+                        //absoluteLayout.LowerChild(VideoStackLayout);
+                        //AbsoluteLayout.SetLayoutFlags(VideoStackLayout, AbsoluteLayoutFlags.All);
+                        //AbsoluteLayout.SetLayoutBounds(VideoStackLayout, new Rectangle(0, 0, 1, 1));
+
+
+                        //VideoStackLayout.LowerChild(videoView);
+
 
                         break;
                     case PlayingStateEnum.PlayingInPreview:
@@ -381,12 +390,49 @@ namespace OnlineTelevizor.Views
                     }
 
                     _media = new Media(_libVLC, channel.Url, FromType.FromLocation);
-                    videoView.MediaPlayer.Play(_media);
+
+                    //videoView.MediaPlayer = _mediaPlayer;
+                    //videoView.MediaPlayer.Play(_media);
+
+                    videoView.MediaPlayer = null;
+
+                    var videoPage = new VideoPage();
+                    videoPage.Player = _mediaPlayer;
+                    _mediaPlayer.Play(_media);
+
+                    Navigation.PushAsync(videoPage);
+
+                    videoPage.Disappearing += delegate
+                    {
+                        videoView.MediaPlayer = _mediaPlayer;
+
+                        ActionStop(false);
+
+                        //videoPage.Player = null;
+
+                        //videoView.IsVisible = false;
+                        //videoView.MediaPlayer = null;
+
+
+
+                        //videoView.IsVisible = true;
+                        //LibVLCSharp.
+
+                        //AbsoluteLayout.SetLayoutFlags(VideoStackLayout, AbsoluteLayoutFlags.All);
+                        //AbsoluteLayout.SetLayoutBounds(VideoStackLayout, new Rectangle(1, 1, 0.5, 0.3));
+                    };
+
+
                     _viewModel.PlayingChannel = channel;
 
                     PlayingState = PlayingStateEnum.PlayingInternal;
                 });
             }
+        }
+
+        private void VideoPage_Disappearing(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         public void ActionTap(int count)
@@ -589,7 +635,6 @@ namespace OnlineTelevizor.Views
                 case "mediaplaynext":
                 case "medianext":
                 case "moveend":
-        case "camera":
                     Task.Run(async () => await ActionKeyDown(1));
                     break;
                 case "dpadup":
@@ -640,6 +685,7 @@ namespace OnlineTelevizor.Views
                 case "comma":
                 case "semicolon":
                 case "grave":
+case "camera":
                     Task.Run(async () => await ActionKeyOK());
                     break;
                 //case "back":
