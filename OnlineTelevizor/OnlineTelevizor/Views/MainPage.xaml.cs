@@ -75,31 +75,24 @@ namespace OnlineTelevizor.Views
                 {
                     case PlayingStateEnum.PlayingInternal:
 
-                        // turn off tool bar
-                        NavigationPage.SetHasNavigationBar(this, false);
-
                         LayoutGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Absolute);
                         LayoutGrid.ColumnDefinitions[1].Width = new GridLength(100, GridUnitType.Star);
 
                         VideoStackLayout.IsVisible = true;
 
-                        //LayoutGrid.IsVisible = false;
                         // overlap LayoutGrid
-                        ///VideoStackLayout.Layout(new Rectangle(0, 0, ContentPage.Width, ContentPage.Height));
-                        //VideoStackLayout.ForceLayout();
+                        //VideoStackLayout.Layout(new Rectangle(0, 0, ContentPage.Width, ContentPage.Height));
 
-                        //absoluteLayout.LowerChild(VideoStackLayout);
-                        //AbsoluteLayout.SetLayoutFlags(VideoStackLayout, AbsoluteLayoutFlags.All);
-                        //AbsoluteLayout.SetLayoutBounds(VideoStackLayout, new Rectangle(0, 0, 1, 1));
+                        AbsoluteLayout.SetLayoutFlags(VideoStackLayout, AbsoluteLayoutFlags.All);
+                        AbsoluteLayout.SetLayoutBounds(VideoStackLayout, new Rectangle(0, 0, 1, 1));
 
-
-                        //VideoStackLayout.LowerChild(videoView);
-
+                        // turn off tool bar
+                        //NavigationPage.SetHasNavigationBar(this, false);
 
                         break;
                     case PlayingStateEnum.PlayingInPreview:
 
-                        NavigationPage.SetHasNavigationBar(this, true);
+                        //NavigationPage.SetHasNavigationBar(this, true);
 
                         if (_viewModel.IsPortrait)
                         {
@@ -118,15 +111,18 @@ namespace OnlineTelevizor.Views
                             StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(40, GridUnitType.Star);
                         }
 
+                        AbsoluteLayout.SetLayoutFlags(VideoStackLayout, AbsoluteLayoutFlags.All);
+                        AbsoluteLayout.SetLayoutBounds(VideoStackLayout, new Rectangle(1, 1, 0.5, 0.3));
+
                         VideoStackLayout.IsVisible = true;
-                        videoView.IsVisible = false; // count on checkStream
+                        //videoView.IsVisible = false; // count on checkStream?
 
                         CheckStreamCommand.Execute(null);
 
                         break;
                     case PlayingStateEnum.Stopped:
 
-                        NavigationPage.SetHasNavigationBar(this, true);
+                        //NavigationPage.SetHasNavigationBar(this, true);
 
                         if (_viewModel.IsPortrait)
                         {
@@ -180,9 +176,6 @@ namespace OnlineTelevizor.Views
 
             ChannelsListView.ItemSelected += ChannelsListView_ItemSelected;
             ChannelsListView.Scrolled += ChannelsListView_Scrolled;
-
-            //VideoStackLayout.LayoutChanged += VideoStackLayout_LayoutChanged;
-            //videoView. .LayoutChanged += VideoStackLayout_LayoutChanged;
 
             PlayingState = PlayingStateEnum.Stopped;
 
@@ -288,7 +281,6 @@ namespace OnlineTelevizor.Views
                 });
             });
 
-
             VideoStackLayout.LayoutChanged += VideoStackLayout_LayoutChanged;
         }
 
@@ -391,48 +383,14 @@ namespace OnlineTelevizor.Views
 
                     _media = new Media(_libVLC, channel.Url, FromType.FromLocation);
 
-                    //videoView.MediaPlayer = _mediaPlayer;
-                    //videoView.MediaPlayer.Play(_media);
-
-                    videoView.MediaPlayer = null;
-
-                    var videoPage = new VideoPage();
-                    videoPage.Player = _mediaPlayer;
+                    videoView.MediaPlayer = _mediaPlayer;
                     _mediaPlayer.Play(_media);
-
-                    Navigation.PushAsync(videoPage);
-
-                    videoPage.Disappearing += delegate
-                    {
-                        videoView.MediaPlayer = _mediaPlayer;
-
-                        ActionStop(false);
-
-                        //videoPage.Player = null;
-
-                        //videoView.IsVisible = false;
-                        //videoView.MediaPlayer = null;
-
-
-
-                        //videoView.IsVisible = true;
-                        //LibVLCSharp.
-
-                        //AbsoluteLayout.SetLayoutFlags(VideoStackLayout, AbsoluteLayoutFlags.All);
-                        //AbsoluteLayout.SetLayoutBounds(VideoStackLayout, new Rectangle(1, 1, 0.5, 0.3));
-                    };
-
 
                     _viewModel.PlayingChannel = channel;
 
                     PlayingState = PlayingStateEnum.PlayingInternal;
                 });
             }
-        }
-
-        private void VideoPage_Disappearing(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         public void ActionTap(int count)
@@ -899,7 +857,13 @@ case "camera":
 
             if (showCurrent)
             {
-                msg = $"\u25B6  {_viewModel.Title}";
+                if (_viewModel.PlayingChannel != null)
+                {
+                    msg = $"\u25B6  {_viewModel.PlayingChannel.Name}";
+                } else
+                {
+                    msg = $"\u25B6";
+                }
 
                 if (_viewModel.PlayingChannel != null &&
                     _viewModel.PlayingChannel.CurrentEPGItem != null &&
