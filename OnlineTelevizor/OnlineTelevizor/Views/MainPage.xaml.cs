@@ -78,21 +78,22 @@ namespace OnlineTelevizor.Views
                         LayoutGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Absolute);
                         LayoutGrid.ColumnDefinitions[1].Width = new GridLength(100, GridUnitType.Star);
 
-                        VideoStackLayout.IsVisible = true;
-
                         // overlap LayoutGrid
                         //VideoStackLayout.Layout(new Rectangle(0, 0, ContentPage.Width, ContentPage.Height));
 
                         AbsoluteLayout.SetLayoutFlags(VideoStackLayout, AbsoluteLayoutFlags.All);
                         AbsoluteLayout.SetLayoutBounds(VideoStackLayout, new Rectangle(0, 0, 1, 1));
 
+                        VideoStackLayout.IsVisible = true;
+
                         // turn off tool bar
+                        // TODO: when turning off toolbar in Sony Xperia F5321, Toast message is hidden under video
                         //NavigationPage.SetHasNavigationBar(this, false);
 
                         break;
                     case PlayingStateEnum.PlayingInPreview:
 
-                        //NavigationPage.SetHasNavigationBar(this, true);
+                        NavigationPage.SetHasNavigationBar(this, true);
 
                         if (_viewModel.IsPortrait)
                         {
@@ -398,9 +399,11 @@ namespace OnlineTelevizor.Views
             if (count == 2 && PlayingState == PlayingStateEnum.PlayingInPreview)
             {
                 PlayingState = PlayingStateEnum.PlayingInternal;
-                RefreshGUI();
-            }
-
+            } else
+            if (count == 2 && PlayingState == PlayingStateEnum.PlayingInternal)
+            {
+                PlayingState = PlayingStateEnum.PlayingInPreview;
+            } else
             if (count == 1 &&
                 (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview))
             {

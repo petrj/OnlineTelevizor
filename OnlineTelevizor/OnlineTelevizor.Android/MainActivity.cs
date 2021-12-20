@@ -385,8 +385,9 @@ namespace OnlineTelevizor.Droid
 
                     textView.SetTextSize(Android.Util.ComplexUnitType.Px, Convert.ToSingle(fontSize));
 
-                    //snackBar.View.BringToFront();
                     snackBar.Show();
+                    snackBar.View.BringToFront();
+                    snackBar.View.BringToFront();
                 });
             }
             catch (Exception ex)
