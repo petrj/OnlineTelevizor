@@ -75,6 +75,9 @@ namespace OnlineTelevizor.Views
                 {
                     case PlayingStateEnum.PlayingInternal:
 
+                        // turn off tool bar
+                        NavigationPage.SetHasNavigationBar(this, false);
+
                         LayoutGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Absolute);
                         LayoutGrid.ColumnDefinitions[1].Width = new GridLength(100, GridUnitType.Star);
 
@@ -85,10 +88,6 @@ namespace OnlineTelevizor.Views
                         AbsoluteLayout.SetLayoutBounds(VideoStackLayout, new Rectangle(0, 0, 1, 1));
 
                         VideoStackLayout.IsVisible = true;
-
-                        // turn off tool bar
-                        // TODO: when turning off toolbar in Sony Xperia F5321, Toast message is hidden under video
-                        //NavigationPage.SetHasNavigationBar(this, false);
 
                         break;
                     case PlayingStateEnum.PlayingInPreview:
@@ -123,7 +122,7 @@ namespace OnlineTelevizor.Views
                         break;
                     case PlayingStateEnum.Stopped:
 
-                        //NavigationPage.SetHasNavigationBar(this, true);
+                        NavigationPage.SetHasNavigationBar(this, true);
 
                         if (_viewModel.IsPortrait)
                         {
