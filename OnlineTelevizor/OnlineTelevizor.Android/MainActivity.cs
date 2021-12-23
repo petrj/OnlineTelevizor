@@ -344,7 +344,7 @@ namespace OnlineTelevizor.Droid
                     if (Android.OS.Build.VERSION.SdkInt < BuildVersionCodes.R)
                     {
                         var tView = _instance.View;
-                        tView.Background.SetColorFilter(Android.Graphics.Color.Blue, PorterDuff.Mode.SrcIn); //Gets the actual oval background of the Toast then sets the color filter
+                        tView.Background.SetColorFilter(Android.Graphics.Color.Gray, PorterDuff.Mode.SrcIn); //Gets the actual oval background of the Toast then sets the color filter
                         var textView = (TextView)tView.FindViewById(Android.Resource.Id.Message);
 
                         var minTextSize = textView.TextSize; // 16

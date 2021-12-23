@@ -174,7 +174,6 @@
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="40*" />
                         <RowDefinition Height="40*" />
-                        <!-- video preview -->
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -197,20 +196,30 @@
                         <Label x:Name="LabelChannelEPGDescription" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
                     </ScrollView>
 
-                </Grid>
+            </Grid>
         </Grid>
 
-        <StackLayout x:Name="VideoStackLayout" IsVisible="True"
-                     AbsoluteLayout.LayoutBounds="1.0,1.0,0.5,0.3" AbsoluteLayout.LayoutFlags="All">
-            <vlc:VideoView IsVisible="false" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-                                        x:Name="videoView" Margin="0,0,0,0" />
+        <StackLayout x:Name="VideoStackLayout" IsVisible="True" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+            <vlc:VideoView IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView" Margin="0,0,0,0" />
             <StackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" />
                 <TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" />
                 <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped"/>
                 <SwipeGestureRecognizer Direction="Right" Swiped="SwipeGestureRecognizer_Swiped"/>
-                <!--SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Up"/-->
-                <!--SwipeGestureRecognizer Direction="Down" Swiped="SwipeGestureRecognizer_Down"/-->
+                <SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Up"/>
+                <SwipeGestureRecognizer Direction="Down" Swiped="SwipeGestureRecognizer_Down"/>
+            </StackLayout.GestureRecognizers>
+        </StackLayout>
+
+        <StackLayout x:Name="NoVideoStackLayout" IsVisible="False" AbsoluteLayout.LayoutBounds="0,1.0,1,0.5" AbsoluteLayout.LayoutFlags="All" BackgroundColor="Black">
+            <Image Source="{Binding PlayingChannelLogoIcon}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <StackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" />
+                <TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" />
+                <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped"/>
+                <SwipeGestureRecognizer Direction="Right" Swiped="SwipeGestureRecognizer_Swiped"/>
+                <SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Up"/>
+                <SwipeGestureRecognizer Direction="Down" Swiped="SwipeGestureRecognizer_Down"/>
             </StackLayout.GestureRecognizers>
         </StackLayout>
 

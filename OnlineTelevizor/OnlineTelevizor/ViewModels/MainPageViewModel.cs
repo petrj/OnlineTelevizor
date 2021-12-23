@@ -60,22 +60,6 @@ namespace OnlineTelevizor.ViewModels
 
         private SelectedPartEnum _selectedPart = SelectedPartEnum.ChannelsList;
 
-        public TVService TVService
-        {
-            get
-            {
-                return _service;
-            }
-        }
-
-        public string AudioIcon
-        {
-            get
-            {
-                return "Audio" + _animePos.ToString();
-            }
-        }
-
         public bool IsPortrait { get; set; } = true;
         public bool DoNotScrollToChannel { get; set; } = false;
 
@@ -523,6 +507,23 @@ namespace OnlineTelevizor.ViewModels
                 }
 
                 return true;
+            }
+        }
+
+
+        public TVService TVService
+        {
+            get
+            {
+                return _service;
+            }
+        }
+
+        public string AudioIcon
+        {
+            get
+            {
+                return "Audio" + _animePos.ToString();
             }
         }
 

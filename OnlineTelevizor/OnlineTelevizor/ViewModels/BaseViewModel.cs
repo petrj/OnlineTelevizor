@@ -27,8 +27,6 @@ namespace OnlineTelevizor.ViewModels
         public const string UpdateInternalNotification = "UpdateInternalNotification";
         public const string StopPlayInternalNotification = "StopPlayInternalNotification";
         public const string StopPlayInternalNotificationAndQuit = "StopPlayInternalNotificationAndQuit";
-        public const string PlayNext = "PlayNext";
-        public const string PlayPrevious = "PlayPrevious";
         public const string KeyMessage = "KeyDownMessage";
         public const string KeyLongMessage = "KeyLongMessage";
         public const string ShowDetailMessage = "ShowDetailMessage";
@@ -105,7 +103,23 @@ namespace OnlineTelevizor.ViewModels
         public ChannelItem PlayingChannel
         {
             get { return _playingChannel; }
-            set { _playingChannel = value; }
+            set
+            {
+                _playingChannel = value;
+
+                OnPropertyChanged(nameof(PlayingChannelLogoIcon));
+            }
+        }
+
+        public string PlayingChannelLogoIcon
+        {
+            get
+            {
+                if (PlayingChannel == null)
+                    return String.Empty;
+
+                return PlayingChannel.LogoUrl;
+            }
         }
 
         #region Permissions
