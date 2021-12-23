@@ -385,6 +385,12 @@ namespace OnlineTelevizor.Views
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
+                    if (PlayingState == PlayingStateEnum.PlayingInPreview && _viewModel.PlayingChannel == channel)
+                    {
+                        PlayingState = PlayingStateEnum.PlayingInternal;
+                        return;
+                    }
+
                     if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
                     {
                         videoView.MediaPlayer.Stop();
@@ -773,13 +779,19 @@ namespace OnlineTelevizor.Views
 
             var select = false;
             var selected = false;
-            var firstAudioTrack = -1;
-            string name = null;
+
+            var firstAudioTrackId = -1;
+            string firstAudioTrackName = null;
+
+            string selectedName = null;
+            int selectedId = -1;
+
             foreach (var desc in _mediaPlayer.AudioTrackDescription)
             {
-                if (firstAudioTrack == -1 && desc.Id != -1)
+                if (firstAudioTrackId == -1 && desc.Id != -1)
                 {
-                    firstAudioTrack = desc.Id;
+                    firstAudioTrackId = desc.Id;
+                    firstAudioTrackName = desc.Name;
                 }
 
                 if (desc.Id ==currentAudioTrack)
@@ -790,7 +802,8 @@ namespace OnlineTelevizor.Views
                     if (select)
                     {
                         _mediaPlayer.SetAudioTrack(desc.Id);
-                        name = desc.Name;
+                        selectedName = desc.Name;
+                        selectedId = desc.Id;
                         selected = true;
                         break;
                     }
@@ -799,10 +812,15 @@ namespace OnlineTelevizor.Views
 
             if (!selected)
             {
-                _mediaPlayer.SetAudioTrack(firstAudioTrack);
+                _mediaPlayer.SetAudioTrack(firstAudioTrackId);
+
+                selectedName = firstAudioTrackName;
+                selectedId = firstAudioTrackId;
             }
 
-            MessagingCenter.Send($"Zvolena zvuková stopa {name}", BaseViewModel.ToastMessage);
+            if (string.IsNullOrEmpty(selectedName)) selectedName = $"# {selectedId}";
+
+            MessagingCenter.Send($"Zvolena zvuková stopa {selectedName}", BaseViewModel.ToastMessage);
         }
 
         private void HandleNumKey(int number)
@@ -965,6 +983,9 @@ namespace OnlineTelevizor.Views
 
         private async Task ActionKeyOK()
         {
+            //System.Diagnostics.Debug.WriteLine($"ActionKeyOK ({_lastKeyLongPressedTime.ToString("hh:mm:ss")})");
+            // TODO : refactoring
+
             if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList ||
                 _viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
             {
@@ -972,13 +993,14 @@ namespace OnlineTelevizor.Views
                 {
                     if (LastKeyLongPressed)
                     {
-                        await _dialogService.Information("Long pressed OK - TODO: show stream selection");
+                        ToggleAudioStream();
                     } else
                     {
                         ShowJustPlayingNotification();
                     }
                 } else
                 {
+                    // ActionPlay?
                     await _viewModel.PlaySelectedChannel();
                 }
             }
@@ -1291,9 +1313,18 @@ namespace OnlineTelevizor.Views
 
             if ((_lastBackPressedTime == DateTime.MinValue) || ((DateTime.Now-_lastBackPressedTime).TotalSeconds>5))
             {
-                MessagingCenter.Send($"Stiskněte ještě jednou pro ukončení", BaseViewModel.ToastMessage);
-                _lastBackPressedTime = DateTime.Now;
-                ActionStop(false);
+
+                if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
+                {
+                    ActionStop(false);
+                    _lastBackPressedTime = DateTime.MinValue;
+                } else
+                if (PlayingState == PlayingStateEnum.Stopped)
+                {
+                    MessagingCenter.Send($"Stiskněte ještě jednou pro ukončení", BaseViewModel.ToastMessage);
+                    _lastBackPressedTime = DateTime.Now;
+                }
+
                 return true;
             } else
             {
