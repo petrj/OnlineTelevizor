@@ -189,14 +189,15 @@ namespace OnlineTelevizor.Views
                         StackLayoutEPGDetail.RowDefinitions[2].Height = new GridLength(40, GridUnitType.Star);
                         StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(40, GridUnitType.Star);
 
+                        // VideoStackLayout must be visible before changing Layout
+                        var isVideoStackLayoutVisible = VideoStackLayout.IsVisible;
+                        VideoStackLayout.IsVisible = true;
                         AbsoluteLayout.SetLayoutFlags(VideoStackLayout, AbsoluteLayoutFlags.All);
                         AbsoluteLayout.SetLayoutBounds(VideoStackLayout, new Rectangle(0, 0, 1, 1));
+                        VideoStackLayout.IsVisible = isVideoStackLayoutVisible;
 
                         AbsoluteLayout.SetLayoutFlags(NoVideoStackLayout, AbsoluteLayoutFlags.All);
                         AbsoluteLayout.SetLayoutBounds(NoVideoStackLayout, new Rectangle(0, 1, 1, 0.3));
-
-                        //VideoStackLayout.IsVisible = false;
-                        //NoVideoStackLayout.IsVisible = true;
 
                         break;
                     case PlayingStateEnum.PlayingInPreview:
@@ -225,9 +226,6 @@ namespace OnlineTelevizor.Views
 
                         AbsoluteLayout.SetLayoutFlags(NoVideoStackLayout, AbsoluteLayoutFlags.All);
                         AbsoluteLayout.SetLayoutBounds(NoVideoStackLayout, new Rectangle(1, 1, 0.5, 0.3));
-
-                        //VideoStackLayout.IsVisible = false;
-                        //NoVideoStackLayout.IsVisible = true;
 
                         CheckStreamCommand.Execute(null);
 
