@@ -183,6 +183,8 @@ namespace OnlineTelevizor.Views
                         // turn off tool bar
                         NavigationPage.SetHasNavigationBar(this, false);
 
+                        MessagingCenter.Send(String.Empty, BaseViewModel.EnableFullScreen);
+
                         LayoutGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Absolute);
                         LayoutGrid.ColumnDefinitions[1].Width = new GridLength(100, GridUnitType.Star);
 
@@ -203,6 +205,11 @@ namespace OnlineTelevizor.Views
                     case PlayingStateEnum.PlayingInPreview:
 
                         NavigationPage.SetHasNavigationBar(this, true);
+
+                        if (!_config.Fullscreen)
+                        {
+                            MessagingCenter.Send(String.Empty, BaseViewModel.DisableFullScreen);
+                        }
 
                         if (_viewModel.IsPortrait)
                         {
@@ -233,6 +240,11 @@ namespace OnlineTelevizor.Views
                     case PlayingStateEnum.Stopped:
 
                         NavigationPage.SetHasNavigationBar(this, true);
+
+                        if (!_config.Fullscreen)
+                        {
+                            MessagingCenter.Send(String.Empty, BaseViewModel.DisableFullScreen);
+                        }
 
                         if (_viewModel.IsPortrait)
                         {
@@ -639,7 +651,6 @@ namespace OnlineTelevizor.Views
                 case "comma":
                 case "semicolon":
                 case "grave":
-case "camera":
                     Task.Run(async () => await ActionKeyOK());
                     break;
                 //case "back":
@@ -734,6 +745,10 @@ case "camera":
                     Reset();
                     Refresh();
                     break;
+                case "camera":
+//                case "focus":
+                    ToggleAudioStream();
+                    break;
                 default:
                     {
 #if DEBUG
@@ -742,6 +757,52 @@ case "camera":
                     }
                     break;
             }
+        }
+
+        private void ToggleAudioStream()
+        {
+            if (_mediaPlayer == null)
+                return;
+
+            if (_mediaPlayer.AudioTrackCount <= 1)
+                return;
+
+            var currentAudioTrack = _mediaPlayer.AudioTrack;
+            if (currentAudioTrack == -1)
+                return;
+
+            var select = false;
+            var selected = false;
+            var firstAudioTrack = -1;
+            string name = null;
+            foreach (var desc in _mediaPlayer.AudioTrackDescription)
+            {
+                if (firstAudioTrack == -1 && desc.Id != -1)
+                {
+                    firstAudioTrack = desc.Id;
+                }
+
+                if (desc.Id ==currentAudioTrack)
+                {
+                    select = true;
+                } else
+                {
+                    if (select)
+                    {
+                        _mediaPlayer.SetAudioTrack(desc.Id);
+                        name = desc.Name;
+                        selected = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!selected)
+            {
+                _mediaPlayer.SetAudioTrack(firstAudioTrack);
+            }
+
+            MessagingCenter.Send($"Zvolena zvuková stopa {name}", BaseViewModel.ToastMessage);
         }
 
         private void HandleNumKey(int number)
@@ -809,6 +870,11 @@ case "camera":
 
         public void Resume()
         {
+            if (_config.Fullscreen)
+            {
+                MessagingCenter.Send(String.Empty, BaseViewModel.EnableFullScreen);
+            }
+
             // workaround for black screen after resume
             // TODO: resume video without reinitializing
 
@@ -904,7 +970,13 @@ case "camera":
             {
                 if (PlayingState == PlayingStateEnum.PlayingInternal)
                 {
-                    ShowJustPlayingNotification();
+                    if (LastKeyLongPressed)
+                    {
+                        await _dialogService.Information("Long pressed OK - TODO: show stream selection");
+                    } else
+                    {
+                        ShowJustPlayingNotification();
+                    }
                 } else
                 {
                     await _viewModel.PlaySelectedChannel();
@@ -1195,6 +1267,14 @@ case "camera":
             }
         }
 
+        private bool LastKeyLongPressed
+        {
+            get
+            {
+                return ((_lastKeyLongPressedTime != DateTime.MinValue) && ((DateTime.Now - _lastKeyLongPressedTime).TotalSeconds < 3));
+            }
+        }
+
         protected override bool OnBackButtonPressed()
         {
             // this event is called immediately after Navigation.PopAsync();
@@ -1204,9 +1284,8 @@ case "camera":
                 return true;
             }
 
-            if ((_lastKeyLongPressedTime != DateTime.MinValue) && ((DateTime.Now - _lastKeyLongPressedTime).TotalSeconds < 3))
+            if (LastKeyLongPressed)
             {
-                // long press back
                 return false;
             }
 

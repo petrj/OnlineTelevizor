@@ -49,6 +49,8 @@ namespace OnlineTelevizor.ViewModels
         private int _animePos = 2;
         private bool _animePosIncreasing = true;
 
+        private bool _notifyRefreshStatus = false;
+
         public enum SelectedPartEnum
         {
             ChannelsList = 0,
@@ -107,6 +109,9 @@ namespace OnlineTelevizor.ViewModels
             ShortPressCommand = new Command(ShortPress);
 
             UpdateRecordNotificationCommand = new Command(async () => await UpdateRecordNotification());
+
+
+            NotifyRefreshStatus = true;
 
             // refreshing every hour with no start delay
             BackgroundCommandWorker.RunInBackground(RefreshCommand, 3600, 0);
@@ -785,6 +790,18 @@ namespace OnlineTelevizor.ViewModels
                 });
         }
 
+        public bool NotifyRefreshStatus
+        {
+            get
+            {
+                return _notifyRefreshStatus;
+            }
+            set
+            {
+                _notifyRefreshStatus = value;
+            }
+        }
+
         private Dictionary<string, ChannelItem> ChannelById
         {
             get
@@ -1043,8 +1060,11 @@ namespace OnlineTelevizor.ViewModels
                 _firstRefresh = false;
             }
 
-            // status notification
-            MessagingCenter.Send(StatusLabel, BaseViewModel.ToastMessage);
+            if (_lastRefreshChannelsDelay == 0 && NotifyRefreshStatus)
+            {
+                MessagingCenter.Send(StatusLabel, BaseViewModel.ToastMessage);
+                NotifyRefreshStatus = false;
+            }
         }
 
         private async Task RefreshChannels()
