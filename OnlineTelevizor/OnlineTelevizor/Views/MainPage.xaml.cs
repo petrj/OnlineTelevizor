@@ -24,12 +24,13 @@ namespace OnlineTelevizor.Views
         private IOnlineTelevizorConfiguration _config;
         private ILoggingService _loggingService;
 
-        private FilterPage _filterPage;
+        private FilterPage _filterPage = null;
         private CastRenderersPage _renderersPage;
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private DateTime _lastBackPressedTime = DateTime.MinValue;
         private DateTime _lastKeyLongPressedTime = DateTime.MinValue;
+        private DateTime _lastToggledAudioStreamTime = DateTime.MinValue;
         private DateTime _lastPageAppearedTime = DateTime.MinValue;
         private bool _firstSelectionAfterStartup = false;
         private string _numberPressed = String.Empty;
@@ -71,12 +72,6 @@ namespace OnlineTelevizor.Views
             _loggingService.Debug($"Initializing MainPage");
 
             BindingContext = _viewModel = new MainPageViewModel(loggingService, config, _dialogService);
-
-            _filterPage = new FilterPage(_loggingService, _config, _viewModel.TVService);
-            _filterPage.Disappearing += delegate
-            {
-                _viewModel.RefreshCommand.Execute(null);
-            };
 
             ScrollViewChannelEPGDescription.Scrolled += ScrollViewChannelEPGDescription_Scrolled;
             Appearing += MainPage_Appearing;
@@ -379,82 +374,6 @@ namespace OnlineTelevizor.Views
             RefreshGUI();
         }
 
-        public void ActionPlay(ChannelItem channel)
-        {
-            if (_config.InternalPlayer)
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    if (PlayingState == PlayingStateEnum.PlayingInPreview && _viewModel.PlayingChannel == channel)
-                    {
-                        PlayingState = PlayingStateEnum.PlayingInternal;
-                        return;
-                    }
-
-                    if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
-                    {
-                        videoView.MediaPlayer.Stop();
-                    }
-
-                    _media = new Media(_libVLC, channel.Url, FromType.FromLocation);
-
-                    videoView.MediaPlayer = _mediaPlayer;
-
-                    _mediaPlayer.Play(_media);
-
-                    _viewModel.PlayingChannel = channel;
-
-                    ShowJustPlayingNotification();
-
-                    PlayingState = PlayingStateEnum.PlayingInternal;
-                });
-            }
-        }
-
-        public void ActionTap(int count)
-        {
-            if (count == 2 && PlayingState == PlayingStateEnum.PlayingInPreview)
-            {
-                PlayingState = PlayingStateEnum.PlayingInternal;
-            } else
-            if (count == 2 && PlayingState == PlayingStateEnum.PlayingInternal)
-            {
-                PlayingState = PlayingStateEnum.PlayingInPreview;
-            } else
-            if (count == 1 &&
-                (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview))
-            {
-                ShowJustPlayingNotification();
-            }
-        }
-
-        public void ActionStop(bool force)
-        {
-            if (_config.InternalPlayer)
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    if (_media == null || videoView == null || videoView.MediaPlayer == null)
-                        return;
-
-                    if (!force && (PlayingState == PlayingStateEnum.PlayingInternal))
-                    {
-                        PlayingState = PlayingStateEnum.PlayingInPreview;
-                    }
-                    else
-                    if (force || (PlayingState == PlayingStateEnum.PlayingInPreview))
-                    {
-                        videoView.MediaPlayer.Stop();
-                        PlayingState = PlayingStateEnum.Stopped;
-                        _viewModel.PlayingChannel = null;
-                    }
-                });
-            } else
-            {
-                PlayingState = PlayingStateEnum.Stopped;
-            }
-        }
-
         private void ChannelsListView_Scrolled(object sender, ScrolledEventArgs e)
         {
             // workaround for de-highlighting selected item after scroll on startup
@@ -751,10 +670,6 @@ namespace OnlineTelevizor.Views
                     Reset();
                     Refresh();
                     break;
-                case "camera":
-//                case "focus":
-                    ToggleAudioStream();
-                    break;
                 default:
                     {
 #if DEBUG
@@ -981,31 +896,114 @@ namespace OnlineTelevizor.Views
             MessagingCenter.Send(msg, BaseViewModel.ToastMessage);
         }
 
+        public void ActionPlay(ChannelItem channel)
+        {
+            if (_config.InternalPlayer)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (PlayingState == PlayingStateEnum.PlayingInPreview && _viewModel.PlayingChannel == channel)
+                    {
+                        PlayingState = PlayingStateEnum.PlayingInternal;
+                        return;
+                    }
+
+                    if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
+                    {
+                        videoView.MediaPlayer.Stop();
+                    }
+
+                    _media = new Media(_libVLC, channel.Url, FromType.FromLocation);
+
+                    videoView.MediaPlayer = _mediaPlayer;
+
+                    _mediaPlayer.Play(_media);
+
+                    _viewModel.PlayingChannel = channel;
+
+                    ShowJustPlayingNotification();
+
+                    PlayingState = PlayingStateEnum.PlayingInternal;
+                });
+            }
+        }
+
+        public void ActionTap(int count)
+        {
+            if (count == 2 && PlayingState == PlayingStateEnum.PlayingInPreview)
+            {
+                PlayingState = PlayingStateEnum.PlayingInternal;
+            }
+            else
+            if (count == 2 && PlayingState == PlayingStateEnum.PlayingInternal)
+            {
+                PlayingState = PlayingStateEnum.PlayingInPreview;
+            }
+            else
+            if (count == 1 &&
+                (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview))
+            {
+                ShowJustPlayingNotification();
+            }
+        }
+
+        public void ActionStop(bool force)
+        {
+            if (_config.InternalPlayer)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (_media == null || videoView == null || videoView.MediaPlayer == null)
+                        return;
+
+                    if (!force && (PlayingState == PlayingStateEnum.PlayingInternal))
+                    {
+                        PlayingState = PlayingStateEnum.PlayingInPreview;
+                    }
+                    else
+                    if (force || (PlayingState == PlayingStateEnum.PlayingInPreview))
+                    {
+                        videoView.MediaPlayer.Stop();
+                        PlayingState = PlayingStateEnum.Stopped;
+                        _viewModel.PlayingChannel = null;
+                    }
+                });
+            }
+            else
+            {
+                PlayingState = PlayingStateEnum.Stopped;
+            }
+        }
+
         private async Task ActionKeyOK()
         {
-            //System.Diagnostics.Debug.WriteLine($"ActionKeyOK ({_lastKeyLongPressedTime.ToString("hh:mm:ss")})");
-            // TODO : refactoring
+            if (PlayingState == PlayingStateEnum.PlayingInternal)
+            {
+                if (LastKeyLongPressed)
+                {
+                    if ((_lastToggledAudioStreamTime == DateTime.MinValue) || (DateTime.Now - _lastToggledAudioStreamTime).TotalSeconds > 3)
+                    {
+                        _lastToggledAudioStreamTime = DateTime.Now;
 
-            if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList ||
-                _viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
-            {
-                if (PlayingState == PlayingStateEnum.PlayingInternal)
-                {
-                    if (LastKeyLongPressed)
-                    {
                         ToggleAudioStream();
-                    } else
-                    {
-                        ShowJustPlayingNotification();
                     }
-                } else
-                {
-                    // ActionPlay?
-                    await _viewModel.PlaySelectedChannel();
                 }
+                else
+                {
+                    ShowJustPlayingNotification();
+                }
+                return;
             }
-            else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
+
+            if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
             {
+                ActionPlay(_viewModel.SelectedItem);
+                return;
+            }
+
+            if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
+            {
+                ActionStop(true);
 
                 if (_viewModel.SelectedToolbarItemName == "ToolbarItemSettings")
                 {
@@ -1246,6 +1244,12 @@ namespace OnlineTelevizor.Views
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
         {
             _loggingService.Info($"ToolbarItemFilter_Clicked");
+
+            _filterPage = new FilterPage(_loggingService, _config, _viewModel.TVService);
+            _filterPage.Disappearing += delegate
+            {
+                _viewModel.RefreshCommand.Execute(null);
+            };
 
             await Navigation.PushAsync(_filterPage);
         }

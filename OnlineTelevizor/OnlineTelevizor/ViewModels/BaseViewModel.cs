@@ -288,8 +288,6 @@ namespace OnlineTelevizor.ViewModels
         {
             try
             {
-                PlayingChannel = channel;
-
                 // apply config quality:
                 if (!String.IsNullOrEmpty(Config.StreamQuality))
                 {
