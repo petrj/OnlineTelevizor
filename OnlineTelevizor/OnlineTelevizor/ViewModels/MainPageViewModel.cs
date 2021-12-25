@@ -27,6 +27,8 @@ namespace OnlineTelevizor.ViewModels
         public ObservableCollection<ChannelItem> AllNotFilteredChannels { get; set; } = new ObservableCollection<ChannelItem>();
         public Command UpdateRecordNotificationCommand { get; set; }
 
+        public Command VideoLongPressCommand { get; set; }
+
         public bool IsCasting { get; set; }  = false;
         public bool IsRecording { get; set; } = false;
 
@@ -107,6 +109,8 @@ namespace OnlineTelevizor.ViewModels
 
             LongPressCommand = new Command(LongPress);
             ShortPressCommand = new Command(ShortPress);
+
+            VideoLongPressCommand = new Command(VideoLongPress);
 
             UpdateRecordNotificationCommand = new Command(async () => await UpdateRecordNotification());
 
@@ -353,6 +357,11 @@ namespace OnlineTelevizor.ViewModels
 
                 Task.Run(async () => await PlaySelectedChannel());
             }
+        }
+
+        private void VideoLongPress(object item)
+        {
+            MessagingCenter.Send<string>(string.Empty, BaseViewModel.ToggleAudioStream);
         }
 
         public async Task NotifyCastChannel(string channelNumber, bool castingStart)

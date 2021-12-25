@@ -19,6 +19,7 @@ namespace OnlineTelevizor.ViewModels
     {
         protected ILoggingService _loggingService;
         protected IDialogService _dialogService;
+
         public const string UriMessage = "LaunchUriMessage";
         public const string EnableFullScreen = "EnableFullScreen";
         public const string DisableFullScreen = "DisableFullScreen";
@@ -43,6 +44,7 @@ namespace OnlineTelevizor.ViewModels
         public const string UpdateRecordNotificationMessage = "UpdateRecordNotification";
         public const string StopRecordNotificationMessage = "StopRecordNotification";
         public const string StopRecord = "StopRecord";
+        public const string ToggleAudioStream = "ToggleAudioStream";
 
         public const string CheckBatterySettings = "CheckBatterySettings";
         public const string RequestBatterySettings = "RequestBatterySettings";

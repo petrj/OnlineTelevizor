@@ -165,6 +165,11 @@ namespace OnlineTelevizor.Views
                     await _viewModel.RecordChannel(false);
                 });
             });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.ToggleAudioStream, async (sender) =>
+            {
+                ToggleAudioStream();
+            });
         }
 
         public void RefreshGUI()
@@ -305,6 +310,11 @@ namespace OnlineTelevizor.Views
 
         private void OnSingleTapped(object sender, EventArgs e)
         {
+            if ((_lastToggledAudioStreamTime != DateTime.MinValue) && (DateTime.Now - _lastToggledAudioStreamTime).TotalSeconds < 3)
+            {
+                return;
+            }
+
             ActionTap(1);
         }
 
@@ -682,6 +692,13 @@ namespace OnlineTelevizor.Views
 
         private void ToggleAudioStream()
         {
+            if ((_lastToggledAudioStreamTime != DateTime.MinValue) && (DateTime.Now - _lastToggledAudioStreamTime).TotalSeconds < 3)
+            {
+                return;
+            }
+
+            _lastToggledAudioStreamTime = DateTime.Now;
+
             if (_mediaPlayer == null)
                 return;
 
@@ -981,12 +998,7 @@ namespace OnlineTelevizor.Views
             {
                 if (LastKeyLongPressed)
                 {
-                    if ((_lastToggledAudioStreamTime == DateTime.MinValue) || (DateTime.Now - _lastToggledAudioStreamTime).TotalSeconds > 3)
-                    {
-                        _lastToggledAudioStreamTime = DateTime.Now;
-
-                        ToggleAudioStream();
-                    }
+                    ToggleAudioStream();
                 }
                 else
                 {

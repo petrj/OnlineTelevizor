@@ -7,7 +7,8 @@
              BackgroundColor="Black"
              NavigationPage.TitleIcon="Icon.png"
              xmlns:vlc="clr-namespace:LibVLCSharp.Forms.Shared;assembly=LibVLCSharp.Forms"
-             xmlns:local2="clr-namespace:OnlineTelevizor" xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
+             xmlns:local2="clr-namespace:OnlineTelevizor" xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -220,7 +221,8 @@
             </Grid>
         </Grid>
 
-        <StackLayout x:Name="VideoStackLayout" IsVisible="True" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+        <StackLayout x:Name="VideoStackLayout" IsVisible="True" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All"
+                     xct:TouchEffect.LongPressCommand="{Binding VideoLongPressCommand}">
             <vlc:VideoView IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView" Margin="0,0,0,0"/>
             <StackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" />
@@ -232,7 +234,8 @@
             </StackLayout.GestureRecognizers>
         </StackLayout>
 
-        <StackLayout x:Name="NoVideoStackLayout" IsVisible="False" AbsoluteLayout.LayoutBounds="0,1.0,1,0.5" AbsoluteLayout.LayoutFlags="All" BackgroundColor="Black">
+        <StackLayout x:Name="NoVideoStackLayout" IsVisible="False" AbsoluteLayout.LayoutBounds="0,1.0,1,0.5" AbsoluteLayout.LayoutFlags="All" BackgroundColor="Black"
+                      xct:TouchEffect.LongPressCommand="{Binding VideoLongPressCommand2}">
             <ffimageloading:CachedImage Source="{Binding PlayingChannelLogoIcon}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <StackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" />
