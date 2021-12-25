@@ -543,6 +543,28 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public string SelectedChannelEPGTimeStart
+        {
+            get
+            {
+                if (SelectedItem == null)
+                    return String.Empty;
+
+                return SelectedItem.EPGTimeStart;
+            }
+        }
+
+        public string SelectedChannelEPGTimeFinish
+        {
+            get
+            {
+                if (SelectedItem == null)
+                    return String.Empty;
+
+                return SelectedItem.EPGTimeFinish;
+            }
+        }
+
         public string ViewPreviewDescription
         {
             get
@@ -676,6 +698,8 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
                 OnPropertyChanged(nameof(EPGProgressBackgroundColor));
+                OnPropertyChanged(nameof(SelectedChannelEPGTimeStart));
+                OnPropertyChanged(nameof(SelectedChannelEPGTimeFinish));
                 OnPropertyChanged(nameof(SelectedItem));
 
                 Task.Run(async () => await UpdateSelectedChannelEPGDescription());

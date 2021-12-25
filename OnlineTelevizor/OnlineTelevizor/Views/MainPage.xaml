@@ -40,6 +40,26 @@
                 <Setter Property="Margin" Value="0,0,0,0"/>
             </Style>
 
+            <Style x:Key="TimeFromTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="VerticalTextAlignment" Value="Start"/>
+                <Setter Property="HorizontalOptions" Value="Start"/>
+                <Setter Property="FontAttributes" Value="None"/>
+                <Setter Property="LineBreakMode" Value="NoWrap"/>
+                <Setter Property="Margin" Value="5,0,0,0"/>
+                <Setter Property="Padding" Value="0,0,0,0"/>
+            </Style>
+
+            <Style x:Key="TimeToTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="VerticalTextAlignment" Value="Start"/>
+                <Setter Property="HorizontalOptions" Value="End"/>
+                <Setter Property="FontAttributes" Value="None"/>
+                <Setter Property="LineBreakMode" Value="NoWrap"/>
+                <Setter Property="Margin" Value="0,0,5,0"/>
+                <Setter Property="Padding" Value="0,0,0,0"/>
+            </Style>
+
             <Style x:Key="NextTitleTextStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="VerticalTextAlignment" Value="Start"/>
@@ -47,15 +67,6 @@
                 <Setter Property="FontAttributes" Value="Italic"/>
                 <Setter Property="LineBreakMode" Value="WordWrap"/>
                 <Setter Property="Margin" Value="0,0,5,0"/>
-            </Style>
-
-            <Style x:Key="VideoPreviewTextStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="#41b3ff"/>
-                <Setter Property="VerticalTextAlignment" Value="Center"/>
-                <Setter Property="HorizontalOptions" Value="Center"/>
-                <Setter Property="FontAttributes" Value="Italic"/>
-                <Setter Property="LineBreakMode" Value="WordWrap"/>
-                <Setter Property="Margin" Value="0,0,0,0"/>
             </Style>
 
             <Style x:Key="InfoLabelStyle" TargetType="Label">
@@ -84,6 +95,7 @@
             <Style x:Key="DescriptionTextStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="Margin" Value="0,20,0,0"/>
+                <Setter Property="Padding" Value="5,5,5,5"/>
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
             </Style>
 
@@ -99,7 +111,11 @@
 
     <AbsoluteLayout x:Name="absoluteLayout">
 
-        <Grid x:Name="LayoutGrid" Style="{DynamicResource LayoutGridStyle}">
+        <Grid
+            x:Name="LayoutGrid"
+            Style="{DynamicResource LayoutGridStyle}"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All" >
             <Grid.RowDefinitions>
                     <RowDefinition Height="100*" />
             </Grid.RowDefinitions>
@@ -170,37 +186,42 @@
                         Margin="0,0,0,0"
                         Padding="0,0,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="19*" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="40*" />
                         <RowDefinition Height="40*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*" />
+                        <ColumnDefinition Width="50*" />
+                    </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"  Margin="5,5,5,5"/>
+
+                <Label Grid.Row="1" Grid.Column="0"  Text="{Binding SelectedChannelEPGTimeStart}"  Style="{DynamicResource TimeFromTextStyle}" FontSize="{Binding FontSizeForTime}"/>
+                <Label Grid.Row="1" Grid.Column="1"  Text="{Binding SelectedChannelEPGTimeFinish}"  Style="{DynamicResource TimeToTextStyle}" FontSize="{Binding FontSizeForTime}" />
+
+                <Grid Grid.Row="2" Grid.Column="0"  Grid.ColumnSpan="2" Margin="0,0,0,0" x:Name="ProgresssBarGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"  Margin="5,5,5,5"/>
+                    <ProgressBar Grid.Row="0" Grid.Column="0" Progress="{Binding SelectedChannelEPGProgress}" BackgroundColor="{Binding EPGProgressBackgroundColor}" />
+                </Grid>
 
-                    <Grid Grid.Row="1" Grid.Column="0"  Margin="0,0,0,0" x:Name="ProgresssBarGrid">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="1" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <ProgressBar Grid.Row="0" Grid.Column="0" Progress="{Binding SelectedChannelEPGProgress}" BackgroundColor="{Binding EPGProgressBackgroundColor}" />
-                    </Grid>
-
-                    <ScrollView Grid.Row="2" Grid.Column="0" x:Name="ScrollViewChannelEPGDescription" BackgroundColor="{Binding EPGDescriptionBackgroundColor}"  HorizontalOptions="StartAndExpand" VerticalOptions="Start"  Margin="5,5,5,5">
-                        <Label x:Name="LabelChannelEPGDescription" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
-                    </ScrollView>
+                <ScrollView Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="ScrollViewChannelEPGDescription" BackgroundColor="{Binding EPGDescriptionBackgroundColor}"  HorizontalOptions="StartAndExpand" VerticalOptions="Start"  Margin="5,5,5,5">
+                    <Label x:Name="LabelChannelEPGDescription" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
+                </ScrollView>
 
             </Grid>
         </Grid>
 
         <StackLayout x:Name="VideoStackLayout" IsVisible="True" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
-            <vlc:VideoView IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView" Margin="0,0,0,0" />
+            <vlc:VideoView IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="videoView" Margin="0,0,0,0"/>
             <StackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" />
                 <TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" />
@@ -212,7 +233,7 @@
         </StackLayout>
 
         <StackLayout x:Name="NoVideoStackLayout" IsVisible="False" AbsoluteLayout.LayoutBounds="0,1.0,1,0.5" AbsoluteLayout.LayoutFlags="All" BackgroundColor="Black">
-            <Image Source="{Binding PlayingChannelLogoIcon}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <ffimageloading:CachedImage Source="{Binding PlayingChannelLogoIcon}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <StackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnSingleTapped" NumberOfTapsRequired="1" />
                 <TapGestureRecognizer Tapped="OnDoubleTapped" NumberOfTapsRequired="2" />
