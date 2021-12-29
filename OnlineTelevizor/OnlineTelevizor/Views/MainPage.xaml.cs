@@ -201,6 +201,9 @@ namespace OnlineTelevizor.Views
                         AbsoluteLayout.SetLayoutFlags(NoVideoStackLayout, AbsoluteLayoutFlags.All);
                         AbsoluteLayout.SetLayoutBounds(NoVideoStackLayout, new Rectangle(0, 1, 1, 0.3));
 
+                        ClosePreviewVideoImage.IsVisible = false;
+                        CloseVideoImage.IsVisible = false;
+
                         break;
                     case PlayingStateEnum.PlayingInPreview:
 
@@ -236,6 +239,9 @@ namespace OnlineTelevizor.Views
 
                         CheckStreamCommand.Execute(null);
 
+                        ClosePreviewVideoImage.IsVisible = true;
+                        CloseVideoImage.IsVisible = false;
+
                         break;
                     case PlayingStateEnum.Stopped:
 
@@ -262,6 +268,8 @@ namespace OnlineTelevizor.Views
 
                         VideoStackLayout.IsVisible = false;
                         NoVideoStackLayout.IsVisible = false;
+                        ClosePreviewVideoImage.IsVisible = false;
+                        CloseVideoImage.IsVisible = false;
 
                         break;
                 }
@@ -306,6 +314,11 @@ namespace OnlineTelevizor.Views
                     PlayingState = PlayingStateEnum.Stopped;
                 }
             });
+        }
+
+        private void OnCloseVideoTapped(object sender, EventArgs e)
+        {
+            ActionStop(false);
         }
 
         private void OnSingleTapped(object sender, EventArgs e)
@@ -961,6 +974,24 @@ namespace OnlineTelevizor.Views
                 (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview))
             {
                 ShowJustPlayingNotification();
+
+                if (PlayingState == PlayingStateEnum.PlayingInternal)
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        CloseVideoImage.IsVisible = true;
+                    });
+
+                    Task.Run(async () =>
+                    {
+                        await Task.Delay(3000);
+
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            CloseVideoImage.IsVisible = false;
+                        });
+                    });
+                };
             }
         }
 

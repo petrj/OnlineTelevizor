@@ -247,6 +247,18 @@
             </StackLayout.GestureRecognizers>
         </StackLayout>
 
+        <Image x:Name="CloseVideoImage" Source="Quit.png"  IsVisible="False" AbsoluteLayout.LayoutBounds="1.0,0.05,0.05,0.05" AbsoluteLayout.LayoutFlags="All" BackgroundColor="Transparent">
+            <Image.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnCloseVideoTapped" NumberOfTapsRequired="1" />
+            </Image.GestureRecognizers>
+        </Image>
+
+        <Image x:Name="ClosePreviewVideoImage" Source="Quit.png"  IsVisible="False" AbsoluteLayout.LayoutBounds="1.0,0.75,0.05,0.05" AbsoluteLayout.LayoutFlags="All" BackgroundColor="Transparent">
+            <Image.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnCloseVideoTapped" NumberOfTapsRequired="1" />
+            </Image.GestureRecognizers>
+        </Image>
+
     </AbsoluteLayout>
 
     <ContentPage.ToolbarItems>
