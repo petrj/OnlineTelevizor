@@ -55,8 +55,6 @@ namespace OnlineTelevizor.Models
 
         bool NotPurchased { get; }
 
-        bool DoNotSplitScreenOnLandscape { get; set; }
-
         string PurchaseProductId { get; }
 
         bool DebugMode { get; set; }

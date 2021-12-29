@@ -164,10 +164,6 @@ namespace OnlineTelevizor.Views
             }
             else if (_lastFocusedView == ShowAdultChannelsSwitch)
             {
-                FocusView(DoNotSplitScreenOnLandscapeSwitch);
-            }
-            else if (_lastFocusedView == DoNotSplitScreenOnLandscapeSwitch)
-            {
                 FocusView(FullscreenSwitch);
             }
             else if (_lastFocusedView == FullscreenSwitch)

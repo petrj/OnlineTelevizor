@@ -195,18 +195,6 @@ namespace OnlineTelevizor.UWP
             }
         }
 
-        public bool DoNotSplitScreenOnLandscape
-        {
-            get
-            {
-                return GetSettingValue<bool>("DoNotSplitScreenOnLandscape");
-            }
-            set
-            {
-                SaveSettingValue<bool>("DoNotSplitScreenOnLandscape", value);
-            }
-        }
-
         public bool Fullscreen
         {
             get
