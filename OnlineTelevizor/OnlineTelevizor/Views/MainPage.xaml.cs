@@ -14,6 +14,7 @@ using System.Threading;
 using static OnlineTelevizor.ViewModels.MainPageViewModel;
 using static Android.OS.PowerManager;
 using LibVLCSharp.Shared;
+using System.Text.RegularExpressions;
 
 namespace OnlineTelevizor.Views
 {
@@ -155,7 +156,7 @@ namespace OnlineTelevizor.Views
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.StopPlay, async (sender) =>
             {
-                ActionStop(false);
+                ActionStop(true);
             });
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.StopRecord, async (sender) =>
@@ -943,7 +944,24 @@ namespace OnlineTelevizor.Views
                         videoView.MediaPlayer.Stop();
                     }
 
-                    _media = new Media(_libVLC, channel.Url, FromType.FromLocation);
+                    // apply config quality:
+                    var url = channel.Url;
+                    if (!String.IsNullOrEmpty(_config.StreamQuality))
+                    {
+                        var configQuality = "quality=" + _config.StreamQuality;
+
+                        var qMatches = Regex.Match(channel.Url, "quality=[0-9]{1,4}");
+                        if (qMatches != null && qMatches.Success)
+                        {
+                            url = channel.Url.Replace(qMatches.Value, configQuality);
+                        }
+                        else
+                        {
+                            url += "&" + configQuality;
+                        }
+                    }
+
+                    _media = new Media(_libVLC, url, FromType.FromLocation);
 
                     videoView.MediaPlayer = _mediaPlayer;
 
@@ -952,6 +970,11 @@ namespace OnlineTelevizor.Views
                     _viewModel.PlayingChannel = channel;
 
                     ShowJustPlayingNotification();
+
+                    if (_config.PlayOnBackground)
+                    {
+                        MessagingCenter.Send<MainPage, ChannelItem>(this, BaseViewModel.PlayInternalNotification, channel);
+                    }
 
                     PlayingState = PlayingStateEnum.PlayingInternal;
                 });
@@ -1014,6 +1037,8 @@ namespace OnlineTelevizor.Views
                         videoView.MediaPlayer.Stop();
                         PlayingState = PlayingStateEnum.Stopped;
                         _viewModel.PlayingChannel = null;
+
+                        MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotification);
                     }
                 });
             }
@@ -1387,6 +1412,7 @@ namespace OnlineTelevizor.Views
                 {
                     NoVideoStackLayout.IsVisible = false;
                     VideoStackLayout.IsVisible = false;
+                    AudioPlayingImage.IsVisible = false;
 
                     return;
                 }
@@ -1395,6 +1421,8 @@ namespace OnlineTelevizor.Views
                 {
                     _mediaPlayer.Play(_media);
                 }
+
+                AudioPlayingImage.IsVisible = true;
 
                 var radio = _viewModel.PlayingChannel != null
                             && !string.IsNullOrEmpty(_viewModel.PlayingChannel.Type)

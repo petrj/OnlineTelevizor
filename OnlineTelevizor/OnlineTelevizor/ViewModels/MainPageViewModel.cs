@@ -26,6 +26,8 @@ namespace OnlineTelevizor.ViewModels
         public ObservableCollection<ChannelItem> Channels { get; set; } = new ObservableCollection<ChannelItem>();
         public ObservableCollection<ChannelItem> AllNotFilteredChannels { get; set; } = new ObservableCollection<ChannelItem>();
         public Command UpdateRecordNotificationCommand { get; set; }
+        public Command UpdateNotificationCommand { get; set; }
+
 
         public Command VideoLongPressCommand { get; set; }
 
@@ -114,6 +116,7 @@ namespace OnlineTelevizor.ViewModels
 
             UpdateRecordNotificationCommand = new Command(async () => await UpdateRecordNotification());
 
+            UpdateNotificationCommand = new Command(async () => await UpdateNotification());
 
             NotifyRefreshStatus = true;
 
@@ -126,12 +129,14 @@ namespace OnlineTelevizor.ViewModels
             // update record notification
             BackgroundCommandWorker.RunInBackground(UpdateRecordNotificationCommand, 10, 5);
 
+            // update playing notification
+            BackgroundCommandWorker.RunInBackground(UpdateNotificationCommand, 10, 5);
+
             BackgroundCommandWorker.RunInBackground(AnimeIconCommand, 1, 1);
         }
 
         private async Task Anime()
         {
-            /*
             if (_animePosIncreasing)
             {
                 _animePos++;
@@ -158,7 +163,6 @@ namespace OnlineTelevizor.ViewModels
             catch {
             // UWP platform fix
             }
-        */
         }
 
         private async Task UpdateRecordNotification()
@@ -651,13 +655,10 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task UpdateNotification()
         {
-            Device.BeginInvokeOnMainThread(() =>
+            if (PlayingChannel != null)
             {
-                if (PlayingChannel != null)
-                {
-                    MessagingCenter.Send<MainPageViewModel, ChannelItem>(this, BaseViewModel.UpdateInternalNotification, PlayingChannel);
-                }
-            });
+                MessagingCenter.Send<MainPageViewModel, ChannelItem>(this, BaseViewModel.UpdateInternalNotification, PlayingChannel);
+            }
         }
 
         private async Task UpdateSelectedChannelEPGDescription()

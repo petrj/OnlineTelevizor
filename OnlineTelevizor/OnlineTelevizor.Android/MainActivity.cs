@@ -144,7 +144,7 @@ namespace OnlineTelevizor.Droid
                 }
             });
 
-            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.PlayInternalNotification, (sender, channel) =>
+            MessagingCenter.Subscribe<MainPage, ChannelItem>(this, BaseViewModel.PlayInternalNotification, (sender, channel) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {

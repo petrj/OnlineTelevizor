@@ -290,30 +290,9 @@ namespace OnlineTelevizor.ViewModels
         {
             try
             {
-                // apply config quality:
-                if (!String.IsNullOrEmpty(Config.StreamQuality))
-                {
-                    var configQuality = "quality=" + Config.StreamQuality;
-
-                    var qMatches = Regex.Match(channel.Url, "quality=[0-9]{1,4}");
-                    if (qMatches != null && qMatches.Success)
-                    {
-                        channel.Url = channel.Url.Replace(qMatches.Value, configQuality);
-                    }
-                    else
-                    {
-                        channel.Url += "&" + configQuality;
-                    }
-                }
-
                 if (Config.InternalPlayer)
                 {
                     MessagingCenter.Send<BaseViewModel, ChannelItem> (this, BaseViewModel.PlayInternal, channel);
-
-                    if (Config.PlayOnBackground)
-                    {
-                        MessagingCenter.Send<BaseViewModel, ChannelItem>(this, BaseViewModel.PlayInternalNotification, channel);
-                    }
                 }
                 else
                 {
