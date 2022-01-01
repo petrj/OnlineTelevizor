@@ -47,14 +47,6 @@ namespace OnlineTelevizor.Views
 
         public Command CheckStreamCommand { get; set; }
 
-        public enum PlayingStateEnum
-        {
-            Stopped = 0,
-            PlayingInternal = 1,
-            PlayingInPreview = 2,
-            PlayingExternal = 3
-        }
-
         public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
             InitializeComponent();
@@ -245,6 +237,7 @@ namespace OnlineTelevizor.Views
 
                         break;
                     case PlayingStateEnum.Stopped:
+                    case PlayingStateEnum.Casting:
 
                         NavigationPage.SetHasNavigationBar(this, true);
 
@@ -372,7 +365,6 @@ namespace OnlineTelevizor.Views
         protected override void OnSizeAllocated(double width, double height)
         {
             System.Diagnostics.Debug.WriteLine($"OnSizeAllocated: {width}/{height}");
-            //System.Diagnostics.Debug.WriteLine($"VideoStack Size: {VideoStackLayout.Width}/{VideoStackLayout.Height}");
 
             base.OnSizeAllocated(width, height);
 
@@ -944,24 +936,7 @@ namespace OnlineTelevizor.Views
                         videoView.MediaPlayer.Stop();
                     }
 
-                    // apply config quality:
-                    var url = channel.Url;
-                    if (!String.IsNullOrEmpty(_config.StreamQuality))
-                    {
-                        var configQuality = "quality=" + _config.StreamQuality;
-
-                        var qMatches = Regex.Match(channel.Url, "quality=[0-9]{1,4}");
-                        if (qMatches != null && qMatches.Success)
-                        {
-                            url = channel.Url.Replace(qMatches.Value, configQuality);
-                        }
-                        else
-                        {
-                            url += "&" + configQuality;
-                        }
-                    }
-
-                    _media = new Media(_libVLC, url, FromType.FromLocation);
+                    _media = new Media(_libVLC, channel.UrlWithQuality(_config.StreamQuality), FromType.FromLocation);
 
                     videoView.MediaPlayer = _mediaPlayer;
 
@@ -978,25 +953,20 @@ namespace OnlineTelevizor.Views
 
                     PlayingState = PlayingStateEnum.PlayingInternal;
                 });
+            } else
+            {
+                MessagingCenter.Send(channel.UrlWithQuality(_config.StreamQuality), BaseViewModel.UriMessage);
             }
         }
 
         public void ActionTap(int count)
         {
-            if (count == 2 && PlayingState == PlayingStateEnum.PlayingInPreview)
+            if (count == 1)
             {
-                PlayingState = PlayingStateEnum.PlayingInternal;
-            }
-            else
-            if (count == 2 && PlayingState == PlayingStateEnum.PlayingInternal)
-            {
-                PlayingState = PlayingStateEnum.PlayingInPreview;
-            }
-            else
-            if (count == 1 &&
-                (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview))
-            {
-                ShowJustPlayingNotification();
+                if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
+                {
+                    ShowJustPlayingNotification();
+                }
 
                 if (PlayingState == PlayingStateEnum.PlayingInternal)
                 {
@@ -1015,6 +985,19 @@ namespace OnlineTelevizor.Views
                         });
                     });
                 };
+            }
+
+            if (count == 2)
+            {
+                if (PlayingState == PlayingStateEnum.PlayingInPreview)
+                {
+                    PlayingState = PlayingStateEnum.PlayingInternal;
+                }
+                else
+                if (PlayingState == PlayingStateEnum.PlayingInternal)
+                {
+                    PlayingState = PlayingStateEnum.PlayingInPreview;
+                }
             }
         }
 
@@ -1408,7 +1391,7 @@ namespace OnlineTelevizor.Views
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                if ((PlayingState == PlayingStateEnum.Stopped) || (PlayingState == PlayingStateEnum.PlayingExternal))
+                if (PlayingState == PlayingStateEnum.Stopped)
                 {
                     NoVideoStackLayout.IsVisible = false;
                     VideoStackLayout.IsVisible = false;

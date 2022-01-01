@@ -40,6 +40,9 @@ namespace OnlineTelevizor.Droid
         NotificationHelper _notificationHelper;
         private static Android.Widget.Toast _instance;
 
+        private static Keycode _lastKeyCode;
+        private static DateTime _lastKeyCodeTime = DateTime.MinValue;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
@@ -322,6 +325,20 @@ namespace OnlineTelevizor.Droid
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
+            System.Diagnostics.Debug.WriteLine($"OnKeyDown: keyCode:{keyCode}, long:{e.IsLongPress}");
+
+            /*if ((_lastKeyCodeTime != DateTime.MinValue)  &&
+                ((DateTime.Now - _lastKeyCodeTime).TotalMilliseconds<250) &&
+                !e.IsLongPress &&
+                _lastKeyCode == keyCode
+                )
+            {
+                return base.OnKeyDown(keyCode, e); // prevent multiple key
+            }
+
+            _lastKeyCodeTime = DateTime.Now;
+            _lastKeyCode = keyCode;*/
+
             if (e.IsLongPress)
             {
                 MessagingCenter.Send(keyCode.ToString(), BaseViewModel.KeyLongMessage);

@@ -70,6 +70,7 @@ namespace OnlineTelevizor.ViewModels
         public bool DoNotScrollToChannel { get; set; } = false;
 
         public Command RefreshCommand { get; set; }
+        public Command RefreshCommandWithNotification { get; set; }
 
         public Command PlayCommand { get; set; }
 
@@ -96,6 +97,7 @@ namespace OnlineTelevizor.ViewModels
             _recordingBackgroundWorker.DoWork += _recordingBackgroundWorker_DoWork;
 
             RefreshCommand = new Command(async () => await Refresh());
+            RefreshCommandWithNotification = new Command(async () => await RefreshWithNotification());
 
             CheckPurchaseCommand = new Command(async () => await CheckPurchase());
 
@@ -1018,6 +1020,12 @@ namespace OnlineTelevizor.ViewModels
                     return $"{status}Načteno {Channels.Count} kanálů";
                 }
             }
+        }
+
+        private async Task RefreshWithNotification()
+        {
+            NotifyRefreshStatus = true;
+            await Refresh();
         }
 
         private async Task Refresh()
