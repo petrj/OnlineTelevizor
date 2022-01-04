@@ -192,7 +192,7 @@ namespace OnlineTelevizor.Views
                         VideoStackLayout.IsVisible = isVideoStackLayoutVisible;
 
                         AbsoluteLayout.SetLayoutFlags(NoVideoStackLayout, AbsoluteLayoutFlags.All);
-                        AbsoluteLayout.SetLayoutBounds(NoVideoStackLayout, new Rectangle(0, 1, 1, 0.3));
+                        AbsoluteLayout.SetLayoutBounds(NoVideoStackLayout, new Rectangle(0, 1, 1, 0.35));
 
                         ClosePreviewVideoImage.IsVisible = false;
                         CloseVideoImage.IsVisible = false;
@@ -225,10 +225,10 @@ namespace OnlineTelevizor.Views
                         }
 
                         AbsoluteLayout.SetLayoutFlags(VideoStackLayout, AbsoluteLayoutFlags.All);
-                        AbsoluteLayout.SetLayoutBounds(VideoStackLayout, new Rectangle(1, 1, 0.5, 0.3));
+                        AbsoluteLayout.SetLayoutBounds(VideoStackLayout, new Rectangle(1, 1, 0.5, 0.35));
 
                         AbsoluteLayout.SetLayoutFlags(NoVideoStackLayout, AbsoluteLayoutFlags.All);
-                        AbsoluteLayout.SetLayoutBounds(NoVideoStackLayout, new Rectangle(1, 1, 0.5, 0.3));
+                        AbsoluteLayout.SetLayoutBounds(NoVideoStackLayout, new Rectangle(1, 1, 0.5, 0.35));
 
                         CheckStreamCommand.Execute(null);
 
@@ -972,7 +972,8 @@ namespace OnlineTelevizor.Views
                 {
                     Device.BeginInvokeOnMainThread(() =>
                     {
-                        CloseVideoImage.IsVisible = true;
+                        CloseVideoImage.IsVisible = PlayingState == PlayingStateEnum.PlayingInternal;
+                        //ClosePreviewVideoImage.IsVisible = PlayingState == PlayingStateEnum.PlayingInPreview;
                     });
 
                     Task.Run(async () =>
@@ -982,9 +983,10 @@ namespace OnlineTelevizor.Views
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             CloseVideoImage.IsVisible = false;
+                            //ClosePreviewVideoImage.IsVisible = false;
                         });
                     });
-                };
+                }
             }
 
             if (count == 2)

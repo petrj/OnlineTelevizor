@@ -1199,6 +1199,8 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
                 OnPropertyChanged(nameof(EPGProgressBackgroundColor));
+                OnPropertyChanged(nameof(SelectedChannelEPGTimeStart));
+                OnPropertyChanged(nameof(SelectedChannelEPGTimeFinish));
 
                 if (selectedChannelNumber != null)
                 {
@@ -1259,6 +1261,8 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(SelectedChannelEPGTitle));
                 OnPropertyChanged(nameof(SelectedChannelEPGProgress));
                 OnPropertyChanged(nameof(EPGProgressBackgroundColor));
+                OnPropertyChanged(nameof(SelectedChannelEPGTimeStart));
+                OnPropertyChanged(nameof(SelectedChannelEPGTimeFinish));
 
                 await UpdateSelectedChannelEPGDescription();
             }
