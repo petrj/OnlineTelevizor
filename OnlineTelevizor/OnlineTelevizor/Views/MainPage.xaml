@@ -131,7 +131,7 @@
                       ItemsSource="{Binding Channels}"
                       CachingStrategy="RecycleElement"
                       IsPullToRefreshEnabled="True"
-                      RefreshCommand="{Binding RefreshCommand}"
+                      RefreshCommand="{Binding RefreshCommandWithNotification}"
                       IsRefreshing="{Binding IsBusy}"
                       Style="{StaticResource ListViewStyle}"
                       SelectedItem="{Binding SelectedItem, Mode=TwoWay}">

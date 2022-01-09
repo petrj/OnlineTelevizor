@@ -68,7 +68,8 @@
     <AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
-    <DefineConstants>LOADCONFIG</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - Live Player|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>

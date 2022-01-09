@@ -1301,7 +1301,7 @@ namespace OnlineTelevizor.Views
             _filterPage = new FilterPage(_loggingService, _config, _viewModel.TVService);
             _filterPage.Disappearing += delegate
             {
-                _viewModel.RefreshCommand.Execute(null);
+                _viewModel.RefreshCommandWithNotification.Execute(null);
             };
 
             await Navigation.PushAsync(_filterPage);
@@ -1317,7 +1317,7 @@ namespace OnlineTelevizor.Views
             settingsPage.Disappearing += delegate
             {
                 _viewModel.ResetConnectionCommand.Execute(null);
-                _viewModel.RefreshCommand.Execute(null);
+                _viewModel.RefreshCommandWithNotification.Execute(null);
             };
 
             await Navigation.PushAsync(settingsPage);

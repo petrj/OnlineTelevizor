@@ -1044,6 +1044,7 @@ namespace OnlineTelevizor.ViewModels
                  (_service.Status != StatusEnum.NotInitialized) &&
                  (_service.Status != StatusEnum.EmptyCredentials) &&
                  (_service.Status != StatusEnum.LoginFailed) &&
+                 (_service.Status != StatusEnum.PairingFailed) &&
                  (_lastRefreshChannelsDelay < 3600)
                )
             {
@@ -1071,6 +1072,7 @@ namespace OnlineTelevizor.ViewModels
                    (_service.Status != StatusEnum.NotInitialized) &&
                    (_service.Status != StatusEnum.EmptyCredentials) &&
                    (_service.Status != StatusEnum.LoginFailed) &&
+                   (_service.Status != StatusEnum.PairingFailed) &&
                    (_lastRefreshEPEGsDelay < 60)
                    )
             {

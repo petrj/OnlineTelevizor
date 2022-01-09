@@ -127,6 +127,16 @@ namespace OnlineTelevizor.Services
         {
             var chs = new ObservableCollection<ChannelItem>();
 
+            if (_service.Status != StatusEnum.Logged)
+            {
+                if (_service.Status == StatusEnum.LoginFailed ||
+                    _service.Status == StatusEnum.PairingFailed ||
+                    _service.Status == StatusEnum.NotInitialized ||
+                    _service.Status == StatusEnum.EmptyCredentials
+                    )
+                return chs;
+            }
+
             try
             {
                 if (_config.ShowAdultChannels &&
@@ -193,7 +203,7 @@ namespace OnlineTelevizor.Services
                                         (ch.Id == "radio_country") ||
                                         (ch.Id == "fireplace") ||
                                         (ch.Id == "retro") ||
-                                        (ch.Id == "nasatv") 
+                                        (ch.Id == "nasatv")
                                         ))
                                     continue;
                             }
@@ -216,7 +226,7 @@ namespace OnlineTelevizor.Services
                                     continue;
                             }
                         }
-                    
+
                         channelIndex++;
 
                         var channelItem = ChannelItem.CreateFromChannel(ch);
