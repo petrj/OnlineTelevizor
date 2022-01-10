@@ -351,25 +351,42 @@ namespace OnlineTelevizor.Droid
 
         private void ShowToastMessage(string message)
         {
-            try
+            Device.BeginInvokeOnMainThread(() =>
             {
-                Device.BeginInvokeOnMainThread(() =>
+                try
                 {
                     _instance?.Cancel();
                     _instance = Android.Widget.Toast.MakeText(Android.App.Application.Context, message, ToastLength.Short);
 
-                    if (Android.OS.Build.VERSION.SdkInt < BuildVersionCodes.R)
+                    TextView textView;
+                    Snackbar snackBar = null;
+
+                    var tView = _instance.View;
+                    if (tView == null)
                     {
-                        var tView = _instance.View;
+                        // Since Android 11, custom toast is deprecated - using snackbar instead:
+
+                        Activity activity = CrossCurrentActivity.Current.Activity;
+                        var view = activity.FindViewById(Android.Resource.Id.Content);
+
+                        snackBar = Snackbar.Make(view, message, Snackbar.LengthLong);
+
+                        textView = snackBar.View.FindViewById<TextView>(Resource.Id.snackbar_text);
+                    }
+                    else
+                    {
+                        // using Toast
+
                         tView.Background.SetColorFilter(Android.Graphics.Color.Gray, PorterDuff.Mode.SrcIn); //Gets the actual oval background of the Toast then sets the color filter
-                        var textView = (TextView)tView.FindViewById(Android.Resource.Id.Message);
+                        textView = (TextView)tView.FindViewById(Android.Resource.Id.Message);
                         textView.SetTypeface(Typeface.DefaultBold, TypefaceStyle.Bold);
+                    }
 
-                        var minTextSize = textView.TextSize; // 16
+                    var minTextSize = textView.TextSize; // 16
 
-                        textView.SetTextColor(Android.Graphics.Color.White);
+                    textView.SetTextColor(Android.Graphics.Color.White);
 
-                        var screenHeightRate = 0;
+                    var screenHeightRate = 0;
 
                         //configuration font size:
 
@@ -380,36 +397,42 @@ namespace OnlineTelevizor.Droid
                         //VeryBig = 4,
                         //Huge = 5
 
-                        if (DeviceDisplay.MainDisplayInfo.Height < DeviceDisplay.MainDisplayInfo.Width)
-                        {
-                            // Landscape
+                    if (DeviceDisplay.MainDisplayInfo.Height < DeviceDisplay.MainDisplayInfo.Width)
+                    {
+                        // Landscape
 
-                            screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 16.0);
-                            textView.SetMaxLines(2);
-                        }
-                        else
-                        {
-                            // Portrait
-
-                            screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 32.0);
-                            textView.SetMaxLines(4);
-                        }
-
-                        var fontSizeRange = screenHeightRate - minTextSize;
-                        var fontSizePerValue = fontSizeRange / 5;
-
-                        var fontSize = minTextSize + (int)_cfg.AppFontSize * fontSizePerValue;
-
-                        textView.SetTextSize(Android.Util.ComplexUnitType.Px, Convert.ToSingle(fontSize));
+                        screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 16.0);
+                        textView.SetMaxLines(2);
                     }
-                    _instance.Show();
+                    else
+                    {
+                        // Portrait
 
-                });
-            }
-            catch (Exception ex)
-            {
-                _loggingService.Error(ex);
-            }
+                        screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 32.0);
+                        textView.SetMaxLines(4);
+                    }
+
+                    var fontSizeRange = screenHeightRate - minTextSize;
+                    var fontSizePerValue = fontSizeRange / 5;
+
+                    var fontSize = minTextSize + (int)_cfg.AppFontSize * fontSizePerValue;
+
+                    textView.SetTextSize(Android.Util.ComplexUnitType.Px, Convert.ToSingle(fontSize));
+
+                    if (snackBar != null)
+                    {
+                        snackBar.Show();
+                    }
+                    else
+                    {
+                        _instance.Show();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.Error(ex);
+                }
+            });
         }
 
         public void OnInputDeviceAdded(int deviceId)

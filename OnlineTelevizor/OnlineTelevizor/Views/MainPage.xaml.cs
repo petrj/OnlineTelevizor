@@ -40,7 +40,6 @@ namespace OnlineTelevizor.Views
         private MediaPlayer _mediaPlayer;
         private Media _media = null;
 
-        private PlayingStateEnum _playingState = PlayingStateEnum.Stopped;
         private Size _lastAllocatedSize = new Size(-1, -1);
 
         private DateTime _lastSingleClicked = DateTime.MinValue;
@@ -169,7 +168,7 @@ namespace OnlineTelevizor.Views
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                switch (_playingState)
+                switch (PlayingState)
                 {
                     case PlayingStateEnum.PlayingInternal:
 
@@ -814,11 +813,11 @@ namespace OnlineTelevizor.Views
         {
             get
             {
-                return _playingState;
+                return _viewModel.PlayingState;
             }
             set
             {
-                _playingState = value;
+                _viewModel.PlayingState = value;
 
                 RefreshGUI();
             }

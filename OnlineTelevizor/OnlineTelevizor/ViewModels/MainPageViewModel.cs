@@ -28,6 +28,7 @@ namespace OnlineTelevizor.ViewModels
         public Command UpdateRecordNotificationCommand { get; set; }
         public Command UpdateNotificationCommand { get; set; }
 
+        private PlayingStateEnum _playingState = PlayingStateEnum.Stopped;
 
         public Command VideoLongPressCommand { get; set; }
 
@@ -135,6 +136,18 @@ namespace OnlineTelevizor.ViewModels
             BackgroundCommandWorker.RunInBackground(UpdateNotificationCommand, 10, 5);
 
             BackgroundCommandWorker.RunInBackground(AnimeIconCommand, 1, 1);
+        }
+
+        public PlayingStateEnum PlayingState
+        {
+            get
+            {
+                return _playingState;
+            }
+            set
+            {
+                _playingState = value;
+            }
         }
 
         private async Task Anime()
@@ -264,6 +277,7 @@ namespace OnlineTelevizor.ViewModels
             string optionCast = "Odeslat ..";
             string optionStopCast = "Zastavit odesílání";
             string optionDetail = "Zobrazit detail ..";
+            string optionClosePreview = "Zavřít náhled ..";
 
             string optionRecord = "Nahrávat do souboru ..";
             string optionStopRecord = "Zastavit nahrávání";
@@ -291,6 +305,11 @@ namespace OnlineTelevizor.ViewModels
             if (IsCasting)
             {
                 actions.Add(optionStopCast);
+            }
+
+            if (PlayingState == PlayingStateEnum.PlayingInPreview)
+            {
+                actions.Add(optionClosePreview);
             }
 
             if (item != null)
@@ -329,6 +348,10 @@ namespace OnlineTelevizor.ViewModels
             else if (selectedvalue == optionStopRecord)
             {
                 await RecordChannel(false);
+            }
+            else if (selectedvalue == optionClosePreview)
+            {
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlay);
             }
             else if (selectedvalue == optionStopApp)
             {
