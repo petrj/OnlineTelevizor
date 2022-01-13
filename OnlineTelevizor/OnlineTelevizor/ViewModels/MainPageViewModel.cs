@@ -965,6 +965,14 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public string FontSizeForEPGTitle
+        {
+            get
+            {
+                return GetScaledSize(18).ToString();
+            }
+        }
+
         public string FontSizeForDescription
         {
             get
