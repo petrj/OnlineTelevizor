@@ -177,8 +177,8 @@ namespace OnlineTelevizor.Views
 
                         MessagingCenter.Send(String.Empty, BaseViewModel.EnableFullScreen);
 
-                        StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(40, GridUnitType.Star);
-                        StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(40, GridUnitType.Star);
+                        StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(30, GridUnitType.Star);
+                        StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(50, GridUnitType.Star);
 
                         LayoutGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Absolute);
                         LayoutGrid.ColumnDefinitions[1].Width = new GridLength(100, GridUnitType.Star);
@@ -219,8 +219,8 @@ namespace OnlineTelevizor.Views
                             LayoutGrid.ColumnDefinitions[0].Width = new GridLength(50, GridUnitType.Star);
                             LayoutGrid.ColumnDefinitions[1].Width = new GridLength(50, GridUnitType.Star);
 
-                            StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(40, GridUnitType.Star);
-                            StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(40, GridUnitType.Star);
+                            StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(30, GridUnitType.Star);
+                            StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(50, GridUnitType.Star);
                         }
 
                         AbsoluteLayout.SetLayoutFlags(VideoStackLayout, AbsoluteLayoutFlags.All);

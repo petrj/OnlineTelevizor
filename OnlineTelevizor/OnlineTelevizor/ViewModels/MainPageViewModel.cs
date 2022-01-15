@@ -278,6 +278,7 @@ namespace OnlineTelevizor.ViewModels
             string optionStopCast = "Zastavit odesílání";
             string optionDetail = "Zobrazit detail ..";
             string optionClosePreview = "Zavřít náhled ..";
+            string optionToggleAudioStream = "Změnit zvukovou stopu ..";
 
             string optionRecord = "Nahrávat do souboru ..";
             string optionStopRecord = "Zastavit nahrávání";
@@ -310,6 +311,12 @@ namespace OnlineTelevizor.ViewModels
             if (PlayingState == PlayingStateEnum.PlayingInPreview)
             {
                 actions.Add(optionClosePreview);
+            }
+
+            if (PlayingState == PlayingStateEnum.PlayingInPreview ||
+                PlayingState == PlayingStateEnum.PlayingInternal)
+            {
+                actions.Add(optionToggleAudioStream);
             }
 
             if (item != null)
@@ -352,6 +359,10 @@ namespace OnlineTelevizor.ViewModels
             else if (selectedvalue == optionClosePreview)
             {
                 MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlay);
+            }
+            else if (selectedvalue == optionToggleAudioStream)
+            {
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.ToggleAudioStream);
             }
             else if (selectedvalue == optionStopApp)
             {
@@ -701,7 +712,7 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                return _selectedChannelEPGDescription;
+                return _selectedChannelEPGDescription.Trim();
             }
             set
             {

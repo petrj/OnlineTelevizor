@@ -33,7 +33,7 @@
             </Style>
 
             <Style x:Key="TimeTextStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="TextColor" Value="Yellow"/>
                 <Setter Property="VerticalTextAlignment" Value="Start"/>
                 <Setter Property="HorizontalOptions" Value="Start"/>
                 <Setter Property="FontAttributes" Value="None"/>
@@ -42,7 +42,7 @@
             </Style>
 
             <Style x:Key="TimeFromTextStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="TextColor" Value="Yellow"/>
                 <Setter Property="VerticalTextAlignment" Value="Start"/>
                 <Setter Property="HorizontalOptions" Value="Start"/>
                 <Setter Property="FontAttributes" Value="None"/>
@@ -52,7 +52,7 @@
             </Style>
 
             <Style x:Key="TimeToTextStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="TextColor" Value="Yellow"/>
                 <Setter Property="VerticalTextAlignment" Value="Start"/>
                 <Setter Property="HorizontalOptions" Value="End"/>
                 <Setter Property="FontAttributes" Value="None"/>
@@ -250,13 +250,13 @@
             </StackLayout.GestureRecognizers>
         </StackLayout>
 
-        <Image x:Name="CloseVideoImage" Source="Quit.png"  IsVisible="False" AbsoluteLayout.LayoutBounds="1.0,0.0,0.08,0.08" AbsoluteLayout.LayoutFlags="All" BackgroundColor="Transparent">
+        <Image x:Name="CloseVideoImage" Source="Quit.png"  IsVisible="False" AbsoluteLayout.LayoutBounds="1.0,0.0,0.1,0.1" AbsoluteLayout.LayoutFlags="All" BackgroundColor="Transparent">
             <Image.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnCloseVideoTapped" NumberOfTapsRequired="1" />
             </Image.GestureRecognizers>
         </Image>
 
-        <Image x:Name="ClosePreviewVideoImage" Source="Quit.png"  IsVisible="False" AbsoluteLayout.LayoutBounds="1.0,0.65,0.08,0.08" AbsoluteLayout.LayoutFlags="All" BackgroundColor="Transparent">
+        <Image x:Name="ClosePreviewVideoImage" Source="Quit.png"  IsVisible="False" AbsoluteLayout.LayoutBounds="1.0,0.7,0.1,0.1" AbsoluteLayout.LayoutFlags="All" BackgroundColor="Transparent">
             <Image.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnCloseVideoTapped" NumberOfTapsRequired="1" />
             </Image.GestureRecognizers>
