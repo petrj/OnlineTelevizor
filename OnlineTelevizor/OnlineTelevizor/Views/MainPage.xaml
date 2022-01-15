@@ -265,6 +265,7 @@
     </AbsoluteLayout>
 
     <ContentPage.ToolbarItems>
+        <ToolbarItem x:Name="ToolbarItemHelp" Text="Nápověda" Clicked="ToolbarItemHelp_Clicked" Icon="{Binding ToolbarItemHelpIcon}"/>
         <ToolbarItem x:Name="ToolbarItemFilter" Text="Filtr" Clicked="ToolbarItemFilter_Clicked" Icon="{Binding ToolbarItemFilterIcon}"/>
         <ToolbarItem x:Name="ToolbarItemQuality" Text="Kvalita" Clicked="ToolbarItemQuality_Clicked" Icon="{Binding ToolbarItemQualityIcon}"/>
         <ToolbarItem x:Name="ToolbarItemInfo" Text="Info" Clicked="Detail_Clicked" Icon="{Binding ToolbarItemInfoIcon}" />

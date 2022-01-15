@@ -672,6 +672,7 @@ namespace OnlineTelevizor.ViewModels
             Device.BeginInvokeOnMainThread(() =>
             {
                 OnPropertyChanged(nameof(ToolbarItemFilterIcon));
+                OnPropertyChanged(nameof(ToolbarItemHelpIcon));
                 OnPropertyChanged(nameof(ToolbarItemQualityIcon));
                 OnPropertyChanged(nameof(ToolbarItemInfoIcon));
                 OnPropertyChanged(nameof(ToolbarItemSettingsIcon));
@@ -1409,6 +1410,17 @@ namespace OnlineTelevizor.ViewModels
             }
 
             _emptyCredentialsChecked = true;
+        }
+
+        public string ToolbarItemHelpIcon
+        {
+            get
+            {
+                if (SelectedToolbarItemName == "ToolbarItemHelp")
+                    return "HelpSelected.png";
+
+                return "Help.png";
+            }
         }
 
         public string ToolbarItemFilterIcon

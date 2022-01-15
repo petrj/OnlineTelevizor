@@ -130,6 +130,8 @@
     <Content Include="Empty.png" />
     <Content Include="Filter.png" />
     <Content Include="FilterSelected.png" />
+    <Content Include="Help.png" />
+    <Content Include="HelpSelected.png" />
     <Content Include="Icon.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-200.png" />

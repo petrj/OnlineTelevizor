@@ -228,5 +228,7 @@
     <BundleResource Include="Resources\SettingsSelected.png" />
     <BundleResource Include="Resources\SmallIcon.png" />
     <BundleResource Include="Resources\Stop.png" />
+    <BundleResource Include="Resources\Help.png" />
+    <BundleResource Include="Resources\HelpSelected.png" />
   </ItemGroup>
 </Project>
