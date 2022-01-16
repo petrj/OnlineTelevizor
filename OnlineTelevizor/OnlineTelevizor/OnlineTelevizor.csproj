@@ -26,6 +26,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\HelpPage.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="LibVLCSharp" Version="3.6.4" />
     <PackageReference Include="LibVLCSharp.Forms" Version="3.6.4" />
     <PackageReference Include="Plugin.InAppBilling" Version="4.0.2" />
@@ -52,6 +56,12 @@
     <Reference Include="Mono.Android">
       <HintPath>..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v11.0\Mono.Android.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\HelpPage.xaml.cs">
+      <DependentUpon>HelpPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 

@@ -21,8 +21,9 @@
             </Style>
 
             <Style x:Key="DateTimeTextStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="TextColor" Value="SpringGreen"/>
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,0,0,10"/>
             </Style>
 
             <Style x:Key="DescriptionTextStyle" TargetType="Label">
@@ -46,14 +47,13 @@
 
     <ContentPage.Content>
 
-        <ScrollView Style="{StaticResource PageBackgroundStyle}">
 
-            <StackLayout Margin="20,10,20,0">
+
+            <StackLayout Margin="20,10,10,0">
 
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
-                        <RowDefinition Height="1" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -70,12 +70,10 @@
                             <ColumnDefinition Width="80" />
                         </Grid.ColumnDefinitions>
                         <ffimageloading:CachedImage  Grid.Row="0" Grid.Column="0" Source="{Binding LogoUrl}" Style="{DynamicResource IconStyle}" DownsampleToViewSize="false" Aspect="AspectFit" DownsampleHeight="80" LoadingPlaceholder="Empty.png" />
-                    </Grid>                    
-
-                    <BoxView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="White"/>
+                    </Grid>
                 </Grid>
 
-                <Label Margin="0,20,0,20" Text="{Binding EPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"/>
+                <Label Margin="0,10,0,20" Text="{Binding EPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForTitle}"/>
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -94,11 +92,14 @@
 
                 </Grid>
 
+            <ScrollView Style="{StaticResource PageBackgroundStyle}">
+
                 <Label Text="{Binding EPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}"/>
 
-            </StackLayout>
+            </ScrollView>
 
-        </ScrollView>
+        </StackLayout>
+
 
     </ContentPage.Content>
 

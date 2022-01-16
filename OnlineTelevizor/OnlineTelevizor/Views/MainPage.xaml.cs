@@ -1306,7 +1306,10 @@ namespace OnlineTelevizor.Views
         private async void ToolbarItemHelp_Clicked(object sender, EventArgs e)
         {
             _loggingService.Info($"ToolbarItemHelp_Clicked");
-         }
+
+            var helpPage = new HelpPage(_loggingService, _config, _dialogService, _viewModel.TVService);
+            await Navigation.PushAsync(helpPage);
+        }
 
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
         {

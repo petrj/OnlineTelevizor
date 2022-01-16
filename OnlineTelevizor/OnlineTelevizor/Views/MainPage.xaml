@@ -33,7 +33,7 @@
             </Style>
 
             <Style x:Key="TimeTextStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="Yellow"/>
+                <Setter Property="TextColor" Value="SpringGreen"/>
                 <Setter Property="VerticalTextAlignment" Value="Start"/>
                 <Setter Property="HorizontalOptions" Value="Start"/>
                 <Setter Property="FontAttributes" Value="None"/>
@@ -42,7 +42,7 @@
             </Style>
 
             <Style x:Key="TimeFromTextStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="Yellow"/>
+                <Setter Property="TextColor" Value="SpringGreen"/>
                 <Setter Property="VerticalTextAlignment" Value="Start"/>
                 <Setter Property="HorizontalOptions" Value="Start"/>
                 <Setter Property="FontAttributes" Value="None"/>
@@ -52,7 +52,7 @@
             </Style>
 
             <Style x:Key="TimeToTextStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="Yellow"/>
+                <Setter Property="TextColor" Value="SpringGreen"/>
                 <Setter Property="VerticalTextAlignment" Value="Start"/>
                 <Setter Property="HorizontalOptions" Value="End"/>
                 <Setter Property="FontAttributes" Value="None"/>

@@ -1181,9 +1181,9 @@ namespace OnlineTelevizor.ViewModels
 
                 await _semaphoreSlim.WaitAsync();
 
-                IsBusy = true;
-
                 var channels = await _service.GetChannels();
+
+                IsBusy = true;
 
                 if (channels != null && channels.Count > 0)
                 {
@@ -1269,17 +1269,17 @@ namespace OnlineTelevizor.ViewModels
             {
                 await _semaphoreSlim.WaitAsync();
 
-                IsBusy = true;
-
-                foreach (var channelItem in Channels)
-                {
-                    channelItem.ClearEPG();
-                }
-
                 var epg = await _service.GetEPG();
+
+                IsBusy = true;
 
                 if (epg != null)
                 {
+                    foreach (var channelItem in Channels)
+                    {
+                        channelItem.ClearEPG();
+                    }
+
                     foreach (var channelId in epg.Keys)
                     {
                         if (_channelById.ContainsKey(channelId))
