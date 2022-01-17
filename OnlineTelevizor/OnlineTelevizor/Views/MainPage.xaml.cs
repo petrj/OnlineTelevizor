@@ -15,6 +15,7 @@ using static OnlineTelevizor.ViewModels.MainPageViewModel;
 using static Android.OS.PowerManager;
 using LibVLCSharp.Shared;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace OnlineTelevizor.Views
 {
@@ -1459,6 +1460,9 @@ namespace OnlineTelevizor.Views
                 {
                     var originalVideoWidth = _media.Tracks[0].Data.Video.Width;
                     var originalVideoHeight = _media.Tracks[0].Data.Video.Height;
+
+                    if (originalVideoWidth == 0 || originalVideoHeight == 0)
+                        return; // video not initialized yet?
 
                     var aspect = (double)originalVideoWidth / (double)originalVideoHeight;
                     var newVideoHeight = VideoStackLayout.Width / aspect;
