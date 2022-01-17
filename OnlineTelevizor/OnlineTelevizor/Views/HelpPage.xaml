@@ -14,13 +14,13 @@
             <Style x:Key="CaptionStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="#41b3ff"/>
                 <Setter Property="VerticalTextAlignment" Value="Start"/>
-                <Setter Property="Margin" Value="0,0,0,10"/>
+                <Setter Property="Margin" Value="20,0,0,5"/>
             </Style>
 
             <Style x:Key="TextStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="VerticalTextAlignment" Value="Start"/>
-                <Setter Property="Margin" Value="10,0,0,10"/>
+                <Setter Property="Margin" Value="30,0,0,5"/>
             </Style>
 
             <Style x:Key="NoteStyle" TargetType="Label">
@@ -31,7 +31,7 @@
 
             <Style x:Key="GroupCaptionStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="#41b3ff"/>
-                <Setter Property="Margin" Value="0,0,0,0"/>
+                <Setter Property="Margin" Value="0,20,0,20"/>
             </Style>
 
         </ResourceDictionary>
@@ -49,7 +49,7 @@
 
                     <Label  Text="- gesta použitelná na video či logo kanálu pro interní přehrávač" Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForNote}"/>
 
-                    <Grid Margin="20,10,0,0">
+                    <Grid Margin="0,10,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -93,140 +93,29 @@
 
                     <Label  Text="Klávesy" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForGroupCaption}"/>
 
-                    <Grid Margin="20,10,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30*" />
-                            <ColumnDefinition Width="70*" />
-                        </Grid.ColumnDefinitions>
+                    <Label Text="Změna označeného kanálu, navigace v menu" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="Dolu/Nahoru, R1/L1, W/S, F2/F3, NumPad2/NumPad8, Play Previous/Next, Home/End" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
-                        <Label  Grid.Row="0" Grid.Column="0" Text="Dolu/Nahoru" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="0" Grid.Column="1" Grid.RowSpan="7" Text="Změna označeného kanálu, navigace v menu" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="Další/předchozí kanál (o 10 pozic)" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="PageUp/PageDown" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
-                        <Label  Grid.Row="1" Grid.Column="0" Text="R1/L1" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="2" Grid.Column="0" Text="W/S" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="3" Grid.Column="0" Text="F2/F3" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="4" Grid.Column="0" Text="NumPad2/NumPad8" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="5" Grid.Column="0" Text="Play previous/next" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="6" Grid.Column="0" Text="Home/End" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="Navigace v menu" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="Vlevo/Vpravo, a/d, b/f, NumPad4/NumPad6, Hranaté závorky" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
-                        <Label  Grid.Row="7" Grid.Column="0" Text="PageUp/PageDown" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="7" Grid.Column="1" Text="Další/předchozí kanál (o 10 pozic)" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="Spuštění označeného kanálu" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="OK, Enter, Mezera, Media Play, Button R2/A, NumPad5, Start, F6, Caps lock, Čárka, Středník, Vlnovka" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
-                        <Label  Grid.Row="8" Grid.Column="0" Text="Vlevo/Vpravo" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="8" Grid.Column="1" Grid.RowSpan="5" Text="Navigace v menu" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="Spuštění kanálu dle čísla" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="0,1,2,3,4,5,6,7,8,9" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
-                        <Label  Grid.Row="9" Grid.Column="0" Text="A/D" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="10" Grid.Column="0" Text="B/F" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="11" Grid.Column="0" Text="NumPad4/NumPad6" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="12" Grid.Column="0" Text="(Hranaté) závorky" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="Stop" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="F4,F7, Escape, Back, Media Pause/Stop/Close, NumPad-, Delete, button X, Left Alt, Tečka, Apostrof" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
-                        <Label  Grid.Row="13" Grid.Column="0" Text="OK" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="13" Grid.Column="1" Grid.RowSpan="12" Text="Spuštění označeného kanálu" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="Obnova načtených kanálů" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="F5, NumPad0" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
-                        <Label  Grid.Row="14" Grid.Column="0" Text="Enter" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="15" Grid.Column="0" Text="Mezera" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="16" Grid.Column="0" Text="Media Play" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="17" Grid.Column="0" Text="Button R2/A" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="18" Grid.Column="0" Text="NumPad5" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="19" Grid.Column="0" Text="Start" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="20" Grid.Column="0" Text="F6" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="21" Grid.Column="0" Text="Caps lock" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="22" Grid.Column="0" Text="Středník" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="23" Grid.Column="0" Text="Čarka" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="24" Grid.Column="0" Text="Vlnovka" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-
-                        <Label  Grid.Row="25" Grid.Column="0" Text="0..9" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="25" Grid.Column="1" Grid.RowSpan="7" Text="Spuštění kanálu dle čísla" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
-
-                        <Label  Grid.Row="26" Grid.Column="0" Text="F4/F7" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="26" Grid.Column="1" Grid.RowSpan="10" Text="Stop" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
-
-                        <Label  Grid.Row="27" Grid.Column="0" Text="Escape" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="28" Grid.Column="0" Text="Back" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="29" Grid.Column="0" Text="Media Pause/Stop/Close" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="30" Grid.Column="0" Text="NumPad-" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="31" Grid.Column="0" Text="Delete" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="32" Grid.Column="0" Text="Button X" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="33" Grid.Column="0" Text="Levý alt" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="34" Grid.Column="0" Text="Tečka" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="35" Grid.Column="0" Text="Apostrof" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-
-                        <Label  Grid.Row="36" Grid.Column="0" Text="F5" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="36" Grid.Column="1" Grid.RowSpan="2" Text="Znovu načtení kanálů" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
-
-                        <Label  Grid.Row="37" Grid.Column="0" Text="Numpad0" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-
-                        <Label  Grid.Row="38" Grid.Column="0" Text="Guide" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="38" Grid.Column="1" Grid.RowSpan="13" Text="Zobrazení názvu právě probíhajícího programu při přehrávání, zobrazení menu vybraného kanálu pokud neprobíhá přehrávání" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
-
-                        <Label  Grid.Row="39" Grid.Column="0" Text="Info" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="40" Grid.Column="0" Text="Button L2" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="41" Grid.Column="0" Text="I" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="42" Grid.Column="0" Text="G" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="43" Grid.Column="0" Text="F1" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="44" Grid.Column="0" Text="F8" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="45" Grid.Column="0" Text="Menu" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="46" Grid.Column="0" Text="Tab" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="47" Grid.Column="0" Text="Numap+" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="48" Grid.Column="0" Text="=" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="49" Grid.Column="0" Text="/ nebo \" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="50" Grid.Column="0" Text="Insert" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-
-
-                    </Grid>
+                    <Label Text="Zobrazení názvu právě probíhajícího programu při přehrávání, zobrazení menu vybraného kanálu pokud neprobíhá přehrávání" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="Guide, Info, button L2, I, G, F1,F8, Menu, Tab, NumPad+, Rovnítko, Lomítka, Insert" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                 </StackLayout>
 
