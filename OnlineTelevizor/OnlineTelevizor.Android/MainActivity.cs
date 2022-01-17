@@ -226,6 +226,8 @@ namespace OnlineTelevizor.Droid
 
             _notificationHelper = new NotificationHelper(this);
 
+            StartService(new Intent(this, typeof(OnlineTelevizorService)));
+
             LoadApplication(_app);
         }
 

@@ -161,6 +161,7 @@
   <ItemGroup>
     <Compile Include="AndroidOnlineTelevizorConfiguration.cs" />
     <Compile Include="AndroidPressedEffect.cs" />
+    <Compile Include="OnlineTelevizorService.cs" />
     <Compile Include="CustomSharedPreferencesObject.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="NotificationHelper.cs" />
@@ -350,7 +351,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties XamarinHotReloadXFormsNugetUpgradeInfoBarOnlineTelevizorAndroidHideInfoBar="True" TriggeredFromHotReload="False" />
+      <UserProperties TriggeredFromHotReload="False" XamarinHotReloadXFormsNugetUpgradeInfoBarOnlineTelevizorAndroidHideInfoBar="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
