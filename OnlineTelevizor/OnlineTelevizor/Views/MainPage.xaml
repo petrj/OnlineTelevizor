@@ -195,18 +195,18 @@
                         <RowDefinition Height="40*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="33*" />
-                        <ColumnDefinition Width="34*" />
-                        <ColumnDefinition Width="33*" />
+                        <ColumnDefinition Width="50*" />
+                        <ColumnDefinition Width="50*" />
                     </Grid.ColumnDefinitions>
 
-                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForEPGTitle}"  Margin="5,5,5,5"/>
+                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding SelectedChannelEPGTitle}"  Style="{DynamicResource TitleTextStyle}" FontSize="{Binding FontSizeForEPGTitle}"  Margin="5,5,5,5"/>
+
+                <!--Image Grid.Row="0" Grid.Column="2"  x:Name="AudioPlayingImage" Source="{Binding AudioIcon}"  IsVisible="False" BackgroundColor="Transparent" HeightRequest="{Binding HeightForNextTitleRow}" /-->
 
                 <Label Grid.Row="1" Grid.Column="0"  Text="{Binding SelectedChannelEPGTimeStart}"  Style="{DynamicResource TimeFromTextStyle}" FontSize="{Binding FontSizeForTime}"/>
-                <Image Grid.Row="1" Grid.Column="1"  x:Name="AudioPlayingImage" Source="{Binding AudioIcon}"  IsVisible="False" BackgroundColor="Transparent" HeightRequest="{Binding HeightForNextTitleRow}" />
-                <Label Grid.Row="1" Grid.Column="2"  Text="{Binding SelectedChannelEPGTimeFinish}"  Style="{DynamicResource TimeToTextStyle}" FontSize="{Binding FontSizeForTime}" />
+                <Label Grid.Row="1" Grid.Column="1"  Text="{Binding SelectedChannelEPGTimeFinish}"  Style="{DynamicResource TimeToTextStyle}" FontSize="{Binding FontSizeForTime}" />
 
-                <Grid Grid.Row="2" Grid.Column="0"  Grid.ColumnSpan="3" Margin="0,0,0,0" x:Name="ProgresssBarGrid">
+                <Grid Grid.Row="2" Grid.Column="0"  Grid.ColumnSpan="2" Margin="0,0,0,0" x:Name="ProgresssBarGrid">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1" />
                     </Grid.RowDefinitions>
@@ -217,7 +217,7 @@
                     <ProgressBar Grid.Row="0" Grid.Column="0" Progress="{Binding SelectedChannelEPGProgress}" BackgroundColor="{Binding EPGProgressBackgroundColor}" />
                 </Grid>
 
-                <ScrollView Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" x:Name="ScrollViewChannelEPGDescription" BackgroundColor="{Binding EPGDescriptionBackgroundColor}"  HorizontalOptions="StartAndExpand" VerticalOptions="Start"  Margin="5,5,5,5">
+                <ScrollView Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="ScrollViewChannelEPGDescription" BackgroundColor="{Binding EPGDescriptionBackgroundColor}"  HorizontalOptions="StartAndExpand" VerticalOptions="Start"  Margin="5,5,5,5">
                     <Label x:Name="LabelChannelEPGDescription" Text="{Binding SelectedChannelEPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}" />
                 </ScrollView>
 
@@ -261,6 +261,8 @@
                 <TapGestureRecognizer Tapped="OnCloseVideoTapped" NumberOfTapsRequired="1" />
             </Image.GestureRecognizers>
         </Image>
+
+        <Image x:Name="AudioPlayingImage" Source="{Binding AudioIcon}"  IsVisible="False" BackgroundColor="Transparent" HeightRequest="{Binding HeightForNextTitleRow}" AbsoluteLayout.LayoutBounds="1.0,1.0,0.05,0.05" AbsoluteLayout.LayoutFlags="All" />
 
     </AbsoluteLayout>
 

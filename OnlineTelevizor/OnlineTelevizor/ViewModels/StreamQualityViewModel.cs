@@ -75,6 +75,57 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public async Task SelectPreviousItem()
+        {
+            await _semaphoreSlim.WaitAsync();
+
+            await Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        if (Qualities.Count == 0)
+                            return;
+
+                        if (SelectedItem == null)
+                        {
+                            SelectedItem = Qualities[Qualities.Count-1];
+                        }
+                        else
+                        {
+                            bool next = false;
+
+                            for (var i = Qualities.Count-1; i>=0; i--)
+                            {
+                                var ch = Qualities[i];
+
+                                if (next)
+                                {
+                                    SelectedItem = ch;
+                                    break;
+                                }
+                                else
+                                {
+                                    if (ch == SelectedItem)
+                                    {
+                                        next = true;
+
+                                        if (i == 0)
+                                        {
+                                            SelectedItem = Qualities[Qualities.Count - 1];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        _semaphoreSlim.Release();
+                    };
+                });
+        }
+
         public async Task SelectNextItem()
         {
             await _semaphoreSlim.WaitAsync();

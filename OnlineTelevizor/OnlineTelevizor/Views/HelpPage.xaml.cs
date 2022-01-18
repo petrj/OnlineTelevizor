@@ -36,12 +36,19 @@ namespace OnlineTelevizor.Views
             BindingContext = _viewModel = new HelpViewModel(loggingService, config, dialogService, service);
         }
 
-        public void SelectNextItem()
+        public void ScrollDown()
         {
             Task.Run(async () =>
             {
                 await mainSCrollView.ScrollToAsync(mainSCrollView.ScrollX, mainSCrollView.ScrollY + 10 + (int)_config.AppFontSize, false);
+            });
+        }
 
+        public void ScrollUp()
+        {
+            Task.Run(async () =>
+            {
+                await mainSCrollView.ScrollToAsync(mainSCrollView.ScrollX, mainSCrollView.ScrollY - 10 - (int)_config.AppFontSize, false);
             });
         }
     }

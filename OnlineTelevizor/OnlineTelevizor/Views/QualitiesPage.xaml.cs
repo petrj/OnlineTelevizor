@@ -50,5 +50,10 @@ namespace OnlineTelevizor.Views
         {
             await _viewModel.SelectNextItem();
         }
+
+        public async void SelectPreviousItem()
+        {
+            await _viewModel.SelectPreviousItem();
+        }
     }
 }
