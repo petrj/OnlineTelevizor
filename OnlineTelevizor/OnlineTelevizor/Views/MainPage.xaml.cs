@@ -277,7 +277,13 @@ namespace OnlineTelevizor.Views
 
         private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
         {
-            ActionStop(false);
+            if (e.Direction == SwipeDirection.Left)
+            {
+                ActionStop(true);
+            } else
+            {
+                ActionStop(false);
+            }
         }
 
         private void SwipeGestureRecognizer_Up(object sender, SwipedEventArgs e)
