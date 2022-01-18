@@ -59,14 +59,23 @@ namespace OnlineTelevizor.Models
 
         public bool IsCasting { get; set; } = false;
         public bool IsRecording { get; set; } = false;
+        public bool IsFav { get; set; } = false;
 
-        public string StateIcon
+        public string FavStateIcon
         {
             get
             {
-                if (IsCasting)
-                    return "Cast.png";
+                if (IsFav)
+                return "Fav.png";
 
+                return null;
+            }
+        }
+
+        public string RecordStateIcon
+        {
+            get
+            {
                 if (IsRecording)
                     return "Rec.png";
 
@@ -74,9 +83,22 @@ namespace OnlineTelevizor.Models
             }
         }
 
+        public string CastingStateIcon
+        {
+            get
+            {
+                if (IsCasting)
+                    return "Cast.png";
+
+                return null;
+            }
+        }
+
         public void NotifyStateChange()
         {
-            OnPropertyChanged(nameof(StateIcon));
+            OnPropertyChanged(nameof(RecordStateIcon));
+            OnPropertyChanged(nameof(CastingStateIcon));
+            OnPropertyChanged(nameof(FavStateIcon));
         }
 
         private void NotifyEPGChange()

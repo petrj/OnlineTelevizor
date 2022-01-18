@@ -164,12 +164,17 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Text="{Binding ChannelNumber}" Style="{DynamicResource ChannelNumberTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannelNumber}" />
+
                                     <Label Grid.Row="0" Grid.Column="1" Margin="0,0,0,0" Text="{Binding Name}"  LineBreakMode="NoWrap" Style="{DynamicResource ChannelNameTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannel}" />
-                                    <ffimageloading:CachedImage Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding LogoUrl}" Style="{DynamicResource IconStyle}" DownsampleToViewSize="false" DownsampleHeight="50" LoadingPlaceholder = "Empty.png"/>
                                     <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,0" Text="{Binding CurrentEPGTitle}" Style="{DynamicResource ChannelEPGTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForChannelEPG}"/>
                                     <Label Grid.Row="2" Grid.Column="1" Text="{Binding EPGTime}" Style="{DynamicResource TimeTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForTime}"/>
-                                    <Label Grid.Row="3" Grid.Column="1" MaxLines="1" Grid.ColumnSpan="2" Text="{Binding NextTitle}" Style="{DynamicResource NextTitleTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForNextTitle}"/>
-                                    <Image Grid.Row="2" Grid.Column="2"  Source="{Binding StateIcon}" Style="{DynamicResource IconStyle}"  HeightRequest="30"/>
+                                    <Label Grid.Row="3" Grid.Column="1" MaxLines="1" Text="{Binding NextTitle}" Style="{DynamicResource NextTitleTextStyle}" FontSize="{Binding Source={x:Reference ChannelsListView}, Path=BindingContext.FontSizeForNextTitle}"/>
+
+                                    <ffimageloading:CachedImage
+                                           Grid.Row="0" Grid.Column="2" Source="{Binding LogoUrl}" Style="{DynamicResource IconStyle}" DownsampleToViewSize="false" DownsampleHeight="50" LoadingPlaceholder = "Empty.png"/>
+                                    <Image Grid.Row="1" Grid.Column="2"  Source="{Binding FavStateIcon}" Style="{DynamicResource IconStyle}"  HeightRequest="30" VerticalOptions="End"/>
+                                    <Image Grid.Row="2" Grid.Column="2"  Source="{Binding RecordStateIcon}" Style="{DynamicResource IconStyle}"  HeightRequest="30"/>
+                                    <Image Grid.Row="3" Grid.Column="2"  Source="{Binding CastingStateIcon}" Style="{DynamicResource IconStyle}"  HeightRequest="30"/>
 
                                     <ProgressBar Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Progress="{Binding EPGProgress}" ProgressColor="#41b3ff" BackgroundColor="White"/>
 
