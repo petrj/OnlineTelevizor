@@ -232,7 +232,7 @@ namespace OnlineTelevizor.Views
 
                         CheckStreamCommand.Execute(null);
 
-                        ClosePreviewVideoImage.IsVisible = true;
+                        ClosePreviewVideoImage.IsVisible = false;
                         CloseVideoImage.IsVisible = false;
 
                         break;
@@ -387,6 +387,7 @@ namespace OnlineTelevizor.Views
             _lastAllocatedSize.Height = height;
 
             _viewModel.NotifyToolBarChange();
+
             RefreshGUI();
         }
 
@@ -984,22 +985,22 @@ namespace OnlineTelevizor.Views
                     ShowJustPlayingNotification();
                 }
 
-                if (PlayingState == PlayingStateEnum.PlayingInternal)
+                if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
                 {
                     Device.BeginInvokeOnMainThread(() =>
                     {
                         CloseVideoImage.IsVisible = PlayingState == PlayingStateEnum.PlayingInternal;
-                        //ClosePreviewVideoImage.IsVisible = PlayingState == PlayingStateEnum.PlayingInPreview;
+                        ClosePreviewVideoImage.IsVisible = PlayingState == PlayingStateEnum.PlayingInPreview;
                     });
 
                     Task.Run(async () =>
                     {
-                        await Task.Delay(3000);
+                        await Task.Delay(5000);
 
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             CloseVideoImage.IsVisible = false;
-                            //ClosePreviewVideoImage.IsVisible = false;
+                            ClosePreviewVideoImage.IsVisible = false;
                         });
                     });
                 }
@@ -1525,7 +1526,16 @@ namespace OnlineTelevizor.Views
                         Height = newVideoHeight
                     };
 
-                    VideoStackLayout.Layout(rect);
+                    if (rect.X != VideoStackLayout .X ||
+                        rect.Y != VideoStackLayout.Y ||
+                        rect.Width != VideoStackLayout.Width ||
+                        rect.Height != VideoStackLayout.Height)
+                    {
+                        AbsoluteLayout.SetLayoutFlags(VideoStackLayout, AbsoluteLayoutFlags.None);
+                        AbsoluteLayout.SetLayoutBounds(VideoStackLayout, rect);
+
+                        //VideoStackLayout.Layout(rect);
+                    }
                 }
             } catch (Exception ex)
             {
