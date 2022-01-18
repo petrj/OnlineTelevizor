@@ -476,7 +476,9 @@ namespace OnlineTelevizor.Views
             {
                 // different page on navigation top
 
-                if (stack[stack.Count - 1].GetType() == typeof(ChannelDetailPage))
+                var type = stack[stack.Count - 1].GetType();
+
+                if (type == typeof(ChannelDetailPage))
                 {
                     if (LeavePageKeyDown(lowKey))
                     {
@@ -485,7 +487,21 @@ namespace OnlineTelevizor.Views
                     }
                 }
 
-                if (stack[stack.Count - 1].GetType() == typeof(FilterPage))
+                if (type == typeof(HelpPage))
+                {
+                    if (LeavePageKeyDown(lowKey))
+                    {
+                        // closing detail page
+                        Navigation.PopAsync();
+                    }
+
+                    var helpPage = stack[stack.Count - 1] as HelpPage;
+
+                    if (SelectNextItemKeyDown(lowKey))
+                        helpPage.SelectNextItem();
+                }
+
+                if (type == typeof(FilterPage))
                 {
                     if (LeavePageKeyDown(lowKey))
                     {
@@ -500,7 +516,7 @@ namespace OnlineTelevizor.Views
                     }
                 }
 
-                if (stack[stack.Count - 1].GetType() == typeof(QualitiesPage))
+                if (type == typeof(QualitiesPage))
                 {
                     if (LeavePageKeyDown(lowKey))
                     {
@@ -514,7 +530,7 @@ namespace OnlineTelevizor.Views
                         qualityPage.SelectNextItem();
                 }
 
-                if (stack[stack.Count - 1].GetType() == typeof(SettingsPage))
+                if (type == typeof(SettingsPage))
                 {
                     if (LeavePageKeyDown(lowKey))
                     {
@@ -1095,6 +1111,15 @@ namespace OnlineTelevizor.Views
                         _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
                     });
                 }
+                else if (_viewModel.SelectedToolbarItemName == "ToolbarItemHelp")
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        ToolbarItemHelp_Clicked(this, null);
+                        _viewModel.SelectedToolbarItemName = null;
+                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                    });
+                }
             }
         }
 
@@ -1304,9 +1329,23 @@ namespace OnlineTelevizor.Views
             _viewModel.NotifyToolBarChange();
         }
 
+        private bool IsPageOnTop(Type type)
+        {
+            var stack = Navigation.NavigationStack;
+            var typeOfPageOnTop = stack[stack.Count - 1].GetType();
+
+            if (typeOfPageOnTop == type)
+                return true;
+
+            return false;
+        }
+
         private async void ToolbarItemHelp_Clicked(object sender, EventArgs e)
         {
             _loggingService.Info($"ToolbarItemHelp_Clicked");
+
+            if (IsPageOnTop(typeof(HelpPage)))
+                return;
 
             var helpPage = new HelpPage(_loggingService, _config, _dialogService, _viewModel.TVService);
             await Navigation.PushAsync(helpPage);
@@ -1315,6 +1354,9 @@ namespace OnlineTelevizor.Views
         private async void ToolbarItemFilter_Clicked(object sender, EventArgs e)
         {
             _loggingService.Info($"ToolbarItemFilter_Clicked");
+
+            if (IsPageOnTop(typeof(FilterPage)))
+                return;
 
             _filterPage = new FilterPage(_loggingService, _config, _viewModel.TVService);
             _filterPage.Disappearing += delegate
@@ -1328,6 +1370,9 @@ namespace OnlineTelevizor.Views
         private async void ToolbarItemSettings_Clicked(object sender, EventArgs e)
         {
             _loggingService.Info($"ToolbarItemSettings_Clicked");
+
+            if (IsPageOnTop(typeof(SettingsPage)))
+                return;
 
             var settingsPage = new SettingsPage(_loggingService, _config, _dialogService, _viewModel.TVService);
             settingsPage.FillAutoPlayChannels(_viewModel.AllNotFilteredChannels);
@@ -1344,6 +1389,9 @@ namespace OnlineTelevizor.Views
         private async void ToolbarItemQuality_Clicked(object sender, EventArgs e)
         {
             _loggingService.Info($"ToolbarItemQuality_Clicked");
+
+            if (IsPageOnTop(typeof(QualitiesPage)))
+                return;
 
             var qualitiesPage = new QualitiesPage(_loggingService, _config, _viewModel.TVService);
 

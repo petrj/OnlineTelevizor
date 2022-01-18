@@ -1,4 +1,5 @@
-﻿using LoggerService;
+﻿using LoggerService
+    ;
 using NLog;
 using Plugin.InAppBilling;
 using OnlineTelevizor.Models;
@@ -23,6 +24,7 @@ namespace OnlineTelevizor.Views
         private IOnlineTelevizorConfiguration _config;
         private ILoggingService _loggingService;
         private IDialogService _dialogService;
+        private View _lastFocusedView = null;
 
         public HelpPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
         {
@@ -32,6 +34,15 @@ namespace OnlineTelevizor.Views
             _dialogService = dialogService;
 
             BindingContext = _viewModel = new HelpViewModel(loggingService, config, dialogService, service);
+        }
+
+        public void SelectNextItem()
+        {
+            Task.Run(async () =>
+            {
+                await mainSCrollView.ScrollToAsync(mainSCrollView.ScrollX, mainSCrollView.ScrollY + 10 + (int)_config.AppFontSize, false);
+
+            });
         }
     }
 }

@@ -39,13 +39,13 @@
 
     <ContentPage.Content>
 
-        <ScrollView Style="{StaticResource PageBackgroundStyle}">
+        <ScrollView  x:Name="mainSCrollView" Style="{StaticResource PageBackgroundStyle}">
 
             <StackLayout>
 
                  <StackLayout Margin="10,10,20,0">
 
-                    <Label  Text="Gesta během přehrávání" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForGroupCaption}"/>
+                    <Label Text="Gesta během přehrávání" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForGroupCaption}"/>
 
                     <Label  Text="- gesta použitelná na video či logo kanálu pro interní přehrávač" Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForNote}"/>
 
