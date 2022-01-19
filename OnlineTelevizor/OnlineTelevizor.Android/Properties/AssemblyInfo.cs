@@ -11,7 +11,7 @@ using Android.App;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Petr Janousek")]
 [assembly: AssemblyProduct("OnlineTelevizor.Android")]
-[assembly: AssemblyCopyright("Copyright ©  2019-2021")]
+[assembly: AssemblyCopyright("Copyright ©  2019-2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
@@ -26,8 +26,8 @@ using Android.App;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("44.0.0.0")]
-[assembly: AssemblyFileVersion("44.0.0.0")]
+[assembly: AssemblyVersion("45.0.0.0")]
+[assembly: AssemblyFileVersion("45.0.0.0")]
 
 // Add some common permissions, these can be removed if not needed
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
