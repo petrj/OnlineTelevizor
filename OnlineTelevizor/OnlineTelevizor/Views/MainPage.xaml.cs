@@ -165,6 +165,15 @@ namespace OnlineTelevizor.Views
             });
         }
 
+        private void _renderersPage_Disappearing(object sender, EventArgs e)
+        {
+            if (_viewModel.SelectedItem != null && _renderersPage != null)
+            {
+                _renderersPage.Channel.IsCasting = _renderersPage.IsCasting();
+                _renderersPage.Channel.NotifyStateChange();
+            }
+        }
+
         public void RefreshGUI()
         {
             Device.BeginInvokeOnMainThread(() =>
@@ -517,6 +526,31 @@ namespace OnlineTelevizor.Views
                     {
                         // closing detail page
                         Navigation.PopAsync();
+                    }
+                }
+
+                if (type == typeof(CastRenderersPage))
+                {
+                    var renderPage = stack[stack.Count - 1] as CastRenderersPage;
+
+                    if (SelectNextItemKeyDown(lowKey))
+                    {
+                        renderPage.SelectNextItem();
+                    }
+                    else
+                    if (SelectPreviousItemKeyDown(lowKey))
+                    {
+                        renderPage.SelectPreviousItem();
+                    }
+                    else
+                    if (LeavePageKeyDown(lowKey))
+                    {
+                        Navigation.PopAsync();
+                    }
+                    else
+                    if (OKKeyDown(lowKey))
+                    {
+                        renderPage.SendOKButton();
                     }
                 }
 

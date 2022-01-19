@@ -22,7 +22,7 @@ namespace OnlineTelevizor.Views
         private ChannelItem _channel;
         private Command CheckCastingCommand { get; set; }
         private bool _castingStarted = false;
-            
+
 
         public CastRenderersPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
@@ -37,6 +37,20 @@ namespace OnlineTelevizor.Views
             BackgroundCommandWorker.RunInBackground(CheckCastingCommand, 10, 5);
         }
 
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            // workaround for OnAppearing nothing selected
+            if (_viewModel.SelectedItem != null)
+            {
+                var x = _viewModel.SelectedItem;
+                _viewModel.SelectedItem = null;
+                _viewModel.SelectedItem = x;
+            }
+        }
+
         private async Task CheckCasting()
         {
             if (_castingStarted && !IsCasting())
@@ -46,24 +60,32 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        private async void Renderer_Tapped(object sender, ItemTappedEventArgs e)
+        private async Task Render(RendererItem item)
         {
-            // create new media
-            using (var media = new Media(_viewModel.LibVLC, new Uri(_channel.Url)))
+            Device.BeginInvokeOnMainThread(() =>
             {
-                // create the mediaplayer
-                _mediaPlayer = new MediaPlayer(_viewModel.LibVLC);
+                // create new media
+                using (var media = new Media(_viewModel.LibVLC, new Uri(_channel.Url)))
+                {
+                    // create the mediaplayer
+                    _mediaPlayer = new MediaPlayer(_viewModel.LibVLC);
 
-                _mediaPlayer.SetRenderer(e.Item as RendererItem);                
+                    _mediaPlayer.SetRenderer(item);
 
-                _mediaPlayer.Play(media);
-            }
+                    _mediaPlayer.Play(media);
+                }
+
+                _castingStarted = true;
+            });
 
             MessagingCenter.Send<BaseViewModel,ChannelItem>(_viewModel, BaseViewModel.CastingStarted, _channel);
 
-            _castingStarted = true;
-
             await Navigation.PopAsync();
+        }
+
+        private async void Renderer_Tapped(object sender, ItemTappedEventArgs e)
+        {
+            await Render(e.Item as RendererItem);
         }
 
         public bool IsCasting()
@@ -91,6 +113,24 @@ namespace OnlineTelevizor.Views
             {
                 _channel = value;
             }
+        }
+
+        public async void SelectNextItem()
+        {
+            await _viewModel.SelectNextItem();
+        }
+
+        public async void SelectPreviousItem()
+        {
+            await _viewModel.SelectPreviousItem();
+        }
+
+        public async void SendOKButton()
+        {
+            if (_viewModel.SelectedItem == null)
+                return;
+
+            await Render(_viewModel.SelectedItem);
         }
     }
 }

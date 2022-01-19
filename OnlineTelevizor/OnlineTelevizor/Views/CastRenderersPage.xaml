@@ -50,6 +50,7 @@
                             ItemTapped="Renderer_Tapped"
                             CachingStrategy="RecycleElement"
                             IsPullToRefreshEnabled="False"
+                            SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                             Style="{StaticResource ListViewStyle}">
 
             <ListView.ItemTemplate>

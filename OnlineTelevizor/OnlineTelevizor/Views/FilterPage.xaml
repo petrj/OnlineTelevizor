@@ -43,16 +43,14 @@
 
                 <StackLayout Margin="20,10,20,0">
 
-
-
                     <StackLayout Margin="20,10,0,0">
-                        <Label  Text="Oblíbené" Style="{StaticResource CaptionLabelStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Label  Text="Oblíbené" Style="{StaticResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
                         <Switch x:Name="FavouriteSwitch" IsToggled="{Binding ShowOnlyFavouriteChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
                     </StackLayout>
 
                     <StackLayout Margin="20,0,0,0">
 
-                        <Label Text="TV/Radio:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
+                        <Label Text="TV/Radio" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
                         <Picker
                                 Margin="20,0,0,0"
                                 x:Name="TypePicker"
@@ -63,7 +61,7 @@
                     </StackLayout>
 
                     <StackLayout Margin="20,0,0,0">
-                        <Label Text="Skupina:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
+                        <Label Text="Skupina" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
                         <Picker
                             Margin="20,0,0,0"
                             x:Name="GroupPicker"
@@ -75,7 +73,7 @@
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0">
-                        <Label x:Name="ChannelNameLabel" Text="Název:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
+                        <Label x:Name="ChannelNameLabel" Text="Název" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
                         <Entry  x:Name="ChannelNameEntry" Margin="20,0,0,0" Text="{Binding ChannelNameFilter, Mode=TwoWay}" Placeholder="Zadejte název kanálu nebo jeho část" PlaceholderColor="Gray" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}"/>
                     </StackLayout>
 

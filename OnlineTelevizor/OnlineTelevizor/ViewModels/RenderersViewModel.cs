@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace OnlineTelevizor.ViewModels
@@ -14,11 +16,13 @@ namespace OnlineTelevizor.ViewModels
     {
         private LibVLC _libVLC;
         private RendererDiscoverer _rendererDiscoverer;
+        private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public ObservableCollection<RendererItem> Renderers { get; set; } = new ObservableCollection<RendererItem>();
 
         public Command RefreshCommand { get; set; }
 
+        public RendererItem _selectedItem;
 
         public RenderersViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
           : base(loggingService, config, dialogService)
@@ -37,10 +41,24 @@ namespace OnlineTelevizor.ViewModels
             _rendererDiscoverer = new RendererDiscoverer(_libVLC);
 
             // register callback when a new renderer is found
-            _rendererDiscoverer.ItemAdded += RendererDiscoverer_ItemAdded;            
+            _rendererDiscoverer.ItemAdded += RendererDiscoverer_ItemAdded;
 
             // start discovery on the local network
             _rendererDiscoverer.Start();
+        }
+
+        public RendererItem SelectedItem
+        {
+            get
+            {
+                return _selectedItem;
+            }
+            set
+            {
+                _selectedItem = value;
+
+                OnPropertyChanged(nameof(SelectedItem));
+            }
         }
 
         private void RendererDiscoverer_ItemAdded(object sender, RendererDiscovererItemAddedEventArgs e)
@@ -83,5 +101,108 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public async Task SelectPreviousItem()
+        {
+            await _semaphoreSlim.WaitAsync();
+
+            await Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        if (Renderers.Count == 0)
+                        return;
+
+                        if (SelectedItem == null)
+                        {
+                            SelectedItem = Renderers[Renderers.Count - 1];
+                        }
+                        else
+                        {
+                            bool next = false;
+
+                            for (var i = Renderers.Count - 1; i >= 0; i--)
+                            {
+                                var ch = Renderers[i];
+
+                                if (next)
+                                {
+                                    SelectedItem = ch;
+                                    break;
+                                }
+                                else
+                                {
+                                    if (ch == SelectedItem)
+                                    {
+                                        next = true;
+
+                                        if (i == 0)
+                                        {
+                                            SelectedItem = Renderers[Renderers.Count - 1];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    finally
+                    {
+                        _semaphoreSlim.Release();
+                    };
+                });
+        }
+
+        public async Task SelectNextItem()
+        {
+            await _semaphoreSlim.WaitAsync();
+
+            await Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        if (Renderers.Count == 0)
+                            return;
+
+                        if (SelectedItem == null)
+                        {
+                            SelectedItem = Renderers[0];
+                        }
+                        else
+                        {
+                            bool next = false;
+
+                            for (var i = 0; i < Renderers.Count; i++)
+                            {
+                                var ri = Renderers[i];
+
+                                if (next)
+                                {
+                                    SelectedItem = ri;
+                                    break;
+                                }
+                                else
+                                {
+                                    if (ri == SelectedItem)
+                                    {
+                                        next = true;
+
+                                        if (i == Renderers.Count - 1)
+                                        {
+                                            SelectedItem = Renderers[0];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    finally
+                    {
+                        _semaphoreSlim.Release();
+                    };
+                });
+        }
     }
 }

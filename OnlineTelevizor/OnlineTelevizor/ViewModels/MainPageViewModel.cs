@@ -341,7 +341,9 @@ namespace OnlineTelevizor.ViewModels
 
             actions.Add(optionStopApp);
 
-            var selectedvalue = await _dialogService.Select(actions, (item as ChannelItem).Name, optionCancel);
+            var title = item == null ? "Menu" : (item as ChannelItem).Name;
+
+            var selectedvalue = await _dialogService.Select(actions, title , optionCancel);
 
             if (selectedvalue == optionCancel)
             {
@@ -1078,30 +1080,29 @@ namespace OnlineTelevizor.ViewModels
                 if (!Config.Purchased)
                     status = "Verze zdarma. ";
 
-                if (Channels.Count == 0)
+                if (_notFilteredChannelsCount == 0)
                 {
-                    if (_notFilteredChannelsCount == 0)
+                    return $"{status}Není k dispozici žádný kanál";
+                }
+
+                if (_notFilteredChannelsCount != Channels.Count)
+                {
+                    return $"{status}Zobrazeno {Channels.Count} z {_notFilteredChannelsCount} kanálů";
+                } else
+                {
+                    if (Channels.Count == 1)
                     {
-                        return $"{status}"; // awaiting refresh ....
+                        return $"{status}Načten 1 kanál";
+                    }
+                    else
+                    if ((Channels.Count >= 2) && (Channels.Count <= 4))
+                    {
+                        return $"{status}Načteny {Channels.Count} kanály";
                     }
                     else
                     {
-                        return $"{status}Není k dispozici žádný kanál";
+                        return $"{status}Načteno {Channels.Count} kanálů";
                     }
-                }
-                else
-                if (Channels.Count == 1)
-                {
-                    return $"{status}Načten 1 kanál";
-                }
-                else
-                if ((Channels.Count >= 2) && (Channels.Count <= 4))
-                {
-                    return $"{status}Načteny {Channels.Count} kanály";
-                }
-                else
-                {
-                    return $"{status}Načteno {Channels.Count} kanálů";
                 }
             }
         }
@@ -1319,6 +1320,9 @@ namespace OnlineTelevizor.ViewModels
                     } else if (firstVisibleChannelNumber != null)
                     {
                         await SelectChannelByNumber(firstVisibleChannelNumber);
+                    } else
+                    {
+                        SelectedItem = null;
                     }
                 }
 
