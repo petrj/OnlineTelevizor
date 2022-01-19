@@ -97,6 +97,20 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public bool ShowOnlyFavouriteChannels
+        {
+            get
+            {
+                return Config.ShowOnlyFavouriteChannels;
+            }
+            set
+            {
+                Config.ShowOnlyFavouriteChannels = value;
+
+                OnPropertyChanged(nameof(ShowOnlyFavouriteChannels));
+            }
+        }
+
         public FilterPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
            : base(loggingService, config, dialogService)
         {
@@ -121,6 +135,7 @@ namespace OnlineTelevizor.ViewModels
             SelectedTypeItem = FirstType;
             SelectedGroupItem = FirstGroup;
             ChannelNameFilter = "";
+            ShowOnlyFavouriteChannels = false;
 
             await Refresh();
         }

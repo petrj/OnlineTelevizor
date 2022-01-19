@@ -33,12 +33,12 @@ namespace OnlineTelevizor.Views
 
         private void TypePicker_Unfocused(object sender, FocusEventArgs e)
         {
-            FocusView(ChannelNameEntry);
+            FocusView(GroupPicker);
         }
 
         private void GroupPicker_Unfocused(object sender, FocusEventArgs e)
         {
-            FocusView(TypePicker);;
+            FocusView(ChannelNameEntry);
         }
 
         protected override void OnAppearing()
@@ -51,24 +51,71 @@ namespace OnlineTelevizor.Views
 
         private void FocusView(View view)
         {
+            ClearButton.BackgroundColor = Color.Gray;
+            ClearButton.TextColor = Color.Black;
+
+            RefreshButton.BackgroundColor = Color.Gray;
+            RefreshButton.TextColor = Color.Black;
+
             view.Focus();
             _lastFocusedView = view;
+
+            if (view is Button)
+            {
+                (view as Button).BackgroundColor = Color.Blue;
+                (view as Button).TextColor = Color.White;
+            }
+        }
+
+        public void SendOKButton()
+        {
+            if (_lastFocusedView == null)
+                return;
+
+            if (_lastFocusedView is Button)
+            {
+                if (_lastFocusedView == ClearButton)
+                    _viewModel.ClearFilterCommand.Execute(null);
+
+                if (_lastFocusedView == RefreshButton)
+                    _viewModel.RefreshCommand.Execute(null);
+            }
         }
 
         public void SelectNextItem()
         {
-            if (_lastFocusedView == ChannelNameEntry)
-            {
-                FocusView(GroupPicker);
-            }
-            else
-            if (_lastFocusedView == GroupPicker)
+            if (_lastFocusedView == FavouriteSwitch)
             {
                 FocusView(TypePicker);
             }
             else
+          if (_lastFocusedView == TypePicker)
+            {
+                FocusView(GroupPicker);
+            }
+            else
+          if (_lastFocusedView == GroupPicker)
             {
                 FocusView(ChannelNameEntry);
+            }
+            else
+          if (_lastFocusedView == ChannelNameEntry)
+            {
+                FocusView(RefreshButton);
+            }
+            else
+          if (_lastFocusedView == RefreshButton)
+            {
+                FocusView(ClearButton);
+            }
+            else
+          if (_lastFocusedView == ClearButton)
+            {
+                FocusView(FavouriteSwitch);
+            }
+            else
+            {
+                FocusView(FavouriteSwitch);
             }
         }
     }

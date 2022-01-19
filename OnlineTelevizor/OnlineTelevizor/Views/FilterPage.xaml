@@ -28,6 +28,10 @@
                 <Setter Property="BackgroundColor" Value="Black"/>
             </Style>
 
+            <Style x:Key="CommonSwitchTextStyle" TargetType="Switch">
+                <Setter Property="HorizontalOptions" Value="End"/>
+            </Style>
+
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -39,14 +43,23 @@
 
                 <StackLayout Margin="20,10,20,0">
 
-                    <ActivityIndicator
-                           IsVisible="{Binding IsBusy}"
-                           IsRunning="{Binding IsBusy}"
-                           Color="White" />
+
 
                     <StackLayout Margin="20,10,0,0">
-                        <Label x:Name="ChannelNameLabel" Text="Název:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
-                        <Entry  x:Name="ChannelNameEntry" Margin="20,0,0,0" Text="{Binding ChannelNameFilter, Mode=TwoWay}" Placeholder="Zadejte název kanálu nebo jeho část" PlaceholderColor="Gray" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}"/>
+                        <Label  Text="Oblíbené" Style="{StaticResource CaptionLabelStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                        <Switch x:Name="FavouriteSwitch" IsToggled="{Binding ShowOnlyFavouriteChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                    </StackLayout>
+
+                    <StackLayout Margin="20,0,0,0">
+
+                        <Label Text="TV/Radio:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
+                        <Picker
+                                Margin="20,0,0,0"
+                                x:Name="TypePicker"
+                                FontSize="{Binding FontSizeForPicker}"
+                                SelectedItem="{Binding SelectedTypeItem, Mode=TwoWay}"
+                                Style="{StaticResource CommonPickerTextStyle}"
+                                ItemsSource="{Binding Types}"/>
                     </StackLayout>
 
                     <StackLayout Margin="20,0,0,0">
@@ -61,17 +74,27 @@
                             ItemDisplayBinding="{Binding GUIName}"/>
                     </StackLayout>
 
-                    <StackLayout Margin="20,0,0,0">
-
-                        <Label Text="Typ:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
-                        <Picker
-                                Margin="20,0,0,0"
-                                x:Name="TypePicker"
-                                FontSize="{Binding FontSizeForPicker}"
-                                SelectedItem="{Binding SelectedTypeItem, Mode=TwoWay}"
-                                Style="{StaticResource CommonPickerTextStyle}"
-                                ItemsSource="{Binding Types}"/>
+                    <StackLayout Margin="20,10,0,0">
+                        <Label x:Name="ChannelNameLabel" Text="Název:" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}"/>
+                        <Entry  x:Name="ChannelNameEntry" Margin="20,0,0,0" Text="{Binding ChannelNameFilter, Mode=TwoWay}" Placeholder="Zadejte název kanálu nebo jeho část" PlaceholderColor="Gray" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}"/>
                     </StackLayout>
+
+                    <Grid Margin="20,10,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="70*" />
+                            <ColumnDefinition Width="30*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" Grid.Row="0" x:Name="RefreshButton" Margin="0,10,0,0" Text="Obnovit" Command="{Binding RefreshCommand}" FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black"/>
+                        <Button Grid.Column="0" Grid.Row="1" x:Name="ClearButton" Margin="0,10,0,0" Text="Zrušit všechny filtry" Command="{Binding ClearFilterCommand}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
+
+                        <ActivityIndicator Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="White" />
+
+                    </Grid>
 
                 </StackLayout>
 
@@ -80,10 +103,5 @@
         </ScrollView>
 
     </ContentPage.Content>
-
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="Refresh.png"/>
-        <ToolbarItem Name="ToolbarItemClearFilter" Text="Zrušit filtry"  Command="{Binding ClearFilterCommand}" Icon="ClearFilter.png"/>
-    </ContentPage.ToolbarItems>
 
 </ContentPage>

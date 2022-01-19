@@ -465,6 +465,52 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        public List<string> FavouriteChannelNames
+        {
+            get
+            {
+                var favouriteChannelNamesAsString = GetPersistingSettingValue<string>("FavouriteChannelNames");
+
+                var res = new List<string>();
+
+                if (string.IsNullOrEmpty(favouriteChannelNamesAsString))
+                    return res;
+
+                res.AddRange(favouriteChannelNamesAsString.Split(';'));
+
+                return res;
+            }
+            set
+            {
+                var favouriteChannelNamesAsString = String.Empty;
+
+                foreach (var channelName in value)
+                {
+                    if (string.IsNullOrEmpty(channelName))
+                        continue;
+
+                    if (favouriteChannelNamesAsString != String.Empty)
+                        favouriteChannelNamesAsString += ";";
+
+                    favouriteChannelNamesAsString += channelName.Replace(";", ",");
+                }
+
+                SavePersistingSettingValue<string>("FavouriteChannelNames", favouriteChannelNamesAsString);
+            }
+        }
+
+        public bool ShowOnlyFavouriteChannels
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("ShowOnlyFavouriteChannels");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("ShowOnlyFavouriteChannels", value);
+            }
+        }
+
         public bool? LoadCredentails(string url)
         {
             try

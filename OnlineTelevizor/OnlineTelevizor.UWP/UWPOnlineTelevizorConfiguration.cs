@@ -407,6 +407,52 @@ namespace OnlineTelevizor.UWP
             }
         }
 
+        public List<string> FavouriteChannelNames
+        {
+            get
+            {
+                var favouriteChannelNamesAsString = GetSettingValue<string>("FavouriteChannelNames");
+
+                var res = new List<string>();
+
+                if (string.IsNullOrEmpty(favouriteChannelNamesAsString))
+                    return res;
+
+                res.AddRange(favouriteChannelNamesAsString.Split(';'));
+
+                return res;
+            }
+            set
+            {
+                var favouriteChannelNamesAsString = String.Empty;
+
+                foreach (var channelName in value)
+                {
+                    if (string.IsNullOrEmpty(channelName))
+                        continue;
+
+                    if (favouriteChannelNamesAsString != String.Empty)
+                        favouriteChannelNamesAsString += ";";
+
+                    favouriteChannelNamesAsString += channelName.Replace(";", ",");
+                }
+
+                SaveSettingValue<string>("FavouriteChannelNames", favouriteChannelNamesAsString);
+            }
+        }
+
+        public bool ShowOnlyFavouriteChannels
+        {
+            get
+            {
+                return GetSettingValue<bool>("ShowOnlyFavouriteChannels");
+            }
+            set
+            {
+                SaveSettingValue<bool>("ShowOnlyFavouriteChannels", value);
+            }
+        }
+
         public long UsableSpace
         {
             get

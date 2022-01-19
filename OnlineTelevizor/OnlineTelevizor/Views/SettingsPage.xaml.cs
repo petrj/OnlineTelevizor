@@ -62,6 +62,13 @@ namespace OnlineTelevizor.Views
             TVAPIPicker.Unfocused += TVAPIPicker_Unfocused;
             LastChannelAutoPlayPicker.Unfocused += LastChannelAutoPlayPicker_Unfocused;
             FontSizePicker.Unfocused += FontSizePicker_Unfocused;
+
+            PasswordEntry.Unfocused += PasswordEntry_Unfocused;
+        }
+
+        private void PasswordEntry_Unfocused(object sender, FocusEventArgs e)
+        {
+            FocusView(PinEntry);
         }
 
         private void FontSizePicker_Unfocused(object sender, FocusEventArgs e)
@@ -128,8 +135,35 @@ namespace OnlineTelevizor.Views
 
         private void FocusView(View view)
         {
+            PayButton.BackgroundColor = Color.Gray;
+            PayButton.TextColor = Color.Black;
+
+            AboutButton.BackgroundColor = Color.Gray;
+            AboutButton.TextColor = Color.Black;
+
             view.Focus();
             _lastFocusedView = view;
+
+            if (view is Button)
+            {
+                (view as Button).BackgroundColor = Color.Blue;
+                (view as Button).TextColor = Color.White;
+            }
+        }
+
+        public void SendOKButton()
+        {
+            if (_lastFocusedView == null)
+                return;
+
+            if (_lastFocusedView is Button)
+            {
+                if (_lastFocusedView == PayButton)
+                    _viewModel.PayCommand.Execute(null);
+
+                if (_lastFocusedView == AboutButton)
+                    _viewModel.AboutCommand.Execute(null);
+            }
         }
 
         public void SelectNextItem()

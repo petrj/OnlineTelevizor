@@ -273,14 +273,17 @@ namespace OnlineTelevizor.ViewModels
         {
             string optionCancel = "Zpět";
 
-            string optionPlay = "Spustit ..";
+            string optionPlay = "Spustit";
             string optionCast = "Odeslat ..";
             string optionStopCast = "Zastavit odesílání";
             string optionDetail = "Zobrazit detail ..";
-            string optionClosePreview = "Zavřít náhled ..";
-            string optionToggleAudioStream = "Změnit zvukovou stopu ..";
+            string optionClosePreview = "Zavřít náhled";
+            string optionToggleAudioStream = "Změnit zvukovou stopu";
 
-            string optionRecord = "Nahrávat do souboru ..";
+            string optionAddToFav = "Přidat k oblíbeným";
+            string optionRemoveFromFav = "Odebrat z oblíbených";
+
+            string optionRecord = "Nahrávat do souboru";
             string optionStopRecord = "Zastavit nahrávání";
 
             string optionStopApp = "Ukončit aplikaci";
@@ -322,6 +325,18 @@ namespace OnlineTelevizor.ViewModels
             if (item != null)
             {
                 actions.Add(optionDetail);
+            }
+
+            if (item != null)
+            {
+                if (Config.FavouriteChannelNames.Contains(item.Name.Replace(";", ",")))
+                {
+                    actions.Add(optionRemoveFromFav);
+                }
+                else
+                {
+                    actions.Add(optionAddToFav);
+                }
             }
 
             actions.Add(optionStopApp);
@@ -369,6 +384,32 @@ namespace OnlineTelevizor.ViewModels
                 var confirm = await _dialogService.Confirm($"Ukončit aplikaci?");
                 if (confirm)
                     MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit);
+            }
+            else if (selectedvalue == optionAddToFav)
+            {
+                if (!Config.FavouriteChannelNames.Contains(item.Name.Replace(";", ",")))
+                {
+                    var fav = Config.FavouriteChannelNames;
+                    fav.Add(item.Name.Replace(";", ","));
+
+                    Config.FavouriteChannelNames = fav;
+
+                    item.IsFav = true;
+                    item.NotifyStateChange();
+                }
+            }
+            else if (selectedvalue == optionRemoveFromFav)
+            {
+                if (Config.FavouriteChannelNames.Contains(item.Name.Replace(";", ",")))
+                {
+                    var fav = Config.FavouriteChannelNames;
+                    fav.Remove(item.Name.Replace(";", ","));
+
+                    Config.FavouriteChannelNames = fav;
+
+                    item.IsFav = false;
+                    item.NotifyStateChange();
+                }
             }
         }
 
@@ -1159,6 +1200,8 @@ namespace OnlineTelevizor.ViewModels
             _loggingService.Info($"RefreshChannels");
             _notFilteredChannelsCount = 0;
             string selectedChannelNumber = null;
+            string firstVisibleChannelNumber = null;
+            bool selectedChannelNumberVisible = false;
 
             if (!_firstRefresh)
                 DoNotScrollToChannel = true;
@@ -1225,6 +1268,27 @@ namespace OnlineTelevizor.ViewModels
                             ch.IsCasting = true;
                         }
 
+                        if (Config.FavouriteChannelNames.Contains(ch.Name.Replace(";",",")))
+                        {
+                            ch.IsFav = true;
+                        }
+
+                        if (Config.ShowOnlyFavouriteChannels &&
+                            !(Config.FavouriteChannelNames.Contains(ch.Name.Replace(";", ","))))
+                        {
+                            continue;
+                        }
+
+                        if (firstVisibleChannelNumber == null)
+                        {
+                            firstVisibleChannelNumber = ch.ChannelNumber;
+                        }
+
+                        if (selectedChannelNumber != null && ch.ChannelNumber == selectedChannelNumber)
+                        {
+                            selectedChannelNumberVisible = true;
+                        }
+
                         Channels.Add(ch);
 
                         if (!_channelById.ContainsKey(ch.Id))
@@ -1249,7 +1313,13 @@ namespace OnlineTelevizor.ViewModels
 
                 if (selectedChannelNumber != null)
                 {
-                    await SelectChannelByNumber(selectedChannelNumber);
+                    if (selectedChannelNumberVisible)
+                    {
+                        await SelectChannelByNumber(selectedChannelNumber);
+                    } else if (firstVisibleChannelNumber != null)
+                    {
+                        await SelectChannelByNumber(firstVisibleChannelNumber);
+                    }
                 }
 
                 DoNotScrollToChannel = false;

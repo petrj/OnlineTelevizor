@@ -27,6 +27,9 @@ namespace OnlineTelevizor.Models
         string ChannelFilterType { get; set; }
         string ChannelFilterName { get; set; }
 
+        List<string> FavouriteChannelNames { get; set; }
+        bool ShowOnlyFavouriteChannels { get; set; }
+
         bool ShowLocked { get; set; }
         bool ShowAdultChannels { get; set; }
 

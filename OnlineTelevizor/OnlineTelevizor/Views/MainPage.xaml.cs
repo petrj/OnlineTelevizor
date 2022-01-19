@@ -481,6 +481,22 @@ namespace OnlineTelevizor.Views
             return false;
         }
 
+        private static bool OKKeyDown(string lowKey)
+        {
+            if (lowKey == "f6" ||
+                lowKey == "dpadcenter" ||
+                lowKey == "space" ||
+                lowKey == "enter" ||
+                lowKey == "numpadenter" ||
+                lowKey == "buttonr2"
+               )
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public void OnKeyDown(string key)
         {
             _loggingService.Debug($"OnKeyDown {key}");
@@ -535,6 +551,11 @@ namespace OnlineTelevizor.Views
                     {
                         Navigation.PopAsync();
                     }
+                    else
+                    if (OKKeyDown(lowKey))
+                    {
+                        _filterPage.SendOKButton();
+                    }
                 }
 
                 if (type == typeof(QualitiesPage))
@@ -559,16 +580,22 @@ namespace OnlineTelevizor.Views
 
                 if (type == typeof(SettingsPage))
                 {
+                    var settingsPage = stack[stack.Count - 1] as SettingsPage;
+
+                    if (SelectNextItemKeyDown(lowKey))
+                    {
+                        settingsPage.SelectNextItem();
+                    }
+                    else
+                    if (OKKeyDown(lowKey))
+                    {
+                        settingsPage.SendOKButton();
+                    } else
                     if (LeavePageKeyDown(lowKey))
                     {
                         // closing settings page
                         Navigation.PopAsync();
                     }
-
-                    var settingsPage = stack[stack.Count - 1] as SettingsPage;
-
-                    if (SelectNextItemKeyDown(lowKey))
-                        settingsPage.SelectNextItem();
                 }
 
                 return;
