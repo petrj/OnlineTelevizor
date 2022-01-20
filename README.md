@@ -41,7 +41,7 @@ Android, UWP and iOS application for playing internet TV and radio through czech
 - possibility to record stream to file (for Android and only to internal storage)
 - supported Android 5.1 and higher (architectures: armeabi, armeabi-v7a, x86, x86_x64, arm64-v8a) + Android TV
 - Chromecast support
-- audio track changing
+- switching audio track
 - user defined favourite channels
 
 <img src="https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Screenshot.png" width="400" alt="Screenshot"/>
