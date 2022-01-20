@@ -14,7 +14,7 @@ namespace OnlineTelevizor.Models
 
                 switch (Name)
                 {
-                    case "*": res= "Všechny skupiny"; break;
+                    case "*": res= "Vše"; break;
                     case "general": res = "Obecné"; break;
                     case "": res = "Nepojmenovaná skupina"; break;
                     case "news": res = "Zpravodajství"; break;

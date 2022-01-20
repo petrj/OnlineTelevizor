@@ -14,9 +14,9 @@ namespace OnlineTelevizor.Models
 
                 switch (Name)
                 {
-                    case "*": res = "Všechny typy"; break;
+                    case "*": res = "Vše"; break;
                     case "tv": res = "Televizní kanály"; break;
-                    case "radio": res = "Rádia"; break;                    
+                    case "radio": res = "Rádia"; break;
                 }
 
                 return $"{res} ({Count.ToString()})";
