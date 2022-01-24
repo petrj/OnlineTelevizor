@@ -200,7 +200,13 @@ namespace SledovaniTVAPI
                     (!devConnJson.HasValue("deviceId"))
                    )
                 {
-                    _status = StatusEnum.PairingFailed;
+                    if ((devConnJson.HasValue("error")) && (devConnJson.GetStringValue("error") == "bad login"))
+                    {
+                        _status = StatusEnum.PairingFailed;
+                    } else
+                    {
+                        _status = StatusEnum.LoginFailed;
+                    }
                 }
                 else
                 {

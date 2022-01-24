@@ -1056,12 +1056,12 @@ namespace OnlineTelevizor.ViewModels
 
                 switch (_service.Status)
                 {
-                    case StatusEnum.GeneralError: return $"Služba není dostupná";
+                    case StatusEnum.GeneralError: return $"IPTV není dostupná";
                     case StatusEnum.ConnectionNotAvailable: return $"Chyba připojení";
                     case StatusEnum.NotInitialized: return "";
                     case StatusEnum.EmptyCredentials: return "Nevyplněny přihlašovací údaje";
                     case StatusEnum.Logged: return GetChannelsStatus;
-                    case StatusEnum.LoginFailed: return $"Chybné přihlašovací údaje";
+                    case StatusEnum.LoginFailed: return $"Chyba přihlášení k IPTV";
                     case StatusEnum.Paired: return $"Uživatel přihlášen";
                     case StatusEnum.PairingFailed: return $"Chybné přihlašovací údaje";
                     case StatusEnum.BadPin: return $"Chybný PIN";

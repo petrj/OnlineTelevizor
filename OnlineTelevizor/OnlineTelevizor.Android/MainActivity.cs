@@ -228,6 +228,7 @@ namespace OnlineTelevizor.Droid
 
             StartService(new Intent(this, typeof(OnlineTelevizorService)));
 
+
             LoadApplication(_app);
         }
 
