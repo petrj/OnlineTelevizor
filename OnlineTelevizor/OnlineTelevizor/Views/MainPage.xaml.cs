@@ -28,6 +28,7 @@ namespace OnlineTelevizor.Views
 
         private FilterPage _filterPage = null;
         private CastRenderersPage _renderersPage;
+        private TimerPage _timerPage;
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private DateTime _lastBackPressedTime = DateTime.MinValue;
@@ -112,6 +113,19 @@ namespace OnlineTelevizor.Views
                 _renderersPage.Channel = _viewModel.SelectedItem;
 
                 Navigation.PushAsync(_renderersPage);
+            });
+
+            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowTimer, (sender) =>
+            {
+                if (IsPageOnTop(typeof(TimerPage)))
+                    return;
+
+                if (_timerPage == null)
+                {
+                    _timerPage = new TimerPage(_loggingService, _config, _dialogService);
+                }
+
+                Navigation.PushAsync(_timerPage);
             });
 
             MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.StopCasting, (sender) =>
@@ -553,6 +567,24 @@ namespace OnlineTelevizor.Views
                     if (OKKeyDown(lowKey))
                     {
                         renderPage.SendOKButton();
+                    }
+                }
+
+                if (type == typeof(TimerPage))
+                {
+                    if (SelectNextItemKeyDown(lowKey))
+                    {
+                        _timerPage.DecreaseTime();
+                    }
+                    else
+                    if (SelectPreviousItemKeyDown(lowKey))
+                    {
+                        _timerPage.IncreaseTime();
+                    }
+                    else
+                    if (LeavePageKeyDown(lowKey))
+                    {
+                        Navigation.PopAsync();
                     }
                 }
 

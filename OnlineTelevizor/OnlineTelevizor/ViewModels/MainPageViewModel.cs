@@ -287,6 +287,8 @@ namespace OnlineTelevizor.ViewModels
             string optionRecord = "Nahrávat do souboru";
             string optionStopRecord = "Zastavit nahrávání";
 
+            string optionSetTimer = "Nastavit časovač vypnutí ..";
+
             string optionStopApp = "Ukončit aplikaci";
 
             var actions = new List<string>();
@@ -340,11 +342,12 @@ namespace OnlineTelevizor.ViewModels
                 }
             }
 
+            actions.Add(optionSetTimer);
             actions.Add(optionStopApp);
 
             var title = item == null ? "Menu" : (item as ChannelItem).Name;
 
-            var selectedvalue = await _dialogService.Select(actions, title , optionCancel);
+            var selectedvalue = await _dialogService.Select(actions, title, optionCancel);
 
             if (selectedvalue == optionCancel)
             {
@@ -413,6 +416,10 @@ namespace OnlineTelevizor.ViewModels
                     item.IsFav = false;
                     item.NotifyStateChange();
                 }
+            }
+            else if (selectedvalue == optionSetTimer)
+            {
+                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowTimer);
             }
         }
 

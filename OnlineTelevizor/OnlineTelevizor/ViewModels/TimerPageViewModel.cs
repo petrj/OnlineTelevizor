@@ -1,0 +1,69 @@
+﻿using LoggerService;
+using OnlineTelevizor.Models;
+using OnlineTelevizor.Services;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace OnlineTelevizor.ViewModels
+{
+    public class TimerPageViewModel : BaseViewModel
+    {
+        private decimal _timerMinutes = 0;
+
+        public TimerPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
+        : base(loggingService, config, dialogService)
+        {
+
+        }
+
+        public decimal TimerMinutes
+        {
+            get
+            {
+                return _timerMinutes;
+            }
+            set
+            {
+                if (value < 0)
+                    value = 0;
+
+                if (value > 240)
+                    value = 240;
+
+                _timerMinutes = value;
+
+                OnPropertyChanged(nameof(TimerMinutes));
+                OnPropertyChanged(nameof(TimerMinutesForLabel));
+            }
+        }
+
+        public string TimerMinutesForLabel
+        {
+            get
+            {
+                if (_timerMinutes == 0)
+                    return "Časovač deaktivován";
+
+                return _timerMinutes.ToString("#0");
+            }
+        }
+
+
+        public string FontSizeForCaption
+        {
+            get
+            {
+                return GetScaledSize(14).ToString();
+            }
+        }
+
+        public string FontSizeForText
+        {
+            get
+            {
+                return GetScaledSize(12).ToString();
+            }
+        }
+    }
+}

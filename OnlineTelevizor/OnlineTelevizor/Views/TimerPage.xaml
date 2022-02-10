@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OnlineTelevizor.Views.TimerPage"
+             Title="Časovač vypnutí">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="PageBackgroundStyle" TargetType="ScrollView">
+                <Setter Property="BackgroundColor" Value="Black"/>
+            </Style>
+
+            <Style x:Key="CaptionStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="VerticalTextAlignment" Value="Start"/>
+                <Setter Property="VerticalOptions" Value="Start"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="Margin" Value="5,5,5,5"/>
+            </Style>
+
+            <Style x:Key="TextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="VerticalOptions" Value="Start"/>
+                <Setter Property="Margin" Value="5,5,5,5"/>
+            </Style>
+
+            <Style x:Key="StepperStyle" TargetType="Stepper">
+                <Setter Property="Minimum" Value="0"/>
+                <Setter Property="Maximum" Value="240"/>
+                <Setter Property="Increment" Value="10"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="VerticalOptions" Value="StartAndExpand"/>
+                <Setter Property="Margin" Value="5,5,5,5"/>
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+
+    <ContentPage.Content>
+        <StackLayout Style="{StaticResource PageBackgroundStyle}">
+            <Label Style="{StaticResource TextStyle}" Text="Počet minut do vypnutí" FontSize="{Binding FontSizeForText}"/>
+            <Label Style="{StaticResource CaptionStyle}" Text="{Binding TimerMinutesForLabel}" FontSize="{Binding FontSizeForCaption}"/>
+            <Stepper Style="{StaticResource StepperStyle}" ValueChanged="OnStepperValueChanged"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
