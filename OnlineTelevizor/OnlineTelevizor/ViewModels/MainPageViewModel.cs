@@ -40,6 +40,7 @@ namespace OnlineTelevizor.ViewModels
         private BackgroundWorker _recordingBackgroundWorker = new BackgroundWorker();
 
         private ChannelItem _selectedItem;
+
         private bool _firstRefresh = true;
         private int _lastRefreshChannelsDelay = 0;
         private int _lastRefreshEPEGsDelay = 0;

@@ -45,6 +45,8 @@ namespace OnlineTelevizor.Views
 
         private DateTime _lastSingleClicked = DateTime.MinValue;
 
+        private ChannelItem[] _lastPlayedChannels = new ChannelItem[2];
+
         public Command CheckStreamCommand { get; set; }
 
         public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
@@ -1027,6 +1029,12 @@ namespace OnlineTelevizor.Views
         {
             if (_config.InternalPlayer)
             {
+                if (_lastPlayedChannels[1] != channel)
+                {
+                    _lastPlayedChannels[0] = _lastPlayedChannels[1];
+                    _lastPlayedChannels[1] = channel;
+                }
+
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     if (PlayingState == PlayingStateEnum.PlayingInPreview && _viewModel.PlayingChannel == channel)
@@ -1215,9 +1223,18 @@ namespace OnlineTelevizor.Views
         {
             if (PlayingState == PlayingStateEnum.PlayingInternal)
             {
+                _lastSingleClicked = DateTime.MinValue;
+
+                // play last channel?
+                if (_lastPlayedChannels != null &&
+                    _lastPlayedChannels[0] != _viewModel.SelectedItem)
+                {
+                    _viewModel.SelectedItem = _lastPlayedChannels[0];
+                    await _viewModel.PlaySelectedChannel();
+                } else
                 if (!_viewModel.StandingOnStart)
                 {
-                    _lastSingleClicked = DateTime.MinValue;
+
                     await _viewModel.SelectPreviousChannel();
                     await _viewModel.PlaySelectedChannel();
                 }
