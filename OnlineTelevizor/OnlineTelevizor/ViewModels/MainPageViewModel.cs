@@ -607,6 +607,25 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public bool StandingOnEnd
+        {
+            get
+            {
+                if (SelectedItem == null)
+                    return true;
+
+                ChannelItem lastChannel = null;
+                foreach (var ch in Channels)
+                {
+                    lastChannel = ch;
+                }
+
+                if (lastChannel == SelectedItem)
+                    return true;
+
+                return false;
+            }
+        }
 
         public TVService TVService
         {

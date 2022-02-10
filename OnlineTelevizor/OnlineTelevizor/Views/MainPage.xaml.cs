@@ -1215,8 +1215,12 @@ namespace OnlineTelevizor.Views
         {
             if (PlayingState == PlayingStateEnum.PlayingInternal)
             {
-                await _viewModel.SelectPreviousChannel();
-                await _viewModel.PlaySelectedChannel();
+                if (!_viewModel.StandingOnStart)
+                {
+                    _lastSingleClicked = DateTime.MinValue;
+                    await _viewModel.SelectPreviousChannel();
+                    await _viewModel.PlaySelectedChannel();
+                }
             }
             else
             {
@@ -1242,8 +1246,12 @@ namespace OnlineTelevizor.Views
         {
             if (PlayingState == PlayingStateEnum.PlayingInternal)
             {
-                await _viewModel.SelectNextChannel();
-                await _viewModel.PlaySelectedChannel();
+                if (!_viewModel.StandingOnEnd)
+                {
+                    _lastSingleClicked = DateTime.MinValue;
+                    await _viewModel.SelectNextChannel();
+                    await _viewModel.PlaySelectedChannel();
+                }
             }
             else
             {
@@ -1279,8 +1287,12 @@ namespace OnlineTelevizor.Views
         {
             if (PlayingState == PlayingStateEnum.PlayingInternal)
             {
-                await _viewModel.SelectNextChannel(step);
-                await _viewModel.PlaySelectedChannel();
+                if (!_viewModel.StandingOnEnd)
+                {
+                    _lastSingleClicked = DateTime.MinValue;
+                    await _viewModel.SelectNextChannel(step);
+                    await _viewModel.PlaySelectedChannel();
+                }
             }
             else
             {
@@ -1304,22 +1316,18 @@ namespace OnlineTelevizor.Views
         {
             if (PlayingState == PlayingStateEnum.PlayingInternal)
             {
-                await _viewModel.SelectPreviousChannel(step);
-                await _viewModel.PlaySelectedChannel();
+                if (!_viewModel.StandingOnStart)
+                {
+                    _lastSingleClicked = DateTime.MinValue;
+                    await _viewModel.SelectPreviousChannel(step);
+                    await _viewModel.PlaySelectedChannel();
+                }
             }
             else
             {
                 if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
                 {
-                    if (_viewModel.StandingOnStart)
-                    {
-                        _viewModel.SelectedPart = SelectedPartEnum.ToolBar;
-                        SelectNextToolBarItem(true);
-                    }
-                    else
-                    {
-                        await _viewModel.SelectPreviousChannel(step);
-                    }
+                    await _viewModel.SelectPreviousChannel(step);
                 }
                 else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
                 {
@@ -1547,11 +1555,12 @@ namespace OnlineTelevizor.Views
         {
             Device.BeginInvokeOnMainThread(() =>
             {
+                AudioPlayingImage.IsVisible = false;
+
                 if (PlayingState == PlayingStateEnum.Stopped)
                 {
                     NoVideoStackLayout.IsVisible = false;
                     VideoStackLayout.IsVisible = false;
-                    AudioPlayingImage.IsVisible = false;
 
                     return;
                 }
