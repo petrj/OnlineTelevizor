@@ -53,5 +53,13 @@ namespace OnlineTelevizor.Views
         {
             _viewModel.TimerMinutes -= 10;
         }
+
+        public Decimal TimerMinutes
+        {
+            get
+            {
+                return _viewModel.TimerMinutes;
+            }
+        }
     }
 }

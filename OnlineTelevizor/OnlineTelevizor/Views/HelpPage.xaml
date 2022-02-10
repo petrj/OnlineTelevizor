@@ -126,6 +126,9 @@
                     <Label Text="Zobrazení názvu právě probíhajícího programu při přehrávání, zobrazení menu vybraného kanálu pokud neprobíhá přehrávání" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
                     <Label Text="Guide, Info, button L2, I, G, F1,F8, Menu, Tab, NumPad+, Rovnítko, Lomítka, Insert" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
+                    <Label Text="Spuštění předchozího kanálu při přehrávání" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="Vlevo" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+
                 </StackLayout>
 
             </StackLayout>

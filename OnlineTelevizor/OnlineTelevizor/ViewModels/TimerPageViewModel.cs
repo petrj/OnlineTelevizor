@@ -45,7 +45,7 @@ namespace OnlineTelevizor.ViewModels
                 if (_timerMinutes == 0)
                     return "Časovač deaktivován";
 
-                return _timerMinutes.ToString("#0");
+                return $"Vypnout za {_timerMinutes.ToString("#0")} minut";
             }
         }
 

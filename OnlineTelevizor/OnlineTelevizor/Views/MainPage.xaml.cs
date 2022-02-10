@@ -123,6 +123,7 @@ namespace OnlineTelevizor.Views
                 if (_timerPage == null)
                 {
                     _timerPage = new TimerPage(_loggingService, _config, _dialogService);
+                    _timerPage.Disappearing += _timerPage_Disappearing;
                 }
 
                 Navigation.PushAsync(_timerPage);
@@ -179,6 +180,14 @@ namespace OnlineTelevizor.Views
             {
                 ToggleAudioStream();
             });
+        }
+
+        private void _timerPage_Disappearing(object sender, EventArgs e)
+        {
+            if (_timerPage.TimerMinutes>0)
+            {
+                MessagingCenter.Send($"Aplikace se vypne za {_timerPage.TimerMinutes} minut", BaseViewModel.ToastMessage);
+            }
         }
 
         private void _renderersPage_Disappearing(object sender, EventArgs e)
@@ -1021,7 +1030,7 @@ namespace OnlineTelevizor.Views
             {
                 if (_viewModel.PlayingChannel != null)
                 {
-                    msg = $"\u25B6  {_viewModel.PlayingChannel.Name}";
+                    msg = $"\u25B6 {_viewModel.PlayingChannel.Name}";
                 } else
                 {
                     msg = $"\u25B6";
