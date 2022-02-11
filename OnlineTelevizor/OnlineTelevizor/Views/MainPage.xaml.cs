@@ -35,6 +35,7 @@ namespace OnlineTelevizor.Views
         private DateTime _lastKeyLongPressedTime = DateTime.MinValue;
         private DateTime _lastToggledAudioStreamTime = DateTime.MinValue;
         private DateTime _lastPageAppearedTime = DateTime.MinValue;
+        private DateTime _lastDetailclickedTime = DateTime.MinValue;
         private bool _firstSelectionAfterStartup = false;
         private string _numberPressed = String.Empty;
 
@@ -1568,7 +1569,16 @@ namespace OnlineTelevizor.Views
 
         private async void Detail_Clicked(object sender, EventArgs e)
         {
-            _loggingService.Info($"Detail_Clicked");
+           _loggingService.Info($"Detail_Clicked");
+
+            // this event is called immediately after Navigation.PopAsync();
+            if (_lastDetailclickedTime != DateTime.MinValue && ((DateTime.Now - _lastDetailclickedTime).TotalSeconds < 1))
+            {
+                // ignoring this event
+                return;
+            }
+
+            _lastDetailclickedTime = DateTime.Now;
 
             if (PlayingState == PlayingStateEnum.PlayingInternal)
             {

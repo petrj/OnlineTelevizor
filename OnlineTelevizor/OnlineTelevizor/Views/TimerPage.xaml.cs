@@ -41,17 +41,36 @@ namespace OnlineTelevizor.Views
 
         private void OnStepperValueChanged(object sender, ValueChangedEventArgs e)
         {
-            _viewModel.TimerMinutes += Convert.ToDecimal(e.NewValue - e.OldValue);
+            if (Convert.ToDecimal(e.NewValue - e.OldValue)>0)
+            {
+                IncreaseTime();
+            } else
+            {
+                DecreaseTime();
+            }
         }
 
         public void IncreaseTime()
         {
-            _viewModel.TimerMinutes += 10;
+            if (_viewModel.TimerMinutes<50)
+            {
+                _viewModel.TimerMinutes += 5;
+            } else
+            {
+                _viewModel.TimerMinutes += 10;
+            }
         }
 
         public void DecreaseTime()
         {
-            _viewModel.TimerMinutes -= 10;
+            if (_viewModel.TimerMinutes < 50)
+            {
+                _viewModel.TimerMinutes -= 5;
+            }
+            else
+            {
+                _viewModel.TimerMinutes -= 10;
+            }
         }
 
         public Decimal TimerMinutes
