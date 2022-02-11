@@ -11,7 +11,7 @@ using Android.App;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Petr Janousek")]
 [assembly: AssemblyProduct("OnlineTelevizor.Android")]
-[assembly: AssemblyCopyright("Copyright ©  2019-2022")]
+[assembly: AssemblyCopyright("Copyright © 2019-2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
@@ -27,8 +27,8 @@ using Android.App;
 // by using the '*' as shown below:.
 
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("47.0.0.0")]
-[assembly: AssemblyFileVersion("47.0.0.0")]
+[assembly: AssemblyVersion("48.0.0.0")]
+[assembly: AssemblyFileVersion("48.0.0.0")]
 
 // Add some common permissions, these can be removed if not needed
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]

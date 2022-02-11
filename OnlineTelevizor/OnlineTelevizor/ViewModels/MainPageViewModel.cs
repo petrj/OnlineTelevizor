@@ -173,7 +173,7 @@ namespace OnlineTelevizor.ViewModels
                 var minutes = Math.Floor(totalSecsToShutDown / 60.0);
                 var secs = totalSecsToShutDown - minutes*60;
 
-                if (minutes > 0 && secs > 0)
+                if (minutes > 0 || secs > 0)
                 {
                     return minutes.ToString("#0").PadLeft(2, '0') + ":" + secs.ToString("#0").PadLeft(2, '0');
                 }
