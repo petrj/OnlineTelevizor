@@ -230,5 +230,6 @@
     <BundleResource Include="Resources\Stop.png" />
     <BundleResource Include="Resources\Help.png" />
     <BundleResource Include="Resources\HelpSelected.png" />
+    <BundleResource Include="Resources\Minimize.png" />
   </ItemGroup>
 </Project>

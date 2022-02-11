@@ -140,6 +140,7 @@
     <Content Include="InfoSelected.png" />
     <Content Include="Menu.png" />
     <Content Include="MenuSelected.png" />
+    <Content Include="Minimize.png" />
     <Content Include="Quality.png" />
     <Content Include="QualitySelected.png" />
     <Content Include="Quit.png" />

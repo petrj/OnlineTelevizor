@@ -230,6 +230,7 @@ namespace OnlineTelevizor.Views
 
                         ClosePreviewVideoImage.IsVisible = false;
                         CloseVideoImage.IsVisible = false;
+                        MinimizeVideoImage.IsVisible = false;
 
                         break;
                     case PlayingStateEnum.PlayingInPreview:
@@ -268,6 +269,7 @@ namespace OnlineTelevizor.Views
 
                         ClosePreviewVideoImage.IsVisible = false;
                         CloseVideoImage.IsVisible = false;
+                        MinimizeVideoImage.IsVisible = false;
 
                         break;
                     case PlayingStateEnum.Stopped:
@@ -298,6 +300,7 @@ namespace OnlineTelevizor.Views
                         NoVideoStackLayout.IsVisible = false;
                         ClosePreviewVideoImage.IsVisible = false;
                         CloseVideoImage.IsVisible = false;
+                        MinimizeVideoImage.IsVisible = false;
 
                         break;
                 }
@@ -351,6 +354,11 @@ namespace OnlineTelevizor.Views
         }
 
         private void OnCloseVideoTapped(object sender, EventArgs e)
+        {
+            ActionStop(true);
+        }
+
+        private void OnMinimizeVideoTapped(object sender, EventArgs e)
         {
             ActionStop(false);
         }
@@ -1130,7 +1138,7 @@ namespace OnlineTelevizor.Views
                 {
                     Device.BeginInvokeOnMainThread(() =>
                     {
-                        CloseVideoImage.IsVisible = PlayingState == PlayingStateEnum.PlayingInternal;
+                        CloseVideoImage.IsVisible = MinimizeVideoImage.IsVisible = PlayingState == PlayingStateEnum.PlayingInternal;
                         ClosePreviewVideoImage.IsVisible = PlayingState == PlayingStateEnum.PlayingInPreview;
                     });
 
@@ -1142,6 +1150,7 @@ namespace OnlineTelevizor.Views
                         {
                             CloseVideoImage.IsVisible = false;
                             ClosePreviewVideoImage.IsVisible = false;
+                            MinimizeVideoImage.IsVisible = false;
                         });
                     });
                 }
