@@ -94,6 +94,15 @@
                 <Setter Property="MaxLines" Value="2"/>
             </Style>
 
+            <Style x:Key="TimerTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="Red"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="VerticalTextAlignment" Value="End"/>
+                <Setter Property="HorizontalTextAlignment" Value="End"/>
+                <Setter Property="MaxLines" Value="1"/>
+                <Setter Property="Margin" Value="0,0,40,0"/>
+            </Style>
+
             <Style x:Key="DescriptionTextStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="Margin" Value="0,20,0,0"/>
@@ -266,6 +275,12 @@
                 <TapGestureRecognizer Tapped="OnCloseVideoTapped" NumberOfTapsRequired="1" />
             </Image.GestureRecognizers>
         </Image>
+
+        <Label Text="{Binding TimerText}" IsVisible="{Binding TimerTextVisible}" x:Name="TimerLabel"  AbsoluteLayout.LayoutBounds="0,1,1,0.1" AbsoluteLayout.LayoutFlags="All" Style="{DynamicResource TimerTextStyle}" FontSize="{Binding FontSizeForTimer}" BackgroundColor="Transparent">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnTimerLabelTapped" NumberOfTapsRequired="1" />
+            </Label.GestureRecognizers>
+        </Label>
 
         <Image x:Name="AudioPlayingImage" Source="{Binding AudioIcon}"  IsVisible="False" BackgroundColor="Transparent" HeightRequest="{Binding HeightForNextTitleRow}" AbsoluteLayout.LayoutBounds="1.0,1.0,0.05,0.05" AbsoluteLayout.LayoutFlags="All" />
 

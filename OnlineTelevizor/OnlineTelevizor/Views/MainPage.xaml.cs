@@ -182,11 +182,11 @@ namespace OnlineTelevizor.Views
             });
         }
 
-        private void _timerPage_Disappearing(object sender, EventArgs e)
+        private async void _timerPage_Disappearing(object sender, EventArgs e)
         {
             if (_timerPage.TimerMinutes>0)
             {
-                MessagingCenter.Send($"Aplikace se vypne za {_timerPage.TimerMinutes} minut", BaseViewModel.ToastMessage);
+                await _viewModel.SetTimer(_timerPage.TimerMinutes);
             }
         }
 
@@ -353,6 +353,11 @@ namespace OnlineTelevizor.Views
         private void OnCloseVideoTapped(object sender, EventArgs e)
         {
             ActionStop(false);
+        }
+
+        private async void OnTimerLabelTapped(object sender, EventArgs e)
+        {
+            await _viewModel.StopTimer();
         }
 
         private void OnSingleTapped(object sender, EventArgs e)

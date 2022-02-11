@@ -16,7 +16,7 @@ namespace LoggerService
         {
             MinLevel = minLevel;
         }
-        
+
         public LoggingLevelEnum MinLevel { get => _minLevel; set => _minLevel = value; }
 
         private void Write(LoggingLevelEnum level, string message)
@@ -36,7 +36,7 @@ namespace LoggerService
             {
                 // log failed
             }
-        } 
+        }
 
         public void Debug(string message)
         {

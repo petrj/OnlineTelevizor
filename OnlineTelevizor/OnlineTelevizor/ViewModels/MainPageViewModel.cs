@@ -52,6 +52,8 @@ namespace OnlineTelevizor.ViewModels
         private ChannelItem _recordingChannel = null;
         private ChannelItem _castingChannel = null;
 
+        private DateTime _shutdownTime = DateTime.MinValue;
+
         private int _animePos = 2;
         private bool _animePosIncreasing = true;
 
@@ -86,6 +88,8 @@ namespace OnlineTelevizor.ViewModels
 
         public Command AnimeIconCommand { get; set; }
 
+        public Command ShutdownTimerCommand { get; set; }
+
         public MainPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
            : base(loggingService, config, dialogService)
         {
@@ -113,6 +117,8 @@ namespace OnlineTelevizor.ViewModels
 
             AnimeIconCommand = new Command(async () => await Anime());
 
+            ShutdownTimerCommand = new Command(async () => await ShutdownTimer());
+
             LongPressCommand = new Command(LongPress);
             ShortPressCommand = new Command(ShortPress);
 
@@ -137,6 +143,8 @@ namespace OnlineTelevizor.ViewModels
             BackgroundCommandWorker.RunInBackground(UpdateNotificationCommand, 10, 5);
 
             BackgroundCommandWorker.RunInBackground(AnimeIconCommand, 1, 1);
+
+            BackgroundCommandWorker.RunInBackground(ShutdownTimerCommand, 1, 1);
         }
 
         public PlayingStateEnum PlayingState
@@ -148,6 +156,59 @@ namespace OnlineTelevizor.ViewModels
             set
             {
                 _playingState = value;
+            }
+        }
+
+        public string TimerText
+        {
+            get
+            {
+                if (_shutdownTime == DateTime.MinValue)
+                {
+                    return string.Empty;
+                }
+
+                var totalSecsToShutDown = (_shutdownTime - DateTime.Now).TotalSeconds;
+
+                var minutes = Math.Floor(totalSecsToShutDown / 60.0);
+                var secs = totalSecsToShutDown - minutes*60;
+
+                if (minutes > 0 && secs > 0)
+                {
+                    return minutes.ToString("#0").PadLeft(2, '0') + ":" + secs.ToString("#0").PadLeft(2, '0');
+                }
+
+                return string.Empty;
+            }
+        }
+
+        public bool TimerTextVisible
+        {
+            get
+            {
+                if (_shutdownTime == DateTime.MinValue)
+                {
+                    return false;
+                } else
+                {
+                    return true;
+                }
+            }
+        }
+
+        private async Task ShutdownTimer()
+        {
+            if (_shutdownTime == DateTime.MinValue)
+            {
+                return;
+            }
+
+            OnPropertyChanged(nameof(TimerTextVisible));
+            OnPropertyChanged(nameof(TimerText));
+
+            if (_shutdownTime < DateTime.Now)
+            {
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit);
             }
         }
 
@@ -178,6 +239,38 @@ namespace OnlineTelevizor.ViewModels
             }
             catch {
             // UWP platform fix
+            }
+        }
+
+        public async Task StopTimer()
+        {
+            if (_shutdownTime != DateTime.MinValue)
+            {
+                var confirm = await _dialogService.Confirm($"Zrušit časovač vypnutí?");
+                if (confirm)
+                {
+                    _shutdownTime = DateTime.MinValue;
+                }
+            }
+
+            OnPropertyChanged(nameof(TimerTextVisible));
+            OnPropertyChanged(nameof(TimerText));
+        }
+
+        public async Task SetTimer(decimal minutesTimeout)
+        {
+            if (minutesTimeout == 0)
+                return;
+
+            var confirm = await _dialogService.Confirm($"Vypnout aplikaci za {minutesTimeout} minut?");
+            if (confirm)
+            {
+                _shutdownTime = DateTime.Now.AddMinutes(Convert.ToDouble(minutesTimeout));
+
+                MessagingCenter.Send($"Aplikace se vypne za {minutesTimeout} minut", BaseViewModel.ToastMessage);
+
+                OnPropertyChanged(nameof(TimerTextVisible));
+                OnPropertyChanged(nameof(TimerText));
             }
         }
 
@@ -288,6 +381,7 @@ namespace OnlineTelevizor.ViewModels
             string optionStopRecord = "Zastavit nahrávání";
 
             string optionSetTimer = "Nastavit časovač vypnutí ..";
+            string optionStopTimer = "Zrušit časovač vypnutí ..";
 
             string optionStopApp = "Ukončit aplikaci";
 
@@ -342,7 +436,14 @@ namespace OnlineTelevizor.ViewModels
                 }
             }
 
-            actions.Add(optionSetTimer);
+            if (_shutdownTime == DateTime.MinValue)
+            {
+                actions.Add(optionSetTimer);
+            } else
+            {
+                actions.Add(optionStopTimer);
+            }
+
             actions.Add(optionStopApp);
 
             var title = item == null ? "Menu" : (item as ChannelItem).Name;
@@ -420,6 +521,10 @@ namespace OnlineTelevizor.ViewModels
             else if (selectedvalue == optionSetTimer)
             {
                 MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowTimer);
+            }
+            else if (selectedvalue == optionStopTimer)
+            {
+                await StopTimer();
             }
         }
 
@@ -999,6 +1104,15 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public string FontSizeForTimer
+        {
+            get
+            {
+                return GetScaledSize(15).ToString();
+            }
+        }
+
+
         public int HeightForChannelNameRow
         {
             get
@@ -1485,6 +1599,7 @@ namespace OnlineTelevizor.ViewModels
             OnPropertyChanged(nameof(HeightForNextTitleRow));
             OnPropertyChanged(nameof(FontSizeForInfoLabel));
             OnPropertyChanged(nameof(WidthForIcon));
+            OnPropertyChanged(nameof(FontSizeForTimer));
         }
 
         public async Task PlaySelectedChannel()
