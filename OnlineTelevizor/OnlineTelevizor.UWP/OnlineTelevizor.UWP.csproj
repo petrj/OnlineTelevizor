@@ -128,6 +128,7 @@
     <Content Include="Cast.png" />
     <Content Include="ClearFilter.png" />
     <Content Include="Empty.png" />
+    <Content Include="Fav.png" />
     <Content Include="Filter.png" />
     <Content Include="FilterSelected.png" />
     <Content Include="Help.png" />

@@ -34,10 +34,13 @@ namespace OnlineTelevizor.Models
         bool ShowAdultChannels { get; set; }
 
         bool InternalPlayer { get; set; }
+        bool InternalPlayerSwitchEnabled { get; }
 
         bool Fullscreen { get; set; }
+        bool FullscreenSwitchEnabled { get; }
 
         bool PlayOnBackground { get; set; }
+        bool PlayOnBackgroundSwitchEnabled { get; }
 
         /// <summary>
         /// -1    : no chanel

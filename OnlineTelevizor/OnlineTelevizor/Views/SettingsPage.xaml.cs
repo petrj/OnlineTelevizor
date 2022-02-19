@@ -135,6 +135,11 @@ namespace OnlineTelevizor.Views
 
         private void FocusView(View view)
         {
+            if (Device.OS == TargetPlatform.Windows)
+            {
+                return;
+            }
+
             PayButton.BackgroundColor = Color.Gray;
             PayButton.TextColor = Color.Black;
 

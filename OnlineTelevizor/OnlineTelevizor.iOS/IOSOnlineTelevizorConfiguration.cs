@@ -203,11 +203,24 @@ namespace OnlineTelevizor.iOS
         {
             get
             {
-                return GetPersistingSettingValue<bool>("InternalPlayer");
+                return false;
             }
-            set
+            set { }
+        }
+
+        public bool InternalPlayerSwitchEnabled
+        {
+            get
             {
-                SavePersistingSettingValue<bool>("InternalPlayer", value);
+                return false;
+            }
+        }
+
+        public bool FullscreenSwitchEnabled
+        {
+            get
+            {
+                return false;
             }
         }
 
@@ -215,23 +228,25 @@ namespace OnlineTelevizor.iOS
         {
             get
             {
-                return GetPersistingSettingValue<bool>("Fullscreen");
+                return false;
             }
-            set
-            {
-                SavePersistingSettingValue<bool>("Fullscreen", value);
-            }
+            set { }
         }
 
         public bool PlayOnBackground
         {
             get
             {
-                return GetPersistingSettingValue<bool>("PlayOnBackground");
+                return false;
             }
-            set
+            set { }
+        }
+
+        public bool PlayOnBackgroundSwitchEnabled
+        {
+            get
             {
-                SavePersistingSettingValue<bool>("PlayOnBackground", value);
+                return false;
             }
         }
 

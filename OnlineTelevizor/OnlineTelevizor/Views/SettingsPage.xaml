@@ -184,18 +184,17 @@
                             <ColumnDefinition Width="30*" />
                         </Grid.ColumnDefinitions>
 
-
                         <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit kanály pro dospělé" Style="{StaticResource CaptionStyle}" IsVisible="{Binding Config.IsPurchased}"  FontSize="{Binding FontSizeForCaption}"/>
                         <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowAdultChannelsSwitch" IsToggled="{Binding Config.ShowAdultChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.IsPurchased}"/>
 
-                        <Label  Grid.Row="1" Grid.Column="0" Text="Celá obrazovka" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Switch Grid.Row="1" Grid.Column="1" x:Name="FullscreenSwitch" IsToggled="{Binding IsFullScreen, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                        <Label  Grid.Row="1" Grid.Column="0" Text="Celá obrazovka" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" IsVisible="{Binding Config.FullscreenSwitchEnabled}"/>
+                        <Switch Grid.Row="1" Grid.Column="1" x:Name="FullscreenSwitch" IsToggled="{Binding IsFullScreen, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.FullscreenSwitchEnabled}"/>
 
-                        <Label  Grid.Row="2" Grid.Column="0" Text="Interní přehrávač" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Switch Grid.Row="2" Grid.Column="1" x:Name="UseInternalPlayerSwitch" IsToggled="{Binding Config.InternalPlayer, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                        <Label  Grid.Row="2" Grid.Column="0" Text="Interní přehrávač" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" IsVisible="{Binding Config.InternalPlayerSwitchEnabled}"/>
+                        <Switch Grid.Row="2" Grid.Column="1" x:Name="UseInternalPlayerSwitch" IsToggled="{Binding Config.InternalPlayer, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.InternalPlayerSwitchEnabled}"/>
 
-                        <Label  Grid.Row="3" Grid.Column="0" Text="Běh na pozadí" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Switch Grid.Row="3" Grid.Column="1" x:Name="PlayOnBackgroundSwitch" IsToggled="{Binding Config.PlayOnBackground, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                        <Label  Grid.Row="3" Grid.Column="0" Text="Běh na pozadí" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" IsVisible="{Binding Config.PlayOnBackgroundSwitchEnabled}"/>
+                        <Switch Grid.Row="3" Grid.Column="1" x:Name="PlayOnBackgroundSwitch" IsToggled="{Binding Config.PlayOnBackground, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.PlayOnBackgroundSwitchEnabled}"/>
 
                     </Grid>
 

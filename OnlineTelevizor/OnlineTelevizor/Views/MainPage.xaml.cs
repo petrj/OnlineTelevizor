@@ -402,6 +402,14 @@ namespace OnlineTelevizor.Views
                     ToolbarItems.Insert(1, ToolbarItemQuality);
                 }
             }
+
+            if (Device.OS == TargetPlatform.Windows)
+            {
+                if (ToolbarItems.Contains(ToolbarItemHelp))
+                {
+                    ToolbarItems.Remove(ToolbarItemHelp);
+                }
+            }
         }
 
         private void ScrollViewChannelEPGDescription_Scrolled(object sender, ScrolledEventArgs e)
@@ -1717,6 +1725,14 @@ namespace OnlineTelevizor.Views
             } catch (Exception ex)
             {
                 _loggingService.Error(ex);
+            }
+        }
+
+        private void ChannelsListView_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            if (Device.OS == TargetPlatform.Windows)
+            {
+                _viewModel.ShortPressCommand.Execute(_viewModel.SelectedItem);
             }
         }
     }

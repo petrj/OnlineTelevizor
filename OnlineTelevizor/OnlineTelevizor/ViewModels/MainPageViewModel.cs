@@ -448,6 +448,12 @@ namespace OnlineTelevizor.ViewModels
 
             var title = item == null ? "Menu" : (item as ChannelItem).Name;
 
+            if (Device.OS == TargetPlatform.Windows)
+            {
+                actions.Remove(optionRecord);
+                actions.Remove(optionCast);
+            }
+
             var selectedvalue = await _dialogService.Select(actions, title, optionCancel);
 
             if (selectedvalue == optionCancel)

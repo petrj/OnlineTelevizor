@@ -51,6 +51,11 @@ namespace OnlineTelevizor.Views
 
         private void FocusView(View view)
         {
+            if (Device.OS == TargetPlatform.Windows)
+            {
+                return;
+            }
+
             ClearButton.BackgroundColor = Color.Gray;
             ClearButton.TextColor = Color.Black;
 

@@ -110,6 +110,7 @@ namespace OnlineTelevizor.Droid
             {
                 SetFullScreen(true);
             });
+
             MessagingCenter.Subscribe<string>(this, BaseViewModel.DisableFullScreen, (msg) =>
             {
                 SetFullScreen(false);
@@ -171,7 +172,6 @@ namespace OnlineTelevizor.Droid
                 });
             });
 
-
             MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.RecordNotificationMessage, (sender, channel) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
@@ -195,7 +195,6 @@ namespace OnlineTelevizor.Droid
                     StopRecordNotification();
                 });
             });
-
 
             MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit, (sender) =>
             {

@@ -144,6 +144,7 @@
                       RefreshCommand="{Binding RefreshCommandWithNotification}"
                       IsRefreshing="{Binding IsBusy}"
                       Style="{StaticResource ListViewStyle}"
+                      ItemTapped="ChannelsListView_ItemTapped"
                       SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -297,7 +298,7 @@
         <ToolbarItem x:Name="ToolbarItemHelp" Text="Nápověda" Clicked="ToolbarItemHelp_Clicked" Icon="{Binding ToolbarItemHelpIcon}"/>
         <ToolbarItem x:Name="ToolbarItemFilter" Text="Filtr" Clicked="ToolbarItemFilter_Clicked" Icon="{Binding ToolbarItemFilterIcon}"/>
         <ToolbarItem x:Name="ToolbarItemQuality" Text="Kvalita" Clicked="ToolbarItemQuality_Clicked" Icon="{Binding ToolbarItemQualityIcon}"/>
-        <ToolbarItem x:Name="ToolbarItemInfo" Text="Info" Clicked="Detail_Clicked" Icon="{Binding ToolbarItemInfoIcon}" />
+        <ToolbarItem x:Name="ToolbarItemInfo" Text="Menu" Clicked="Detail_Clicked" Icon="{Binding ToolbarItemInfoIcon}" />
         <ToolbarItem x:Name="ToolbarItemSettings" Text="Nastavení" Clicked="ToolbarItemSettings_Clicked" Icon="{Binding ToolbarItemSettingsIcon}" />
     </ContentPage.ToolbarItems>
 </ContentPage >

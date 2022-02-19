@@ -187,11 +187,24 @@ namespace OnlineTelevizor.UWP
         {
             get
             {
-                return GetSettingValue<bool>("InternalPlayer");
+                return false;
             }
-            set
+            set { }
+        }
+
+        public bool InternalPlayerSwitchEnabled
+        {
+            get
             {
-                SaveSettingValue<bool>("InternalPlayer", value);
+                return false;
+            }
+        }
+
+        public bool FullscreenSwitchEnabled
+        {
+            get
+            {
+                return false;
             }
         }
 
@@ -199,23 +212,25 @@ namespace OnlineTelevizor.UWP
         {
             get
             {
-                return GetSettingValue<bool>("Fullscreen");
+                return false;
             }
-            set
-            {
-                SaveSettingValue<bool>("Fullscreen", value);
-            }
+            set { }
         }
 
         public bool PlayOnBackground
         {
             get
             {
-                return GetSettingValue<bool>("PlayOnBackground");
+                return false;
             }
-            set
+            set { }
+        }
+
+        public bool PlayOnBackgroundSwitchEnabled
+        {
+            get
             {
-                SaveSettingValue<bool>("PlayOnBackground", value);
+                return false;
             }
         }
 
@@ -403,7 +418,7 @@ namespace OnlineTelevizor.UWP
         {
             get
             {
-                return null;
+                return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             }
         }
 
@@ -457,6 +472,19 @@ namespace OnlineTelevizor.UWP
         {
             get
             {
+                var path = OutputDirectory;
+                if (string.IsNullOrEmpty(path))
+                    return -1;
+
+                var dr = path.Substring(0,1).ToUpper();
+
+                foreach (DriveInfo drive in DriveInfo.GetDrives())
+                {
+                    if (drive.Name.Substring(0, 1).ToUpper() == dr)
+                    {
+                        return drive.AvailableFreeSpace;
+                    }
+                }
                 return -1;
             }
         }

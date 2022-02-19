@@ -42,6 +42,11 @@ namespace OnlineTelevizor.UWP
                 // No support for toast messages in UWP
             });
 
+            MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit, (sender) =>
+            {
+                CoreApplication.Exit();
+            });
+
             KeyDown += MainPage_KeyDown;
         }
 
@@ -51,18 +56,12 @@ namespace OnlineTelevizor.UWP
 
             switch (e.Key)
             {
+                case VirtualKey.Escape:
+                case VirtualKey.Enter:
                 case VirtualKey.Down:
                 case VirtualKey.Up:
                 case VirtualKey.Left:
                 case VirtualKey.Right:
-                case VirtualKey.I:
-                case VirtualKey.E:
-                case VirtualKey.Enter:
-                case VirtualKey.Space:
-                case VirtualKey.W:
-                case VirtualKey.S:
-                case VirtualKey.D:
-                case VirtualKey.A:
                 case VirtualKey.Number0:
                 case VirtualKey.Number1:
                 case VirtualKey.Number2:
@@ -73,7 +72,6 @@ namespace OnlineTelevizor.UWP
                 case VirtualKey.Number7:
                 case VirtualKey.Number8:
                 case VirtualKey.Number9:
-                case VirtualKey.F5:
                     sendKey = true; break;
             }
 

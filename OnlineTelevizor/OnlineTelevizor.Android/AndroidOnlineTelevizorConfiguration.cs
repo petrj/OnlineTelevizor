@@ -151,6 +151,14 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        public bool InternalPlayerSwitchEnabled
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         private bool ExternalPlayer
         {
             get
@@ -175,6 +183,14 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        public bool FullscreenSwitchEnabled
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public bool PlayOnBackground
         {
             get
@@ -184,6 +200,14 @@ namespace OnlineTelevizor.Droid
             set
             {
                 SavePersistingSettingValue<bool>("PlayOnBackground", value);
+            }
+        }
+
+        public bool PlayOnBackgroundSwitchEnabled
+        {
+            get
+            {
+                return true;
             }
         }
 
