@@ -488,5 +488,14 @@ namespace OnlineTelevizor.UWP
                 return -1;
             }
         }
+
+        public bool IsRunningOnTV
+        {
+            get
+            {
+                return false;
+            }
+            set { }
+        }
     }
 }

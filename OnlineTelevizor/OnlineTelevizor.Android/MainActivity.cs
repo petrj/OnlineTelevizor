@@ -24,6 +24,7 @@ using Xamarin.Essentials;
 using System.Threading.Tasks;
 using Android.Support.V4.App;
 using Android.Support.V4.View;
+using Android.Content.Res;
 
 namespace OnlineTelevizor.Droid
 {
@@ -79,6 +80,11 @@ namespace OnlineTelevizor.Droid
                 }
             }
 #endif
+            var uiModeManager = (UiModeManager)GetSystemService(UiModeService);
+            if (uiModeManager.CurrentModeType == UiMode.TypeTelevision)
+            {
+                _cfg.IsRunningOnTV = true;
+            }
 
             if (_cfg.EnableLogging)
             {

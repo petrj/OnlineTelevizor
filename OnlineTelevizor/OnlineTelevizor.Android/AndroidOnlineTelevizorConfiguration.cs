@@ -595,5 +595,7 @@ namespace OnlineTelevizor.Droid
                 return false;
             }
         }
+
+        public bool IsRunningOnTV { get; set; } = false;
     }
 }

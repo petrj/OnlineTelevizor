@@ -42,6 +42,8 @@ namespace OnlineTelevizor.Models
         bool PlayOnBackground { get; set; }
         bool PlayOnBackgroundSwitchEnabled { get; }
 
+        bool IsRunningOnTV { get; set; }
+
         /// <summary>
         /// -1    : no chanel
         /// 0     : last channel

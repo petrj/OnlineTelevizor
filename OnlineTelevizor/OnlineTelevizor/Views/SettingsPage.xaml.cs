@@ -68,36 +68,40 @@ namespace OnlineTelevizor.Views
 
         private void PasswordEntry_Unfocused(object sender, FocusEventArgs e)
         {
-            FocusView(PinEntry);
+            if (_viewModel.Config.IsRunningOnTV)
+                FocusView(PinEntry);
         }
 
         private void FontSizePicker_Unfocused(object sender, FocusEventArgs e)
         {
-            FocusView(ShowAdultChannelsSwitch);
+            if (_viewModel.Config.IsRunningOnTV)
+                FocusView(ShowAdultChannelsSwitch);
         }
 
         private void LastChannelAutoPlayPicker_Unfocused(object sender, FocusEventArgs e)
         {
-            FocusView(FontSizePicker);
+            if (_viewModel.Config.IsRunningOnTV)
+                FocusView(FontSizePicker);
         }
 
         private void TVAPIPicker_Unfocused(object sender, FocusEventArgs e)
         {
-            switch (_viewModel.Config.TVApi)
-            {
-                case TVAPIEnum.SledovaniTV:
-                    FocusView(UsernameEntry);
-                    break;
-                case TVAPIEnum.KUKI:
-                    FocusView(SNEntry);
-                    break;
-                case TVAPIEnum.O2TV:
-                    FocusView(O2TVUsernameEntry);
-                    break;
-                case TVAPIEnum.DVBStreamer:
-                    FocusView(DVBStreamerUrlEntry);
-                    break;
-            }
+            if (_viewModel.Config.IsRunningOnTV)
+                switch (_viewModel.Config.TVApi)
+                {
+                    case TVAPIEnum.SledovaniTV:
+                        FocusView(UsernameEntry);
+                        break;
+                    case TVAPIEnum.KUKI:
+                        FocusView(SNEntry);
+                        break;
+                    case TVAPIEnum.O2TV:
+                        FocusView(O2TVUsernameEntry);
+                        break;
+                    case TVAPIEnum.DVBStreamer:
+                        FocusView(DVBStreamerUrlEntry);
+                        break;
+                }
         }
 
         private void PlayOnBackgroundSwitch_Toggled(object sender, ToggledEventArgs e)

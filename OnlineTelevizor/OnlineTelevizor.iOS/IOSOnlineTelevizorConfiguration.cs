@@ -501,5 +501,14 @@ namespace OnlineTelevizor.iOS
                 return -1;
             }
         }
+
+        public bool IsRunningOnTV
+        {
+            get
+            {
+                return false;
+            }
+            set { }
+        }
     }
 }
