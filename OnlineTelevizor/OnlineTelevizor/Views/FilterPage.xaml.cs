@@ -33,13 +33,13 @@ namespace OnlineTelevizor.Views
 
         private void TypePicker_Unfocused(object sender, FocusEventArgs e)
         {
-            if (_viewModel.Config.IsRunningOnTV)
+            //if (_viewModel.Config.IsRunningOnTV)
                 FocusView(GroupPicker);
         }
 
         private void GroupPicker_Unfocused(object sender, FocusEventArgs e)
         {
-            if (_viewModel.Config.IsRunningOnTV)
+            //if (_viewModel.Config.IsRunningOnTV)
                 FocusView(ChannelNameEntry);
         }
 

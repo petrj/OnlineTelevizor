@@ -54,7 +54,8 @@
                         Margin="20,0,0,0"
                         FontSize="{Binding FontSizeForPicker}"
                         Style="{StaticResource CommonPickerTextStyle}"
-                        SelectedIndex="{Binding TVAPIIndex, Mode=TwoWay}" >
+                        SelectedIndex="{Binding TVAPIIndex, Mode=TwoWay}"
+                        Title="Aktivní IPTV">
                         <Picker.Items>
                             <x:String>SledovaniTV</x:String>
                             <x:String>Kuki</x:String>
@@ -150,7 +151,8 @@
                             MinimumWidthRequest="200"
                             SelectedItem="{Binding SelectedChannelItem, Mode=TwoWay}"
                             ItemsSource="{Binding AutoPlayChannels}"
-                            ItemDisplayBinding="{Binding Name}"/>
+                            ItemDisplayBinding="{Binding Name}"
+                            Title="Volba kanálu po startu"/>
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0">
@@ -160,7 +162,8 @@
                             Margin="20,0,0,0"
                             FontSize="{Binding FontSizeForPicker}"
                             Style="{StaticResource CommonPickerTextStyle}"
-                            SelectedIndex="{Binding AppFontSizeIndex, Mode=TwoWay}" >
+                            SelectedIndex="{Binding AppFontSizeIndex, Mode=TwoWay}"
+                            Title="Velikost písma">
                             <Picker.Items>
                                 <x:String>Normální</x:String>
                                 <x:String>Zvětšené</x:String>

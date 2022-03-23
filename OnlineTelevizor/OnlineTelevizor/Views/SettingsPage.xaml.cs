@@ -68,25 +68,25 @@ namespace OnlineTelevizor.Views
 
         private void PasswordEntry_Unfocused(object sender, FocusEventArgs e)
         {
-            if (_viewModel.Config.IsRunningOnTV)
+            //if (_viewModel.Config.IsRunningOnTV)
                 FocusView(PinEntry);
         }
 
         private void FontSizePicker_Unfocused(object sender, FocusEventArgs e)
         {
-            if (_viewModel.Config.IsRunningOnTV)
+            //if (_viewModel.Config.IsRunningOnTV)
                 FocusView(ShowAdultChannelsSwitch);
         }
 
         private void LastChannelAutoPlayPicker_Unfocused(object sender, FocusEventArgs e)
         {
-            if (_viewModel.Config.IsRunningOnTV)
+            //if (_viewModel.Config.IsRunningOnTV)
                 FocusView(FontSizePicker);
         }
 
         private void TVAPIPicker_Unfocused(object sender, FocusEventArgs e)
         {
-            if (_viewModel.Config.IsRunningOnTV)
+            //if (_viewModel.Config.IsRunningOnTV)
                 switch (_viewModel.Config.TVApi)
                 {
                     case TVAPIEnum.SledovaniTV:
