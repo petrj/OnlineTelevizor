@@ -32,19 +32,20 @@ namespace TestConsole
             var tvService = new O2TV(loggingService);
 
             if (JSONObject.FileExists("O2TV.credentials.json"))
-            {                
+            {
                 //credentials.json:
                 // {
                 //    "Username": "O2TV email",
                 //    "password": "some password"
-                // }             
+                // }
 
                 var credentials = JSONObject.LoadFromFile<Credentials>("O2TV.credentials.json");
                 tvService.SetConnection(credentials.Username, credentials.Password);
             }
             */
 
-            
+
+            /*
             var tvService = new KUKITV(loggingService);
 
             if (JSONObject.FileExists("kuki.json"))
@@ -52,9 +53,10 @@ namespace TestConsole
                 var conn = JSONObject.LoadFromFile<DeviceConnection>("kuki.json");
                 tvService.SetConnection(conn.deviceId, null);
             }
-            
+            */
 
-                /*
+
+
                 var tvService = new SledovaniTV(loggingService);
 
                 if (JSONObject.FileExists("credentials.json"))
@@ -63,7 +65,7 @@ namespace TestConsole
                     tvService.SetCredentials(credentials.Username, credentials.Password, credentials.ChildLockPIN);
                 }
 
-                */
+
 
                 /*
                 if (JSONObject.FileExists("connection.json"))
@@ -100,7 +102,7 @@ namespace TestConsole
                     //await tvService.Unlock();
                     //await sledovaniTV.Lock();
 
-                    var channels = await tvService.GetChanels();
+                    var channels = await tvService.GetChannels();
 
                     foreach (var ch in channels)
                     {
@@ -114,6 +116,13 @@ namespace TestConsole
                         Console.WriteLine("  Group  :" + ch.Group);
                         Console.WriteLine("  LogoUrl:" + ch.LogoUrl);
                         Console.WriteLine("-----------------------");
+                    }
+
+                    var qualities = await tvService.GetStreamQualities();
+
+                    foreach (var q in qualities)
+                    {
+                        Console.WriteLine($"  Allowed: {q.Allowed}, Id: {q.Id}, Allowed: {q.Name}");
                     }
 
                     /*

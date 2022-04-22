@@ -157,7 +157,7 @@ namespace O2TVAPI
             return null;
         }
 
-        public async Task<List<Channel>> GetChanels()
+        public async Task<List<Channel>> GetChannels(string quality = null)
         {
             _log.Debug("Getting channels");
 

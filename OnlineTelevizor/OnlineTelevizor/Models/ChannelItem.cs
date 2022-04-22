@@ -25,28 +25,6 @@ namespace OnlineTelevizor.Models
             };
         }
 
-        public string UrlWithQuality(string quality)
-        {
-            // apply config quality:
-            var url = Url;
-            if (!String.IsNullOrEmpty(quality))
-            {
-                var configQuality = "quality=" + quality;
-
-                var qMatches = Regex.Match(Url, "quality=[0-9]{1,4}");
-                if (qMatches != null && qMatches.Success)
-                {
-                    url = Url.Replace(qMatches.Value, configQuality);
-                }
-                else
-                {
-                    url += "&" + configQuality;
-                }
-            }
-
-            return url;
-        }
-
         public string ChannelNumber { get; set; }
 
         public string Name { get; set; }

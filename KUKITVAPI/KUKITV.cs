@@ -152,7 +152,7 @@ namespace KUKITVAPI
             return res;
         }
 
-        public async Task<List<Channel>> GetChanels()
+        public async Task<List<Channel>> GetChannels(string quality = null)
         {
             if (((DateTime.Now-_cachedChannelsRefreshTime).TotalMinutes<60) &&
                 _cachedChannels != null &&
@@ -209,7 +209,7 @@ namespace KUKITVAPI
                         Group = ""
                     };
 
-                    
+
                     ch.LogoUrl = $"https://www.kuki.cz/media/chlogo/{ch.Id}.png";
 
                     // white logo images
@@ -319,7 +319,7 @@ namespace KUKITVAPI
                 var headerParams = new Dictionary<string, string>();
                 headerParams.Add("X-SessionKey", _session_key);
 
-                var channels = await GetChanels();
+                var channels = await GetChannels();
                 var channelEPGIDs = new List<string>();
 
                 // first channel is not loaded

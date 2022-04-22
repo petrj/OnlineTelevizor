@@ -563,7 +563,7 @@ namespace SledovaniTVAPI
             _session.PHPSESSID = null;
         }
 
-        public async Task<List<Channel>> GetChanels()
+        public async Task<List<Channel>> GetChannels(string quality = null)
         {
             var result = new List<Channel>();
 
@@ -578,9 +578,14 @@ namespace SledovaniTVAPI
 
                 var ps = new Dictionary<string, string>()
                 {
-                    { "format", "androidtv" },
+                    { "format", "m3u8" },
                     { "PHPSESSID", _session.PHPSESSID }
                 };
+
+                if (!string.IsNullOrEmpty(quality))
+                {
+                    ps.Add("quality", quality);
+                }
 
                 var channelsString = await SendRequest("playlist", ps);
                 var channelsJson = JObject.Parse(channelsString);

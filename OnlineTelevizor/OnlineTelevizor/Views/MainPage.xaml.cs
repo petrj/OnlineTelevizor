@@ -1111,7 +1111,7 @@ namespace OnlineTelevizor.Views
                         videoView.MediaPlayer.Stop();
                     }
 
-                    _media = new Media(_libVLC, channel.UrlWithQuality(_config.StreamQuality), FromType.FromLocation);
+                    _media = new Media(_libVLC, channel.Url, FromType.FromLocation);
 
                     videoView.MediaPlayer = _mediaPlayer;
 
@@ -1130,7 +1130,7 @@ namespace OnlineTelevizor.Views
                 });
             } else
             {
-                MessagingCenter.Send(channel.UrlWithQuality(_config.StreamQuality), BaseViewModel.UriMessage);
+                MessagingCenter.Send(channel.Url, BaseViewModel.UriMessage);
             }
         }
 
@@ -1571,6 +1571,11 @@ namespace OnlineTelevizor.Views
                 return;
 
             var qualitiesPage = new QualitiesPage(_loggingService, _config, _viewModel.TVService);
+
+            qualitiesPage.Disappearing += delegate
+            {
+                _viewModel.RefreshCommandWithNotification.Execute(null);
+            };
 
             await Navigation.PushAsync(qualitiesPage);
         }

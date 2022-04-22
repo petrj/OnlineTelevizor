@@ -14,7 +14,7 @@ namespace TVAPI
         bool QualityFilterEnabled { get; }
         StatusEnum Status { get; }
         Task Login(bool force = false);
-        Task<List<Channel>> GetChanels();
+        Task<List<Channel>> GetChannels(string quality = null);
         Task<List<EPGItem>> GetEPG();
         Task<Dictionary<string, List<EPGItem>>> GetChannelsEPG();
         Task<string> GetEPGItemDescription(EPGItem epgItem);

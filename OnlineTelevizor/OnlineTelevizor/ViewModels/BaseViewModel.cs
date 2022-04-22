@@ -297,7 +297,7 @@ namespace OnlineTelevizor.ViewModels
                 }
                 else
                 {
-                    MessagingCenter.Send(channel.UrlWithQuality(Config.StreamQuality), BaseViewModel.UriMessage);
+                    MessagingCenter.Send(channel.Url, BaseViewModel.UriMessage);
                 }
             }
             catch (Exception ex)

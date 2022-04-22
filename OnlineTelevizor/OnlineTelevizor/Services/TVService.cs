@@ -154,13 +154,13 @@ namespace OnlineTelevizor.Services
                     await _service.Lock();
                 }
 
-                var channels = await _service.GetChanels();
+                var channels = await _service.GetChannels(_config.StreamQuality);
 
                 if (_service.Status == StatusEnum.ConnectionNotAvailable)
                 {
                     // repeat again after 1500 ms
                     await Task.Delay(1500);
-                    channels = await _service.GetChanels();
+                    channels = await _service.GetChannels(_config.StreamQuality);
                 }
 
                 if (_service.Status == StatusEnum.Logged)

@@ -103,7 +103,7 @@ namespace DVBStreamerAPI
             return res;
         }
 
-        public async Task<List<Channel>> GetChanels()
+        public async Task<List<Channel>> GetChannels(string quality = null)
         {
             var res = new List<Channel>();
 
