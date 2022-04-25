@@ -578,7 +578,7 @@ namespace SledovaniTVAPI
 
                 var ps = new Dictionary<string, string>()
                 {
-                    { "format", "m3u8" },
+                    { "format", "androidtv" },
                     { "PHPSESSID", _session.PHPSESSID }
                 };
 
