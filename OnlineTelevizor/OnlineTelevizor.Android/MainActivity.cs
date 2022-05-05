@@ -41,9 +41,6 @@ namespace OnlineTelevizor.Droid
         NotificationHelper _notificationHelper;
         private static Android.Widget.Toast _instance;
 
-        private static Keycode _lastKeyCode;
-        private static DateTime _lastKeyCodeTime = DateTime.MinValue;
-
         protected override void OnCreate(Bundle savedInstanceState)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
@@ -60,6 +57,15 @@ namespace OnlineTelevizor.Droid
 
             var context = Platform.AppContext;
             var activity = Platform.CurrentActivity;
+
+            string version = String.Empty;
+            try
+            {
+                var packageManager = context.PackageManager;
+                var appInfo = packageManager.GetPackageInfo(context.PackageName, 0);
+                version = appInfo.LongVersionCode.ToString();
+            }
+            catch { }
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
@@ -96,7 +102,7 @@ namespace OnlineTelevizor.Droid
             }
 
             _app = new App(_cfg, _loggingService);
-
+            _app.AppVersion = version;
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
             {

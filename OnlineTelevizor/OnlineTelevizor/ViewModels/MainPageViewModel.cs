@@ -90,6 +90,13 @@ namespace OnlineTelevizor.ViewModels
 
         public Command ShutdownTimerCommand { get; set; }
 
+        public Command UpCommand { get; set; }
+        public Command DownCommand { get; set; }
+        public Command LeftCommand { get; set; }
+        public Command RightCommand { get; set; }
+        public Command OKCommand { get; set; }
+        public Command BackCommand { get; set; }
+
         public MainPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
            : base(loggingService, config, dialogService)
         {
@@ -127,6 +134,14 @@ namespace OnlineTelevizor.ViewModels
             UpdateRecordNotificationCommand = new Command(async () => await UpdateRecordNotification());
 
             UpdateNotificationCommand = new Command(async () => await UpdateNotification());
+
+            UpCommand = new Command(async (key) => await AnyKeyPressed("up"));
+            DownCommand = new Command(async (key) => await AnyKeyPressed("down"));
+            LeftCommand = new Command(async (key) => await AnyKeyPressed("left"));
+            RightCommand = new Command(async (key) => await AnyKeyPressed("right"));
+
+            OKCommand = new Command(async () => await AnyKeyPressed("enter"));
+            BackCommand = new Command(async () => await AnyKeyPressed("escape"));
 
             NotifyRefreshStatus = true;
 
@@ -194,6 +209,23 @@ namespace OnlineTelevizor.ViewModels
                     return true;
                 }
             }
+        }
+
+        public bool DebugArrowVisible
+        {
+            get
+            {
+#if DEBUG
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
+
+        private async Task AnyKeyPressed(string key)
+        {
+            MessagingCenter.Send(key, BaseViewModel.KeyMessage);
         }
 
         private async Task ShutdownTimer()

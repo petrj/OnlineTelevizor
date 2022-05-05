@@ -45,6 +45,8 @@ namespace OnlineTelevizor.ViewModels
             AboutCommand = new Command(async () => await About());
         }
 
+        public string AppVersion { get; set; } = String.Empty;
+
         public string FontSizeForCaption
         {
             get
@@ -163,6 +165,11 @@ namespace OnlineTelevizor.ViewModels
 
             sb.AppendLine("");
             sb.AppendLine($"Autor: Petr Janoušek");
+
+            if (!string.IsNullOrEmpty(AppVersion))
+            {
+                sb.AppendLine($"Verze: {AppVersion}");
+            }
 
             _loggingService.Info($"Checking purchase");
             try

@@ -17,6 +17,7 @@ namespace OnlineTelevizor.Views
         private DateTime _lastSleep = DateTime.MinValue;
         protected ILoggingService _loggingService;
         private IOnlineTelevizorConfiguration _config;
+        private string _appVersion = String.Empty;
 
         public App(IOnlineTelevizorConfiguration config, ILoggingService loggingService)
         {
@@ -28,6 +29,20 @@ namespace OnlineTelevizor.Views
             _mainPage = new MainPage(_loggingService, _config);
 
             MainPage = new NavigationPage(_mainPage);
+        }
+
+        public string AppVersion
+        {
+            get
+            {
+                return _appVersion;
+            }
+            set
+            {
+                _appVersion = value;
+                if (_mainPage != null)
+                    _mainPage.AppVersion = value;
+            }
         }
 
         protected override void OnStart()

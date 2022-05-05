@@ -183,6 +183,8 @@ namespace OnlineTelevizor.Views
             });
         }
 
+        public string AppVersion { get; set; } = String.Empty;
+
         private async void _timerPage_Disappearing(object sender, EventArgs e)
         {
             if (_timerPage.TimerMinutes>0)
@@ -1553,6 +1555,7 @@ namespace OnlineTelevizor.Views
 
             var settingsPage = new SettingsPage(_loggingService, _config, _dialogService, _viewModel.TVService);
             settingsPage.FillAutoPlayChannels(_viewModel.AllNotFilteredChannels);
+            settingsPage.AppVersion = AppVersion;
 
             settingsPage.Disappearing += delegate
             {

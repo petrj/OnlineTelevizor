@@ -24,6 +24,7 @@ namespace OnlineTelevizor.Views
         private ILoggingService _loggingService;
         private IDialogService _dialogService;
         private View _lastFocusedView = null;
+        private string _appVersion = String.Empty;
 
         public SettingsPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
         {
@@ -64,6 +65,20 @@ namespace OnlineTelevizor.Views
             FontSizePicker.Unfocused += FontSizePicker_Unfocused;
 
             PasswordEntry.Unfocused += PasswordEntry_Unfocused;
+        }
+
+        public string AppVersion
+        {
+            get
+            {
+                return _appVersion;
+            }
+            set
+            {
+                _appVersion = value;
+                if (_viewModel != null)
+                    _viewModel.AppVersion = value;
+            }
         }
 
         private void PasswordEntry_Unfocused(object sender, FocusEventArgs e)
