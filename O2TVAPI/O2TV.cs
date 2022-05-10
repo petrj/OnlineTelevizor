@@ -157,6 +157,88 @@ namespace O2TVAPI
             return null;
         }
 
+        /// <summary>
+        /// Gets the channel URL
+        /// </summary>
+        /// <returns>The channel URL</returns>
+        /// <param name="channelKey">Channel key</param>
+        /// <param name="resolution">HD or SD</param>
+        public async Task<string> GetChannelUrl(string channelKey, string resolution)
+        {
+            _log.Debug("Setting SD Quality");
+
+            await Login();
+
+            if (_status != StatusEnum.Logged)
+                return null;
+
+            try
+            {
+                var postData = new Dictionary<string, string>();
+
+                postData.Add("serviceType", "LIVE_TV");
+                postData.Add("deviceType", "STB");
+                postData.Add("streamingProtocol", "DASH"); // HLS
+                postData.Add("subscriptionCode", _session.Subscription);
+                postData.Add("channelKey", System.Web.HttpUtility.UrlEncode(channelKey));
+                postData.Add("encryptionType", "NONE");
+                postData.Add("resolution", resolution);
+
+                var header = GetHeaderData();
+                header.Add("X-NanguTv-Access-Token", _session.AccessToken);
+
+                var getChannelUrlResponse = await SendRequest("https://app.o2tv.cz/sws/server/streaming/uris.json", "POST", postData, header);
+
+                var getChannelUrlResponseJson = JObject.Parse(getChannelUrlResponse);
+
+                /*
+
+               Response:
+                
+                {"uris":[
+                    {"uri":"https://stc.o2tv.cz/at/e6c09aef4ee12afdaf8a7dd9f5cd0e9b/1652213579950/subscr/OTT-NONMOJEO2-469983/123456/563-tv-stb_sd_ott.mpd",
+                     "priority":0,
+                     "verimatrix3Encrypted":false,
+                     "securemediaEncrypted":false,
+                     "irdetoEncrypted":false,
+                     "irdetoEncryptedOTT":false,
+                     "externallyEncrypted":false,
+                     "widevineEncrypted":false,
+                     "playreadyCustomData":null,
+                     "streamingProtocol":"DASH",
+                     "encryptionType":"NONE",
+                     "videoCodec":"H264",
+                     "startOverlap":null,
+                     "endOverlap":null,
+                     "resolution":"SD",
+                     "tag":"OTT"
+                     }]
+                 }
+             */
+
+                if (!getChannelUrlResponseJson.HasValue("uris"))
+                {
+                    return null;
+                }
+
+                var uris = getChannelUrlResponseJson["uris"];
+
+                foreach (JObject item in uris)
+                {
+                    if (item.HasValue("uri"))
+                    {
+                        return item["uri"].ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
+
+            return null;
+        }
+       
         public async Task<List<Channel>> GetChannels(string quality = null)
         {
             _log.Debug("Getting channels");
@@ -714,6 +796,7 @@ namespace O2TVAPI
                     var subscriptionHeader = GetHeaderData();
                     subscriptionHeader.Add("X-NanguTv-Access-Token", _session.AccessToken);
 
+
                     var subscriptionResponse = await SendRequest("https://app.o2tv.cz/sws/subscription/settings/subscription-configuration.json", "POST", null, subscriptionHeader);
                     var subscriptionResponseJson = JObject.Parse(subscriptionResponse);
 
@@ -1025,7 +1108,7 @@ namespace O2TVAPI
             return url;
         }
 
-        private async Task<string> SendRequest(string url, string method = "POST", Dictionary<string, string> postData = null, Dictionary<string, string> headers = null)
+        private async Task<string> SendRequest(string url, string postData, bool throwError,string method = "POST", Dictionary<string, string> headers = null)
         {
             try
             {
@@ -1069,14 +1152,12 @@ namespace O2TVAPI
 
 
                 if (postData != null)
-                {
-                    var postDataAsString = GetRequestsString(postData);
-
-                    _log.Debug($"PostData: {postDataAsString}");
+                {                 
+                    _log.Debug($"PostData: {postData}");
 
                     using (var stream = request.GetRequestStream())
                     {
-                        stream.Write(Encoding.UTF8.GetBytes(postDataAsString), 0, postDataAsString.Length);
+                        stream.Write(Encoding.UTF8.GetBytes(postData), 0, postData.Length);
                     }
                 }
 
@@ -1112,8 +1193,24 @@ namespace O2TVAPI
             catch (Exception ex)
             {
                 _log.Error(ex);
-                throw;
+                if (throwError)
+                {
+                    throw;
+                }
+                else
+                    return null;
             }
+        }
+
+        private async Task<string> SendRequest(string url, string method = "POST", Dictionary<string, string> postData = null, Dictionary<string, string> headers = null)
+        {
+            string postDataAsString = null;
+            if (postData != null)
+            {
+                postDataAsString = GetRequestsString(postData);
+            }
+
+            return await SendRequest(url, postDataAsString, true, method, headers);
         }
     }
 }
