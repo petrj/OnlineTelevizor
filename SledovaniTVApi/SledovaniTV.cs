@@ -68,6 +68,15 @@ namespace SledovaniTVAPI
                 return true;
             }
         }
+
+        public bool DirectRecording
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public DeviceConnection Connection
         {
             get

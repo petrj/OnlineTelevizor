@@ -59,12 +59,14 @@ namespace OnlineTelevizor.ViewModels
 
         public void SelectQualityByConfg()
         {
+            QualityItem firstItem = null;
+            SelectedItem = null;
+
             foreach (var q in Qualities)
             {
-                if (String.IsNullOrEmpty(Config.StreamQuality) && String.IsNullOrEmpty(q.Id))
+                if (firstItem == null)
                 {
-                    SelectedItem = q;
-                    break;
+                    firstItem = q;
                 }
 
                 if ((!String.IsNullOrEmpty(Config.StreamQuality)) && (q.Id == Config.StreamQuality))
@@ -72,6 +74,11 @@ namespace OnlineTelevizor.ViewModels
                     SelectedItem = q;
                     break;
                 }
+            }
+
+            if (SelectedItem == null)
+            {
+                SelectedItem = firstItem;
             }
         }
 
