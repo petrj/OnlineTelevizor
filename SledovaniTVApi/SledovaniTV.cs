@@ -69,7 +69,7 @@ namespace SledovaniTVAPI
             }
         }
 
-        public bool DirectRecording
+        public bool RecordingEnabled
         {
             get
             {

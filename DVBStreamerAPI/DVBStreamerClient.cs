@@ -55,11 +55,11 @@ namespace DVBStreamerAPI
             }
         }
 
-        public bool DirectRecording
+        public bool RecordingEnabled
         {
             get
             {
-                return true;
+                return false;
             }
         }
 

@@ -427,7 +427,9 @@ namespace OnlineTelevizor.ViewModels
             if (item != null && !IsCasting && !IsRecording)
             {
                 actions.Add(optionCast);
-                actions.Add(optionRecord);
+
+                if (_service.RecordingEnabled)
+                    actions.Add(optionRecord);
             }
 
             if (IsRecording)

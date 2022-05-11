@@ -60,7 +60,7 @@ namespace O2TVAPI
             }
         }
 
-        public bool DirectRecording
+        public bool RecordingEnabled
         {
             get
             {

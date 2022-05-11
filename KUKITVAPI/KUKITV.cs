@@ -68,7 +68,7 @@ namespace KUKITVAPI
             }
         }
 
-        public bool DirectRecording
+        public bool RecordingEnabled
         {
             get
             {

@@ -289,14 +289,14 @@ namespace OnlineTelevizor.Services
             }
         }
 
-        public bool DirectRecording
+        public bool RecordingEnabled
         {
             get
             {
                 if (_service == null)
                     return false;
 
-                return _service.DirectRecording;
+                return _service.RecordingEnabled;
             }
         }
     }

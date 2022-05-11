@@ -117,8 +117,13 @@ namespace TestConsole
                     Console.WriteLine($"  Allowed: {q.Allowed}, Id: {q.Id}, Allowed: {q.Name}");
                 }
 
-                Console.WriteLine(await tvService.GetChannelUrl("O2 Sport3 HD","SD"));
-                Console.WriteLine(await tvService.GetChannelUrl("O2 Sport3 HD", "HD"));
+                foreach (var ch in channels)
+                {
+                    Console.WriteLine(ch.Name);
+
+                    var url = await tvService.GetChannelUrl(ch.Id, "SD");
+                    Console.WriteLine($"SD Url    : {url}");
+                }
 
                 /*
                 var channelsEPG = await tvService.GetChannelsEPG();
