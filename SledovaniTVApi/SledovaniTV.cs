@@ -69,14 +69,6 @@ namespace SledovaniTVAPI
             }
         }
 
-        public bool RecordingEnabled
-        {
-            get
-            {
-                return true;
-            }
-        }
-
         public DeviceConnection Connection
         {
             get

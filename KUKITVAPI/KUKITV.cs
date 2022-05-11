@@ -68,14 +68,6 @@ namespace KUKITVAPI
             }
         }
 
-        public bool RecordingEnabled
-        {
-            get
-            {
-                return true;
-            }
-        }
-
         public async Task Login(bool force = false)
         {
             _log.Debug($"Logging to KUKI");

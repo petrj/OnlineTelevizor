@@ -60,14 +60,6 @@ namespace O2TVAPI
             }
         }
 
-        public bool RecordingEnabled
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         public StatusEnum Status
         {
             get

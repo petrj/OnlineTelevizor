@@ -341,57 +341,33 @@ namespace OnlineTelevizor.ViewModels
 
         private void _recordingBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Stream stream = null;
-
             var outputFileName = Path.Combine(Config.OutputDirectory, $"{_recordingChannel.Name} {DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss")}.ts");
 
-            try
+            using (var libvlc = new LibVLC())
+            using (var mediaPlayer = new MediaPlayer(libvlc))
             {
-                using (var fileStream = new FileStream(outputFileName, FileMode.Create))
+                var media = new Media(libvlc, _recordingChannel.Url, FromType.FromLocation);
+
+                media.AddOption(":sout=#file{dst=" + outputFileName + "}");
+                media.AddOption(":sout-keep");
+
+                // Start recording
+                mediaPlayer.Play(media);
+
+                do
                 {
+                    System.Threading.Thread.Sleep(500);
 
-                    int bytesToRead = 10240;
-                    byte[] buffer = new Byte[bytesToRead];
+                    var freespaceGB = Convert.ToInt64(Config.UsableSpace / 1000000000);
 
-                    var fileReq = HttpWebRequest.Create(_recordingChannel.Url);
-                    var fileResp = (HttpWebResponse)fileReq.GetResponse();
-
-                    stream = fileResp.GetResponseStream();
-
-                    int length;
-                    do
+                    if (freespaceGB < 1)
                     {
-                        length = stream.Read(buffer, 0, bytesToRead);
+                        throw new Exception("Nedosatatek volného místa");
+                    }
 
-                        fileStream.Write(buffer, 0, length);
+                } while (IsRecording);
 
-                        //Clear the buffer
-                        buffer = new Byte[bytesToRead];
-
-                        var freespaceGB = Convert.ToInt64(Config.UsableSpace / 1000000000);
-
-                        if (freespaceGB < 1)
-                        {
-                            throw new Exception("Nedosatatek volného místa");
-                        }
-                    } while (IsRecording && stream.CanRead);
-
-                    fileStream.Flush();
-                    fileStream.Close();
-                }
-
-            } catch (Exception ex)
-            {
-                _loggingService.Error(ex);
-                RecordChannel(false);
-            } finally
-            {
-                if (stream != null)
-                {
-                    //Close the input stream
-                    stream.Close();
-                    stream.Dispose();
-                }
+                mediaPlayer.Stop();
             }
         }
 
@@ -409,7 +385,7 @@ namespace OnlineTelevizor.ViewModels
             string optionAddToFav = "Přidat k oblíbeným";
             string optionRemoveFromFav = "Odebrat z oblíbených";
 
-            string optionRecord = "Nahrávat do souboru";
+            string optionRecord = "Nahrávat do souboru ..";
             string optionStopRecord = "Zastavit nahrávání";
 
             string optionSetTimer = "Nastavit časovač vypnutí ..";
@@ -427,9 +403,7 @@ namespace OnlineTelevizor.ViewModels
             if (item != null && !IsCasting && !IsRecording)
             {
                 actions.Add(optionCast);
-
-                if (_service.RecordingEnabled)
-                    actions.Add(optionRecord);
+                actions.Add(optionRecord);
             }
 
             if (IsRecording)

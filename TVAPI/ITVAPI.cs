@@ -12,7 +12,6 @@ namespace TVAPI
         DeviceConnection Connection { get; }
         bool EPGEnabled { get; }
         bool QualityFilterEnabled { get; }
-        bool RecordingEnabled { get; }
         StatusEnum Status { get; }
         Task Login(bool force = false);
         Task<List<Channel>> GetChannels(string quality = null);

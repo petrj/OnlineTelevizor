@@ -55,14 +55,6 @@ namespace DVBStreamerAPI
             }
         }
 
-        public bool RecordingEnabled
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         public async Task Login(bool force = false)
         {
             _log.Debug($"DVBStreamer login");
