@@ -99,7 +99,7 @@ namespace SledovaniTVDownloadEvent
                 return;
             }
 
-          
+
             Console.WriteLine($"Url: {prgSettings.Url}");
 
 
@@ -121,12 +121,17 @@ namespace SledovaniTVDownloadEvent
             Task.Run(
                       async () =>
                       {
-
-                         
                           Console.WriteLine();
                           Console.WriteLine($"Logging SledovaniTV .....");
 
                           await tvService.Login();
+
+                          if (!string.IsNullOrEmpty(credentials.ChildLockPIN))
+                          {
+                              Console.WriteLine($"Unlocking by PIN .....");
+                              await tvService.Unlock();
+                              await tvService.Login();
+                          }
 
                           if (!JSONObject.FileExists(prgSettings.ConnectionFilePath))
                           {
