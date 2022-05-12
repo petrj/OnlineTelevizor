@@ -68,6 +68,7 @@ namespace SledovaniTVAPI
                 return true;
             }
         }
+
         public DeviceConnection Connection
         {
             get

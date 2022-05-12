@@ -56,7 +56,7 @@ namespace O2TVAPI
         {
             get
             {
-                return false;
+                return true;
             }
         }
 
@@ -165,7 +165,7 @@ namespace O2TVAPI
         /// <param name="resolution">HD or SD</param>
         public async Task<string> GetChannelUrl(string channelKey, string resolution)
         {
-            _log.Debug("Setting SD Quality");
+            _log.Debug($"Getting channel url fo quality: {resolution}");
 
             await Login();
 
@@ -178,7 +178,7 @@ namespace O2TVAPI
 
                 postData.Add("serviceType", "LIVE_TV");
                 postData.Add("deviceType", "STB");
-                postData.Add("streamingProtocol", "DASH"); // HLS
+                postData.Add("streamingProtocol", "HLS"); // DASH
                 postData.Add("subscriptionCode", _session.Subscription);
                 postData.Add("channelKey", System.Web.HttpUtility.UrlEncode(channelKey));
                 postData.Add("encryptionType", "NONE");
@@ -194,7 +194,7 @@ namespace O2TVAPI
                 /*
 
                Response:
-                
+
                 {"uris":[
                     {"uri":"https://stc.o2tv.cz/at/e6c09aef4ee12afdaf8a7dd9f5cd0e9b/1652213579950/subscr/OTT-NONMOJEO2-469983/123456/563-tv-stb_sd_ott.mpd",
                      "priority":0,
@@ -238,7 +238,7 @@ namespace O2TVAPI
 
             return null;
         }
-       
+
         public async Task<List<Channel>> GetChannels(string quality = null)
         {
             _log.Debug("Getting channels");
@@ -275,7 +275,7 @@ namespace O2TVAPI
                         if (!ch.HasValue("images") || !ch.HasValue("channelKey"))
                             continue;
 
-                        var channleKey = ch.GetStringValue("channelKey");
+                        var channelKey = ch.GetStringValue("channelKey");
 
                         var images = ch["images"] as JObject;
 
@@ -289,7 +289,7 @@ namespace O2TVAPI
 
                         var url = colorUrl.GetStringValue("url");
 
-                        channelImages.Add(channleKey, $"https://www.o2tv.cz{url}");
+                        channelImages.Add(channelKey, $"https://www.o2tv.cz{url}");
                     }
                 }
 
@@ -351,7 +351,20 @@ namespace O2TVAPI
                         Group = "O2TV"
                     };
 
-                    channel.Url = await GetChannelUrl(ch);
+                    if (!string.IsNullOrEmpty(quality) &&
+                        (quality == "SD" || quality == "HD"))
+                    {
+                        channel.Url = await GetChannelUrl(ch, quality);
+
+                        if (string.IsNullOrEmpty(channel.Url))
+                        {
+                            // error while getting url?
+                            channel.Url = await GetChannelUrl(ch);
+                        }
+                    } else
+                    {
+                        channel.Url = await GetChannelUrl(ch);
+                    }
 
                     if (channelImages.ContainsKey(ch))
                     {
@@ -662,7 +675,23 @@ namespace O2TVAPI
 
         public async Task<List<Quality>> GetStreamQualities()
         {
-            return new List<Quality>();
+            var res = new List<Quality>();
+
+            res.Add(new Quality()
+            {
+                Id = "SD",
+                Allowed = "1",
+                Name = "SD"
+            });
+
+            res.Add(new Quality()
+            {
+                Id = "HD",
+                Allowed = "1",
+                Name = "HD"
+            });
+
+            return res;
         }
 
         private Dictionary<string, string> GetHeaderData()
@@ -1152,7 +1181,7 @@ namespace O2TVAPI
 
 
                 if (postData != null)
-                {                 
+                {
                     _log.Debug($"PostData: {postData}");
 
                     using (var stream = request.GetRequestStream())
