@@ -128,6 +128,13 @@ namespace SledovaniTVDownloadEvent
 
                           await tvService.Login();
 
+                          if (!string.IsNullOrEmpty(credentials.ChildLockPIN))
+                          {
+                              Console.WriteLine($"Unlocking by PIN .....");
+                              await tvService.Unlock();
+                              await tvService.Login();
+                          }
+
                           if (!JSONObject.FileExists(prgSettings.ConnectionFilePath))
                           {
                               tvService.Connection.SaveToFile(prgSettings.ConnectionFilePath);
