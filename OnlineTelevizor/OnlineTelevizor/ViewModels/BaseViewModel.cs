@@ -241,14 +241,14 @@ namespace OnlineTelevizor.ViewModels
                             await AcknowledgePurchase(purchase.PurchaseToken);
                         }
 
-                        _loggingService.Debug($"App purchased (InAppBillingPurchase)");
+                        _loggingService.Info($"App purchased (InAppBillingPurchase)");
 
-                        _loggingService.Debug($"Purchase AutoRenewing: {purchase.AutoRenewing}");
-                        _loggingService.Debug($"Purchase Payload: {purchase.Payload}");
-                        _loggingService.Debug($"Purchase PurchaseToken: {purchase.PurchaseToken}");
-                        _loggingService.Debug($"Purchase State: {purchase.State}");
-                        _loggingService.Debug($"Purchase TransactionDateUtc: {purchase.TransactionDateUtc}");
-                        _loggingService.Debug($"Purchase ConsumptionState: {purchase.ConsumptionState}");
+                        _loggingService.Info($"Purchase AutoRenewing: {purchase.AutoRenewing}");
+                        _loggingService.Info($"Purchase Payload: {purchase.Payload}");
+                        _loggingService.Info($"Purchase PurchaseToken: {purchase.PurchaseToken}");
+                        _loggingService.Info($"Purchase State: {purchase.State}");
+                        _loggingService.Info($"Purchase TransactionDateUtc: {purchase.TransactionDateUtc}");
+                        _loggingService.Info($"Purchase ConsumptionState: {purchase.ConsumptionState}");
                     }
                 }
             }
@@ -264,7 +264,7 @@ namespace OnlineTelevizor.ViewModels
 
         protected async Task AcknowledgePurchase(string token)
         {
-            _loggingService.Debug($"Acknowledge purchase token: {token}");
+            _loggingService.Info($"Acknowledge purchase token: {token}");
 
             try
             {

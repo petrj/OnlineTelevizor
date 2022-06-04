@@ -70,7 +70,7 @@ namespace KUKITVAPI
 
         public async Task Login(bool force = false)
         {
-            _log.Debug($"Logging to KUKI");
+            _log.Info($"Logging to KUKI");
 
             if (String.IsNullOrEmpty(_connection.deviceId))
             {
@@ -84,7 +84,7 @@ namespace KUKITVAPI
 
             if (!force && Status == StatusEnum.Logged)
             {
-                _log.Debug("Device is already logged");
+                _log.Info("Device is already logged");
                 return;
             }
 

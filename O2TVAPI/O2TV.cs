@@ -165,7 +165,7 @@ namespace O2TVAPI
         /// <param name="resolution">HD or SD</param>
         public async Task<string> GetChannelUrl(string channelKey, string resolution)
         {
-            _log.Debug($"Getting channel url fo quality: {resolution}");
+            _log.Info($"Getting channel url fo quality: {resolution}");
 
             await Login();
 
@@ -241,7 +241,7 @@ namespace O2TVAPI
 
         public async Task<List<Channel>> GetChannels(string quality = null)
         {
-            _log.Debug("Getting channels");
+            _log.Info("Getting channels");
 
             var res = new List<Channel>();
 
@@ -419,7 +419,7 @@ namespace O2TVAPI
 
         public async Task<Dictionary<string, List<EPGItem>>> GetChannelsEPG()
         {
-            _log.Debug("Getting channels EPG");
+            _log.Info("Getting channels EPG");
 
             var res = new Dictionary<string, List<EPGItem>>();
 
@@ -581,7 +581,7 @@ namespace O2TVAPI
         {
             // https://api.o2tv.cz/unity/api/v1/programs/29909804/
 
-            _log.Debug("Getting epg program detail");
+            _log.Info("Getting epg program detail");
 
             await Login();
 
@@ -722,7 +722,7 @@ namespace O2TVAPI
 
         public async Task Login(bool force = false)
         {
-            _log.Debug($"Logging to O2TV");
+            _log.Info($"Logging to O2TV");
 
             if (String.IsNullOrEmpty(_session.UserName) || String.IsNullOrEmpty(_session.Password))
             {
@@ -736,7 +736,7 @@ namespace O2TVAPI
 
             if (!force && Status == StatusEnum.Logged)
             {
-                _log.Debug("Device is already logged");
+                _log.Info("Device is already logged");
                 return;
             }
 
@@ -768,7 +768,7 @@ namespace O2TVAPI
                 if (authResponseJson.HasValue("remote_access_token"))
                 {
                     _session.RemoteAccessToken = authResponseJson.GetStringValue("remote_access_token");
-                    _log.Debug($"Setting remote access token: {_session.RemoteAccessToken}");
+                    _log.Info($"Setting remote access token: {_session.RemoteAccessToken}");
                 }
 
                 if (!authResponseJson.HasValue("services"))
@@ -780,7 +780,7 @@ namespace O2TVAPI
                 {
                     _session.ServiceId = service.GetStringValue("service_id");
                     _session.ServiceDescription = service.GetStringValue("description");
-                    _log.Debug($"Setting service id: {_session.ServiceId}");
+                    _log.Info($"Setting service id: {_session.ServiceId}");
 
                     var loginChoicePostData = new Dictionary<string, string>();
                     loginChoicePostData.Add("service_id", _session.ServiceId);
@@ -790,7 +790,7 @@ namespace O2TVAPI
 
                     if (String.IsNullOrEmpty(loginChoiceResponse))
                     {
-                        _log.Debug($"Empty response");
+                        _log.Info($"Empty response");
                     }
 
                     var tokenPostData = new Dictionary<string, string>();
@@ -820,7 +820,7 @@ namespace O2TVAPI
 
                     _session.AccessToken = tokenResponseJson.GetStringValue("access_token");
 
-                    _log.Debug($"Setting access token: {_session.AccessToken}");
+                    _log.Info($"Setting access token: {_session.AccessToken}");
 
                     var subscriptionHeader = GetHeaderData();
                     subscriptionHeader.Add("X-NanguTv-Access-Token", _session.AccessToken);
@@ -974,7 +974,7 @@ namespace O2TVAPI
                     _session.Offers = billingParams.GetStringValue("offers");
                     _session.Tariff = billingParams.GetStringValue("tariff");
 
-                    _log.Debug($"Setting subsription: {_session.Subscription}");
+                    _log.Info($"Setting subsription: {_session.Subscription}");
 
                     //var profileHeader = GetUnityHeaderData();
 
@@ -1054,7 +1054,7 @@ namespace O2TVAPI
                     _session.SData = profileResponseJSON.GetStringValue("sdata");
                     _session.EncodedChannels = profileResponseJSON.GetStringValue("encodedChannels");
 
-                    _log.Debug($"Setting sdata: {_session.SData}");
+                    _log.Info($"Setting sdata: {_session.SData}");
 
                     var channels = profileResponseJSON.GetValue("ottChannels") as JObject;
 
@@ -1068,7 +1068,7 @@ namespace O2TVAPI
                     foreach (string channel in channels.GetValue("live"))
                     {
                         _session.LiveChannels.Add(channel);
-                        _log.Debug($"Adding channel: {channel}");
+                        _log.Info($"Adding channel: {channel}");
                     }
 
                     _status = StatusEnum.Logged;

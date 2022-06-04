@@ -57,7 +57,7 @@ namespace DVBStreamerAPI
 
         public async Task Login(bool force = false)
         {
-            _log.Debug($"DVBStreamer login");
+            _log.Info($"DVBStreamer login");
 
             if (String.IsNullOrEmpty(_url))
             {

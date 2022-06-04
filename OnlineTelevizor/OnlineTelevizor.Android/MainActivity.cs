@@ -93,7 +93,7 @@ namespace OnlineTelevizor.Droid
             }
 
 #if LOGGING
-            var fileLoggingService = new FileLoggingService(LoggingLevelEnum.Debug);
+            var fileLoggingService = new FileLoggingService(LoggingLevelEnum.Info);
             fileLoggingService.LogFilename = System.IO.Path.Join(_cfg.OutputDirectory, $"OnlineTelevizor-{DateTime.Now.ToString("yyyy-MM-dd")}.log");
             fileLoggingService.WriteToOutput = true;
 

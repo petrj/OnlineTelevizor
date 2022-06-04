@@ -10,7 +10,7 @@ namespace LoggerService
 
         public void Debug(string message)
         {
-            _logger.Debug(message);
+            _logger.Info(message);
         }
 
         public void Error(Exception ex, string message = null)

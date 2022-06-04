@@ -65,7 +65,7 @@ namespace OnlineTelevizor.Views
             _mediaPlayer = new MediaPlayer(_libVLC) { EnableHardwareDecoding = true };
             videoView.MediaPlayer = _mediaPlayer;
 
-            _loggingService.Debug($"Initializing MainPage");
+            _loggingService.Info($"Initializing MainPage");
 
             BindingContext = _viewModel = new MainPageViewModel(loggingService, config, _dialogService);
 
@@ -172,7 +172,7 @@ namespace OnlineTelevizor.Views
             {
                 await Task.Run(async () =>
                 {
-                    await _viewModel.RecordChannel(false);
+                    await _viewModel.RecordChannel(false, false);
                 });
             });
 
@@ -311,7 +311,7 @@ namespace OnlineTelevizor.Views
 
         private void MainPage_Disappearing(object sender, EventArgs e)
         {
-
+            _loggingService.Info($"MainPage_Disappearing");
         }
 
         private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
@@ -387,6 +387,8 @@ namespace OnlineTelevizor.Views
 
         private async void MainPage_Appearing(object sender, EventArgs e)
         {
+            _loggingService.Info($"MainPage_Appearing");
+
             _lastPageAppearedTime = DateTime.Now;
 
             if (!_viewModel.QualityFilterEnabled)
@@ -427,7 +429,7 @@ namespace OnlineTelevizor.Views
 
         protected override void OnSizeAllocated(double width, double height)
         {
-            System.Diagnostics.Debug.WriteLine($"OnSizeAllocated: {width}/{height}");
+            _loggingService.Info($"OnSizeAllocated: {width}/{height}");
 
             base.OnSizeAllocated(width, height);
 
@@ -456,6 +458,8 @@ namespace OnlineTelevizor.Views
 
         private void ChannelsListView_Scrolled(object sender, ScrolledEventArgs e)
         {
+            _loggingService.Info($"ChannelsListView_Scrolled");
+
             // workaround for de-highlighting selected item after scroll on startup
             if (_firstSelectionAfterStartup)
             {
@@ -469,6 +473,8 @@ namespace OnlineTelevizor.Views
 
         private void ChannelsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
+            _loggingService.Info($"ChannelsListView_ItemSelected");
+
             if (!_viewModel.DoNotScrollToChannel)
             {
                 ChannelsListView.ScrollTo(_viewModel.SelectedItem, ScrollToPosition.MakeVisible, false);
@@ -556,7 +562,7 @@ namespace OnlineTelevizor.Views
 
         public void OnKeyDown(string key)
         {
-            _loggingService.Debug($"OnKeyDown {key}");
+            _loggingService.Info($"OnKeyDown {key}");
             var lowKey = key.ToLower();
 
             // key events can be consumed only on this MainPage
@@ -712,6 +718,9 @@ namespace OnlineTelevizor.Views
                 case "mediaplaynext":
                 case "medianext":
                 case "moveend":
+                case "mediafastforward":
+                case "mediaforward":
+                case "channeldown":
                     Task.Run(async () => await ActionKeyDown(1));
                     break;
                 case "dpadup":
@@ -723,6 +732,9 @@ namespace OnlineTelevizor.Views
                 case "mediaplayprevious":
                 case "mediaprevious":
                 case "movehome":
+                case "mediarewind":
+                case "mediafastrewind":
+                case "channelup":
                     Task.Run(async () => await ActionKeyUp(1));
                     break;
                 case "pagedown":
@@ -736,7 +748,7 @@ namespace OnlineTelevizor.Views
                 case "a":
                 case "b":
                 case "numpad4":
-                case "leftbracket":
+                case "leftbracket":                
                     Task.Run(async () => await ActionKeyLeft());
                     break;
                 case "dpadright":
@@ -744,7 +756,7 @@ namespace OnlineTelevizor.Views
                 case "d":
                 case "f":
                 case "numpad6":
-                case "rightbracket":
+                case "rightbracket":                
                     Task.Run(async () => await ActionKeyRight());
                     break;
                 case "f6":
@@ -799,6 +811,7 @@ namespace OnlineTelevizor.Views
                 case "slash":
                 case "backslash":
                 case "insert":
+                case "tvcontentsmenu":
                     Detail_Clicked(this, null);
                     break;
                 case "0":
@@ -853,12 +866,32 @@ namespace OnlineTelevizor.Views
                     break;
                 case "f5":
                 case "numpad0":
+                case "green":
+                case "proggreen":
+                case "f10":
                     Reset();
                     Refresh();
                     break;
+                case "record":
+                case "mediarecord":
+                case "red":
+                case "progred":
+                case "f9":
+                    Device.BeginInvokeOnMainThread(async () => await _viewModel.RecordChannel(!_viewModel.IsRecording, true));                    
+                    break;
+                case "yellow":
+                case "progyellow":
+                case "f11":
+                    _viewModel.ToggleFav();
+                    break;
+                case "blue":
+                case "progblue":
+                case "f12":
+                    ToggleAudioStream();
+                    break;
                 default:
                     {
-#if DEBUG
+#if UNBOUNDKEYS
     MessagingCenter.Send($"Unbound key down: {key}", BaseViewModel.ToastMessage);
 #endif
                     }
@@ -868,6 +901,8 @@ namespace OnlineTelevizor.Views
 
         private void ToggleAudioStream()
         {
+            _loggingService.Info($"ToggleAudioStream");
+
             if ((_lastToggledAudioStreamTime != DateTime.MinValue) && (DateTime.Now - _lastToggledAudioStreamTime).TotalSeconds < 3)
             {
                 return;
@@ -929,11 +964,13 @@ namespace OnlineTelevizor.Views
             if (string.IsNullOrEmpty(selectedName)) selectedName = $"# {selectedId}";
 
             MessagingCenter.Send($"Zvolena zvuková stopa {selectedName}", BaseViewModel.ToastMessage);
+
+            _loggingService.Info($"Selected stream: {selectedName}");
         }
 
         private void HandleNumKey(int number)
         {
-            _loggingService.Debug($"HandleNumKey {number}");
+            _loggingService.Info($"HandleNumKey {number}");
 
             if ((DateTime.Now - _lastNumPressedTime).TotalSeconds > 1)
             {
@@ -996,6 +1033,8 @@ namespace OnlineTelevizor.Views
 
         public void Resume()
         {
+            _loggingService.Info($"Resume");
+
             if (_config.Fullscreen)
             {
                 MessagingCenter.Send(String.Empty, BaseViewModel.EnableFullScreen);
@@ -1033,8 +1072,10 @@ namespace OnlineTelevizor.Views
             _viewModel.RefreshCommand.Execute(null);
         }
 
-        public void ShowJustPlayingNotification()
+        private void ShowJustPlayingNotification()
         {
+            _loggingService.Info($"ShowJustPlayingNotification");
+
             bool showCurrent;
             string msg;
 
@@ -1086,344 +1127,448 @@ namespace OnlineTelevizor.Views
                 _lastSingleClicked = DateTime.MinValue;
             }
 
+            _loggingService.Info($"Test: {msg}");
             MessagingCenter.Send(msg, BaseViewModel.ToastMessage);
         }
 
         public void ActionPlay(ChannelItem channel)
         {
-            if (_config.InternalPlayer)
+            var channelName = channel == null ? String.Empty : channel.Name; 
+            _loggingService.Info($"ActionPlay: {channelName}");
+
+            try
             {
-                if (_lastPlayedChannels[1] != channel)
+                if (_config.InternalPlayer)
                 {
-                    _lastPlayedChannels[0] = _lastPlayedChannels[1];
-                    _lastPlayedChannels[1] = channel;
+                    if (_lastPlayedChannels[1] != channel)
+                    {
+                        _lastPlayedChannels[0] = _lastPlayedChannels[1];
+                        _lastPlayedChannels[1] = channel;
+                    }
+
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        try
+                        {
+                            if (PlayingState == PlayingStateEnum.PlayingInPreview && _viewModel.PlayingChannel == channel)
+                            {
+                                PlayingState = PlayingStateEnum.PlayingInternal;
+                                return;
+                            }
+
+                            if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
+                            {
+                                videoView.MediaPlayer.Stop();
+                            }
+
+                            _media = new Media(_libVLC, channel.Url, FromType.FromLocation);
+
+                            videoView.MediaPlayer = _mediaPlayer;
+
+                            _mediaPlayer.Play(_media);
+
+                            _viewModel.PlayingChannel = channel;
+
+                            ShowJustPlayingNotification();
+
+                            if (_config.PlayOnBackground)
+                            {
+                                MessagingCenter.Send<MainPage, ChannelItem>(this, BaseViewModel.PlayInternalNotification, channel);
+                            }
+
+                            PlayingState = PlayingStateEnum.PlayingInternal;
+                        }
+                        catch (Exception ex)
+                        {
+                            _loggingService.Error(ex, "PlayStream general error");
+                            MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
+                        }
+                    });
                 }
-
-                Device.BeginInvokeOnMainThread(() =>
+                else
                 {
-                    if (PlayingState == PlayingStateEnum.PlayingInPreview && _viewModel.PlayingChannel == channel)
-                    {
-                        PlayingState = PlayingStateEnum.PlayingInternal;
-                        return;
-                    }
-
-                    if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
-                    {
-                        videoView.MediaPlayer.Stop();
-                    }
-
-                    _media = new Media(_libVLC, channel.Url, FromType.FromLocation);
-
-                    videoView.MediaPlayer = _mediaPlayer;
-
-                    _mediaPlayer.Play(_media);
-
-                    _viewModel.PlayingChannel = channel;
-
-                    ShowJustPlayingNotification();
-
-                    if (_config.PlayOnBackground)
-                    {
-                        MessagingCenter.Send<MainPage, ChannelItem>(this, BaseViewModel.PlayInternalNotification, channel);
-                    }
-
-                    PlayingState = PlayingStateEnum.PlayingInternal;
-                });
-            } else
+                    MessagingCenter.Send(channel.Url, BaseViewModel.UriMessage);
+                }
+            } catch (Exception ex)
             {
-                MessagingCenter.Send(channel.Url, BaseViewModel.UriMessage);
+                _loggingService.Error(ex, "PlayStream general error");
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
             }
         }
 
         public void ActionTap(int count)
         {
-            if (count == 1)
+            _loggingService.Info($"ActionTap: {count}");
+
+            try
             {
-                if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
+                if (count == 1)
                 {
-                    ShowJustPlayingNotification();
-                }
-
-                if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
-                {
-                    Device.BeginInvokeOnMainThread(() =>
+                    if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
                     {
-                        CloseVideoImage.IsVisible = MinimizeVideoImage.IsVisible = PlayingState == PlayingStateEnum.PlayingInternal;
-                        ClosePreviewVideoImage.IsVisible = PlayingState == PlayingStateEnum.PlayingInPreview;
-                    });
+                        ShowJustPlayingNotification();
+                    }
 
-                    Task.Run(async () =>
+                    if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
                     {
-                        await Task.Delay(5000);
-
                         Device.BeginInvokeOnMainThread(() =>
                         {
-                            CloseVideoImage.IsVisible = false;
-                            ClosePreviewVideoImage.IsVisible = false;
-                            MinimizeVideoImage.IsVisible = false;
+                            CloseVideoImage.IsVisible = MinimizeVideoImage.IsVisible = PlayingState == PlayingStateEnum.PlayingInternal;
+                            ClosePreviewVideoImage.IsVisible = PlayingState == PlayingStateEnum.PlayingInPreview;
                         });
-                    });
+
+                        Task.Run(async () =>
+                        {
+                            await Task.Delay(5000);
+
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                CloseVideoImage.IsVisible = false;
+                                ClosePreviewVideoImage.IsVisible = false;
+                                MinimizeVideoImage.IsVisible = false;
+                            });
+                        });
+                    }
+                }
+
+                if (count == 2)
+                {
+                    if (PlayingState == PlayingStateEnum.PlayingInPreview)
+                    {
+                        PlayingState = PlayingStateEnum.PlayingInternal;
+                    }
+                    else
+                    if (PlayingState == PlayingStateEnum.PlayingInternal)
+                    {
+                        PlayingState = PlayingStateEnum.PlayingInPreview;
+                    }
                 }
             }
-
-            if (count == 2)
+            catch (Exception ex)
             {
-                if (PlayingState == PlayingStateEnum.PlayingInPreview)
-                {
-                    PlayingState = PlayingStateEnum.PlayingInternal;
-                }
-                else
-                if (PlayingState == PlayingStateEnum.PlayingInternal)
-                {
-                    PlayingState = PlayingStateEnum.PlayingInPreview;
-                }
+                _loggingService.Error(ex, "ActionTap general error");
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
             }
         }
 
         public void ActionStop(bool force)
         {
-            if (_config.InternalPlayer)
+            _loggingService.Info($"ActionStop: {force}");
+
+            try
             {
-                Device.BeginInvokeOnMainThread(() =>
+                if (_config.InternalPlayer)
                 {
-                    if (_media == null || videoView == null || videoView.MediaPlayer == null)
-                        return;
-
-                    if (!force && (PlayingState == PlayingStateEnum.PlayingInternal))
+                    Device.BeginInvokeOnMainThread(() =>
                     {
-                        PlayingState = PlayingStateEnum.PlayingInPreview;
-                    }
-                    else
-                    if (force || (PlayingState == PlayingStateEnum.PlayingInPreview))
-                    {
-                        videoView.MediaPlayer.Stop();
-                        PlayingState = PlayingStateEnum.Stopped;
-                        _viewModel.PlayingChannel = null;
+                        try
+                        {
 
-                        MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotification);
-                    }
-                });
+                            if (_media == null || videoView == null || videoView.MediaPlayer == null)
+                                return;
+
+                            if (!force && (PlayingState == PlayingStateEnum.PlayingInternal))
+                            {
+                                PlayingState = PlayingStateEnum.PlayingInPreview;
+                            }
+                            else
+                            if (force || (PlayingState == PlayingStateEnum.PlayingInPreview))
+                            {
+                                videoView.MediaPlayer.Stop();
+                                PlayingState = PlayingStateEnum.Stopped;
+                                _viewModel.PlayingChannel = null;
+
+                                MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotification);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _loggingService.Error(ex, "ActionStop general error");
+                            MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
+                        }
+                    });
+                }
+                else
+                {
+                    PlayingState = PlayingStateEnum.Stopped;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                PlayingState = PlayingStateEnum.Stopped;
+                _loggingService.Error(ex, "ActionStop general error");
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
             }
         }
 
         private async Task ActionKeyOK()
         {
-            if (PlayingState == PlayingStateEnum.PlayingInternal)
+            _loggingService.Info($"ActionKeyOK");
+
+            try
             {
-                if (LastKeyLongPressed)
+
+                if (PlayingState == PlayingStateEnum.PlayingInternal)
                 {
-                    ToggleAudioStream();
+                    if (LastKeyLongPressed)
+                    {
+                        ToggleAudioStream();
+                    }
+                    else
+                    {
+                        ShowJustPlayingNotification();
+                    }
+                    return;
                 }
-                else
+
+                if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList ||
+                    _viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
                 {
-                    ShowJustPlayingNotification();
+                    ActionPlay(_viewModel.SelectedItem);
+                    return;
                 }
-                return;
+
+                if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
+                {
+                    ActionStop(true);
+
+                    if (_viewModel.SelectedToolbarItemName == "ToolbarItemSettings")
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            ToolbarItemSettings_Clicked(this, null);
+                            _viewModel.SelectedToolbarItemName = null;
+                            _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                        });
+                    }
+                    else if (_viewModel.SelectedToolbarItemName == "ToolbarItemInfo")
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            Detail_Clicked(this, null);
+                            _viewModel.SelectedToolbarItemName = null;
+                            _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                        });
+                    }
+                    else if (_viewModel.SelectedToolbarItemName == "ToolbarItemQuality")
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            ToolbarItemQuality_Clicked(this, null);
+                            _viewModel.SelectedToolbarItemName = null;
+                            _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                        });
+                    }
+                    else if (_viewModel.SelectedToolbarItemName == "ToolbarItemFilter")
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            ToolbarItemFilter_Clicked(this, null);
+                            _viewModel.SelectedToolbarItemName = null;
+                            _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                        });
+                    }
+                    else if (_viewModel.SelectedToolbarItemName == "ToolbarItemHelp")
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            ToolbarItemHelp_Clicked(this, null);
+                            _viewModel.SelectedToolbarItemName = null;
+                            _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                        });
+                    }
+                }
             }
-
-            if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList ||
-                _viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
+            catch (Exception ex)
             {
-                ActionPlay(_viewModel.SelectedItem);
-                return;
-            }
-
-            if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
-            {
-                ActionStop(true);
-
-                if (_viewModel.SelectedToolbarItemName == "ToolbarItemSettings")
-                {
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        ToolbarItemSettings_Clicked(this, null);
-                        _viewModel.SelectedToolbarItemName = null;
-                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
-                    });
-                }
-                else if (_viewModel.SelectedToolbarItemName == "ToolbarItemInfo")
-                {
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        Detail_Clicked(this, null);
-                        _viewModel.SelectedToolbarItemName = null;
-                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
-                    });
-                }
-                else if (_viewModel.SelectedToolbarItemName == "ToolbarItemQuality")
-                {
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        ToolbarItemQuality_Clicked(this, null);
-                        _viewModel.SelectedToolbarItemName = null;
-                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
-                    });
-                }
-                else if (_viewModel.SelectedToolbarItemName == "ToolbarItemFilter")
-                {
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        ToolbarItemFilter_Clicked(this, null);
-                        _viewModel.SelectedToolbarItemName = null;
-                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
-                    });
-                }
-                else if (_viewModel.SelectedToolbarItemName == "ToolbarItemHelp")
-                {
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        ToolbarItemHelp_Clicked(this, null);
-                        _viewModel.SelectedToolbarItemName = null;
-                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
-                    });
-                }
+                _loggingService.Error(ex, "ActionKeyOK general error");
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
             }
         }
 
         private async Task ActionKeyLeft()
         {
-            if (PlayingState == PlayingStateEnum.PlayingInternal)
+            _loggingService.Info($"ActionKeyLeft");
+
+            try
             {
-                _lastSingleClicked = DateTime.MinValue;
-
-                // play last channel?
-                if (_lastPlayedChannels != null &&
-                    _lastPlayedChannels[0] != _viewModel.SelectedItem)
+                if (PlayingState == PlayingStateEnum.PlayingInternal)
                 {
-                    _viewModel.SelectedItem = _lastPlayedChannels[0];
-                    await _viewModel.PlaySelectedChannel();
-                } else
-                if (!_viewModel.StandingOnStart)
-                {
+                    _lastSingleClicked = DateTime.MinValue;
 
-                    await _viewModel.SelectPreviousChannel();
-                    await _viewModel.PlaySelectedChannel();
+                    // play last channel?
+                    if (_lastPlayedChannels != null &&
+                        _lastPlayedChannels[0] != _viewModel.SelectedItem)
+                    {
+                        _viewModel.SelectedItem = _lastPlayedChannels[0];
+                        await _viewModel.PlaySelectedChannel();
+                    }
+                    else
+                    if (!_viewModel.StandingOnStart)
+                    {
+
+                        await _viewModel.SelectPreviousChannel();
+                        await _viewModel.PlaySelectedChannel();
+                    }
+                }
+                else
+                {
+                    if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
+                    {
+                        _viewModel.SelectedPart = SelectedPartEnum.ToolBar;
+                        _viewModel.SelectedToolbarItemName = "ToolbarItemSettings";
+                        _viewModel.NotifyToolBarChange();
+                    }
+                    else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
+                    {
+                        await ScrollViewChannelEPGDescription.ScrollToAsync(0, 0, false);
+                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                    }
+                    else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
+                    {
+                        SelecPreviousToolBarItem();
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
-                {
-                    _viewModel.SelectedPart = SelectedPartEnum.ToolBar;
-                    _viewModel.SelectedToolbarItemName = "ToolbarItemSettings";
-                    _viewModel.NotifyToolBarChange();
-                }
-                else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
-                {
-                    await ScrollViewChannelEPGDescription.ScrollToAsync(0, 0, false);
-                    _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
-                }
-                else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
-                {
-                    SelecPreviousToolBarItem();
-                }
+                _loggingService.Error(ex, "ActionKeyLeft general error");
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
             }
         }
 
         private async Task ActionKeyRight()
         {
-            if (PlayingState == PlayingStateEnum.PlayingInternal)
+            _loggingService.Info($"ActionKeyRight");
+
+            try
             {
-                if (!_viewModel.StandingOnEnd)
+                if (PlayingState == PlayingStateEnum.PlayingInternal)
                 {
-                    _lastSingleClicked = DateTime.MinValue;
-                    await _viewModel.SelectNextChannel();
-                    await _viewModel.PlaySelectedChannel();
-                }
-            }
-            else
-            {
-                if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
-                {
-                    if (_viewModel.IsPortrait || _viewModel.Channels.Count == 0 || String.IsNullOrEmpty(_viewModel.SelectedChannelEPGDescription))
+                    if (!_viewModel.StandingOnEnd)
                     {
-                        // no EPG detail on right
+                        _lastSingleClicked = DateTime.MinValue;
+                        await _viewModel.SelectNextChannel();
+                        await _viewModel.PlaySelectedChannel();
+                    }
+                }
+                else
+                {
+                    if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
+                    {
+                        if (_viewModel.IsPortrait || _viewModel.Channels.Count == 0 || String.IsNullOrEmpty(_viewModel.SelectedChannelEPGDescription))
+                        {
+                            // no EPG detail on right
+                            _viewModel.SelectedPart = SelectedPartEnum.ToolBar;
+                            _viewModel.SelectedToolbarItemName = "ToolbarItemHelp";
+                            _viewModel.NotifyToolBarChange();
+                        }
+                        else
+                        {
+                            // EPG detail on right
+                            _viewModel.SelectedPart = SelectedPartEnum.EPGDetail;
+                        }
+                    }
+                    else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
+                    {
+                        SelectNextToolBarItem(true);
+                    }
+                    else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
+                    {
                         _viewModel.SelectedPart = SelectedPartEnum.ToolBar;
                         _viewModel.SelectedToolbarItemName = "ToolbarItemHelp";
                         _viewModel.NotifyToolBarChange();
                     }
-                    else
-                    {
-                        // EPG detail on right
-                        _viewModel.SelectedPart = SelectedPartEnum.EPGDetail;
-                    }
                 }
-                else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
-                {
-                    SelectNextToolBarItem(true);
-                }
-                else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
-                {
-                    _viewModel.SelectedPart = SelectedPartEnum.ToolBar;
-                    _viewModel.SelectedToolbarItemName = "ToolbarItemHelp";
-                    _viewModel.NotifyToolBarChange();
-                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex, "ActionKeyRight general error");
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
             }
         }
 
         private async Task ActionKeyDown(int step)
         {
-            if (PlayingState == PlayingStateEnum.PlayingInternal)
+            _loggingService.Info($"ActionKeyDown");
+
+            try
             {
-                if (!_viewModel.StandingOnEnd)
+                if (PlayingState == PlayingStateEnum.PlayingInternal)
                 {
-                    _lastSingleClicked = DateTime.MinValue;
-                    await _viewModel.SelectNextChannel(step);
-                    await _viewModel.PlaySelectedChannel();
+                    if (!_viewModel.StandingOnEnd)
+                    {
+                        _lastSingleClicked = DateTime.MinValue;
+                        await _viewModel.SelectNextChannel(step);
+                        await _viewModel.PlaySelectedChannel();
+                    }
+                }
+                else
+                {
+                    if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
+                    {
+                        await _viewModel.SelectNextChannel(step);
+                    }
+                    else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
+                    {
+                        await ScrollViewChannelEPGDescription.ScrollToAsync(ScrollViewChannelEPGDescription.ScrollX, ScrollViewChannelEPGDescription.ScrollY + 10 + (int)_config.AppFontSize, false);
+                    }
+                    else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
+                    {
+                        _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
+                        _viewModel.SelectedToolbarItemName = null;
+                        _viewModel.NotifyToolBarChange();
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
-                {
-                    await _viewModel.SelectNextChannel(step);
-                } else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
-                {
-                    await ScrollViewChannelEPGDescription.ScrollToAsync(ScrollViewChannelEPGDescription.ScrollX, ScrollViewChannelEPGDescription.ScrollY + 10+(int)_config.AppFontSize, false);
-                }
-                else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
-                {
-                    _viewModel.SelectedPart = SelectedPartEnum.ChannelsList;
-                    _viewModel.SelectedToolbarItemName = null;
-                    _viewModel.NotifyToolBarChange();
-                }
+                _loggingService.Error(ex, "ActionKeyDown general error");
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
             }
         }
 
         private async Task ActionKeyUp(int step)
         {
-            if (PlayingState == PlayingStateEnum.PlayingInternal)
+            _loggingService.Info($"ActionKeyUp");
+
+            try
             {
-                if (!_viewModel.StandingOnStart)
+                if (PlayingState == PlayingStateEnum.PlayingInternal)
                 {
-                    _lastSingleClicked = DateTime.MinValue;
-                    await _viewModel.SelectPreviousChannel(step);
-                    await _viewModel.PlaySelectedChannel();
+                    if (!_viewModel.StandingOnStart)
+                    {
+                        _lastSingleClicked = DateTime.MinValue;
+                        await _viewModel.SelectPreviousChannel(step);
+                        await _viewModel.PlaySelectedChannel();
+                    }
+                }
+                else
+                {
+                    if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
+                    {
+                        await _viewModel.SelectPreviousChannel(step);
+                    }
+                    else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
+                    {
+                        await ScrollViewChannelEPGDescription.ScrollToAsync(ScrollViewChannelEPGDescription.ScrollX, ScrollViewChannelEPGDescription.ScrollY - (10 + (int)_config.AppFontSize), false);
+                    }
+                    else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
+                    {
+                        SelectNextToolBarItem(false);
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
-                {
-                    await _viewModel.SelectPreviousChannel(step);
-                }
-                else if (_viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
-                {
-                    await ScrollViewChannelEPGDescription.ScrollToAsync(ScrollViewChannelEPGDescription.ScrollX, ScrollViewChannelEPGDescription.ScrollY - (10 + (int)_config.AppFontSize), false);
-                }
-                else if (_viewModel.SelectedPart == SelectedPartEnum.ToolBar)
-                {
-                    SelectNextToolBarItem(false);
-                }
+                _loggingService.Error(ex, "ActionKeyUp general error");
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
             }
         }
 
         private void SelecPreviousToolBarItem()
         {
+            _loggingService.Info($"SelecPreviousToolBarItem");
+
             if (_viewModel.SelectedToolbarItemName == null)
             {
                 _viewModel.SelectedToolbarItemName = "ToolbarItemSettings";
@@ -1465,6 +1610,8 @@ namespace OnlineTelevizor.Views
 
         private void SelectNextToolBarItem(bool canExitToolBar)
         {
+            _loggingService.Info($"SelectNextToolBarItem");
+
             if (_viewModel.SelectedToolbarItemName == null)
             {
                 _viewModel.SelectedToolbarItemName = "ToolbarItemSettings";
@@ -1615,6 +1762,8 @@ namespace OnlineTelevizor.Views
 
         protected override bool OnBackButtonPressed()
         {
+            _loggingService.Info($"OnBackButtonPressed");
+
             // this event is called immediately after Navigation.PopAsync();
             if (_lastPageAppearedTime != DateTime.MinValue && ((DateTime.Now - _lastPageAppearedTime).TotalSeconds < 3))
             {

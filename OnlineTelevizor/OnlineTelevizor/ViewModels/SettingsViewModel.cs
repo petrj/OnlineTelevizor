@@ -227,7 +227,7 @@ namespace OnlineTelevizor.ViewModels
 
             try
             {
-                _loggingService.Debug($"Paying product id: {Config.PurchaseProductId}");
+                _loggingService.Info($"Paying product id: {Config.PurchaseProductId}");
 
                 var connected = await CrossInAppBilling.Current.ConnectAsync();
 

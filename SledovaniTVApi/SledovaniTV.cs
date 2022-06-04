@@ -100,7 +100,7 @@ namespace SledovaniTVAPI
 
         private async Task<string> SendRequest(string functionName, Dictionary<string, string> parameters)
         {
-            _log.Debug($"Calling function {functionName}");
+            _log.Info($"Calling function {functionName}");
 
             var url = ServiceUrl + functionName;
 
@@ -147,7 +147,7 @@ namespace SledovaniTVAPI
 
                 foreach (var header in request.Headers)
                 {
-                    _log.Debug($"Header: {header.ToString()}");
+                    _log.Info($"Header: {header.ToString()}");
                 }
 
                 using (var response = await request.GetResponseAsync() as HttpWebResponse)
@@ -181,7 +181,7 @@ namespace SledovaniTVAPI
         /// </summary>
         private async Task CreatePairing()
         {
-            _log.Debug($"Pairing device with user credentials");
+            _log.Info($"Pairing device with user credentials");
 
             try
             {
@@ -219,8 +219,8 @@ namespace SledovaniTVAPI
                         password = devConnJson.GetStringValue("password").ToString()
                     };
 
-                    _log.Debug("Received User Connection:");
-                    _log.Debug(_deviceConnection.ToString());
+                    _log.Info("Received User Connection:");
+                    _log.Info(_deviceConnection.ToString());
                 }
             }
             catch (WebException wex)
@@ -240,7 +240,7 @@ namespace SledovaniTVAPI
         /// </summary>
         private async Task DeviceLogin()
         {
-            _log.Debug("Login device to service");
+            _log.Info("Login device to service");
 
             try
             {
@@ -297,11 +297,11 @@ namespace SledovaniTVAPI
                 _status = StatusEnum.Logged;
             }
 
-            _log.Debug("Login");
+            _log.Info("Login");
 
             if (!force && Status == StatusEnum.Logged)
             {
-                _log.Debug("Device is already logged");
+                _log.Info("Device is already logged");
                 return;
             }
 
@@ -309,7 +309,7 @@ namespace SledovaniTVAPI
                 String.IsNullOrEmpty(_credentials.Password))
             {
                 _status = StatusEnum.EmptyCredentials;
-                _log.Debug("Empty credentials");
+                _log.Info("Empty credentials");
                 return;
             }
 
@@ -324,7 +324,7 @@ namespace SledovaniTVAPI
 
                 if (Status != StatusEnum.Paired)
                 {
-                    _log.Debug("Pairing failed");
+                    _log.Info("Pairing failed");
                     return; // bad credentials, no internet connection ?
                 }
             }
@@ -340,7 +340,7 @@ namespace SledovaniTVAPI
 
                 if (Status != StatusEnum.Paired)
                 {
-                    _log.Debug("Pairing failed again");
+                    _log.Info("Pairing failed again");
                     return; // bad credentials, no internet connection ?
                 }
 
@@ -384,7 +384,7 @@ namespace SledovaniTVAPI
         /// </summary>
         public async Task<List<EPGItem>>GetEPG()
         {
-            _log.Debug($"Refreshing EPG");
+            _log.Info($"Refreshing EPG");
 
             var result = new List<EPGItem>();
 
@@ -478,7 +478,7 @@ namespace SledovaniTVAPI
         /// </summary>
         public async Task<List<Quality>> GetStreamQualities()
         {
-            _log.Debug($"Getting stream qualities");
+            _log.Info($"Getting stream qualities");
 
             var result = new List<Quality>();
 
@@ -556,7 +556,7 @@ namespace SledovaniTVAPI
 
         public void ResetConnection()
         {
-            _log.Debug("Resetting connection");
+            _log.Info("Resetting connection");
 
             _status = StatusEnum.NotInitialized;
             _deviceConnection.deviceId = null;
@@ -575,7 +575,7 @@ namespace SledovaniTVAPI
 
             try
             {
-                _log.Debug($"Reloading channels");
+                _log.Info($"Reloading channels");
 
                 var ps = new Dictionary<string, string>()
                 {
@@ -643,10 +643,10 @@ namespace SledovaniTVAPI
                         result.Add(ch);
                     }
 
-                    _log.Debug($"Received {result.Count} channels");
+                    _log.Info($"Received {result.Count} channels");
                 } else
                 {
-                    _log.Debug($"No channel received (status <>1)");
+                    _log.Info($"No channel received (status <>1)");
                 }
             }
             catch (WebException wex)
@@ -670,7 +670,7 @@ namespace SledovaniTVAPI
             if (_status != StatusEnum.Logged)
                 return;
 
-            _log.Debug("Unlocking adult channels");
+            _log.Info("Unlocking adult channels");
 
             try
             {
@@ -744,7 +744,7 @@ namespace SledovaniTVAPI
             if (_status != StatusEnum.Logged)
                 return;
 
-            _log.Debug("Locking adult channels");
+            _log.Info("Locking adult channels");
 
             try
             {

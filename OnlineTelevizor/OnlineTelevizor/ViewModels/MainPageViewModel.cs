@@ -282,6 +282,7 @@ namespace OnlineTelevizor.ViewModels
                 if (confirm)
                 {
                     _shutdownTime = DateTime.MinValue;
+                    _loggingService.Info($"Timer stopped");
                 }
             }
 
@@ -301,6 +302,8 @@ namespace OnlineTelevizor.ViewModels
 
                 MessagingCenter.Send($"Aplikace se vypne za {minutesTimeout} minut", BaseViewModel.ToastMessage);
 
+                _loggingService.Info($"Timer: {minutesTimeout}");
+
                 OnPropertyChanged(nameof(TimerTextVisible));
                 OnPropertyChanged(nameof(TimerText));
             }
@@ -308,6 +311,8 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task UpdateRecordNotification()
         {
+            _loggingService.Info($"UpdateRecordNotification");
+
             await Task.Run(() =>
             {
                try
@@ -341,6 +346,8 @@ namespace OnlineTelevizor.ViewModels
 
         private void _recordingBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            _loggingService.Info($"_recordingBackgroundWorker_DoWork started");
+
             var outputFileName = Path.Combine(Config.OutputDirectory, $"{_recordingChannel.Name} {DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss")}.ts");
 
             using (var libvlc = new LibVLC())
@@ -373,6 +380,9 @@ namespace OnlineTelevizor.ViewModels
 
         public async Task ShowPopupMenu(ChannelItem item)
         {
+            var itmName = item == null ? String.Empty : item.Name;
+            _loggingService.Info($"ShowPopupMenu: {itmName}");
+
             string optionCancel = "Zpět";
 
             string optionPlay = "Spustit";
@@ -486,11 +496,11 @@ namespace OnlineTelevizor.ViewModels
             }
             else if (selectedvalue == optionRecord)
             {
-                await RecordChannel(true);
+                await RecordChannel(true, false);
             }
             else if (selectedvalue == optionStopRecord)
             {
-                await RecordChannel(false);
+                await RecordChannel(false, false);
             }
             else if (selectedvalue == optionClosePreview)
             {
@@ -508,6 +518,8 @@ namespace OnlineTelevizor.ViewModels
             }
             else if (selectedvalue == optionAddToFav)
             {
+                AddToFav(item);
+                /*
                 if (!Config.FavouriteChannelNames.Contains(item.Name.Replace(";", ",")))
                 {
                     var fav = Config.FavouriteChannelNames;
@@ -518,9 +530,13 @@ namespace OnlineTelevizor.ViewModels
                     item.IsFav = true;
                     item.NotifyStateChange();
                 }
+                */
             }
             else if (selectedvalue == optionRemoveFromFav)
             {
+                RemoveFromFav(item);
+                    /*
+
                 if (Config.FavouriteChannelNames.Contains(item.Name.Replace(";", ",")))
                 {
                     var fav = Config.FavouriteChannelNames;
@@ -531,6 +547,7 @@ namespace OnlineTelevizor.ViewModels
                     item.IsFav = false;
                     item.NotifyStateChange();
                 }
+                    */
             }
             else if (selectedvalue == optionSetTimer)
             {
@@ -542,8 +559,72 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public void ToggleFav()
+        {
+            _loggingService.Info("ToggleFav");
+
+            var item = SelectedItem;
+            if (item != null)
+            {
+                if (Config.FavouriteChannelNames.Contains(item.Name.Replace(";", ",")))
+                {
+                    RemoveFromFav(item);
+                }
+                else
+                {
+                    AddToFav(item);                    
+                }
+            }
+        }
+
+        private void AddToFav(ChannelItem item)
+        {
+            if (item == null || item.Name == null)
+                return;
+
+            _loggingService.Info($"AddToFav: {item.Name}");
+
+            var name = item.Name.Replace(";", ",");
+            var fav = Config.FavouriteChannelNames;
+
+            if (!fav.Contains(name))
+            {                
+                fav.Add(name);
+                Config.FavouriteChannelNames = fav;
+
+                item.IsFav = true;
+                item.NotifyStateChange();
+
+                MessagingCenter.Send($"{item.Name} - přidáno mezi oblíbené", BaseViewModel.ToastMessage);
+            }
+        }
+
+        private void RemoveFromFav(ChannelItem item)
+        {
+            if (item == null || item.Name == null)
+                return;
+
+            _loggingService.Info($"RemoveFromFav: {item.Name}");
+
+            var name = item.Name.Replace(";", ",");
+            var fav = Config.FavouriteChannelNames;
+
+            if (fav.Contains(name))
+            {
+                fav.Remove(name);
+                Config.FavouriteChannelNames = fav;
+
+                item.IsFav = false;
+                item.NotifyStateChange();
+
+                MessagingCenter.Send($"{item.Name} - odebráno z oblíbených", BaseViewModel.ToastMessage);
+            }
+        }
+
         public async void LongPress(object item)
         {
+            _loggingService.Info($"LongPress");
+
             if (item != null && item is ChannelItem)
             {
                 var rmb = DoNotScrollToChannel;
@@ -557,6 +638,8 @@ namespace OnlineTelevizor.ViewModels
 
         private void ShortPress(object item)
         {
+            _loggingService.Info($"ShortPress");
+
             if (item != null && item is ChannelItem)
             {
                 // select and play
@@ -571,11 +654,14 @@ namespace OnlineTelevizor.ViewModels
 
         private void VideoLongPress(object item)
         {
+            _loggingService.Info($"VideoLongPress");
             MessagingCenter.Send<string>(string.Empty, BaseViewModel.ToggleAudioStream);
         }
 
         public async Task NotifyCastChannel(string channelNumber, bool castingStart)
         {
+            _loggingService.Info($"NotifyCastChannel: {channelNumber},{castingStart}");
+
             foreach (var ch in Channels)
             {
                 if (ch.IsCasting)
@@ -607,8 +693,10 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
-        public async Task RecordChannel(bool recordStart)
+        public async Task RecordChannel(bool recordStart, bool skipConfirmation)
         {
+            _loggingService.Info($"RecordChannel: {recordStart},{skipConfirmation}");
+
             var channel = SelectedItem;
             if (channel == null)
                 return;
@@ -640,9 +728,12 @@ namespace OnlineTelevizor.ViewModels
 
                 msg += $"Zahájit nahrávání kanálu {channel.Name}?";
 
-                var confirm = await _dialogService.Confirm(msg);
-                if (!confirm)
-                    return;
+                if (!skipConfirmation)
+                {
+                    var confirm = await _dialogService.Confirm(msg);
+                    if (!confirm)
+                        return;
+                }
             }
 
             foreach (var ch in Channels)
@@ -858,6 +949,8 @@ namespace OnlineTelevizor.ViewModels
 
         public void NotifyToolBarChange()
         {
+            _loggingService.Info($"NotifyToolBarChange");
+
             Device.BeginInvokeOnMainThread(() =>
             {
                 OnPropertyChanged(nameof(ToolbarItemFilterIcon));
@@ -1600,6 +1693,8 @@ namespace OnlineTelevizor.ViewModels
 
         public void NotifyFontSizeChange()
         {
+            _loggingService.Info($"NotifyFontSizeChange");
+
             OnPropertyChanged(nameof(FontSizeForChannel));
             OnPropertyChanged(nameof(FontSizeForChannelNumber));
             OnPropertyChanged(nameof(FontSizeForTime));
