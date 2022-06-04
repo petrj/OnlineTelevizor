@@ -215,7 +215,7 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-#if DEBUG
+#if ARROWS
                 return true;
 #else
                 return false;

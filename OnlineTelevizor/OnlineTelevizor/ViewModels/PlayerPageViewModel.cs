@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using TVAPI;
 using Xamarin.Forms;
-using static Android.OS.PowerManager;
 
 namespace OnlineTelevizor.ViewModels
 {

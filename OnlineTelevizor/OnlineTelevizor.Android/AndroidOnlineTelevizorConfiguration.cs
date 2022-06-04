@@ -239,18 +239,6 @@ namespace OnlineTelevizor.Droid
             }
         }
 
-        public bool EnableLogging
-        {
-            get
-            {
-                return GetPersistingSettingValue<bool>("EnableLogging");
-            }
-            set
-            {
-                SavePersistingSettingValue<bool>("EnableLogging", value);
-            }
-        }
-
         public bool Purchased
         {
             get
@@ -306,21 +294,6 @@ namespace OnlineTelevizor.Droid
             set
             {
                 SavePersistingSettingValue<int>("AppFontSize", (int)value);
-            }
-        }
-
-        public LoggingLevelEnum LoggingLevel
-        {
-            get
-            {
-                var index = GetPersistingSettingValue<int>("LoggingLevel");
-                if (index == 0)
-                    index = 9; // default is error
-                return (LoggingLevelEnum)index;
-            }
-            set
-            {
-                SavePersistingSettingValue<int>("LoggingLevel", (int)value);
             }
         }
 

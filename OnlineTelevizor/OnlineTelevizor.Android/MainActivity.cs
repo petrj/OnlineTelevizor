@@ -92,14 +92,15 @@ namespace OnlineTelevizor.Droid
                 _cfg.IsRunningOnTV = true;
             }
 
-            if (_cfg.EnableLogging)
-            {
-                _loggingService = new BasicLoggingService(_cfg.LoggingLevel);
-            }
-            else
-            {
-                _loggingService = new DummyLoggingService();
-            }
+#if LOGGING
+            var fileLoggingService = new FileLoggingService(LoggingLevelEnum.Debug);
+            fileLoggingService.LogFilename = System.IO.Path.Join(_cfg.OutputDirectory, $"OnlineTelevizor-{DateTime.Now.ToString("yyyy-MM-dd")}.log");
+            fileLoggingService.WriteToOutput = true;
+
+            _loggingService = fileLoggingService;
+#else
+            _loggingService = new DummyLoggingService();
+#endif
 
             _app = new App(_cfg, _loggingService);
             _app.AppVersion = version;

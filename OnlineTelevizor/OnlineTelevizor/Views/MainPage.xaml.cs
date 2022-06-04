@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Threading;
 using static OnlineTelevizor.ViewModels.MainPageViewModel;
-using static Android.OS.PowerManager;
 using LibVLCSharp.Shared;
 using System.Text.RegularExpressions;
 using System.Diagnostics;

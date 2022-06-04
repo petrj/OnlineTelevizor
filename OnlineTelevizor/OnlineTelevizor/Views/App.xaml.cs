@@ -6,7 +6,6 @@ using System;
 using System.IO;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static Android.OS.PowerManager;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace OnlineTelevizor.Views

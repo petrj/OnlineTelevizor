@@ -54,9 +54,6 @@ namespace OnlineTelevizor.Models
 
         AppFontSizeEnum AppFontSize { get; set; }
 
-        bool EnableLogging { get; set; }
-        LoggingLevelEnum LoggingLevel { get; set; }
-
         bool Purchased { get; set; }
 
         bool PurchaseTokenSent { get; set; }

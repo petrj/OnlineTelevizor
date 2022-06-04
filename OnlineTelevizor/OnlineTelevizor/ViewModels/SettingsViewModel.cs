@@ -282,45 +282,7 @@ namespace OnlineTelevizor.ViewModels
             {
                 await CrossInAppBilling.Current.DisconnectAsync();
             }
-        }
-
-        public int LoggingLevelIndex
-        {
-            get
-            {
-                switch (Config.LoggingLevel)
-                {
-                    case LoggingLevelEnum.Debug:
-                        return 0;
-                    case LoggingLevelEnum.Info:
-                        return 1;
-                    case LoggingLevelEnum.Error:
-                        return 2;
-                }
-
-                return 2;
-            }
-            set
-            {
-                // 0 -> Debug
-                // 1 -> Info
-                // 3 -> Error
-
-                switch (value)
-                {
-                    case 0:
-                        Config.LoggingLevel = LoggingLevelEnum.Debug;
-                        break;
-                    case 1:
-                        Config.LoggingLevel = LoggingLevelEnum.Info;
-                        break;
-                    case 2:
-                        Config.LoggingLevel = LoggingLevelEnum.Error;
-                        break;
-                }
-                OnPropertyChanged(nameof(LoggingLevelIndex));
-            }
-        }
+        }       
 
         public int TVAPIIndex
         {
