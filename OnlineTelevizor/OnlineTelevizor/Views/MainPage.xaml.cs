@@ -30,6 +30,8 @@ namespace OnlineTelevizor.Views
         private TimerPage _timerPage;
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
+        private DateTime _lastActionPlayTime = DateTime.MinValue;
+        private DateTime _lastActionStopTime = DateTime.MinValue;
         private DateTime _lastBackPressedTime = DateTime.MinValue;
         private DateTime _lastKeyLongPressedTime = DateTime.MinValue;
         private DateTime _lastToggledAudioStreamTime = DateTime.MinValue;
@@ -877,16 +879,19 @@ namespace OnlineTelevizor.Views
                 case "red":
                 case "progred":
                 case "f9":
+                case "r":
                     Device.BeginInvokeOnMainThread(async () => await _viewModel.RecordChannel(!_viewModel.IsRecording, true));                    
                     break;
                 case "yellow":
                 case "progyellow":
                 case "f11":
+                case "l":
                     _viewModel.ToggleFav();
                     break;
                 case "blue":
                 case "progblue":
                 case "f12":
+                case "k":
                     ToggleAudioStream();
                     break;
                 default:
@@ -1133,6 +1138,15 @@ namespace OnlineTelevizor.Views
 
         public void ActionPlay(ChannelItem channel)
         {
+            // this event is called immediately after Navigation.PopAsync();
+            if (_lastActionPlayTime != DateTime.MinValue && ((DateTime.Now - _lastActionPlayTime).TotalMilliseconds < 500))
+            {
+                // ignoring this event
+                return;
+            }
+
+            _lastActionPlayTime = DateTime.Now;
+
             var channelName = channel == null ? String.Empty : channel.Name; 
             _loggingService.Info($"ActionPlay: {channelName}");
 
@@ -1253,6 +1267,13 @@ namespace OnlineTelevizor.Views
 
         public void ActionStop(bool force)
         {
+            // this event is called immediately after Navigation.PopAsync();
+            if (_lastActionStopTime != DateTime.MinValue && ((DateTime.Now - _lastActionStopTime).TotalMilliseconds < 500))
+            {
+                // ignoring this event
+                return;
+            }
+
             _loggingService.Info($"ActionStop: {force}");
 
             try
