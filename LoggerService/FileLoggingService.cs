@@ -71,7 +71,7 @@ namespace LoggerService
             {
                 System.Diagnostics.Debug.WriteLine($"Error while writing log to {LogFilename} ({ex})");
             }
-        }      
+        }
 
         public void Debug(string message)
         {
