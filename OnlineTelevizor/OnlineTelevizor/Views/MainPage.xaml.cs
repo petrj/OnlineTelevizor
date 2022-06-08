@@ -97,14 +97,16 @@ namespace OnlineTelevizor.Views
             MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage, (sender) =>
             {
                 var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService, _viewModel.TVService);
-                detailPage.Channel = _viewModel.SelectedItem;
+                detailPage.Channel = _viewModel.SelectedItemSafe;
 
                 Navigation.PushAsync(detailPage);
             });
 
             MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowRenderers, (sender) =>
             {
-                if (_viewModel.SelectedItem == null)
+                var item = _viewModel.SelectedItemSafe;
+
+                if (item == null)
                     return;
 
                 if (_renderersPage == null)
@@ -112,7 +114,7 @@ namespace OnlineTelevizor.Views
                     _renderersPage = new CastRenderersPage(_loggingService, _config);
                 }
 
-                _renderersPage.Channel = _viewModel.SelectedItem;
+                _renderersPage.Channel = item;
 
                 Navigation.PushAsync(_renderersPage);
             });
@@ -196,7 +198,7 @@ namespace OnlineTelevizor.Views
 
         private void _renderersPage_Disappearing(object sender, EventArgs e)
         {
-            if (_viewModel.SelectedItem != null && _renderersPage != null)
+            if (_viewModel.SelectedItemSafe != null && _renderersPage != null)
             {
                 _renderersPage.Channel.IsCasting = _renderersPage.IsCasting();
                 _renderersPage.Channel.NotifyStateChange();
@@ -466,9 +468,9 @@ namespace OnlineTelevizor.Views
             if (_firstSelectionAfterStartup)
             {
                 _viewModel.DoNotScrollToChannel = true;
-                var item = _viewModel.SelectedItem;
-                _viewModel.SelectedItem = null;
-                _viewModel.SelectedItem = item;
+                var item = _viewModel.SelectedItemSafe;
+                _viewModel.SelectedItemSafe = null;
+                _viewModel.SelectedItemSafe = item;
                 _firstSelectionAfterStartup = false;
             }
         }
@@ -479,7 +481,7 @@ namespace OnlineTelevizor.Views
 
             if (!_viewModel.DoNotScrollToChannel)
             {
-                ChannelsListView.ScrollTo(_viewModel.SelectedItem, ScrollToPosition.MakeVisible, false);
+                ChannelsListView.ScrollTo(_viewModel.SelectedItemSafe, ScrollToPosition.MakeVisible, false);
                 _firstSelectionAfterStartup = true;
             }
 
@@ -750,7 +752,7 @@ namespace OnlineTelevizor.Views
                 case "a":
                 case "b":
                 case "numpad4":
-                case "leftbracket":                
+                case "leftbracket":
                     Task.Run(async () => await ActionKeyLeft());
                     break;
                 case "dpadright":
@@ -758,7 +760,7 @@ namespace OnlineTelevizor.Views
                 case "d":
                 case "f":
                 case "numpad6":
-                case "rightbracket":                
+                case "rightbracket":
                     Task.Run(async () => await ActionKeyRight());
                     break;
                 case "f6":
@@ -880,7 +882,7 @@ namespace OnlineTelevizor.Views
                 case "progred":
                 case "f9":
                 case "r":
-                    Device.BeginInvokeOnMainThread(async () => await _viewModel.RecordChannel(!_viewModel.IsRecording, true));                    
+                    Device.BeginInvokeOnMainThread(async () => await _viewModel.RecordChannel(!_viewModel.IsRecording, true));
                     break;
                 case "yellow":
                 case "progyellow":
@@ -1002,12 +1004,14 @@ namespace OnlineTelevizor.Views
                     {
                         await _viewModel.SelectChannelByNumber(_numberPressed);
 
+                        var item = _viewModel.SelectedItemSafe;
+
                         if (
-                                (_viewModel.SelectedItem != null) &&
-                                (_numberPressed == _viewModel.SelectedItem.ChannelNumber)
+                                (item != null) &&
+                                (_numberPressed == item.ChannelNumber)
                            )
                         {
-                            await _viewModel.Play(_viewModel.SelectedItem);
+                            await _viewModel.Play(item);
                         }
                     });
                 }
@@ -1147,7 +1151,7 @@ namespace OnlineTelevizor.Views
 
             _lastActionPlayTime = DateTime.Now;
 
-            var channelName = channel == null ? String.Empty : channel.Name; 
+            var channelName = channel == null ? String.Empty : channel.Name;
             _loggingService.Info($"ActionPlay: {channelName}");
 
             try
@@ -1344,7 +1348,7 @@ namespace OnlineTelevizor.Views
                 if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList ||
                     _viewModel.SelectedPart == SelectedPartEnum.EPGDetail)
                 {
-                    ActionPlay(_viewModel.SelectedItem);
+                    ActionPlay(_viewModel.SelectedItemSafe);
                     return;
                 }
 
@@ -1418,9 +1422,9 @@ namespace OnlineTelevizor.Views
 
                     // play last channel?
                     if (_lastPlayedChannels != null &&
-                        _lastPlayedChannels[0] != _viewModel.SelectedItem)
+                        _lastPlayedChannels[0] != _viewModel.SelectedItemSafe)
                     {
-                        _viewModel.SelectedItem = _lastPlayedChannels[0];
+                        _viewModel.SelectedItemSafe = _lastPlayedChannels[0];
                         await _viewModel.PlaySelectedChannel();
                     }
                     else
@@ -1769,7 +1773,7 @@ namespace OnlineTelevizor.Views
             }
             else
             {
-                await _viewModel.ShowPopupMenu(_viewModel.SelectedItem);
+                await _viewModel.ShowPopupMenu(_viewModel.SelectedItemSafe);
             }
         }
 
@@ -1909,7 +1913,7 @@ namespace OnlineTelevizor.Views
         {
             if (Device.OS == TargetPlatform.Windows)
             {
-                _viewModel.ShortPressCommand.Execute(_viewModel.SelectedItem);
+                _viewModel.ShortPressCommand.Execute(_viewModel.SelectedItemSafe);
             }
         }
     }

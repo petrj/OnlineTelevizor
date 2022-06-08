@@ -563,7 +563,7 @@ namespace OnlineTelevizor.ViewModels
         {
             _loggingService.Info("ToggleFav");
 
-            var item = SelectedItem;
+            var item = SelectedItemSafe;
             if (item != null)
             {
                 if (Config.FavouriteChannelNames.Contains(item.Name.Replace(";", ",")))
@@ -572,7 +572,7 @@ namespace OnlineTelevizor.ViewModels
                 }
                 else
                 {
-                    AddToFav(item);                    
+                    AddToFav(item);
                 }
             }
         }
@@ -588,7 +588,7 @@ namespace OnlineTelevizor.ViewModels
             var fav = Config.FavouriteChannelNames;
 
             if (!fav.Contains(name))
-            {                
+            {
                 fav.Add(name);
                 Config.FavouriteChannelNames = fav;
 
@@ -630,7 +630,7 @@ namespace OnlineTelevizor.ViewModels
                 var rmb = DoNotScrollToChannel;
                 DoNotScrollToChannel = true;
 
-                SelectedItem = item as ChannelItem;
+                SelectedItemSafe = item as ChannelItem;
 
                 DoNotScrollToChannel = rmb;
             }
@@ -644,11 +644,13 @@ namespace OnlineTelevizor.ViewModels
             {
                 // select and play
 
-                SelectedItem = item as ChannelItem;
+                SelectedItemSafe = item as ChannelItem;
 
-                _loggingService.Info($"Short press (channel {SelectedItem.Name})");
-
-                Task.Run(async () => await PlaySelectedChannel());
+                if (SelectedItemSafe != null)
+                {
+                    _loggingService.Info($"Short press (channel {SelectedItemSafe.Name})");
+                    Task.Run(async () => await PlaySelectedChannel());
+                }
             }
         }
 
@@ -697,7 +699,7 @@ namespace OnlineTelevizor.ViewModels
         {
             _loggingService.Info($"RecordChannel: {recordStart},{skipConfirmation}");
 
-            var channel = SelectedItem;
+            var channel = SelectedItemSafe;
             if (channel == null)
                 return;
 
@@ -810,18 +812,27 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                if (SelectedItem == null)
-                    return true;
-
-                foreach (var ch in Channels)
+                try
                 {
-                    if (ch == SelectedItem)
+                    _semaphoreSlim.WaitAsync();
+
+                    if (SelectedItem == null)
                         return true;
 
-                    return false;
-                }
+                    foreach (var ch in Channels)
+                    {
+                        if (ch == SelectedItem)
+                            return true;
 
-                return true;
+                        return false;
+                    }
+
+                    return true;
+                }
+                finally
+                {
+                    _semaphoreSlim.Release();
+                };
             }
         }
 
@@ -829,19 +840,31 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                if (SelectedItem == null)
-                    return true;
-
-                ChannelItem lastChannel = null;
-                foreach (var ch in Channels)
+                try
                 {
-                    lastChannel = ch;
+                    _semaphoreSlim.WaitAsync();
+
+                    var item = SelectedItem;
+
+                    if (item == null)
+                        return true;
+
+                    ChannelItem lastChannel = null;
+                    foreach (var ch in Channels)
+                    {
+                        lastChannel = ch;
+                    }
+
+                    if (lastChannel == item)
+                        return true;
+
+                    return false;
+
                 }
-
-                if (lastChannel == SelectedItem)
-                    return true;
-
-                return false;
+                finally
+                {
+                    _semaphoreSlim.Release();
+                };
             }
         }
 
@@ -865,10 +888,11 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
+                var item = SelectedItemSafe;
+                if (item == null || item.CurrentEPGItem == null)
                     return String.Empty;
 
-                return SelectedItem.CurrentEPGItem.Title;
+                return item.CurrentEPGItem.Title;
             }
         }
 
@@ -876,10 +900,11 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                if (SelectedItem == null)
+                var item = SelectedItemSafe;
+                if (item == null)
                     return String.Empty;
 
-                return SelectedItem.EPGTimeStart;
+                return item.EPGTimeStart;
             }
         }
 
@@ -887,10 +912,11 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                if (SelectedItem == null)
+                var item = SelectedItemSafe;
+                if (item == null)
                     return String.Empty;
 
-                return SelectedItem.EPGTimeFinish;
+                return item.EPGTimeFinish;
             }
         }
 
@@ -898,15 +924,16 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                if (SelectedItem == null)
+                var item = SelectedItemSafe;
+                if (item == null)
                     return String.Empty;
 
-                if (SelectedItem.CurrentEPGItem == null)
+                if (item.CurrentEPGItem == null)
                 {
-                    return SelectedItem.Name;
+                    return item.Name;
                 }
 
-                return $"{SelectedItem.Name} - {SelectedItem.CurrentEPGItem.Title}";
+                return $"{item.Name} - {item.CurrentEPGItem.Title}";
             }
         }
 
@@ -914,10 +941,11 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
+                var item = SelectedItemSafe;
+                if (item == null || item.CurrentEPGItem == null)
                     return 0;
 
-                return SelectedItem.CurrentEPGItem.Progress;
+                return item.CurrentEPGItem.Progress;
             }
         }
 
@@ -925,7 +953,8 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
+                var item = SelectedItemSafe;
+                if (item == null || item.CurrentEPGItem == null)
                     return Color.Black;
 
                 return Color.White;
@@ -982,13 +1011,14 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task UpdateSelectedChannelEPGDescription()
         {
-            if (SelectedItem == null || SelectedItem.CurrentEPGItem == null)
+            var item = SelectedItemSafe;
+            if (item == null || item.CurrentEPGItem == null)
             {
                 SelectedChannelEPGDescription = String.Empty;
                 return;
             }
 
-            SelectedChannelEPGDescription = await _service.GetEPGItemDescription(SelectedItem.CurrentEPGItem);
+            SelectedChannelEPGDescription = await _service.GetEPGItemDescription(item.CurrentEPGItem);
         }
 
         public string SelectedChannelEPGDescription
@@ -1009,6 +1039,34 @@ namespace OnlineTelevizor.ViewModels
             get
             {
                 return _service.QualityFilterEnabled;
+            }
+        }
+
+        public ChannelItem SelectedItemSafe
+        {
+            get
+            {
+                _semaphoreSlim.WaitAsync();
+                try
+                {
+                    return _selectedItem;
+                }
+                finally
+                {
+                    _semaphoreSlim.Release();
+                };
+            }
+            set
+            {
+                _semaphoreSlim.WaitAsync();
+                try
+                {
+                    SelectedItem = value;
+                }
+                finally
+                {
+                    _semaphoreSlim.Release();
+                };
             }
         }
 
@@ -1457,6 +1515,8 @@ namespace OnlineTelevizor.ViewModels
 
             try
             {
+                await _semaphoreSlim.WaitAsync();
+
                 if (SelectedItem == null)
                 {
                     selectedChannelNumber = Config.LastChannelNumber;
@@ -1470,8 +1530,6 @@ namespace OnlineTelevizor.ViewModels
                 {
                     selectedChannelNumber = "1";
                 }
-
-                await _semaphoreSlim.WaitAsync();
 
                 var channels = await _service.GetChannels();
 
@@ -1570,7 +1628,7 @@ namespace OnlineTelevizor.ViewModels
                         await SelectChannelByNumber(firstVisibleChannelNumber);
                     } else
                     {
-                        SelectedItem = null;
+                        SelectedItemSafe = null;
                     }
                 }
 
@@ -1662,7 +1720,7 @@ namespace OnlineTelevizor.ViewModels
             {
                 if (ch.ChannelNumber == channelNumber)
                 {
-                    SelectedItem = ch;
+                    SelectedItemSafe = ch;
                     await PlaySelectedChannel();
                     break;
                 }
@@ -1713,12 +1771,14 @@ namespace OnlineTelevizor.ViewModels
 
         public async Task PlaySelectedChannel()
         {
-            if (SelectedItem == null)
+            var item = SelectedItemSafe;
+
+            if (item == null)
                 return;
 
-            _loggingService.Info($"Playing selected channel {SelectedItem.Name}");
+            _loggingService.Info($"Playing selected channel {item.Name}");
 
-            await Play(SelectedItem);
+            await Play(item);
         }
 
         public async Task CheckEmptyCredentials()

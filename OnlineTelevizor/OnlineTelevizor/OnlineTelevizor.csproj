@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants></DefineConstants>
+    <DefineConstants>UNBOUNDKEYS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
