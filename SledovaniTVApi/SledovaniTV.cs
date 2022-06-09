@@ -586,6 +586,7 @@ namespace SledovaniTVAPI
                 if (!string.IsNullOrEmpty(quality))
                 {
                     ps.Add("quality", quality);
+                    ps.Add("subtitles", "1");
                 }
 
                 var channelsString = await SendRequest("playlist", ps);
