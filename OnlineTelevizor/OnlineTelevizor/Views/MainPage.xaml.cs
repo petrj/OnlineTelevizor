@@ -1142,10 +1142,14 @@ namespace OnlineTelevizor.Views
 
         public void ActionPlay(ChannelItem channel)
         {
+            if (channel == null)
+                return;
+
             // this event is called immediately after Navigation.PopAsync();
             if (_lastActionPlayTime != DateTime.MinValue && ((DateTime.Now - _lastActionPlayTime).TotalMilliseconds < 500))
             {
                 // ignoring this event
+                _loggingService.Info($"ActionPlay - ignoring event");
                 return;
             }
 
@@ -1327,7 +1331,7 @@ namespace OnlineTelevizor.Views
 
         private async Task ActionKeyOK()
         {
-            _loggingService.Info($"ActionKeyOK");
+            _loggingService.Info($"ActionKeyOK (LongPress: {LastKeyLongPressed})");
 
             try
             {

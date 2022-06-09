@@ -51,7 +51,15 @@ namespace LoggerService
                 if ((int)level < (int)MinLevel)
                     return;
 
-                string msg = $"[{DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss")}] {level} {message}";
+                string threadId = "";
+                try
+                {
+                    threadId = $"[{System.Threading.Thread.CurrentThread.ManagedThreadId}]";
+                }
+                catch
+                {}
+
+                string msg = $"[{DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss.fff")}] {threadId} {level} {message}";
 
                 using (var fs = new FileStream(LogFilename, FileMode.Append, FileAccess.Write))
                 {
