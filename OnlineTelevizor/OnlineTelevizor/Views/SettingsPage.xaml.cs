@@ -52,13 +52,21 @@ namespace OnlineTelevizor.Views
                 FontSizePicker.IsVisible = false;
             }
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.RequestBatterySettings, async (sender) =>
+            Appearing += delegate
             {
-                if (await _dialogService.Confirm("Při běhu na pozadí je nutné zajistit, aby se aplikace kvůli optimalizaci baterie neukončovala. Přejít do nastavení?"))
+                MessagingCenter.Subscribe<string>(this, BaseViewModel.RequestBatterySettings, async (sender) =>
                 {
-                    MessagingCenter.Send<SettingsPage>(this, BaseViewModel.SetBatterySettings);
-                }
-            });
+                    if (await _dialogService.Confirm("Při běhu na pozadí je nutné zajistit, aby se aplikace kvůli optimalizaci baterie neukončovala. Přejít do nastavení?"))
+                    {
+                        MessagingCenter.Send<SettingsPage>(this, BaseViewModel.SetBatterySettings);
+                    }
+                });
+            };
+
+            Disappearing += delegate
+            {
+                MessagingCenter.Unsubscribe<string>(this, BaseViewModel.RequestBatterySettings);
+            };
 
             TVAPIPicker.Unfocused += TVAPIPicker_Unfocused;
             LastChannelAutoPlayPicker.Unfocused += LastChannelAutoPlayPicker_Unfocused;

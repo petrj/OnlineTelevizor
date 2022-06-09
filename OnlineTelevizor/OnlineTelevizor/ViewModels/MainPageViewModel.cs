@@ -519,35 +519,10 @@ namespace OnlineTelevizor.ViewModels
             else if (selectedvalue == optionAddToFav)
             {
                 AddToFav(item);
-                /*
-                if (!Config.FavouriteChannelNames.Contains(item.Name.Replace(";", ",")))
-                {
-                    var fav = Config.FavouriteChannelNames;
-                    fav.Add(item.Name.Replace(";", ","));
-
-                    Config.FavouriteChannelNames = fav;
-
-                    item.IsFav = true;
-                    item.NotifyStateChange();
-                }
-                */
             }
             else if (selectedvalue == optionRemoveFromFav)
             {
                 RemoveFromFav(item);
-                    /*
-
-                if (Config.FavouriteChannelNames.Contains(item.Name.Replace(";", ",")))
-                {
-                    var fav = Config.FavouriteChannelNames;
-                    fav.Remove(item.Name.Replace(";", ","));
-
-                    Config.FavouriteChannelNames = fav;
-
-                    item.IsFav = false;
-                    item.NotifyStateChange();
-                }
-                    */
             }
             else if (selectedvalue == optionSetTimer)
             {

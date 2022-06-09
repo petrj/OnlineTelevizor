@@ -30,8 +30,6 @@ namespace OnlineTelevizor.Views
         private TimerPage _timerPage;
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
-        private DateTime _lastActionPlayTime = DateTime.MinValue;
-        private DateTime _lastActionStopTime = DateTime.MinValue;
         private DateTime _lastBackPressedTime = DateTime.MinValue;
         private DateTime _lastKeyLongPressedTime = DateTime.MinValue;
         private DateTime _lastToggledAudioStreamTime = DateTime.MinValue;
@@ -51,6 +49,8 @@ namespace OnlineTelevizor.Views
         private ChannelItem[] _lastPlayedChannels = new ChannelItem[2];
 
         public Command CheckStreamCommand { get; set; }
+
+        public string AppVersion { get; set; } = String.Empty;
 
         public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
@@ -82,11 +82,16 @@ namespace OnlineTelevizor.Views
 
             CheckStreamCommand = new Command(async () => await CheckStream());
 
-            BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 2);
+            BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 2);            
+        }
+
+        public void SubscribeMessages()
+        {
+            _loggingService.Info($"Subscribing messages");
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.KeyMessage, (key) =>
             {
-                OnKeyDown(key);
+                Key(key);
             });
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.KeyLongMessage, (key) =>
@@ -151,7 +156,7 @@ namespace OnlineTelevizor.Views
                 ToolbarItemSettings_Clicked(this, null);
             });
 
-            MessagingCenter.Subscribe<BaseViewModel,ChannelItem>(this, BaseViewModel.CastingStarted, (sender, channel) =>
+            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.CastingStarted, (sender, channel) =>
             {
                 Task.Run(async () =>
                 {
@@ -186,7 +191,24 @@ namespace OnlineTelevizor.Views
             });
         }
 
-        public string AppVersion { get; set; } = String.Empty;
+        public void UnsubscribeMessages()
+        {
+            _loggingService.Info($"Unsubscribing messages");
+
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.KeyMessage);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.KeyLongMessage);
+            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
+            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.ShowRenderers);
+            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.ShowTimer);
+            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.StopCasting);
+            MessagingCenter.Unsubscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.PlayInternal);
+            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.ShowConfiguration);
+            MessagingCenter.Unsubscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.CastingStarted);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.CastingStopped);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.StopPlay);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.StopRecord);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.ToggleAudioStream);
+        }
 
         private async void _timerPage_Disappearing(object sender, EventArgs e)
         {
@@ -315,7 +337,7 @@ namespace OnlineTelevizor.Views
 
         private void MainPage_Disappearing(object sender, EventArgs e)
         {
-            _loggingService.Info($"MainPage_Disappearing");
+            _loggingService.Info($"MainPage_Disappearing");            
         }
 
         private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
@@ -391,7 +413,7 @@ namespace OnlineTelevizor.Views
 
         private async void MainPage_Appearing(object sender, EventArgs e)
         {
-            _loggingService.Info($"MainPage_Appearing");
+            _loggingService.Info($"MainPage_Appearing");            
 
             _lastPageAppearedTime = DateTime.Now;
 
@@ -564,7 +586,7 @@ namespace OnlineTelevizor.Views
             return false;
         }
 
-        public void OnKeyDown(string key)
+        public void Key(string key)
         {
             _loggingService.Info($"OnKeyDown {key}");
             var lowKey = key.ToLower();
@@ -1145,16 +1167,6 @@ namespace OnlineTelevizor.Views
             if (channel == null)
                 return;
 
-            // this event is called immediately after Navigation.PopAsync();
-            if (_lastActionPlayTime != DateTime.MinValue && ((DateTime.Now - _lastActionPlayTime).TotalMilliseconds < 500))
-            {
-                // ignoring this event
-                _loggingService.Info($"ActionPlay - ignoring event");
-                return;
-            }
-
-            _lastActionPlayTime = DateTime.Now;
-
             var channelName = channel == null ? String.Empty : channel.Name;
             _loggingService.Info($"ActionPlay: {channelName}");
 
@@ -1275,13 +1287,6 @@ namespace OnlineTelevizor.Views
 
         public void ActionStop(bool force)
         {
-            // this event is called immediately after Navigation.PopAsync();
-            if (_lastActionStopTime != DateTime.MinValue && ((DateTime.Now - _lastActionStopTime).TotalMilliseconds < 500))
-            {
-                // ignoring this event
-                return;
-            }
-
             _loggingService.Info($"ActionStop: {force}");
 
             try
@@ -1787,7 +1792,7 @@ namespace OnlineTelevizor.Views
             {
                 return ((_lastKeyLongPressedTime != DateTime.MinValue) && ((DateTime.Now - _lastKeyLongPressedTime).TotalSeconds < 3));
             }
-        }
+        }        
 
         protected override bool OnBackButtonPressed()
         {
