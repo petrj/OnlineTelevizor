@@ -9,11 +9,12 @@ namespace OnlineTelevizor.Models
 {
     public class ChannelItem : BaseNotifableObject
     {
-        private List<EPGItem> _EPGItems { get; set; } = new List<EPGItem>();
+        public List<SubTitleTrack> Subtitles { get; set; } = new List<SubTitleTrack>();
+        private List<EPGItem> _EPGItems { get; set; } = new List<EPGItem>();        
 
         public static ChannelItem CreateFromChannel(Channel channel)
         {
-            return new ChannelItem
+            var ch = new ChannelItem
             {
                 ChannelNumber = channel.ChannelNumber,
                 Name = channel.Name,
@@ -23,6 +24,17 @@ namespace OnlineTelevizor.Models
                 Type = channel.Type,
                 Group = channel.Group
             };
+
+            foreach (var track in channel.SubTitles)
+            {
+                ch.Subtitles.Add(new SubTitleTrack
+                {
+                    Title = track.Title,
+                    Url = track.Url                        
+                });
+            }
+
+            return ch;
         }
 
         public string ChannelNumber { get; set; }

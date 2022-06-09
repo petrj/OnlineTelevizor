@@ -11,6 +11,7 @@ namespace TVAPI
         void SetConnection(string deviceId, string password);
         DeviceConnection Connection { get; }
         bool EPGEnabled { get; }
+        bool SubtitlesEnabled { get; }
         bool QualityFilterEnabled { get; }
         StatusEnum Status { get; }
         Task Login(bool force = false);

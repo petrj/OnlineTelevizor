@@ -46,6 +46,7 @@ namespace OnlineTelevizor.ViewModels
         public const string StopRecordNotificationMessage = "StopRecordNotification";
         public const string StopRecord = "StopRecord";
         public const string ToggleAudioStream = "ToggleAudioStream";
+        public const string ToggleSubtitles = "ToggleSubtitles";
 
         public const string CheckBatterySettings = "CheckBatterySettings";
         public const string RequestBatterySettings = "RequestBatterySettings";

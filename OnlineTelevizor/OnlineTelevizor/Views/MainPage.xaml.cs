@@ -189,6 +189,11 @@ namespace OnlineTelevizor.Views
             {
                 ToggleAudioStream();
             });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.ToggleSubtitles, async (sender) =>
+            {
+                //
+            });            
         }
 
         public void UnsubscribeMessages()
@@ -208,6 +213,7 @@ namespace OnlineTelevizor.Views
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.StopPlay);
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.StopRecord);
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.ToggleAudioStream);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.ToggleSubtitles);
         }
 
         private async void _timerPage_Disappearing(object sender, EventArgs e)

@@ -321,5 +321,13 @@ namespace DVBStreamerAPI
                 _status = StatusEnum.GeneralError;
             }
         }
+
+        public bool SubtitlesEnabled
+        {
+            get
+            {
+                return false;
+            }
+        }
     }
 }

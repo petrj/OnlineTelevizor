@@ -1241,5 +1241,13 @@ namespace O2TVAPI
 
             return await SendRequest(url, postDataAsString, true, method, headers);
         }
+
+        public bool SubtitlesEnabled
+        {
+            get
+            {
+                return false;
+            }
+        }
     }
 }

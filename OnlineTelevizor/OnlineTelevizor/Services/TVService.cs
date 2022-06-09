@@ -278,6 +278,17 @@ namespace OnlineTelevizor.Services
             }
         }
 
+        public bool SubtitlesEnabled
+        {
+            get
+            {
+                if (_service == null)
+                    return false;
+
+                return _service.SubtitlesEnabled;
+            }
+        }
+
         public bool QualityFilterEnabled
         {
             get

@@ -580,13 +580,13 @@ namespace SledovaniTVAPI
                 var ps = new Dictionary<string, string>()
                 {
                     { "format", "androidtv" },
-                    { "PHPSESSID", _session.PHPSESSID }
+                    { "PHPSESSID", _session.PHPSESSID },
+                    { "subtitles", "1" }
                 };
 
                 if (!string.IsNullOrEmpty(quality))
                 {
-                    ps.Add("quality", quality);
-                    ps.Add("subtitles", "1");
+                    ps.Add("quality", quality);                    
                 }
 
                 var channelsString = await SendRequest("playlist", ps);
@@ -637,8 +637,29 @@ namespace SledovaniTVAPI
                             Type = channelJson["type"].ToString(),
                             LogoUrl = channelJson["logoUrl"].ToString(),
                             Locked = channelJson["locked"].ToString(),
-                            Group = channelJson["group"].ToString()
+                            Group = channelJson["group"].ToString()                            
                         };
+
+                        if (channelJson.HasValue("subtitles"))
+                        {
+                            foreach (JObject subtitleJson in channelJson["subtitles"])
+                            {
+                                if (!subtitleJson.HasValue("url"))
+                                {
+                                    continue;                                    
+                                }
+
+                                var subtitleTrack = new SubTitleTrack();
+
+                                if (subtitleJson.HasValue("lang"))
+                                {
+                                    subtitleTrack.Title = subtitleJson["lang"].ToString();
+                                }
+                                subtitleTrack.Url = subtitleJson["url"].ToString();
+
+                                ch.SubTitles.Add(subtitleTrack);
+                            }
+                        }
 
                         number++;
                         result.Add(ch);
@@ -797,6 +818,14 @@ namespace SledovaniTVAPI
         public async Task Stop()
         {
             // nothing to stop
+        }
+
+        public bool SubtitlesEnabled
+        {
+            get
+            {
+                return true;
+            }
         }
     }
 }

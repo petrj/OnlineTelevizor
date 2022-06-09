@@ -525,5 +525,13 @@ namespace KUKITVAPI
         {
             // nothing to stop
         }
+
+        public bool SubtitlesEnabled
+        {
+            get
+            {
+                return false;
+            }
+        }
     }
 }

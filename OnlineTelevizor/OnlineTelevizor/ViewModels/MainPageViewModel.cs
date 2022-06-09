@@ -390,7 +390,9 @@ namespace OnlineTelevizor.ViewModels
             string optionStopCast = "Zastavit odesílání";
             string optionDetail = "Zobrazit detail ..";
             string optionClosePreview = "Zavřít náhled";
+            
             string optionToggleAudioStream = "Změnit zvukovou stopu";
+            string optionToggleSubtitleTrack = "Titulky";
 
             string optionAddToFav = "Přidat k oblíbeným";
             string optionRemoveFromFav = "Odebrat z oblíbených";
@@ -435,6 +437,11 @@ namespace OnlineTelevizor.ViewModels
                 PlayingState == PlayingStateEnum.PlayingInternal)
             {
                 actions.Add(optionToggleAudioStream);
+
+                if (_service.SubtitlesEnabled)
+                {
+                    actions.Add(optionToggleSubtitleTrack);
+                }
             }
 
             if (item != null)
@@ -509,6 +516,10 @@ namespace OnlineTelevizor.ViewModels
             else if (selectedvalue == optionToggleAudioStream)
             {
                 MessagingCenter.Send<string>(string.Empty, BaseViewModel.ToggleAudioStream);
+            }
+            else if (selectedvalue == optionToggleSubtitleTrack)
+            {
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.ToggleSubtitles);
             }
             else if (selectedvalue == optionStopApp)
             {
