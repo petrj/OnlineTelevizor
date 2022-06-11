@@ -44,6 +44,8 @@ namespace OnlineTelevizor.Views
 
         private Size _lastAllocatedSize = new Size(-1, -1);
 
+        private List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource>();
+
         private DateTime _lastSingleClicked = DateTime.MinValue;
 
         private ChannelItem[] _lastPlayedChannels = new ChannelItem[2];
@@ -54,12 +56,20 @@ namespace OnlineTelevizor.Views
 
         public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
-            InitializeComponent();
-
-            _dialogService = new DialogService(this);
-
             _config = config;
             _loggingService = loggingService;
+
+            if (AppInitState.Initialized)
+            {
+                _loggingService.Info("Initializing MainPage: already initialized");
+                return;
+            }
+
+            AppInitState.Initialized = true;
+
+            InitializeComponent();
+
+            _dialogService = new DialogService(this);            
 
             Core.Initialize();
 
@@ -82,7 +92,16 @@ namespace OnlineTelevizor.Views
 
             CheckStreamCommand = new Command(async () => await CheckStream());
 
-            BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 2);            
+            Reset();
+
+            StartBackgroundThreads();
+            SubscribeMessages();
+        }
+
+        ~MainPage()
+        {
+            UnsubscribeMessages();
+            StopBackgroundThreads();
         }
 
         public void SubscribeMessages()
@@ -214,6 +233,27 @@ namespace OnlineTelevizor.Views
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.StopRecord);
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.ToggleAudioStream);
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.ToggleSubtitles);
+        }
+
+        public void StartBackgroundThreads()
+        {
+            _loggingService.Info($"StartBackgroundThreads");
+
+            _viewModel.StartBackgroundThreads();
+
+            BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 2);
+        }
+
+        public void StopBackgroundThreads()
+        {
+            _loggingService.Info($"StopBackgroundThreads");
+
+            _viewModel.StopBackgroundThreads();
+
+            foreach (var token in _cancellationTokens)
+            {
+                token.Cancel();
+            }
         }
 
         private async void _timerPage_Disappearing(object sender, EventArgs e)
@@ -1007,7 +1047,7 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"HandleNumKey {number}");
 
-            if ((DateTime.Now - _lastNumPressedTime).TotalSeconds > 1)
+            if ((DateTime.Now - _lastNumPressedTime).TotalSeconds > 2)
             {
                 _lastNumPressedTime = DateTime.MinValue;
                 _numberPressed = String.Empty;

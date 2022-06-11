@@ -147,7 +147,7 @@ namespace SledovaniTVAPI
 
                 foreach (var header in request.Headers)
                 {
-                    _log.Info($"Header: {header.ToString()}");
+                    _log.Debug($"Header: {header.ToString()}");
                 }
 
                 using (var response = await request.GetResponseAsync() as HttpWebResponse)
@@ -556,7 +556,7 @@ namespace SledovaniTVAPI
 
         public void ResetConnection()
         {
-            _log.Info("Resetting connection");
+            _log.Info("ResetConnection");
 
             _status = StatusEnum.NotInitialized;
             _deviceConnection.deviceId = null;
@@ -824,7 +824,7 @@ namespace SledovaniTVAPI
         {
             get
             {
-                return true;
+                return false;
             }
         }
     }

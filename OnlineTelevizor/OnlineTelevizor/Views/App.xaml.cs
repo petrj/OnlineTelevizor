@@ -25,6 +25,8 @@ namespace OnlineTelevizor.Views
             _config = config;
             _loggingService = loggingService;
 
+            _loggingService.Info($"App constructor");
+
             _mainPage = new MainPage(_loggingService, _config);
 
             MainPage = new NavigationPage(_mainPage);
@@ -47,17 +49,11 @@ namespace OnlineTelevizor.Views
         protected override void OnStart()
         {
             _loggingService.Info($"OnStart");
-
-            _mainPage.Reset();
-
-            _mainPage.SubscribeMessages();
         }
 
         protected override void OnSleep()
         {
-            _loggingService.Info($"OnSleep");
-
-            _mainPage.UnsubscribeMessages();
+            _loggingService.Info($"OnSleep");            
 
             if (!_config.PlayOnBackground)
             {
@@ -69,9 +65,7 @@ namespace OnlineTelevizor.Views
 
         protected override void OnResume()
         {
-            _loggingService.Info($"OnResume");
-
-            _mainPage.SubscribeMessages();
+            _loggingService.Info($"OnResume");            
 
             _mainPage.Resume();
 

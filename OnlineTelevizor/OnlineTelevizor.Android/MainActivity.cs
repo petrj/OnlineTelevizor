@@ -58,15 +58,6 @@ namespace OnlineTelevizor.Droid
             var context = Platform.AppContext;
             var activity = Platform.CurrentActivity;
 
-            string version = String.Empty;
-            try
-            {
-                var packageManager = context.PackageManager;
-                var appInfo = packageManager.GetPackageInfo(context.PackageName, 0);
-                version = appInfo.LongVersionCode.ToString();
-            }
-            catch { }
-
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
 #if LOADCONFIG
@@ -86,11 +77,6 @@ namespace OnlineTelevizor.Droid
                 }
             }
 #endif
-            var uiModeManager = (UiModeManager)GetSystemService(UiModeService);
-            if (uiModeManager.CurrentModeType == UiMode.TypeTelevision)
-            {
-                _cfg.IsRunningOnTV = true;
-            }
 
 #if LOGGING
             var fileLoggingService = new FileLoggingService(LoggingLevelEnum.Info);
@@ -98,13 +84,85 @@ namespace OnlineTelevizor.Droid
             fileLoggingService.WriteToOutput = true;
 
             _loggingService = fileLoggingService;
+
+            _loggingService.Info("Starting activity");
 #else
             _loggingService = new DummyLoggingService();
 #endif
 
-            _app = new App(_cfg, _loggingService);
-            _app.AppVersion = version;
+            try
+            {
+                string version = String.Empty;
+                try
+                {
+                    var packageManager = context.PackageManager;
+                    var appInfo = packageManager.GetPackageInfo(context.PackageName, 0);
+                    version = appInfo.LongVersionCode.ToString();
 
+                    _loggingService.Info($"App version: {version}");
+                }
+                catch { }
+
+
+                var uiModeManager = (UiModeManager)GetSystemService(UiModeService);
+                if (uiModeManager.CurrentModeType == UiMode.TypeTelevision)
+                {
+                    _cfg.IsRunningOnTV = true;
+                }
+
+                _loggingService.Info($"_cfg.IsRunningOnTV: {_cfg.IsRunningOnTV}");
+
+                _app = new App(_cfg, _loggingService);
+                _app.AppVersion = version;
+
+                // prevent sleep:
+                Window window = (Forms.Context as Activity).Window;
+                window.AddFlags(WindowManagerFlags.KeepScreenOn);
+
+                // https://stackoverflow.com/questions/39248138/how-to-hide-bottom-bar-of-android-back-home-in-xamarin-forms
+                _defaultUiOptions = (int)Window.DecorView.SystemUiVisibility;
+
+                _fullscreenUiOptions = _defaultUiOptions;
+                _fullscreenUiOptions |= (int)SystemUiFlags.LowProfile;
+                _fullscreenUiOptions |= (int)SystemUiFlags.Fullscreen;
+                _fullscreenUiOptions |= (int)SystemUiFlags.HideNavigation;
+                _fullscreenUiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+
+                if (_cfg.Fullscreen)
+                {
+                    SetFullScreen(true);
+                }
+
+                _notificationHelper = new NotificationHelper(this);
+
+                if (!ServiceStarted(typeof(OnlineTelevizorService)))
+                {
+                    StartService(new Intent(this, typeof(OnlineTelevizorService)));
+                }
+
+                SubscribeMessages();
+
+                LoadApplication(_app);
+            } catch (Exception ex)
+            {
+                _loggingService.Error(ex, "Application start failed");
+            }
+        }
+
+        private bool ServiceStarted(Type serviceType)
+        {
+            var manager = (ActivityManager)Android.App.Application.Context.GetSystemService(Context.ActivityService);
+            foreach (var service in manager.GetRunningServices(10))
+            {
+                if (service.GetType() == serviceType)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private void SubscribeMessages()
+        {
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
             {
                 ShowToastMessage(message);
@@ -140,7 +198,8 @@ namespace OnlineTelevizor.Droid
                     {
                         MessagingCenter.Send<string>(string.Empty, BaseViewModel.RequestBatterySettings);
                     }
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     _loggingService.Error(ex);
                 }
@@ -199,7 +258,7 @@ namespace OnlineTelevizor.Droid
                 {
                     Task.Run(async () => await ShowRecordNotification(channel));
                 });
-            });https://www.youtube.com/watch?v=jqimAYrC3Ro
+            });
 
             MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.StopRecordNotificationMessage, (sender) =>
             {
@@ -217,31 +276,37 @@ namespace OnlineTelevizor.Droid
                     Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
                 });
             });
+        }
 
-            // prevent sleep:
-            Window window = (Forms.Context as Activity).Window;
-            window.AddFlags(WindowManagerFlags.KeepScreenOn);
+        protected override void OnDestroy()
+        {
+            _loggingService.Info("Activity destroyed");
 
-            // https://stackoverflow.com/questions/39248138/how-to-hide-bottom-bar-of-android-back-home-in-xamarin-forms
-            _defaultUiOptions = (int)Window.DecorView.SystemUiVisibility;
+            base.OnDestroy();
+        }
 
-            _fullscreenUiOptions = _defaultUiOptions;
-            _fullscreenUiOptions |= (int)SystemUiFlags.LowProfile;
-            _fullscreenUiOptions |= (int)SystemUiFlags.Fullscreen;
-            _fullscreenUiOptions |= (int)SystemUiFlags.HideNavigation;
-            _fullscreenUiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+        protected override void OnPostResume()
+        {
+            _loggingService.Info("Activity OnPostResume");
+            base.OnPostResume();    
+        }
 
-            if (_cfg.Fullscreen)
-            {
-                SetFullScreen(true);
-            }
+        protected override void OnResume()
+        {
+            _loggingService.Info("Activity OnResume");
+            base.OnResume();
+        }
 
-            _notificationHelper = new NotificationHelper(this);
+        protected override void OnStart()
+        {
+            _loggingService.Info("Activity OnStart");
+            base.OnStart();
+        }
 
-            StartService(new Intent(this, typeof(OnlineTelevizorService)));
-
-
-            LoadApplication(_app);
+        protected override void OnStop()
+        {
+            _loggingService.Info("Activity OnStop");
+            base.OnStop();  
         }
 
         private async Task ShowPlayingNotification(ChannelItem channel)
@@ -341,18 +406,6 @@ namespace OnlineTelevizor.Droid
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
             System.Diagnostics.Debug.WriteLine($"OnKeyDown: keyCode:{keyCode}, long:{e.IsLongPress}");
-
-            /*if ((_lastKeyCodeTime != DateTime.MinValue)  &&
-                ((DateTime.Now - _lastKeyCodeTime).TotalMilliseconds<250) &&
-                !e.IsLongPress &&
-                _lastKeyCode == keyCode
-                )
-            {
-                return base.OnKeyDown(keyCode, e); // prevent multiple key
-            }
-
-            _lastKeyCodeTime = DateTime.Now;
-            _lastKeyCode = keyCode;*/
 
             if (e.IsLongPress)
             {

@@ -71,7 +71,7 @@ namespace LoggerService
 
                 if (WriteToOutput)
                 {
-                    System.Diagnostics.Debug.WriteLine(msg);
+                    //System.Diagnostics.Debug.WriteLine(msg);
                     Console.WriteLine(msg);
                 }
             }
