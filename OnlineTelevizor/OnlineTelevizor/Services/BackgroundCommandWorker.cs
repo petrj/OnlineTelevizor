@@ -43,7 +43,9 @@ namespace OnlineTelevizor.Services
                     if (loggingService != null)
                         loggingService.Info("Executing command");
 
-                    Xamarin.Forms.Device.BeginInvokeOnMainThread(new Action(delegate { command.Execute(null); }));
+                    //Xamarin.Forms.Device.BeginInvokeOnMainThread(new Action(delegate { command.Execute(null); }));
+
+                    command.Execute(null);
 
                     if (repeatIntervalSeconds <= 0)
                     {

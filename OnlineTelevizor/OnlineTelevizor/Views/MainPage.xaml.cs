@@ -275,6 +275,8 @@ namespace OnlineTelevizor.Views
 
         public void RefreshGUI()
         {
+            _loggingService.Info($"RefreshGUI");
+
             Device.BeginInvokeOnMainThread(() =>
             {
                 switch (PlayingState)
@@ -530,17 +532,20 @@ namespace OnlineTelevizor.Views
 
         private void ChannelsListView_Scrolled(object sender, ScrolledEventArgs e)
         {
-            _loggingService.Info($"ChannelsListView_Scrolled");
-
+            _loggingService.Debug($"ChannelsListView_Scrolled");
+            
             // workaround for de-highlighting selected item after scroll on startup
             if (_firstSelectionAfterStartup)
             {
+                _loggingService.Info($"ChannelsListView_Scrolled - highlighting channel");
+
                 _viewModel.DoNotScrollToChannel = true;
                 var item = _viewModel.SelectedItemSafe;
                 _viewModel.SelectedItemSafe = null;
                 _viewModel.SelectedItemSafe = item;
                 _firstSelectionAfterStartup = false;
             }
+            
         }
 
         private void ChannelsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -967,7 +972,10 @@ namespace OnlineTelevizor.Views
                 default:
                     {
 #if UNBOUNDKEYS
-    MessagingCenter.Send($"Unbound key down: {key}", BaseViewModel.ToastMessage);
+                        if (lowKey != "back")
+                        {
+                            MessagingCenter.Send($"Unbound key: {key}", BaseViewModel.ToastMessage);
+                        }
 #endif
                     }
                     break;

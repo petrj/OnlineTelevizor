@@ -48,6 +48,9 @@ namespace OnlineTelevizor.Droid
 
             base.OnCreate(savedInstanceState);
 
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException; 
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
@@ -147,6 +150,16 @@ namespace OnlineTelevizor.Droid
             {
                 _loggingService.Error(ex, "Application start failed");
             }
+        }
+
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            _loggingService.Error(e.Exception, "TaskScheduler_UnobservedTaskException");
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            _loggingService.Error(e.ExceptionObject as Exception, "CurrentDomain_UnhandledException");
         }
 
         private bool ServiceStarted(Type serviceType)

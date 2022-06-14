@@ -1061,7 +1061,7 @@ namespace OnlineTelevizor.ViewModels
                 finally
                 {
                     _semaphoreSlim.Release();
-                };
+                };                
             }
             set
             {
@@ -1522,8 +1522,6 @@ namespace OnlineTelevizor.ViewModels
 
             try
             {
-                await _semaphoreSlim.WaitAsync();
-
                 if (SelectedItem == null)
                 {
                     selectedChannelNumber = Config.LastChannelNumber;
@@ -1539,6 +1537,8 @@ namespace OnlineTelevizor.ViewModels
                 }
 
                 var channels = await _service.GetChannels();
+
+                await _semaphoreSlim.WaitAsync();
 
                 IsBusy = true;
 
@@ -1654,9 +1654,9 @@ namespace OnlineTelevizor.ViewModels
             var epgItemsCountRead = 0;
             try
             {
-                await _semaphoreSlim.WaitAsync();
-
                 var epg = await _service.GetEPG();
+
+                await _semaphoreSlim.WaitAsync();                
 
                 IsBusy = true;
 
