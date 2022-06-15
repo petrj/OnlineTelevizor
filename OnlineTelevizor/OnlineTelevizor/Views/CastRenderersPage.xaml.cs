@@ -43,12 +43,12 @@ namespace OnlineTelevizor.Views
             base.OnAppearing();
 
             // workaround for OnAppearing nothing selected
-            if (_viewModel.SelectedItem != null)
-            {
-                var x = _viewModel.SelectedItem;
-                _viewModel.SelectedItem = null;
-                _viewModel.SelectedItem = x;
-            }
+            //if (_viewModel.SelectedItem != null)
+            //{
+            //    var x = _viewModel.SelectedItem;
+            //    _viewModel.SelectedItem = null;
+            //    _viewModel.SelectedItem = x;
+            //}
         }
 
         private async Task CheckCasting()

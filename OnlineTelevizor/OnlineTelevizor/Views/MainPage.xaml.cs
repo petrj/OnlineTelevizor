@@ -65,6 +65,8 @@ namespace OnlineTelevizor.Views
 
             _libVLC = new LibVLC();
             _mediaPlayer = new MediaPlayer(_libVLC) { EnableHardwareDecoding = true };
+            _mediaPlayer.Opening += _mediaPlayer_Opening;
+            _mediaPlayer.Buffering += _mediaPlayer_Buffering;            
             videoView.MediaPlayer = _mediaPlayer;
 
             _loggingService.Info($"Initializing MainPage");
@@ -85,6 +87,16 @@ namespace OnlineTelevizor.Views
             Reset();
 
             BackgroundCommandWorker.RegisterCommand(CheckStreamCommand, "CheckStreamCommand", 3, 2);
+        }
+
+        private void _mediaPlayer_Buffering(object sender, MediaPlayerBufferingEventArgs e)
+        {            
+            _loggingService.Info($"MediaPlayer_Buffering ({e.Cache})");
+        }
+
+        private void _mediaPlayer_Opening(object sender, EventArgs e)
+        {
+            _loggingService.Info($"_mediaPlayer_Opening");
         }
 
         ~MainPage()
@@ -208,7 +220,7 @@ namespace OnlineTelevizor.Views
 
         public void UnsubscribeMessages()
         {
-            _loggingService.Info($"Unsubscribing messages");
+            _loggingService.Info($"Unsubscribing messages");            
 
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.KeyMessage);
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.KeyLongMessage);
@@ -1230,7 +1242,7 @@ namespace OnlineTelevizor.Views
                             videoView.MediaPlayer = _mediaPlayer;
 
                             _mediaPlayer.Play(_media);
-
+                            
                             _viewModel.PlayingChannel = channel;
 
                             ShowJustPlayingNotification();
@@ -1863,40 +1875,48 @@ namespace OnlineTelevizor.Views
 
         private async Task CheckStream()
         {
+            _loggingService.Info("CheckStream");
+
             Device.BeginInvokeOnMainThread(() =>
             {
-                AudioPlayingImage.IsVisible = false;
-
-                if (PlayingState == PlayingStateEnum.Stopped)
+                try
                 {
-                    NoVideoStackLayout.IsVisible = false;
-                    VideoStackLayout.IsVisible = false;
+                    AudioPlayingImage.IsVisible = false;
 
-                    return;
-                }
+                    if (PlayingState == PlayingStateEnum.Stopped)
+                    {
+                        NoVideoStackLayout.IsVisible = false;
+                        VideoStackLayout.IsVisible = false;
 
-                if (!_mediaPlayer.IsPlaying)
+                        return;
+                    }
+
+                    if (!_mediaPlayer.IsPlaying)
+                    {
+                        _mediaPlayer.Play(_media);
+                    }
+
+                    var radio = _viewModel.PlayingChannel != null
+                                && !string.IsNullOrEmpty(_viewModel.PlayingChannel.Type)
+                                && (_viewModel.PlayingChannel.Type.ToLower() == "radio")
+                                ? true
+                                : false;
+                    if ((_mediaPlayer.VideoTrackCount == 0) || radio)
+                    {
+                        NoVideoStackLayout.IsVisible = true;
+                        VideoStackLayout.IsVisible = false;
+                        AudioPlayingImage.IsVisible = true;
+                    }
+                    else
+                    {
+                        PreviewVideoBordersFix();
+
+                        NoVideoStackLayout.IsVisible = false;
+                        VideoStackLayout.IsVisible = true;
+                    }
+                } catch (Exception ex)
                 {
-                    _mediaPlayer.Play(_media);
-                }
-
-                var radio = _viewModel.PlayingChannel != null
-                            && !string.IsNullOrEmpty(_viewModel.PlayingChannel.Type)
-                            && (_viewModel.PlayingChannel.Type.ToLower() == "radio")
-                            ? true
-                            : false;
-                if ((_mediaPlayer.VideoTrackCount == 0) || radio)
-                {
-                    NoVideoStackLayout.IsVisible = true;
-                    VideoStackLayout.IsVisible = false;
-                    AudioPlayingImage.IsVisible = true;
-                }
-                else
-                {
-                    PreviewVideoBordersFix();
-
-                    NoVideoStackLayout.IsVisible = false;
-                    VideoStackLayout.IsVisible = true;
+                    _loggingService.Error(ex, "CheckStream error");
                 }
             });
         }

@@ -34,13 +34,13 @@ namespace OnlineTelevizor.Views
         private void TypePicker_Unfocused(object sender, FocusEventArgs e)
         {
             //if (_viewModel.Config.IsRunningOnTV)
-                FocusView(GroupPicker);
+            FocusView(GroupPicker);
         }
 
         private void GroupPicker_Unfocused(object sender, FocusEventArgs e)
         {
             //if (_viewModel.Config.IsRunningOnTV)
-                FocusView(ChannelNameEntry);
+            FocusView(ChannelNameEntry);
         }
 
         protected override void OnAppearing()
@@ -64,7 +64,9 @@ namespace OnlineTelevizor.Views
             RefreshButton.BackgroundColor = Color.Gray;
             RefreshButton.TextColor = Color.Black;
 
+
             view.Focus();
+
             _lastFocusedView = view;
 
             if (view is Button)
