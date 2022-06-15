@@ -57,7 +57,7 @@ namespace OnlineTelevizor.Services
                     }
                 } while (!cancelToken.IsCancellationRequested);
 
-            }, cancelToken.Token);            
+            }, cancelToken.Token);
 
             return cancelToken;
         }

@@ -48,7 +48,7 @@ namespace OnlineTelevizor.Droid
 
             base.OnCreate(savedInstanceState);
 
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException; 
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
@@ -301,7 +301,7 @@ namespace OnlineTelevizor.Droid
         protected override void OnPostResume()
         {
             _loggingService.Info("Activity OnPostResume");
-            base.OnPostResume();    
+            base.OnPostResume();
         }
 
         protected override void OnResume()
@@ -319,13 +319,15 @@ namespace OnlineTelevizor.Droid
         protected override void OnStop()
         {
             _loggingService.Info("Activity OnStop");
-            base.OnStop();  
+            base.OnStop();
         }
 
         private async Task ShowPlayingNotification(ChannelItem channel)
         {
             try
             {
+                _loggingService.Info("ShowPlayingNotification");
+
                 string subTitle = String.Empty;
                 string detail = String.Empty;
                 if (channel.CurrentEPGItem != null)
@@ -347,6 +349,8 @@ namespace OnlineTelevizor.Droid
         {
             try
             {
+                _loggingService.Info("ShowRecordNotification");
+
                 string subTitle = String.Empty;
                 string detail = "Probíhá nahrávání";
                 if (channel.CurrentEPGItem != null)
@@ -354,7 +358,10 @@ namespace OnlineTelevizor.Droid
                     subTitle = channel.CurrentEPGItem.Title;
                 }
 
-                _notificationHelper.ShowRecordNotification(2, channel.Name, subTitle, detail);
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    _notificationHelper.ShowRecordNotification(2, channel.Name, subTitle, detail);
+                });
             }
             catch (Exception ex)
             {

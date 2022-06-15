@@ -59,17 +59,17 @@ namespace OnlineTelevizor.Views
             _config = config;
             _loggingService = loggingService;
 
-            if (AppInitState.Initialized)
-            {
-                _loggingService.Info("Initializing MainPage: already initialized");
-                return;
-            }
+            //if (AppInitState.Initialized)
+            //{
+            //    _loggingService.Info("Initializing MainPage: already initialized");
+            //    return;
+            //}
 
-            AppInitState.Initialized = true;
+            //AppInitState.Initialized = true;
 
             InitializeComponent();
 
-            _dialogService = new DialogService(this);            
+            _dialogService = new DialogService(this);
 
             Core.Initialize();
 
@@ -172,7 +172,10 @@ namespace OnlineTelevizor.Views
 
             MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowConfiguration, (sender) =>
             {
-                ToolbarItemSettings_Clicked(this, null);
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ToolbarItemSettings_Clicked(this, null);
+                });
             });
 
             MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.CastingStarted, (sender, channel) =>
@@ -212,7 +215,7 @@ namespace OnlineTelevizor.Views
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToggleSubtitles, async (sender) =>
             {
                 //
-            });            
+            });
         }
 
         public void UnsubscribeMessages()
@@ -385,7 +388,7 @@ namespace OnlineTelevizor.Views
 
         private void MainPage_Disappearing(object sender, EventArgs e)
         {
-            _loggingService.Info($"MainPage_Disappearing");            
+            _loggingService.Info($"MainPage_Disappearing");
         }
 
         private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
@@ -461,7 +464,7 @@ namespace OnlineTelevizor.Views
 
         private async void MainPage_Appearing(object sender, EventArgs e)
         {
-            _loggingService.Info($"MainPage_Appearing");            
+            _loggingService.Info($"MainPage_Appearing");
 
             _lastPageAppearedTime = DateTime.Now;
 
@@ -505,6 +508,9 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"OnSizeAllocated: {width}/{height}");
 
+            if (_viewModel == null)
+                return;
+
             base.OnSizeAllocated(width, height);
 
             if (_lastAllocatedSize.Width == width &&
@@ -533,7 +539,7 @@ namespace OnlineTelevizor.Views
         private void ChannelsListView_Scrolled(object sender, ScrolledEventArgs e)
         {
             _loggingService.Debug($"ChannelsListView_Scrolled");
-            
+
             // workaround for de-highlighting selected item after scroll on startup
             if (_firstSelectionAfterStartup)
             {
@@ -545,7 +551,7 @@ namespace OnlineTelevizor.Views
                 _viewModel.SelectedItemSafe = item;
                 _firstSelectionAfterStartup = false;
             }
-            
+
         }
 
         private void ChannelsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -1846,7 +1852,7 @@ namespace OnlineTelevizor.Views
             {
                 return ((_lastKeyLongPressedTime != DateTime.MinValue) && ((DateTime.Now - _lastKeyLongPressedTime).TotalSeconds < 3));
             }
-        }        
+        }
 
         protected override bool OnBackButtonPressed()
         {

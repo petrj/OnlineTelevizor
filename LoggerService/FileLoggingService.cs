@@ -61,7 +61,7 @@ namespace LoggerService
 
                 string msg = $"[{DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss.fff")}] {threadId} {level} {message}";
 
-                using (var fs = new FileStream(LogFilename, FileMode.Append, FileAccess.Write))
+                using (var fs = new FileStream(LogFilename, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
                 {
                     using (var sw = new StreamWriter(fs))
                     {

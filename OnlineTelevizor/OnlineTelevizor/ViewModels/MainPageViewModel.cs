@@ -145,11 +145,11 @@ namespace OnlineTelevizor.ViewModels
             OKCommand = new Command(async () => await AnyKeyPressed("enter"));
             BackCommand = new Command(async () => await AnyKeyPressed("escape"));
 
-            NotifyRefreshStatus = true;            
+            NotifyRefreshStatus = true;
         }
 
         ~MainPageViewModel()
-        {         
+        {
             StopBackgroundThreads();
         }
 
@@ -176,7 +176,7 @@ namespace OnlineTelevizor.ViewModels
             // update record notification
             _cancellationTokens.Add(BackgroundCommandWorker.RunInBackground(UpdateRecordNotificationCommand, 10, 5));
 
-            // update playing notification            
+            // update playing notification
             _cancellationTokens.Add(BackgroundCommandWorker.RunInBackground(UpdateNotificationCommand, 10, 5));
 
             _cancellationTokens.Add(BackgroundCommandWorker.RunInBackground(AnimeIconCommand, 1, 1));
@@ -247,15 +247,17 @@ namespace OnlineTelevizor.ViewModels
         }
 
         private async Task ShutdownTimer()
-        {           
-
+        {
             if (_shutdownTime == DateTime.MinValue)
             {
                 return;
-            }            
+            }
 
-            OnPropertyChanged(nameof(TimerTextVisible));
-            OnPropertyChanged(nameof(TimerText));
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                OnPropertyChanged(nameof(TimerTextVisible));
+                OnPropertyChanged(nameof(TimerText));
+            });
 
             if (_shutdownTime < DateTime.Now)
             {
@@ -286,7 +288,10 @@ namespace OnlineTelevizor.ViewModels
 
             try
             {
-                OnPropertyChanged(nameof(AudioIcon));
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    OnPropertyChanged(nameof(AudioIcon));
+                });
             }
             catch {
             // UWP platform fix
@@ -332,11 +337,13 @@ namespace OnlineTelevizor.ViewModels
         {
             _loggingService.Info($"UpdateRecordNotification");
 
-            await Task.Run(() =>
+            await Task.Run( async () =>
             {
                try
                {
-                   if (!IsRecording || _recordingChannel == null || !Config.PlayOnBackground)
+                    await _semaphoreSlim.WaitAsync();
+
+                    if (!IsRecording || _recordingChannel == null || !Config.PlayOnBackground)
                        return;
 
                    ChannelItem channel = null;
@@ -359,6 +366,10 @@ namespace OnlineTelevizor.ViewModels
                catch (Exception ex)
                {
                    _loggingService.Error(ex);
+               }
+               finally
+               {
+                    _semaphoreSlim.Release();
                }
            });
         }
@@ -409,7 +420,7 @@ namespace OnlineTelevizor.ViewModels
             string optionStopCast = "Zastavit odesílání";
             string optionDetail = "Zobrazit detail ..";
             string optionClosePreview = "Zavřít náhled";
-            
+
             string optionToggleAudioStream = "Změnit zvukovou stopu";
             string optionToggleSubtitleTrack = "Titulky";
 
@@ -1061,7 +1072,7 @@ namespace OnlineTelevizor.ViewModels
                 finally
                 {
                     _semaphoreSlim.Release();
-                };                
+                };
             }
             set
             {
@@ -1432,7 +1443,11 @@ namespace OnlineTelevizor.ViewModels
 
             await CheckPurchase();
 
-            await CheckEmptyCredentials();
+            if (await CheckEmptyCredentials())
+            {
+                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowConfiguration);
+                return;
+            }
 
             await RefreshChannels();
             var epgItemsRefreshedCount = await RefreshEPG();
@@ -1522,7 +1537,7 @@ namespace OnlineTelevizor.ViewModels
 
             try
             {
-                if (SelectedItem == null)
+                if (SelectedItemSafe == null)
                 {
                     selectedChannelNumber = Config.LastChannelNumber;
                 }
@@ -1540,7 +1555,10 @@ namespace OnlineTelevizor.ViewModels
 
                 await _semaphoreSlim.WaitAsync();
 
-                IsBusy = true;
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    IsBusy = true;
+                });
 
                 if (channels != null && channels.Count > 0)
                 {
@@ -1613,34 +1631,42 @@ namespace OnlineTelevizor.ViewModels
             }
             finally
             {
-                IsBusy = false;
-
                 _semaphoreSlim.Release();
 
-                OnPropertyChanged(nameof(SelectedItem));
-                OnPropertyChanged(nameof(IsBusy));
-                OnPropertyChanged(nameof(SelectedChannelEPGTitle));
-                OnPropertyChanged(nameof(SelectedChannelEPGProgress));
-                OnPropertyChanged(nameof(EPGProgressBackgroundColor));
-                OnPropertyChanged(nameof(SelectedChannelEPGTimeStart));
-                OnPropertyChanged(nameof(SelectedChannelEPGTimeFinish));
-
-                if (selectedChannelNumber != null)
+                Device.BeginInvokeOnMainThread( async () =>
                 {
-                    if (selectedChannelNumberVisible)
+                    IsBusy = false;
+
+                    OnPropertyChanged(nameof(SelectedItem));
+                    OnPropertyChanged(nameof(IsBusy));
+                    OnPropertyChanged(nameof(SelectedChannelEPGTitle));
+                    OnPropertyChanged(nameof(SelectedChannelEPGProgress));
+                    OnPropertyChanged(nameof(EPGProgressBackgroundColor));
+                    OnPropertyChanged(nameof(SelectedChannelEPGTimeStart));
+                    OnPropertyChanged(nameof(SelectedChannelEPGTimeFinish));
+
+                    if (selectedChannelNumber != null)
                     {
-                        await SelectChannelByNumber(selectedChannelNumber);
-                    } else if (firstVisibleChannelNumber != null)
-                    {
-                        await SelectChannelByNumber(firstVisibleChannelNumber);
-                    } else
-                    {
-                        SelectedItemSafe = null;
+                        if (selectedChannelNumberVisible)
+                        {
+                            await SelectChannelByNumber(selectedChannelNumber);
+                        }
+                        else if (firstVisibleChannelNumber != null)
+                        {
+                            await SelectChannelByNumber(firstVisibleChannelNumber);
+                        }
+                        else
+                        {
+                            SelectedItemSafe = null;
+                        }
                     }
-                }
+
+                });
 
                 DoNotScrollToChannel = false;
             }
+
+            _loggingService.Info($"RefreshChannels finished");
         }
 
         private async Task<int> RefreshEPG()
@@ -1656,9 +1682,12 @@ namespace OnlineTelevizor.ViewModels
             {
                 var epg = await _service.GetEPG();
 
-                await _semaphoreSlim.WaitAsync();                
+                await _semaphoreSlim.WaitAsync();
 
-                IsBusy = true;
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    IsBusy = true;
+                });
 
                 if (epg != null)
                 {
@@ -1685,19 +1714,25 @@ namespace OnlineTelevizor.ViewModels
             }
             finally
             {
-                IsBusy = false;
-
                 _semaphoreSlim.Release();
 
-                OnPropertyChanged(nameof(IsBusy));
-                OnPropertyChanged(nameof(SelectedChannelEPGTitle));
-                OnPropertyChanged(nameof(SelectedChannelEPGProgress));
-                OnPropertyChanged(nameof(EPGProgressBackgroundColor));
-                OnPropertyChanged(nameof(SelectedChannelEPGTimeStart));
-                OnPropertyChanged(nameof(SelectedChannelEPGTimeFinish));
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    IsBusy = false;
 
-                await UpdateSelectedChannelEPGDescription();
+                    OnPropertyChanged(nameof(IsBusy));
+                    OnPropertyChanged(nameof(SelectedChannelEPGTitle));
+                    OnPropertyChanged(nameof(SelectedChannelEPGProgress));
+                    OnPropertyChanged(nameof(EPGProgressBackgroundColor));
+                    OnPropertyChanged(nameof(SelectedChannelEPGTimeStart));
+                    OnPropertyChanged(nameof(SelectedChannelEPGTimeFinish));
+
+                    await UpdateSelectedChannelEPGDescription();
+
+                });
             }
+
+            _loggingService.Info($"RefreshEPG finished");
 
             return epgItemsCountRead;
         }
@@ -1788,8 +1823,9 @@ namespace OnlineTelevizor.ViewModels
             await Play(item);
         }
 
-        public async Task CheckEmptyCredentials()
+        public async Task<bool> CheckEmptyCredentials()
         {
+
             if (!_emptyCredentialsChecked && EmptyCredentials)
             {
                 await _dialogService.ConfirmSingleButton("Nejsou vyplněny přihlašovací údaje" +
@@ -1798,10 +1834,12 @@ namespace OnlineTelevizor.ViewModels
                     "Pro sledování živého vysílání je nutné být uživatelem SledovaniTV, Kuki nebo O2 TV a v nastavení musí být vyplněny odpovídající přihlašovací údaje k těmto službám.",
                     "Online Televizor", "Přejít do nastavení");
 
-                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowConfiguration);
+                _emptyCredentialsChecked = true;
+                return true;
             }
 
             _emptyCredentialsChecked = true;
+            return false;
         }
 
         public string ToolbarItemHelpIcon
