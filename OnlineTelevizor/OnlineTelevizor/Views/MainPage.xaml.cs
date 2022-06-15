@@ -66,7 +66,7 @@ namespace OnlineTelevizor.Views
             _libVLC = new LibVLC();
             _mediaPlayer = new MediaPlayer(_libVLC) { EnableHardwareDecoding = true };
             _mediaPlayer.Opening += _mediaPlayer_Opening;
-            _mediaPlayer.Buffering += _mediaPlayer_Buffering;            
+            _mediaPlayer.Buffering += _mediaPlayer_Buffering;
             videoView.MediaPlayer = _mediaPlayer;
 
             _loggingService.Info($"Initializing MainPage");
@@ -90,7 +90,7 @@ namespace OnlineTelevizor.Views
         }
 
         private void _mediaPlayer_Buffering(object sender, MediaPlayerBufferingEventArgs e)
-        {            
+        {
             _loggingService.Info($"MediaPlayer_Buffering ({e.Cache})");
         }
 
@@ -220,7 +220,7 @@ namespace OnlineTelevizor.Views
 
         public void UnsubscribeMessages()
         {
-            _loggingService.Info($"Unsubscribing messages");            
+            _loggingService.Info($"Unsubscribing messages");
 
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.KeyMessage);
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.KeyLongMessage);
@@ -1173,13 +1173,62 @@ namespace OnlineTelevizor.Views
                     msg = $"\u25B6";
                 }
 
+
+                var audioTracksLanguages = new Dictionary<string, int>();
+                var videoTrack = String.Empty;
+                if (_mediaPlayer.IsPlaying)
+                {
+                    foreach (var track in _mediaPlayer.Media.Tracks)
+                    {
+                        if (track.TrackType == TrackType.Video)
+                        {
+                            videoTrack = $"{track.Data.Video.Width}x{track.Data.Video.Height}";
+                        }
+                        if (track.TrackType == TrackType.Audio)
+                        {
+                            if (!audioTracksLanguages.ContainsKey(track.Language))
+                            {
+                                audioTracksLanguages.Add(track.Language, 0);
+                            }
+
+                            audioTracksLanguages[track.Language]++;
+                        }
+                    }
+                }
+
                 if (_viewModel.PlayingChannel != null &&
-                    _viewModel.PlayingChannel.CurrentEPGItem != null &&
+                _viewModel.PlayingChannel.CurrentEPGItem != null &&
                 _viewModel.PlayingChannel.CurrentEPGItem.Start < DateTime.Now &&
                 _viewModel.PlayingChannel.CurrentEPGItem.Finish > DateTime.Now &&
                 !string.IsNullOrEmpty(_viewModel.PlayingChannel.CurrentEPGItem.Title))
                 {
                     msg += $" - {_viewModel.PlayingChannel.CurrentEPGItem.Title}";
+                }
+
+                var newLineAdded = false;
+                if (videoTrack != String.Empty)
+                {
+                    msg += $"{Environment.NewLine}   {videoTrack}";
+                    newLineAdded = true;
+                }
+
+                if (audioTracksLanguages.Count > 0)
+                {
+                    var lng = string.Empty;
+                    foreach (var kvp in audioTracksLanguages)
+                    {
+                        if (lng != String.Empty)
+                            lng += ",";
+                        lng += kvp.Key;
+                    }
+                    if (!newLineAdded)
+                    {
+                        msg += $"{Environment.NewLine}   ";
+                    } else
+                    {
+                        msg += ", ";
+                    }
+                    msg += $"audio: {lng}";
                 }
 
                 _lastSingleClicked = DateTime.Now;
@@ -1242,7 +1291,7 @@ namespace OnlineTelevizor.Views
                             videoView.MediaPlayer = _mediaPlayer;
 
                             _mediaPlayer.Play(_media);
-                            
+
                             _viewModel.PlayingChannel = channel;
 
                             ShowJustPlayingNotification();
