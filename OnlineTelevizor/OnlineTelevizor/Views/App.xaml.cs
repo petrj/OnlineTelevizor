@@ -49,23 +49,28 @@ namespace OnlineTelevizor.Views
         protected override void OnStart()
         {
             _loggingService.Info($"OnStart");
+
+            _mainPage.SubscribeMessages();
+            _mainPage.RefreshWithnotification();
         }
 
         protected override void OnSleep()
         {
-            _loggingService.Info($"OnSleep");            
+            _loggingService.Info($"OnSleep");
 
             if (!_config.PlayOnBackground)
             {
                 _mainPage.ActionStop(true);
             }
 
+            _mainPage.UnsubscribeMessages();
+
             _lastSleep = DateTime.Now;
         }
 
         protected override void OnResume()
         {
-            _loggingService.Info($"OnResume");            
+            _loggingService.Info($"OnResume");
 
             _mainPage.Resume();
 
@@ -75,6 +80,8 @@ namespace OnlineTelevizor.Views
                 _mainPage.Reset();
                 _mainPage.Refresh();
             }
+
+            _mainPage.SubscribeMessages();
         }
     }
 }

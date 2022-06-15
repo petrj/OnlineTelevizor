@@ -34,7 +34,7 @@ namespace OnlineTelevizor.Views
 
             CheckCastingCommand = new Command(async () => await CheckCasting());
 
-            BackgroundCommandWorker.RunInBackground(CheckCastingCommand, 10, 5);
+            BackgroundCommandWorker.RegisterCommand(CheckCastingCommand, "CheckCastingCommand", 10, 5);
         }
 
 

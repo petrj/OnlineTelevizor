@@ -44,8 +44,6 @@ namespace OnlineTelevizor.Views
 
         private Size _lastAllocatedSize = new Size(-1, -1);
 
-        private List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource>();
-
         private DateTime _lastSingleClicked = DateTime.MinValue;
 
         private ChannelItem[] _lastPlayedChannels = new ChannelItem[2];
@@ -58,14 +56,6 @@ namespace OnlineTelevizor.Views
         {
             _config = config;
             _loggingService = loggingService;
-
-            //if (AppInitState.Initialized)
-            //{
-            //    _loggingService.Info("Initializing MainPage: already initialized");
-            //    return;
-            //}
-
-            //AppInitState.Initialized = true;
 
             InitializeComponent();
 
@@ -94,14 +84,12 @@ namespace OnlineTelevizor.Views
 
             Reset();
 
-            StartBackgroundThreads();
-            SubscribeMessages();
+            BackgroundCommandWorker.RegisterCommand(CheckStreamCommand, "CheckStreamCommand", 3, 2);
         }
 
         ~MainPage()
         {
-            UnsubscribeMessages();
-            StopBackgroundThreads();
+            BackgroundCommandWorker.UnregisterCommands(_loggingService);
         }
 
         public void SubscribeMessages()
@@ -236,27 +224,6 @@ namespace OnlineTelevizor.Views
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.StopRecord);
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.ToggleAudioStream);
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.ToggleSubtitles);
-        }
-
-        public void StartBackgroundThreads()
-        {
-            _loggingService.Info($"StartBackgroundThreads");
-
-            _viewModel.StartBackgroundThreads();
-
-            BackgroundCommandWorker.RunInBackground(CheckStreamCommand, 3, 2);
-        }
-
-        public void StopBackgroundThreads()
-        {
-            _loggingService.Info($"StopBackgroundThreads");
-
-            _viewModel.StopBackgroundThreads();
-
-            foreach (var token in _cancellationTokens)
-            {
-                token.Cancel();
-            }
         }
 
         private async void _timerPage_Disappearing(object sender, EventArgs e)
@@ -1158,9 +1125,12 @@ namespace OnlineTelevizor.Views
 
         public void Refresh()
         {
-            _loggingService.Info($"Refresh");
-
             _viewModel.RefreshCommand.Execute(null);
+        }
+
+        public void RefreshWithnotification()
+        {
+            _viewModel.RefreshCommandWithNotification.Execute(null);
         }
 
         private void ShowJustPlayingNotification()

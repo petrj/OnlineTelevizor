@@ -41,8 +41,6 @@ namespace OnlineTelevizor.ViewModels
 
         private ChannelItem _selectedItem;
 
-        private List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource>();
-
         private bool _firstRefresh = true;
         private int _lastRefreshChannelsDelay = 0;
         private int _lastRefreshEPEGsDelay = 0;
@@ -145,12 +143,7 @@ namespace OnlineTelevizor.ViewModels
             OKCommand = new Command(async () => await AnyKeyPressed("enter"));
             BackCommand = new Command(async () => await AnyKeyPressed("escape"));
 
-            NotifyRefreshStatus = true;
-        }
-
-        ~MainPageViewModel()
-        {
-            StopBackgroundThreads();
+            StartBackgroundThreads();
         }
 
         public PlayingStateEnum PlayingState
@@ -165,31 +158,23 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
-        public void StartBackgroundThreads()
+        private void StartBackgroundThreads()
         {
             // refreshing every hour with no start delay
-            _cancellationTokens.Add(BackgroundCommandWorker.RunInBackground(RefreshCommand, 3600, 0));
+            BackgroundCommandWorker.RegisterCommand(RefreshCommand, "RefreshCommand", 3600, 3600);
 
             // refreshing EPG every min with 60s start delay
-            _cancellationTokens.Add(BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 60, 60));
+            BackgroundCommandWorker.RegisterCommand(RefreshEPGCommand, "RefreshEPGCommand", 60, 60);
 
             // update record notification
-            _cancellationTokens.Add(BackgroundCommandWorker.RunInBackground(UpdateRecordNotificationCommand, 10, 5));
+            BackgroundCommandWorker.RegisterCommand(UpdateRecordNotificationCommand, "UpdateRecordNotificationCommand", 10, 5);
 
             // update playing notification
-            _cancellationTokens.Add(BackgroundCommandWorker.RunInBackground(UpdateNotificationCommand, 10, 5));
+            BackgroundCommandWorker.RegisterCommand(UpdateNotificationCommand, "UpdateNotificationCommand", 10, 5);
 
-            _cancellationTokens.Add(BackgroundCommandWorker.RunInBackground(AnimeIconCommand, 1, 1));
+            BackgroundCommandWorker.RegisterCommand(AnimeIconCommand, "AnimeIconCommand", 1, 1);
 
-            _cancellationTokens.Add(BackgroundCommandWorker.RunInBackground(ShutdownTimerCommand, 1, 1));
-        }
-
-        public void StopBackgroundThreads()
-        {
-            foreach (var token in _cancellationTokens)
-            {
-                token.Cancel();
-            }
+            BackgroundCommandWorker.RegisterCommand(ShutdownTimerCommand, "ShutdownTimerCommand", 1, 1);
         }
 
         public string TimerText
@@ -1219,18 +1204,6 @@ namespace OnlineTelevizor.ViewModels
                 });
         }
 
-        public bool NotifyRefreshStatus
-        {
-            get
-            {
-                return _notifyRefreshStatus;
-            }
-            set
-            {
-                _notifyRefreshStatus = value;
-            }
-        }
-
         private Dictionary<string, ChannelItem> ChannelById
         {
             get
@@ -1433,13 +1406,21 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task RefreshWithNotification()
         {
-            NotifyRefreshStatus = true;
+            _loggingService.Info($"RefreshWithNotification");
+
             await Refresh();
+
+            if (_lastRefreshChannelsDelay == 0)
+            {
+                MessagingCenter.Send(StatusLabel, BaseViewModel.ToastMessage);
+            }
+
+            _loggingService.Info($"RefreshWithNotification finished");
         }
 
         private async Task Refresh()
         {
-            _loggingService.Info($"Refresh channels & EPG");
+            _loggingService.Info($"Refresh");
 
             await CheckPurchase();
 
@@ -1472,7 +1453,7 @@ namespace OnlineTelevizor.ViewModels
                 }
 
                 // refresh again after _lastRefreshChannelsDelay seconds
-                BackgroundCommandWorker.RunInBackground(RefreshCommand, 0, _lastRefreshChannelsDelay);
+                BackgroundCommandWorker.RunCommandWithDelay(RefreshCommand, _lastRefreshChannelsDelay);
             }
             else
             {
@@ -1500,7 +1481,7 @@ namespace OnlineTelevizor.ViewModels
                 }
 
                 // refresh again after _lastRefreshEPEGsDelay seconds
-                BackgroundCommandWorker.RunInBackground(RefreshEPGCommand, 0, _lastRefreshEPEGsDelay);
+                BackgroundCommandWorker.RunCommandWithDelay(RefreshEPGCommand, _lastRefreshEPEGsDelay);
             } else
             {
                 _lastRefreshEPEGsDelay = 0;
@@ -1517,16 +1498,13 @@ namespace OnlineTelevizor.ViewModels
                 _firstRefresh = false;
             }
 
-            if (_lastRefreshChannelsDelay == 0 && NotifyRefreshStatus)
-            {
-                MessagingCenter.Send(StatusLabel, BaseViewModel.ToastMessage);
-                NotifyRefreshStatus = false;
-            }
+            _loggingService.Info($"Refresh finished");
         }
 
         private async Task RefreshChannels()
         {
             _loggingService.Info($"RefreshChannels");
+
             _notFilteredChannelsCount = 0;
             string selectedChannelNumber = null;
             string firstVisibleChannelNumber = null;
@@ -1551,14 +1529,14 @@ namespace OnlineTelevizor.ViewModels
                     selectedChannelNumber = "1";
                 }
 
-                var channels = await _service.GetChannels();
-
-                await _semaphoreSlim.WaitAsync();
-
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     IsBusy = true;
                 });
+
+                var channels = await _service.GetChannels();
+
+                await _semaphoreSlim.WaitAsync();
 
                 if (channels != null && channels.Count > 0)
                 {

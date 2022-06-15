@@ -8,17 +8,22 @@ using Xamarin.Forms;
 
 namespace OnlineTelevizor.Services
 {
-    public class BackgroundCommandWorker
+    public static class BackgroundCommandWorker
     {
+        private static Dictionary<string, CancellationTokenSource> _commandNameToCancellationTokens = new Dictionary<string, CancellationTokenSource>();
+
+        //private static List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource>();
+        //private static List<string> _registeredCommands = new List<string>();
+
         /// <summary>
         /// Running command in background
         /// </summary>
         /// <param name="command"></param>
         /// <param name="repeatIntervalSeconds">0 and negative for no repeat</param>
         /// <param name="delaySeconds">start delay</param>
-        public static CancellationTokenSource RunInBackground(Command command, int repeatIntervalSeconds = 5, int delaySeconds = 0)
+        public static void RegisterCommand(Command command, string name, int repeatIntervalSeconds = 5, int delaySeconds = 0)
         {
-            return RunInBackground(command, null, repeatIntervalSeconds, delaySeconds);
+            RegisterCommand(command, name, null, repeatIntervalSeconds, delaySeconds);
         }
 
         /// <summary>
@@ -27,12 +32,23 @@ namespace OnlineTelevizor.Services
         /// <param name="command"></param>
         /// <param name="repeatIntervalSeconds">0 and negative for no repeat</param>
         /// <param name="delaySeconds">start delay</param>
-        public static CancellationTokenSource RunInBackground(Command command, ILoggingService loggingService, int repeatIntervalSeconds = 5, int delaySeconds = 0)
+        public static void RegisterCommand(Command command, string name, ILoggingService loggingService, int repeatIntervalSeconds = 5, int delaySeconds = 0)
         {
+            if (_commandNameToCancellationTokens.ContainsKey(name))
+            {
+                if (loggingService != null)
+                    loggingService.Info("Command is already registered");
+
+                _commandNameToCancellationTokens[name].Cancel();
+                _commandNameToCancellationTokens.Remove(name);
+            }
+
             var cancelToken = new CancellationTokenSource();
 
             if (loggingService != null)
-                loggingService.Info("Starting new background command");
+                loggingService.Info("Registering new background command");
+
+            _commandNameToCancellationTokens.Add(name, cancelToken);
 
             Task.Factory.StartNew(async () => {
 
@@ -42,8 +58,6 @@ namespace OnlineTelevizor.Services
                 {
                     if (loggingService != null)
                         loggingService.Info("Executing command");
-
-                    //Xamarin.Forms.Device.BeginInvokeOnMainThread(new Action(delegate { command.Execute(null); }));
 
                     command.Execute(null);
 
@@ -58,8 +72,37 @@ namespace OnlineTelevizor.Services
                 } while (!cancelToken.IsCancellationRequested);
 
             }, cancelToken.Token);
+        }
 
-            return cancelToken;
+        /// <summary>
+        /// Running command in background
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="delaySeconds">start delay</param>
+        public static void RunCommandWithDelay(Command command, int delaySeconds, ILoggingService loggingService = null)
+        {
+            if (loggingService != null)
+                loggingService.Info($"Running command in background with delay {delaySeconds} seconds");
+
+            Task.Factory.StartNew(async () =>
+            {
+                Thread.Sleep(delaySeconds * 1000);
+
+                command.Execute(null);
+            });
+        }
+
+        public static void UnregisterCommands(ILoggingService loggingService = null)
+        {
+            if (loggingService != null)
+                loggingService.Info($"StopBackgroundThreads");
+
+            foreach (var nameAndtoken in _commandNameToCancellationTokens)
+            {
+                nameAndtoken.Value.Cancel();
+            }
+
+            _commandNameToCancellationTokens.Clear();
         }
     }
 }
