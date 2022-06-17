@@ -957,7 +957,7 @@ namespace OnlineTelevizor.Views
                 default:
                     {
 #if UNBOUNDKEYS
-                        if (lowKey != "back")
+                        if (lowKey != "back" && lowKey != "volumeup" && lowKey != "volumedown")
                         {
                             MessagingCenter.Send($"Unbound key: {key}", BaseViewModel.ToastMessage);
                         }

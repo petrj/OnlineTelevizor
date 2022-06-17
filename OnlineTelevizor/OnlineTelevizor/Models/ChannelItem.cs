@@ -10,7 +10,7 @@ namespace OnlineTelevizor.Models
     public class ChannelItem : BaseNotifableObject
     {
         public List<SubTitleTrack> Subtitles { get; set; } = new List<SubTitleTrack>();
-        private List<EPGItem> _EPGItems { get; set; } = new List<EPGItem>();        
+        private List<EPGItem> _EPGItems { get; set; } = new List<EPGItem>();
 
         public static ChannelItem CreateFromChannel(Channel channel)
         {
@@ -30,7 +30,7 @@ namespace OnlineTelevizor.Models
                 ch.Subtitles.Add(new SubTitleTrack
                 {
                     Title = track.Title,
-                    Url = track.Url                        
+                    Url = track.Url
                 });
             }
 
@@ -91,7 +91,7 @@ namespace OnlineTelevizor.Models
             OnPropertyChanged(nameof(FavStateIcon));
         }
 
-        private void NotifyEPGChange()
+        public void NotifyEPGChange()
         {
             OnPropertyChanged(nameof(CurrentEPGTitle));
             OnPropertyChanged(nameof(EPGTime));
@@ -104,15 +104,11 @@ namespace OnlineTelevizor.Models
         public void AddEPGItem(EPGItem epgItem)
         {
             _EPGItems.Add(epgItem);
-
-            NotifyEPGChange();
         }
 
         public void ClearEPG()
         {
             _EPGItems.Clear();
-
-            NotifyEPGChange();
         }
 
         public string EPGTime

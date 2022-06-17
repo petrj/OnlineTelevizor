@@ -1529,12 +1529,12 @@ namespace OnlineTelevizor.ViewModels
                     selectedChannelNumber = "1";
                 }
 
+                var channels = await _service.GetChannels();
+
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     IsBusy = true;
                 });
-
-                var channels = await _service.GetChannels();
 
                 await _semaphoreSlim.WaitAsync();
 
@@ -1696,6 +1696,11 @@ namespace OnlineTelevizor.ViewModels
 
                 Device.BeginInvokeOnMainThread(async () =>
                 {
+                    foreach (var channelItem in Channels)
+                    {
+                        channelItem.NotifyEPGChange();
+                    }
+
                     IsBusy = false;
 
                     OnPropertyChanged(nameof(IsBusy));
