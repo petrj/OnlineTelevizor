@@ -28,7 +28,13 @@
 
             <Style x:Key="DescriptionTextStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="Margin" Value="0,20,0,0"/>
+                <Setter Property="Margin" Value="0,10,0,0"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="VideoDescriptionTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="DarkGray"/>
+                <Setter Property="Margin" Value="0,10,0,0"/>
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
             </Style>
 
@@ -92,7 +98,9 @@
 
                 </Grid>
 
-            <ScrollView Style="{StaticResource PageBackgroundStyle}">
+            <Label Text="{Binding VideoDescription}"  Style="{DynamicResource VideoDescriptionTextStyle}" FontSize="{Binding FontSizeForVideoDescription}"/>
+
+            <ScrollView Style="{StaticResource PageBackgroundStyle}" VerticalOptions="StartAndExpand">
 
                 <Label Text="{Binding EPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}"/>
 

@@ -12,6 +12,9 @@ namespace OnlineTelevizor.Models
         public List<SubTitleTrack> Subtitles { get; set; } = new List<SubTitleTrack>();
         private List<EPGItem> _EPGItems { get; set; } = new List<EPGItem>();
 
+        public Dictionary<int,string> AudioTracks { get; set; } = new Dictionary<int, string>();
+        public string VideoTrackDescription { get; set; } = String.Empty;
+
         public static ChannelItem CreateFromChannel(Channel channel)
         {
             var ch = new ChannelItem

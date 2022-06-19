@@ -35,6 +35,7 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(EPGTimeStart));
                 OnPropertyChanged(nameof(EPGTimeFinish));
                 OnPropertyChanged(nameof(EPGProgress));
+                OnPropertyChanged(nameof(VideoDescription));
 
                 Task.Run( async () => await UpdateChannelEPGDescription());
             }
@@ -61,6 +62,14 @@ namespace OnlineTelevizor.ViewModels
             get
             {
                 return GetScaledSize(16).ToString();
+            }
+        }
+
+        public string FontSizeForVideoDescription
+        {
+            get
+            {
+                return GetScaledSize(14).ToString();
             }
         }
 
@@ -102,6 +111,14 @@ namespace OnlineTelevizor.ViewModels
             {
                 _EPGDescription = value;
                 OnPropertyChanged(nameof(EPGDescription));
+            }
+        }
+
+        public String VideoDescription
+        {
+            get
+            {
+                return Channel == null || String.IsNullOrEmpty(Channel.VideoTrackDescription) ? string.Empty : "Rozlišení videa:" + Channel.VideoTrackDescription;
             }
         }
 

@@ -393,18 +393,24 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
-        public async Task ShowPopupMenu(ChannelItem item)
+        public async Task ShowPopupMenu(ChannelItem item = null)
         {
+            if (item == null)
+                item = PlayingChannel;
+
             var itmName = item == null ? String.Empty : item.Name;
             _loggingService.Info($"ShowPopupMenu: {itmName}");
 
             string optionCancel = "Zpět";
 
             string optionPlay = "Spustit";
+            string optionStop = "Stop";
+            string optionPlayInPreview = "Spustit v náhledu";
+            string optionPlayInFullscreen = "Spustit na celou obrazovku";
             string optionCast = "Odeslat ..";
             string optionStopCast = "Zastavit odesílání";
             string optionDetail = "Zobrazit detail ..";
-            string optionClosePreview = "Zavřít náhled";
+            string optionClosePreview = "Stop";
 
             string optionToggleAudioStream = "Změnit zvukovou stopu";
             string optionToggleSubtitleTrack = "Titulky";
@@ -422,9 +428,45 @@ namespace OnlineTelevizor.ViewModels
 
             var actions = new List<string>();
 
-            if (item != null)
+            if (item != null && item != PlayingChannel)
             {
                 actions.Add(optionPlay);
+            }
+
+            if (item != null && item == PlayingChannel)
+            {
+                if (PlayingState == PlayingStateEnum.PlayingInternal)
+                {
+                    actions.Add(optionPlayInPreview);
+                }
+                if (PlayingState == PlayingStateEnum.PlayingInPreview)
+                {
+                    actions.Add(optionPlayInFullscreen);
+                }
+            }
+
+            if (item != null && item == PlayingChannel)
+            {
+                actions.Add(optionStop);
+            }
+
+            if (PlayingChannel != null &&
+                (
+                PlayingState == PlayingStateEnum.PlayingInPreview ||
+                PlayingState == PlayingStateEnum.PlayingInternal)
+                )
+            {
+                actions.Add(optionToggleAudioStream);
+
+                if (_service.SubtitlesEnabled)
+                {
+                    actions.Add(optionToggleSubtitleTrack);
+                }
+            }
+
+            if (item != null)
+            {
+                actions.Add(optionDetail);
             }
 
             if (item != null && !IsCasting && !IsRecording)
@@ -446,22 +488,6 @@ namespace OnlineTelevizor.ViewModels
             if (PlayingState == PlayingStateEnum.PlayingInPreview)
             {
                 actions.Add(optionClosePreview);
-            }
-
-            if (PlayingState == PlayingStateEnum.PlayingInPreview ||
-                PlayingState == PlayingStateEnum.PlayingInternal)
-            {
-                actions.Add(optionToggleAudioStream);
-
-                if (_service.SubtitlesEnabled)
-                {
-                    actions.Add(optionToggleSubtitleTrack);
-                }
-            }
-
-            if (item != null)
-            {
-                actions.Add(optionDetail);
             }
 
             if (item != null)
@@ -504,6 +530,18 @@ namespace OnlineTelevizor.ViewModels
             {
                 await PlaySelectedChannel();
             }
+            else if (selectedvalue == optionPlayInFullscreen)
+            {
+                await PlaySelectedChannel();
+            }
+            else if (selectedvalue == optionStop)
+            {
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlay);
+            }
+            else if (selectedvalue == optionPlayInPreview)
+            {
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.PlayInPreview);
+            }
             else if (selectedvalue == optionDetail)
             {
                 MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
@@ -530,7 +568,7 @@ namespace OnlineTelevizor.ViewModels
             }
             else if (selectedvalue == optionToggleAudioStream)
             {
-                MessagingCenter.Send<string>(string.Empty, BaseViewModel.ToggleAudioStream);
+                await AudioSubMenu();
             }
             else if (selectedvalue == optionToggleSubtitleTrack)
             {
@@ -557,6 +595,52 @@ namespace OnlineTelevizor.ViewModels
             else if (selectedvalue == optionStopTimer)
             {
                 await StopTimer();
+            }
+        }
+
+        public async Task AudioSubMenu()
+        {
+            if (PlayingChannel != null &&
+                PlayingChannel.AudioTracks != null &&
+                PlayingChannel.AudioTracks.Count > 0
+                )
+            {
+                var menuTitleToTrackId = new Dictionary<string, int>(); // menu value -> audio track id
+                var menu = new List<string>();
+
+                foreach (var kvp in PlayingChannel.AudioTracks)
+                {
+                    var uniqueMenuTitle = kvp.Value;
+
+                    if (menuTitleToTrackId.ContainsKey(uniqueMenuTitle))
+                    {
+                        var num = 1;
+                        string name;
+
+                        do
+                        {
+                            num++;
+                            name = $"{kvp.Value} ({num})";
+                        }
+                        while (menuTitleToTrackId.ContainsKey(name));
+
+                        uniqueMenuTitle = name;
+                    }
+
+                    menuTitleToTrackId.Add(uniqueMenuTitle, kvp.Key);
+                    menu.Add(uniqueMenuTitle);
+                }
+
+                var selectedAudioTrack = await _dialogService.Select(menu, "Volba audio stopy", "Zrušit");
+
+                if (selectedAudioTrack != null)
+                {
+                    MessagingCenter.Send<string>(menuTitleToTrackId[selectedAudioTrack].ToString(), BaseViewModel.ToggleAudioStreamId);
+                }
+            }
+            else
+            {
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.ToggleAudioStream);
             }
         }
 
@@ -628,12 +712,21 @@ namespace OnlineTelevizor.ViewModels
 
             if (item != null && item is ChannelItem)
             {
-                var rmb = DoNotScrollToChannel;
-                DoNotScrollToChannel = true;
+                var ch = item as ChannelItem;
 
-                SelectedItemSafe = item as ChannelItem;
+                var alreadySelectedItem = SelectedItemSafe;
+                if (alreadySelectedItem != ch)
+                {
+                    var rmb = DoNotScrollToChannel;
+                    DoNotScrollToChannel = true;
 
-                DoNotScrollToChannel = rmb;
+                    SelectedItemSafe = ch;
+
+                    DoNotScrollToChannel = rmb;
+                } else
+                {
+                    await ShowPopupMenu(ch);
+                }
             }
         }
 
@@ -658,7 +751,13 @@ namespace OnlineTelevizor.ViewModels
         private void VideoLongPress(object item)
         {
             _loggingService.Info($"VideoLongPress");
-            MessagingCenter.Send<string>(string.Empty, BaseViewModel.ToggleAudioStream);
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await ShowPopupMenu(item as ChannelItem);
+            });
+
+            //MessagingCenter.Send<string>(string.Empty, BaseViewModel.ToggleAudioStream);
         }
 
         public async Task NotifyCastChannel(string channelNumber, bool castingStart)

@@ -37,6 +37,7 @@ namespace OnlineTelevizor.ViewModels
         public const string CastingStopped = "CastingStopped";
         public const string StopCasting = "StopCasting";
         public const string StopPlay = "StopPlay";
+        public const string PlayInPreview = "PlayInPreview";
         public const string ToastMessage = "ShowToastMessage";
         public const string ShowConfiguration = "ShowConfiguration";
         public const string StartCastNotification = "StartCastNotification";
@@ -46,6 +47,7 @@ namespace OnlineTelevizor.ViewModels
         public const string StopRecordNotificationMessage = "StopRecordNotification";
         public const string StopRecord = "StopRecord";
         public const string ToggleAudioStream = "ToggleAudioStream";
+        public const string ToggleAudioStreamId = "ToggleAudioStreamId";
         public const string ToggleSubtitles = "ToggleSubtitles";
 
         public const string CheckBatterySettings = "CheckBatterySettings";

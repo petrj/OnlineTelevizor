@@ -35,6 +35,7 @@ namespace OnlineTelevizor.Views
         private DateTime _lastToggledAudioStreamTime = DateTime.MinValue;
         private DateTime _lastPageAppearedTime = DateTime.MinValue;
         private DateTime _lastDetailclickedTime = DateTime.MinValue;
+        private DateTime _lastActionOkMenuPopupTime = DateTime.MinValue;
         private bool _firstSelectionAfterStartup = false;
         private string _numberPressed = String.Empty;
 
@@ -199,6 +200,11 @@ namespace OnlineTelevizor.Views
                 ActionStop(true);
             });
 
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.PlayInPreview, async (sender) =>
+            {
+                ActionStop(false);
+            });
+
             MessagingCenter.Subscribe<string>(this, BaseViewModel.StopRecord, async (sender) =>
             {
                 await Task.Run(async () =>
@@ -209,7 +215,12 @@ namespace OnlineTelevizor.Views
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToggleAudioStream, async (sender) =>
             {
-                ToggleAudioStream();
+                ToggleAudioStream(null);
+            });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.ToggleAudioStreamId, async (id) =>
+            {
+                ToggleAudioStream(id);
             });
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.ToggleSubtitles, async (sender) =>
@@ -952,7 +963,7 @@ namespace OnlineTelevizor.Views
                 case "progblue":
                 case "f12":
                 case "k":
-                    ToggleAudioStream();
+                    ToggleAudioStream(null);
                     break;
                 default:
                     {
@@ -967,9 +978,30 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        private void ToggleAudioStream()
+        private Dictionary<int,string> GetAudioTracks()
         {
-            _loggingService.Info($"ToggleAudioStream");
+            var res = new Dictionary<int,string>();
+
+            if (_mediaPlayer == null)
+                return res;
+
+            if (!_mediaPlayer.IsPlaying)
+                return res;
+
+            foreach (var desc in _mediaPlayer.AudioTrackDescription)
+            {
+                if (desc.Id >= 0)
+                {
+                    res.Add(desc.Id, desc.Name);
+                }
+            }
+
+            return res;
+        }
+
+        private void ToggleAudioStream(string specificId)
+        {
+            _loggingService.Info($"ToggleAudioStream (id: {specificId})");
 
             if ((_lastToggledAudioStreamTime != DateTime.MinValue) && (DateTime.Now - _lastToggledAudioStreamTime).TotalSeconds < 3)
             {
@@ -988,6 +1020,14 @@ namespace OnlineTelevizor.Views
             if (currentAudioTrack == -1)
                 return;
 
+            var tracks = GetAudioTracks();
+
+            if (tracks == null || tracks.Count == 0)
+            {
+                MessagingCenter.Send($"Nenalezena žádná zvuková stopa", BaseViewModel.ToastMessage);
+                return;
+            }
+
             var select = false;
             var selected = false;
 
@@ -997,24 +1037,38 @@ namespace OnlineTelevizor.Views
             string selectedName = null;
             int selectedId = -1;
 
-            foreach (var desc in _mediaPlayer.AudioTrackDescription)
+            foreach (var desc in tracks)
             {
-                if (firstAudioTrackId == -1 && desc.Id != -1)
+                if (firstAudioTrackId == -1)
                 {
-                    firstAudioTrackId = desc.Id;
-                    firstAudioTrackName = desc.Name;
+                    firstAudioTrackId = desc.Key;
+                    firstAudioTrackName = desc.Value;
                 }
 
-                if (desc.Id ==currentAudioTrack)
+                if (string.IsNullOrEmpty(specificId))
                 {
-                    select = true;
+                    // toggle next track
+                    if (desc.Key == currentAudioTrack)
+                    {
+                        select = true;
+                    }
+                    else
+                    {
+                        if (select)
+                        {
+                            selectedName = desc.Value;
+                            selectedId = desc.Key;
+                            selected = true;
+                            break;
+                        }
+                    }
                 } else
                 {
-                    if (select)
+                    // toggle specific track
+                    if (desc.Key.ToString() == specificId)
                     {
-                        _mediaPlayer.SetAudioTrack(desc.Id);
-                        selectedName = desc.Name;
-                        selectedId = desc.Id;
+                        selectedName = desc.Value;
+                        selectedId = desc.Key;
                         selected = true;
                         break;
                     }
@@ -1023,11 +1077,11 @@ namespace OnlineTelevizor.Views
 
             if (!selected)
             {
-                _mediaPlayer.SetAudioTrack(firstAudioTrackId);
-
                 selectedName = firstAudioTrackName;
                 selectedId = firstAudioTrackId;
             }
+
+            _mediaPlayer.SetAudioTrack(selectedId);
 
             if (string.IsNullOrEmpty(selectedName)) selectedName = $"# {selectedId}";
 
@@ -1173,29 +1227,6 @@ namespace OnlineTelevizor.Views
                     msg = $"\u25B6";
                 }
 
-
-                var audioTracksLanguages = new Dictionary<string, int>();
-                var videoTrack = String.Empty;
-                if (_mediaPlayer.IsPlaying)
-                {
-                    foreach (var track in _mediaPlayer.Media.Tracks)
-                    {
-                        if (track.TrackType == TrackType.Video)
-                        {
-                            videoTrack = $"{track.Data.Video.Width}x{track.Data.Video.Height}";
-                        }
-                        if (track.TrackType == TrackType.Audio)
-                        {
-                            if (!audioTracksLanguages.ContainsKey(track.Language))
-                            {
-                                audioTracksLanguages.Add(track.Language, 0);
-                            }
-
-                            audioTracksLanguages[track.Language]++;
-                        }
-                    }
-                }
-
                 if (_viewModel.PlayingChannel != null &&
                 _viewModel.PlayingChannel.CurrentEPGItem != null &&
                 _viewModel.PlayingChannel.CurrentEPGItem.Start < DateTime.Now &&
@@ -1203,32 +1234,6 @@ namespace OnlineTelevizor.Views
                 !string.IsNullOrEmpty(_viewModel.PlayingChannel.CurrentEPGItem.Title))
                 {
                     msg += $" - {_viewModel.PlayingChannel.CurrentEPGItem.Title}";
-                }
-
-                var newLineAdded = false;
-                if (videoTrack != String.Empty)
-                {
-                    msg += $"{Environment.NewLine}   {videoTrack}";
-                    newLineAdded = true;
-                }
-
-                if (audioTracksLanguages.Count > 0)
-                {
-                    var lng = string.Empty;
-                    foreach (var kvp in audioTracksLanguages)
-                    {
-                        if (lng != String.Empty)
-                            lng += ",";
-                        lng += kvp.Key;
-                    }
-                    if (!newLineAdded)
-                    {
-                        msg += $"{Environment.NewLine}   ";
-                    } else
-                    {
-                        msg += ", ";
-                    }
-                    msg += $"audio: {lng}";
                 }
 
                 _lastSingleClicked = DateTime.Now;
@@ -1431,12 +1436,25 @@ namespace OnlineTelevizor.Views
 
             try
             {
-
                 if (PlayingState == PlayingStateEnum.PlayingInternal)
                 {
                     if (LastKeyLongPressed)
                     {
-                        ToggleAudioStream();
+                        // this event is called immediately after Navigation.PopAsync();
+                        if (_lastActionOkMenuPopupTime != DateTime.MinValue && ((DateTime.Now - _lastActionOkMenuPopupTime).TotalSeconds < 2))
+                        {
+                            // ignoring this event
+                            return;
+                        }
+
+                        _lastActionOkMenuPopupTime = DateTime.Now;
+
+                        Device.BeginInvokeOnMainThread(async () =>
+                        {
+                            await _viewModel.ShowPopupMenu();
+                        });
+
+                        //ToggleAudioStream();
                     }
                     else
                     {
@@ -1963,6 +1981,29 @@ namespace OnlineTelevizor.Views
                         NoVideoStackLayout.IsVisible = false;
                         VideoStackLayout.IsVisible = true;
                     }
+
+                    if (_mediaPlayer.IsPlaying &&
+                        _viewModel.PlayingChannel != null)
+                    {
+                        if (_viewModel.PlayingChannel.AudioTracks != null &&
+                            _viewModel.PlayingChannel.AudioTracks.Count == 0)
+                        {
+                            _viewModel.PlayingChannel.AudioTracks = GetAudioTracks();
+                        }
+
+                        if (string.IsNullOrEmpty(_viewModel.PlayingChannel.VideoTrackDescription))
+                        {
+                            foreach (var track in _mediaPlayer.Media.Tracks)
+                            {
+                                if (track.TrackType == TrackType.Video)
+                                {
+                                    _viewModel.PlayingChannel.VideoTrackDescription = $"{track.Data.Video.Width}x{track.Data.Video.Height}";
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                 } catch (Exception ex)
                 {
                     _loggingService.Error(ex, "CheckStream error");
