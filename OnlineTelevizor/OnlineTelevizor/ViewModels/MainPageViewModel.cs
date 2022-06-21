@@ -1199,15 +1199,14 @@ namespace OnlineTelevizor.ViewModels
         {
             _loggingService.Info($"Selecting next channel (step {step})");
 
-            await _semaphoreSlim.WaitAsync();
-
             await Task.Run(
-                () =>
+                async () =>
                 {
-                try
-                {
-                    if (Channels.Count == 0)
-                        return;
+                    await _semaphoreSlim.WaitAsync();
+                    try
+                    {
+                        if (Channels.Count == 0)
+                            return;
 
                         if (SelectedItem == null)
                         {
@@ -1223,7 +1222,7 @@ namespace OnlineTelevizor.ViewModels
 
                                 if (next)
                                 {
-                                    if (nextCount == step || i == Channels.Count-1)
+                                    if (nextCount == step || i == Channels.Count - 1)
                                     {
                                         SelectedItem = ch;
                                         break;
@@ -1254,11 +1253,11 @@ namespace OnlineTelevizor.ViewModels
         {
             _loggingService.Info($"Selecting previous channel (step {step})");
 
-            await _semaphoreSlim.WaitAsync();
-
             await Task.Run(
-                () =>
+                async () =>
                 {
+                    await _semaphoreSlim.WaitAsync();
+
                     try
                     {
                         if (Channels.Count == 0)
