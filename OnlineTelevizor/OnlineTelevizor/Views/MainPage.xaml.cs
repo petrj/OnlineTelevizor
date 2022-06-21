@@ -109,17 +109,17 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"Subscribing messages");
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.KeyMessage, (key) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_KeyMessage, (key) =>
             {
                 Key(key);
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.KeyLongMessage, (key) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_KeyLongMessage, (key) =>
             {
                 _lastKeyLongPressedTime = DateTime.Now;
             });
 
-            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage, (sender) =>
+            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowDetailMessage, (sender) =>
             {
                 var detailPage = new ChannelDetailPage(_loggingService, _config, _dialogService, _viewModel.TVService);
                 detailPage.Channel = _viewModel.SelectedItemSafe;
@@ -127,7 +127,7 @@ namespace OnlineTelevizor.Views
                 Navigation.PushAsync(detailPage);
             });
 
-            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowRenderers, (sender) =>
+            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowRenderers, (sender) =>
             {
                 var item = _viewModel.SelectedItemSafe;
 
@@ -144,7 +144,7 @@ namespace OnlineTelevizor.Views
                 Navigation.PushAsync(_renderersPage);
             });
 
-            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowTimer, (sender) =>
+            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowTimer, (sender) =>
             {
                 if (IsPageOnTop(typeof(TimerPage)))
                     return;
@@ -158,7 +158,7 @@ namespace OnlineTelevizor.Views
                 Navigation.PushAsync(_timerPage);
             });
 
-            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.StopCasting, (sender) =>
+            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.MSG_StopCasting, (sender) =>
             {
                 if (_renderersPage != null)
                 {
@@ -166,12 +166,12 @@ namespace OnlineTelevizor.Views
                 }
             });
 
-            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.PlayInternal, (sender, channel) =>
+            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.MSG_PlayInternal, (sender, channel) =>
             {
                 ActionPlay(channel);
             });
 
-            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.ShowConfiguration, (sender) =>
+            MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowConfiguration, (sender) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -179,7 +179,7 @@ namespace OnlineTelevizor.Views
                 });
             });
 
-            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.CastingStarted, (sender, channel) =>
+            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.MSG_CastingStarted, (sender, channel) =>
             {
                 Task.Run(async () =>
                 {
@@ -187,7 +187,7 @@ namespace OnlineTelevizor.Views
                 });
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.CastingStopped, (channelNumber) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_CastingStopped, (channelNumber) =>
             {
                 Task.Run(async () =>
                 {
@@ -195,17 +195,17 @@ namespace OnlineTelevizor.Views
                 });
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.StopPlay, async (sender) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_StopPlay, async (sender) =>
             {
                 ActionStop(true);
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.PlayInPreview, async (sender) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_PlayInPreview, async (sender) =>
             {
                 ActionStop(false);
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.StopRecord, async (sender) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_StopRecord, async (sender) =>
             {
                 await Task.Run(async () =>
                 {
@@ -213,17 +213,17 @@ namespace OnlineTelevizor.Views
                 });
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.ToggleAudioStream, async (sender) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_ToggleAudioStream, async (sender) =>
             {
                 ToggleAudioStream(null);
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.ToggleAudioStreamId, async (id) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_ToggleAudioStreamId, async (id) =>
             {
                 ToggleAudioStream(id);
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.ToggleSubtitles, async (sender) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_ToggleSubtitles, async (sender) =>
             {
                 //
             });
@@ -233,20 +233,20 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"Unsubscribing messages");
 
-            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.KeyMessage);
-            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.KeyLongMessage);
-            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
-            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.ShowRenderers);
-            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.ShowTimer);
-            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.StopCasting);
-            MessagingCenter.Unsubscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.PlayInternal);
-            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.ShowConfiguration);
-            MessagingCenter.Unsubscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.CastingStarted);
-            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.CastingStopped);
-            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.StopPlay);
-            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.StopRecord);
-            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.ToggleAudioStream);
-            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.ToggleSubtitles);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_KeyMessage);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_KeyLongMessage);
+            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowDetailMessage);
+            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowRenderers);
+            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowTimer);
+            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.MSG_StopCasting);
+            MessagingCenter.Unsubscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.MSG_PlayInternal);
+            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowConfiguration);
+            MessagingCenter.Unsubscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.MSG_CastingStarted);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_CastingStopped);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_StopPlay);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_StopRecord);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_ToggleAudioStream);
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_ToggleSubtitles);
         }
 
         private async void _timerPage_Disappearing(object sender, EventArgs e)
@@ -279,7 +279,7 @@ namespace OnlineTelevizor.Views
                         // turn off tool bar
                         NavigationPage.SetHasNavigationBar(this, false);
 
-                        MessagingCenter.Send(String.Empty, BaseViewModel.EnableFullScreen);
+                        MessagingCenter.Send(String.Empty, BaseViewModel.MSG_EnableFullScreen);
 
                         StackLayoutEPGDetail.RowDefinitions[3].Height = new GridLength(30, GridUnitType.Star);
                         StackLayoutEPGDetail.RowDefinitions[4].Height = new GridLength(50, GridUnitType.Star);
@@ -308,7 +308,7 @@ namespace OnlineTelevizor.Views
 
                         if (!_config.Fullscreen)
                         {
-                            MessagingCenter.Send(String.Empty, BaseViewModel.DisableFullScreen);
+                            MessagingCenter.Send(String.Empty, BaseViewModel.MSG_DisableFullScreen);
                         }
 
                         if (_viewModel.IsPortrait)
@@ -348,7 +348,7 @@ namespace OnlineTelevizor.Views
 
                         if (!_config.Fullscreen)
                         {
-                            MessagingCenter.Send(String.Empty, BaseViewModel.DisableFullScreen);
+                            MessagingCenter.Send(String.Empty, BaseViewModel.MSG_DisableFullScreen);
                         }
 
                         if (_viewModel.IsPortrait)
@@ -970,7 +970,7 @@ namespace OnlineTelevizor.Views
 #if UNBOUNDKEYS
                         if (lowKey != "back" && lowKey != "volumeup" && lowKey != "volumedown")
                         {
-                            MessagingCenter.Send($"Unbound key: {key}", BaseViewModel.ToastMessage);
+                            MessagingCenter.Send($"Unbound key: {key}", BaseViewModel.MSG_ToastMessage);
                         }
 #endif
                     }
@@ -1024,7 +1024,7 @@ namespace OnlineTelevizor.Views
 
             if (tracks == null || tracks.Count == 0)
             {
-                MessagingCenter.Send($"Nenalezena žádná zvuková stopa", BaseViewModel.ToastMessage);
+                MessagingCenter.Send($"Nenalezena žádná zvuková stopa", BaseViewModel.MSG_ToastMessage);
                 return;
             }
 
@@ -1085,7 +1085,7 @@ namespace OnlineTelevizor.Views
 
             if (string.IsNullOrEmpty(selectedName)) selectedName = $"# {selectedId}";
 
-            MessagingCenter.Send($"Zvolena zvuková stopa {selectedName}", BaseViewModel.ToastMessage);
+            MessagingCenter.Send($"Zvolena zvuková stopa {selectedName}", BaseViewModel.MSG_ToastMessage);
 
             _loggingService.Info($"Selected stream: {selectedName}");
         }
@@ -1103,7 +1103,7 @@ namespace OnlineTelevizor.Views
             _lastNumPressedTime = DateTime.Now;
             _numberPressed += number;
 
-            MessagingCenter.Send(_numberPressed, BaseViewModel.ToastMessage);
+            MessagingCenter.Send(_numberPressed, BaseViewModel.MSG_ToastMessage);
 
             new Thread(() =>
             {
@@ -1161,7 +1161,7 @@ namespace OnlineTelevizor.Views
 
             if (_config.Fullscreen)
             {
-                MessagingCenter.Send(String.Empty, BaseViewModel.EnableFullScreen);
+                MessagingCenter.Send(String.Empty, BaseViewModel.MSG_EnableFullScreen);
             }
 
             // workaround for black screen after resume
@@ -1255,7 +1255,7 @@ namespace OnlineTelevizor.Views
             }
 
             _loggingService.Info($"Test: {msg}");
-            MessagingCenter.Send(msg, BaseViewModel.ToastMessage);
+            MessagingCenter.Send(msg, BaseViewModel.MSG_ToastMessage);
         }
 
         public void ActionPlay(ChannelItem channel)
@@ -1303,7 +1303,7 @@ namespace OnlineTelevizor.Views
 
                             if (_config.PlayOnBackground)
                             {
-                                MessagingCenter.Send<MainPage, ChannelItem>(this, BaseViewModel.PlayInternalNotification, channel);
+                                MessagingCenter.Send<MainPage, ChannelItem>(this, BaseViewModel.MSG_PlayInternalNotification, channel);
                             }
 
                             PlayingState = PlayingStateEnum.PlayingInternal;
@@ -1311,18 +1311,18 @@ namespace OnlineTelevizor.Views
                         catch (Exception ex)
                         {
                             _loggingService.Error(ex, "PlayStream general error");
-                            MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
+                            MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
                         }
                     });
                 }
                 else
                 {
-                    MessagingCenter.Send(channel.Url, BaseViewModel.UriMessage);
+                    MessagingCenter.Send(channel.Url, BaseViewModel.MSG_UriMessage);
                 }
             } catch (Exception ex)
             {
                 _loggingService.Error(ex, "PlayStream general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1377,7 +1377,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionTap general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1408,13 +1408,13 @@ namespace OnlineTelevizor.Views
                                 PlayingState = PlayingStateEnum.Stopped;
                                 _viewModel.PlayingChannel = null;
 
-                                MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotification);
+                                MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopPlayInternalNotification);
                             }
                         }
                         catch (Exception ex)
                         {
                             _loggingService.Error(ex, "ActionStop general error");
-                            MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
+                            MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
                         }
                     });
                 }
@@ -1426,7 +1426,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionStop general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1524,7 +1524,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionKeyOK general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1575,7 +1575,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionKeyLeft general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1626,7 +1626,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionKeyRight general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1666,7 +1666,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionKeyDown general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1704,7 +1704,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionKeyUp general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.ToastMessage);
+                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1929,7 +1929,7 @@ namespace OnlineTelevizor.Views
                 } else
                 if (PlayingState == PlayingStateEnum.Stopped)
                 {
-                    MessagingCenter.Send($"Stiskněte ještě jednou pro ukončení", BaseViewModel.ToastMessage);
+                    MessagingCenter.Send($"Stiskněte ještě jednou pro ukončení", BaseViewModel.MSG_ToastMessage);
                     _lastBackPressedTime = DateTime.Now;
                 }
 

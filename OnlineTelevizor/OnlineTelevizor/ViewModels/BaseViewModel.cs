@@ -20,39 +20,38 @@ namespace OnlineTelevizor.ViewModels
         protected ILoggingService _loggingService;
         protected IDialogService _dialogService;
 
-        public const string UriMessage = "LaunchUriMessage";
-        public const string EnableFullScreen = "EnableFullScreen";
-        public const string DisableFullScreen = "DisableFullScreen";
-        public const string PlayInternal = "PlayInternal";
-        public const string PlayInternalNotification = "PlayInternalNotification";
-        public const string UpdateInternalNotification = "UpdateInternalNotification";
-        public const string StopPlayInternalNotification = "StopPlayInternalNotification";
-        public const string StopPlayInternalNotificationAndQuit = "StopPlayInternalNotificationAndQuit";
-        public const string KeyMessage = "KeyDownMessage";
-        public const string KeyLongMessage = "KeyLongMessage";
-        public const string ShowDetailMessage = "ShowDetailMessage";
-        public const string ShowRenderers = "ShowRenderers";
-        public const string ShowTimer = "ShowTimer";
-        public const string CastingStarted = "CastingStarted";
-        public const string CastingStopped = "CastingStopped";
-        public const string StopCasting = "StopCasting";
-        public const string StopPlay = "StopPlay";
-        public const string PlayInPreview = "PlayInPreview";
-        public const string ToastMessage = "ShowToastMessage";
-        public const string ShowConfiguration = "ShowConfiguration";
-        public const string StartCastNotification = "StartCastNotification";
-        public const string StopCastNotification = "StopCastNotification";
-        public const string RecordNotificationMessage = "RecordNotification";
-        public const string UpdateRecordNotificationMessage = "UpdateRecordNotification";
-        public const string StopRecordNotificationMessage = "StopRecordNotification";
-        public const string StopRecord = "StopRecord";
-        public const string ToggleAudioStream = "ToggleAudioStream";
-        public const string ToggleAudioStreamId = "ToggleAudioStreamId";
-        public const string ToggleSubtitles = "ToggleSubtitles";
-
-        public const string CheckBatterySettings = "CheckBatterySettings";
-        public const string RequestBatterySettings = "RequestBatterySettings";
-        public const string SetBatterySettings = "SetBatterySettings ";
+        public const string MSG_UriMessage = "LaunchUriMessage";
+        public const string MSG_EnableFullScreen = "EnableFullScreen";
+        public const string MSG_DisableFullScreen = "DisableFullScreen";
+        public const string MSG_PlayInternal = "PlayInternal";
+        public const string MSG_PlayInternalNotification = "PlayInternalNotification";
+        public const string MSG_UpdateInternalNotification = "UpdateInternalNotification";
+        public const string MSG_StopPlayInternalNotification = "StopPlayInternalNotification";
+        public const string MSG_StopPlayInternalNotificationAndQuit = "StopPlayInternalNotificationAndQuit";
+        public const string MSG_KeyMessage = "KeyDownMessage";
+        public const string MSG_KeyLongMessage = "KeyLongMessage";
+        public const string MSG_ShowDetailMessage = "ShowDetailMessage";
+        public const string MSG_ShowRenderers = "ShowRenderers";
+        public const string MSG_ShowTimer = "ShowTimer";
+        public const string MSG_CastingStarted = "CastingStarted";
+        public const string MSG_CastingStopped = "CastingStopped";
+        public const string MSG_StopCasting = "StopCasting";
+        public const string MSG_StopPlay = "StopPlay";
+        public const string MSG_PlayInPreview = "PlayInPreview";
+        public const string MSG_ToastMessage = "ShowToastMessage";
+        public const string MSG_ShowConfiguration = "ShowConfiguration";
+        public const string MSG_StartCastNotification = "StartCastNotification";
+        public const string MSG_StopCastNotification = "StopCastNotification";
+        public const string MSG_RecordNotificationMessage = "RecordNotification";
+        public const string MSG_UpdateRecordNotificationMessage = "UpdateRecordNotification";
+        public const string MSG_StopRecordNotificationMessage = "StopRecordNotification";
+        public const string MSG_StopRecord = "StopRecord";
+        public const string MSG_ToggleAudioStream = "ToggleAudioStream";
+        public const string MSG_ToggleAudioStreamId = "ToggleAudioStreamId";
+        public const string MSG_ToggleSubtitles = "ToggleSubtitles";
+        public const string MSG_CheckBatterySettings = "CheckBatterySettings";
+        public const string MSG_RequestBatterySettings = "RequestBatterySettings";
+        public const string MSG_SetBatterySettings = "SetBatterySettings ";
 
         public IOnlineTelevizorConfiguration Config { get; set; }
 
@@ -296,11 +295,11 @@ namespace OnlineTelevizor.ViewModels
             {
                 if (Config.InternalPlayer)
                 {
-                    MessagingCenter.Send<BaseViewModel, ChannelItem> (this, BaseViewModel.PlayInternal, channel);
+                    MessagingCenter.Send<BaseViewModel, ChannelItem> (this, BaseViewModel.MSG_PlayInternal, channel);
                 }
                 else
                 {
-                    MessagingCenter.Send(channel.Url, BaseViewModel.UriMessage);
+                    MessagingCenter.Send(channel.Url, BaseViewModel.MSG_UriMessage);
                 }
             }
             catch (Exception ex)

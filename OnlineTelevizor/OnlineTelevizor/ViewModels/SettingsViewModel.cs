@@ -66,10 +66,10 @@ namespace OnlineTelevizor.ViewModels
                 Config.Fullscreen = value;
                 if (value)
                 {
-                    MessagingCenter.Send(String.Empty, BaseViewModel.EnableFullScreen);
+                    MessagingCenter.Send(String.Empty, BaseViewModel.MSG_EnableFullScreen);
                 } else
                 {
-                    MessagingCenter.Send(String.Empty, BaseViewModel.DisableFullScreen);
+                    MessagingCenter.Send(String.Empty, BaseViewModel.MSG_DisableFullScreen);
                 }
 
                 OnPropertyChanged(nameof(IsFullScreen));

@@ -26,8 +26,8 @@ namespace OnlineTelevizor.Droid
         {
             // application removed from app list
 
-            MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotification);
-            MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopRecordNotificationMessage);
+            MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopPlayInternalNotification);
+            MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopRecordNotificationMessage);
 
             base.OnTaskRemoved(rootIntent);
         }

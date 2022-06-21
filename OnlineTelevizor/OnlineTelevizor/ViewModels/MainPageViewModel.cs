@@ -228,7 +228,7 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task AnyKeyPressed(string key)
         {
-            MessagingCenter.Send(key, BaseViewModel.KeyMessage);
+            MessagingCenter.Send(key, BaseViewModel.MSG_KeyMessage);
         }
 
         private async Task ShutdownTimer()
@@ -246,7 +246,7 @@ namespace OnlineTelevizor.ViewModels
 
             if (_shutdownTime < DateTime.Now)
             {
-                MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit);
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopPlayInternalNotificationAndQuit);
             }
         }
 
@@ -309,7 +309,7 @@ namespace OnlineTelevizor.ViewModels
             {
                 _shutdownTime = DateTime.Now.AddMinutes(Convert.ToDouble(minutesTimeout));
 
-                MessagingCenter.Send($"Aplikace se vypne za {minutesTimeout} minut", BaseViewModel.ToastMessage);
+                MessagingCenter.Send($"Aplikace se vypne za {minutesTimeout} minut", BaseViewModel.MSG_ToastMessage);
 
                 _loggingService.Info($"Timer: {minutesTimeout}");
 
@@ -345,7 +345,7 @@ namespace OnlineTelevizor.ViewModels
                    if (channel == null)
                        return;
 
-                   MessagingCenter.Send<BaseViewModel, ChannelItem>(this, BaseViewModel.UpdateRecordNotificationMessage, channel);
+                   MessagingCenter.Send<BaseViewModel, ChannelItem>(this, BaseViewModel.MSG_UpdateRecordNotificationMessage, channel);
 
                }
                catch (Exception ex)
@@ -536,23 +536,23 @@ namespace OnlineTelevizor.ViewModels
             }
             else if (selectedvalue == optionStop)
             {
-                MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlay);
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopPlay);
             }
             else if (selectedvalue == optionPlayInPreview)
             {
-                MessagingCenter.Send<string>(string.Empty, BaseViewModel.PlayInPreview);
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_PlayInPreview);
             }
             else if (selectedvalue == optionDetail)
             {
-                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowDetailMessage);
+                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.MSG_ShowDetailMessage);
             }
             else if (selectedvalue == optionCast)
             {
-                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowRenderers);
+                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.MSG_ShowRenderers);
             }
             else if (selectedvalue == optionStopCast)
             {
-                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.StopCasting);
+                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.MSG_StopCasting);
             }
             else if (selectedvalue == optionRecord)
             {
@@ -564,7 +564,7 @@ namespace OnlineTelevizor.ViewModels
             }
             else if (selectedvalue == optionClosePreview)
             {
-                MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlay);
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopPlay);
             }
             else if (selectedvalue == optionToggleAudioStream)
             {
@@ -572,13 +572,13 @@ namespace OnlineTelevizor.ViewModels
             }
             else if (selectedvalue == optionToggleSubtitleTrack)
             {
-                MessagingCenter.Send<string>(string.Empty, BaseViewModel.ToggleSubtitles);
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_ToggleSubtitles);
             }
             else if (selectedvalue == optionStopApp)
             {
                 var confirm = await _dialogService.Confirm($"Ukončit aplikaci?");
                 if (confirm)
-                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit);
+                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopPlayInternalNotificationAndQuit);
             }
             else if (selectedvalue == optionAddToFav)
             {
@@ -590,7 +590,7 @@ namespace OnlineTelevizor.ViewModels
             }
             else if (selectedvalue == optionSetTimer)
             {
-                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowTimer);
+                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.MSG_ShowTimer);
             }
             else if (selectedvalue == optionStopTimer)
             {
@@ -635,12 +635,12 @@ namespace OnlineTelevizor.ViewModels
 
                 if (selectedAudioTrack != null)
                 {
-                    MessagingCenter.Send<string>(menuTitleToTrackId[selectedAudioTrack].ToString(), BaseViewModel.ToggleAudioStreamId);
+                    MessagingCenter.Send<string>(menuTitleToTrackId[selectedAudioTrack].ToString(), BaseViewModel.MSG_ToggleAudioStreamId);
                 }
             }
             else
             {
-                MessagingCenter.Send<string>(string.Empty, BaseViewModel.ToggleAudioStream);
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_ToggleAudioStream);
             }
         }
 
@@ -680,7 +680,7 @@ namespace OnlineTelevizor.ViewModels
                 item.IsFav = true;
                 item.NotifyStateChange();
 
-                MessagingCenter.Send($"{item.Name} - přidáno mezi oblíbené", BaseViewModel.ToastMessage);
+                MessagingCenter.Send($"{item.Name} - přidáno mezi oblíbené", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -702,7 +702,7 @@ namespace OnlineTelevizor.ViewModels
                 item.IsFav = false;
                 item.NotifyStateChange();
 
-                MessagingCenter.Send($"{item.Name} - odebráno z oblíbených", BaseViewModel.ToastMessage);
+                MessagingCenter.Send($"{item.Name} - odebráno z oblíbených", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -860,20 +860,20 @@ namespace OnlineTelevizor.ViewModels
                 _recordingChannel = channel;
                 _recordingBackgroundWorker.RunWorkerAsync();
 
-                MessagingCenter.Send("Bylo zahájeno nahrávání", BaseViewModel.ToastMessage);
+                MessagingCenter.Send("Bylo zahájeno nahrávání", BaseViewModel.MSG_ToastMessage);
 
                 if (Config.PlayOnBackground)
                 {
-                    MessagingCenter.Send<BaseViewModel, ChannelItem>(this, BaseViewModel.RecordNotificationMessage, channel);
+                    MessagingCenter.Send<BaseViewModel, ChannelItem>(this, BaseViewModel.MSG_RecordNotificationMessage, channel);
                 }
             } else
             {
                 _recordingChannel = null;
-                MessagingCenter.Send("Nahrávání bylo ukončeno", BaseViewModel.ToastMessage);
+                MessagingCenter.Send("Nahrávání bylo ukončeno", BaseViewModel.MSG_ToastMessage);
 
                 if (Config.PlayOnBackground)
                 {
-                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopRecordNotificationMessage);
+                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopRecordNotificationMessage);
                 }
             }
         }
@@ -1107,7 +1107,7 @@ namespace OnlineTelevizor.ViewModels
 
             if (PlayingChannel != null)
             {
-                MessagingCenter.Send<MainPageViewModel, ChannelItem>(this, BaseViewModel.UpdateInternalNotification, PlayingChannel);
+                MessagingCenter.Send<MainPageViewModel, ChannelItem>(this, BaseViewModel.MSG_UpdateInternalNotification, PlayingChannel);
             }
         }
 
@@ -1511,7 +1511,7 @@ namespace OnlineTelevizor.ViewModels
 
             if (_lastRefreshChannelsDelay == 0)
             {
-                MessagingCenter.Send(StatusLabel, BaseViewModel.ToastMessage);
+                MessagingCenter.Send(StatusLabel, BaseViewModel.MSG_ToastMessage);
             }
 
             _loggingService.Info($"RefreshWithNotification finished");
@@ -1525,7 +1525,7 @@ namespace OnlineTelevizor.ViewModels
 
             if (await CheckEmptyCredentials())
             {
-                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.ShowConfiguration);
+                MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.MSG_ShowConfiguration);
                 return;
             }
 

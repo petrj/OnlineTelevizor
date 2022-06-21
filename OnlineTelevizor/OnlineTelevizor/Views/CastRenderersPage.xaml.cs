@@ -55,7 +55,7 @@ namespace OnlineTelevizor.Views
         {
             if (_castingStarted && !IsCasting())
             {
-                MessagingCenter.Send(_channel.ChannelNumber, BaseViewModel.CastingStopped);
+                MessagingCenter.Send(_channel.ChannelNumber, BaseViewModel.MSG_CastingStopped);
                 _castingStarted = false;
             }
         }
@@ -78,7 +78,7 @@ namespace OnlineTelevizor.Views
                 _castingStarted = true;
             });
 
-            MessagingCenter.Send<BaseViewModel,ChannelItem>(_viewModel, BaseViewModel.CastingStarted, _channel);
+            MessagingCenter.Send<BaseViewModel,ChannelItem>(_viewModel, BaseViewModel.MSG_CastingStarted, _channel);
 
             await Navigation.PopAsync();
         }
@@ -100,7 +100,7 @@ namespace OnlineTelevizor.Views
 
             _castingStarted = false;
 
-            MessagingCenter.Send(_channel.ChannelNumber, BaseViewModel.CastingStopped);
+            MessagingCenter.Send(_channel.ChannelNumber, BaseViewModel.MSG_CastingStopped);
         }
 
         public ChannelItem Channel

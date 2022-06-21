@@ -35,7 +35,7 @@ namespace OnlineTelevizor.iOS
 
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.UriMessage, (url) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_UriMessage, (url) =>
             {
                 Xamarin.Forms.Device.BeginInvokeOnMainThread(
                     delegate

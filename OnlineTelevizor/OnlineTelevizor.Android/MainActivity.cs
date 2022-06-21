@@ -176,12 +176,12 @@ namespace OnlineTelevizor.Droid
 
         private void SubscribeMessages()
         {
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_ToastMessage, (message) =>
             {
                 ShowToastMessage(message);
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.UriMessage, (url) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_UriMessage, (url) =>
             {
                 var intent = new Intent(Intent.ActionView);
                 var uri = Android.Net.Uri.Parse(url);
@@ -190,17 +190,17 @@ namespace OnlineTelevizor.Droid
                 Android.App.Application.Context.StartActivity(intent);
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.EnableFullScreen, (msg) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_EnableFullScreen, (msg) =>
             {
                 SetFullScreen(true);
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.DisableFullScreen, (msg) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_DisableFullScreen, (msg) =>
             {
                 SetFullScreen(false);
             });
 
-            MessagingCenter.Subscribe<SettingsPage>(this, BaseViewModel.CheckBatterySettings, (sender) =>
+            MessagingCenter.Subscribe<SettingsPage>(this, BaseViewModel.MSG_CheckBatterySettings, (sender) =>
             {
                 try
                 {
@@ -209,7 +209,7 @@ namespace OnlineTelevizor.Droid
 
                     if (!ignoring)
                     {
-                        MessagingCenter.Send<string>(string.Empty, BaseViewModel.RequestBatterySettings);
+                        MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_RequestBatterySettings);
                     }
                 }
                 catch (Exception ex)
@@ -218,7 +218,7 @@ namespace OnlineTelevizor.Droid
                 }
             });
 
-            MessagingCenter.Subscribe<SettingsPage>(this, BaseViewModel.SetBatterySettings, (sender) =>
+            MessagingCenter.Subscribe<SettingsPage>(this, BaseViewModel.MSG_SetBatterySettings, (sender) =>
             {
                 try
                 {
@@ -233,7 +233,7 @@ namespace OnlineTelevizor.Droid
                 }
             });
 
-            MessagingCenter.Subscribe<MainPage, ChannelItem>(this, BaseViewModel.PlayInternalNotification, (sender, channel) =>
+            MessagingCenter.Subscribe<MainPage, ChannelItem>(this, BaseViewModel.MSG_PlayInternalNotification, (sender, channel) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -241,7 +241,7 @@ namespace OnlineTelevizor.Droid
                 });
             });
 
-            MessagingCenter.Subscribe<MainPageViewModel, ChannelItem>(this, BaseViewModel.UpdateInternalNotification, (sender, channel) =>
+            MessagingCenter.Subscribe<MainPageViewModel, ChannelItem>(this, BaseViewModel.MSG_UpdateInternalNotification, (sender, channel) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -249,7 +249,7 @@ namespace OnlineTelevizor.Droid
                 });
             });
 
-            MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.StopPlayInternalNotification, (sender) =>
+            MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.MSG_StopPlayInternalNotification, (sender) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -257,7 +257,7 @@ namespace OnlineTelevizor.Droid
                 });
             });
 
-            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.RecordNotificationMessage, (sender, channel) =>
+            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.MSG_RecordNotificationMessage, (sender, channel) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -265,7 +265,7 @@ namespace OnlineTelevizor.Droid
                 });
             });
 
-            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.UpdateRecordNotificationMessage, (sender, channel) =>
+            MessagingCenter.Subscribe<BaseViewModel, ChannelItem>(this, BaseViewModel.MSG_UpdateRecordNotificationMessage, (sender, channel) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -273,7 +273,7 @@ namespace OnlineTelevizor.Droid
                 });
             });
 
-            MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.StopRecordNotificationMessage, (sender) =>
+            MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.MSG_StopRecordNotificationMessage, (sender) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -281,7 +281,7 @@ namespace OnlineTelevizor.Droid
                 });
             });
 
-            MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit, (sender) =>
+            MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.MSG_StopPlayInternalNotificationAndQuit, (sender) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -429,10 +429,10 @@ namespace OnlineTelevizor.Droid
 
             if (e.IsLongPress)
             {
-                MessagingCenter.Send(keyCode.ToString(), BaseViewModel.KeyLongMessage);
+                MessagingCenter.Send(keyCode.ToString(), BaseViewModel.MSG_KeyLongMessage);
             }
 
-            MessagingCenter.Send(keyCode.ToString(), BaseViewModel.KeyMessage);
+            MessagingCenter.Send(keyCode.ToString(), BaseViewModel.MSG_KeyMessage);
 
             return base.OnKeyDown(keyCode, e);
         }

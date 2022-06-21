@@ -54,18 +54,18 @@ namespace OnlineTelevizor.Views
 
             Appearing += delegate
             {
-                MessagingCenter.Subscribe<string>(this, BaseViewModel.RequestBatterySettings, async (sender) =>
+                MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings, async (sender) =>
                 {
                     if (await _dialogService.Confirm("Při běhu na pozadí je nutné zajistit, aby se aplikace kvůli optimalizaci baterie neukončovala. Přejít do nastavení?"))
                     {
-                        MessagingCenter.Send<SettingsPage>(this, BaseViewModel.SetBatterySettings);
+                        MessagingCenter.Send<SettingsPage>(this, BaseViewModel.MSG_SetBatterySettings);
                     }
                 });
             };
 
             Disappearing += delegate
             {
-                MessagingCenter.Unsubscribe<string>(this, BaseViewModel.RequestBatterySettings);
+                MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings);
             };
 
             TVAPIPicker.Unfocused += TVAPIPicker_Unfocused;
@@ -131,7 +131,7 @@ namespace OnlineTelevizor.Views
         {
             if (_config.PlayOnBackground && _config.InternalPlayer)
             {
-                MessagingCenter.Send<SettingsPage>(this, BaseViewModel.CheckBatterySettings);
+                MessagingCenter.Send<SettingsPage>(this, BaseViewModel.MSG_CheckBatterySettings);
             }
         }
 

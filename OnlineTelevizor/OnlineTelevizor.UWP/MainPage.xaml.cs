@@ -32,17 +32,17 @@ namespace OnlineTelevizor.UWP
 
             LoadApplication(new OnlineTelevizor.Views.App(new UWPOnlineTelevizorConfiguration(), new DummyLoggingService()));
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.UriMessage, (url) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_UriMessage, (url) =>
             {
                 Task.Run(async () => await LaunchUrl(url));
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.ToastMessage, (message) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_ToastMessage, (message) =>
             {
                 // No support for toast messages in UWP
             });
 
-            MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit, (sender) =>
+            MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.MSG_StopPlayInternalNotificationAndQuit, (sender) =>
             {
                 CoreApplication.Exit();
             });
@@ -77,7 +77,7 @@ namespace OnlineTelevizor.UWP
 
             if (sendKey)
             {
-                MessagingCenter.Send(e.Key.ToString(), BaseViewModel.KeyMessage);
+                MessagingCenter.Send(e.Key.ToString(), BaseViewModel.MSG_KeyMessage);
                 e.Handled = true;
             }
 

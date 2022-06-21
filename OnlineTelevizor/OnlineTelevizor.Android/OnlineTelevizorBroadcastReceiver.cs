@@ -24,15 +24,15 @@ namespace OnlineTelevizor.Droid
             {
                 if (intent.Action == "Stop")
                 {
-                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlay);
+                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopPlay);
                 }
                 if (intent.Action == "Quit")
                 {
-                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopPlayInternalNotificationAndQuit);
+                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopPlayInternalNotificationAndQuit);
                 }
                 if (intent.Action == "StopRecord")
                 {
-                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.StopRecord);
+                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopRecord);
                 }
             } catch (Exception ex)
             {
