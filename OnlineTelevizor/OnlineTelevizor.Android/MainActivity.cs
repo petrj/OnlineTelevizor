@@ -82,11 +82,15 @@ namespace OnlineTelevizor.Droid
 #endif
 
 #if LOGGING
+            /*
             var fileLoggingService = new FileLoggingService(LoggingLevelEnum.Info);
             fileLoggingService.LogFilename = System.IO.Path.Join(_cfg.OutputDirectory, $"OnlineTelevizor-{DateTime.Now.ToString("yyyy-MM-dd")}.log");
             fileLoggingService.WriteToOutput = true;
 
             _loggingService = fileLoggingService;
+            */
+
+            _loggingService = new NLogLoggingService(GetType().Assembly, "OnlineTelevizor.Droid");
 
             _loggingService.Info("Starting activity");
 #else
