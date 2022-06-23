@@ -21,7 +21,7 @@ namespace LoggerService
 
         public void Debug(string message)
         {
-            _logger.Info(message);
+            _logger.Debug(message);
         }
 
         public void Error(Exception ex, string message = null)
