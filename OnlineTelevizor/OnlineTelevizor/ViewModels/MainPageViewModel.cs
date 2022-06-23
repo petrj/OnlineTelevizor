@@ -1839,14 +1839,10 @@ namespace OnlineTelevizor.ViewModels
                 channelNumber = Config.AutoPlayChannelNumber;
             }
 
-            foreach (var ch in Channels)
+            var ch = await SelectChannelByNumber(channelNumber);
+            if (ch != null)
             {
-                if (ch.ChannelNumber == channelNumber)
-                {
-                    SelectedItemSafe = ch;
-                    await PlaySelectedChannel();
-                    break;
-                }
+                await PlaySelectedChannel();
             }
         }
 

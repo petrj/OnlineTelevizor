@@ -963,6 +963,7 @@ namespace OnlineTelevizor.Views
                 case "progblue":
                 case "f12":
                 case "k":
+                case "leftshift":
                     ToggleAudioStream(null);
                     break;
                 default:
