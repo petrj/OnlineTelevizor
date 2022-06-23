@@ -36,6 +36,7 @@
                 <Setter Property="TextColor" Value="DarkGray"/>
                 <Setter Property="Margin" Value="0,10,0,0"/>
                 <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="HorizontalOptions" Value="EndAndExpand"/>
             </Style>
 
             <Style x:Key="IconStyle" TargetType="Image">
@@ -59,7 +60,7 @@
 
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -83,7 +84,7 @@
 
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="1" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -98,13 +99,11 @@
 
                 </Grid>
 
+                <ScrollView x:Name="DetailScrollView" Style="{StaticResource PageBackgroundStyle}" VerticalOptions="StartAndExpand">
+                    <Label Text="{Binding EPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}"/>
+                </ScrollView>
+
             <Label Text="{Binding VideoDescription}"  Style="{DynamicResource VideoDescriptionTextStyle}" FontSize="{Binding FontSizeForVideoDescription}"/>
-
-            <ScrollView Style="{StaticResource PageBackgroundStyle}" VerticalOptions="StartAndExpand">
-
-                <Label Text="{Binding EPGDescription}"  Style="{DynamicResource DescriptionTextStyle}" FontSize="{Binding FontSizeForDescription}"/>
-
-            </ScrollView>
 
         </StackLayout>
 

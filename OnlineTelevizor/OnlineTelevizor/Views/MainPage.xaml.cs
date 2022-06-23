@@ -573,8 +573,10 @@ namespace OnlineTelevizor.Views
                     lowKey == "left" ||
                     lowKey == "dpadleft" ||
                     lowKey == "buttonl1" ||
+                    lowKey == "del" ||
                     lowKey == "numpad8" ||
-                    lowKey == "f3"
+                    lowKey == "f3" ||
+                    lowKey == "forwarddel"
                 )
             {
                 return true;
@@ -590,6 +592,7 @@ namespace OnlineTelevizor.Views
                 lowKey == "mediaplaynext" ||
                 lowKey == "medianext" ||
                 lowKey == "dpaddown" ||
+                lowKey == "pagedown" ||
                 lowKey == "buttonr1" ||
                 lowKey == "down" ||
                 lowKey == "s" ||
@@ -647,15 +650,6 @@ namespace OnlineTelevizor.Views
 
                 var type = stack[stack.Count - 1].GetType();
 
-                if (type == typeof(ChannelDetailPage))
-                {
-                    if (LeavePageKeyDown(lowKey))
-                    {
-                        // closing detail page
-                        Navigation.PopAsync();
-                    }
-                }
-
                 if (type == typeof(CastRenderersPage))
                 {
                     var renderPage = stack[stack.Count - 1] as CastRenderersPage;
@@ -668,11 +662,6 @@ namespace OnlineTelevizor.Views
                     if (SelectPreviousItemKeyDown(lowKey))
                     {
                         renderPage.SelectPreviousItem();
-                    }
-                    else
-                    if (LeavePageKeyDown(lowKey))
-                    {
-                        Navigation.PopAsync();
                     }
                     else
                     if (OKKeyDown(lowKey))
@@ -692,31 +681,6 @@ namespace OnlineTelevizor.Views
                     {
                         _timerPage.IncreaseTime();
                     }
-                    else
-                    if (LeavePageKeyDown(lowKey))
-                    {
-                        Navigation.PopAsync();
-                    }
-                }
-
-                if (type == typeof(HelpPage))
-                {
-                    var helpPage = stack[stack.Count - 1] as HelpPage;
-
-                    if (SelectNextItemKeyDown(lowKey))
-                    {
-                        helpPage.ScrollDown();
-                    }
-                    else
-                    if (SelectPreviousItemKeyDown(lowKey))
-                    {
-                        helpPage.ScrollUp();
-                    }
-                    else
-                    if (LeavePageKeyDown(lowKey))
-                    {
-                        Navigation.PopAsync();
-                    }
                 }
 
                 if (type == typeof(FilterPage) && _filterPage != null)
@@ -724,11 +688,6 @@ namespace OnlineTelevizor.Views
                     if (SelectNextItemKeyDown(lowKey))
                     {
                         _filterPage.SelectNextItem();
-                    }
-                    else
-                    if (LeavePageKeyDown(lowKey))
-                    {
-                        Navigation.PopAsync();
                     }
                     else
                     if (OKKeyDown(lowKey))
@@ -750,11 +709,6 @@ namespace OnlineTelevizor.Views
                     {
                         qualityPage.SelectPreviousItem();
                     }
-                    else
-                    if (LeavePageKeyDown(lowKey))
-                    {
-                        Navigation.PopAsync();
-                    }
                 }
 
                 if (type == typeof(SettingsPage))
@@ -769,12 +723,28 @@ namespace OnlineTelevizor.Views
                     if (OKKeyDown(lowKey))
                     {
                         settingsPage.SendOKButton();
-                    } else
-                    if (LeavePageKeyDown(lowKey))
-                    {
-                        // closing settings page
-                        Navigation.PopAsync();
                     }
+                }
+
+                var pageOnTop = stack[stack.Count - 1];
+
+                if (pageOnTop is INavigationScrollUpDown)
+                {
+                    if (SelectNextItemKeyDown(lowKey))
+                    {
+                        (pageOnTop as INavigationScrollUpDown).ScrollDown();
+                    }
+                    else
+                    if (SelectPreviousItemKeyDown(lowKey))
+                    {
+                        (pageOnTop as INavigationScrollUpDown).ScrollUp();
+                    }
+                }
+
+                if (LeavePageKeyDown(lowKey))
+                {
+                    // closing page
+                    Navigation.PopAsync();
                 }
 
                 return;
@@ -837,7 +807,6 @@ namespace OnlineTelevizor.Views
                 case "space":
                 case "buttonr2":
                 case "mediaplay":
-                case "mediaplaypause":
                 case "enter":
                 case "numpad5":
                 case "numpadenter":
@@ -849,17 +818,27 @@ namespace OnlineTelevizor.Views
                 case "grave":
                     Task.Run(async () => await ActionKeyOK());
                     break;
-                //case "back":
+                case "mediaplaypause":
+                    if (PlayingState == PlayingStateEnum.Stopped)
+                    {
+                        ActionPlay(_viewModel.SelectedItemSafe);
+                    } else
+                    {
+                        ActionStop(true);
+                    }
+                    break;
+                case "mediastop":
+                case "mediaclose":
+                case "mediaplaystop":
+                    ActionStop(true);
+                    break;
                 case "f4":
                 case "f7":
                 case "escape":
-                case "mediaplaystop":
                 case "mediapause":
-                case "mediaclose":
-                case "mediastop":
                 case "numpadsubtract":
                 case "del":
-                case "forwarddel":
+                case "forwarddel": // delete
                 case "delete":
                 case "buttonx":
                 case "altleft":
@@ -867,6 +846,7 @@ namespace OnlineTelevizor.Views
                 case "period":
                 case "apostrophe":
                 case "buttonselect":
+                case "break": // pause
                     ActionStop(false);
                     break;
                 case "buttonl2":
@@ -964,6 +944,7 @@ namespace OnlineTelevizor.Views
                 case "f12":
                 case "k":
                 case "leftshift":
+                case "shiftleft":
                     ToggleAudioStream(null);
                     break;
                 default:
@@ -1296,11 +1277,19 @@ namespace OnlineTelevizor.Views
 
                             videoView.MediaPlayer = _mediaPlayer;
 
+                            NoVideoStackLayout.IsVisible = true;
+                            VideoStackLayout.IsVisible = false;
+                            AudioPlayingImage.IsVisible = true;
+
                             _mediaPlayer.Play(_media);
 
                             _viewModel.PlayingChannel = channel;
 
-                            ShowJustPlayingNotification();
+                            Task.Run(async () =>
+                            {
+                                await Task.Delay(500);
+                                ShowJustPlayingNotification();
+                            });
 
                             if (_config.PlayOnBackground)
                             {
@@ -1986,12 +1975,6 @@ namespace OnlineTelevizor.Views
                     if (_mediaPlayer.IsPlaying &&
                         _viewModel.PlayingChannel != null)
                     {
-                        if (_viewModel.PlayingChannel.AudioTracks != null &&
-                            _viewModel.PlayingChannel.AudioTracks.Count == 0)
-                        {
-                            _viewModel.PlayingChannel.AudioTracks = GetAudioTracks();
-                        }
-
                         if (string.IsNullOrEmpty(_viewModel.PlayingChannel.VideoTrackDescription))
                         {
                             foreach (var track in _mediaPlayer.Media.Tracks)
@@ -2002,6 +1985,12 @@ namespace OnlineTelevizor.Views
                                     break;
                                 }
                             }
+                        }
+
+                        if (_viewModel.PlayingChannel.AudioTracks != null &&
+                            _viewModel.PlayingChannel.AudioTracks.Count == 0)
+                        {
+                            _viewModel.PlayingChannel.AudioTracks = GetAudioTracks();
                         }
                     }
 

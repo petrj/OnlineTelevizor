@@ -433,6 +433,11 @@ namespace OnlineTelevizor.ViewModels
                 actions.Add(optionPlay);
             }
 
+            if (item != null)
+            {
+                actions.Add(optionDetail);
+            }
+
             if (item != null && item == PlayingChannel)
             {
                 if (PlayingState == PlayingStateEnum.PlayingInternal)
@@ -443,6 +448,11 @@ namespace OnlineTelevizor.ViewModels
                 {
                     actions.Add(optionPlayInFullscreen);
                 }
+            }
+
+            if (PlayingState == PlayingStateEnum.PlayingInPreview)
+            {
+                actions.Add(optionClosePreview);
             }
 
             if (item != null && item == PlayingChannel)
@@ -464,11 +474,6 @@ namespace OnlineTelevizor.ViewModels
                 }
             }
 
-            if (item != null)
-            {
-                actions.Add(optionDetail);
-            }
-
             if (item != null && !IsCasting && !IsRecording)
             {
                 actions.Add(optionCast);
@@ -483,11 +488,6 @@ namespace OnlineTelevizor.ViewModels
             if (IsCasting)
             {
                 actions.Add(optionStopCast);
-            }
-
-            if (PlayingState == PlayingStateEnum.PlayingInPreview)
-            {
-                actions.Add(optionClosePreview);
             }
 
             if (item != null)

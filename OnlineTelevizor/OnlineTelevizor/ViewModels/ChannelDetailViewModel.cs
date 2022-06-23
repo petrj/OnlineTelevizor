@@ -118,7 +118,7 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                return Channel == null || String.IsNullOrEmpty(Channel.VideoTrackDescription) ? string.Empty : "Rozlišení videa:" + Channel.VideoTrackDescription;
+                return Channel == null || String.IsNullOrEmpty(Channel.VideoTrackDescription) ? string.Empty : Channel.VideoTrackDescription;
             }
         }
 

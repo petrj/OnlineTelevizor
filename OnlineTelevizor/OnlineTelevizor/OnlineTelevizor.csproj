@@ -13,7 +13,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>ARROWS,UNBOUNDKEYS</DefineConstants>
+    <DefineConstants>UNBOUNDKEYS</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - Live Player|AnyCPU'">
@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>UNBOUNDKEYS,ARROWS</DefineConstants>
+    <DefineConstants>UNBOUNDKEYS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

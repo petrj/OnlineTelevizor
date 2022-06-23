@@ -18,7 +18,7 @@ using System.Collections.ObjectModel;
 namespace OnlineTelevizor.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class HelpPage : ContentPage
+    public partial class HelpPage : ContentPage, INavigationScrollUpDown
     {
         private HelpViewModel _viewModel;
         private IOnlineTelevizorConfiguration _config;
