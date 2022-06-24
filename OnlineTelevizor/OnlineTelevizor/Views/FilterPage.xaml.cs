@@ -14,7 +14,7 @@ using Xamarin.Forms.Xaml;
 namespace OnlineTelevizor.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class FilterPage : ContentPage
+    public partial class FilterPage : ContentPage, INavigationSelectNextItem, INavigationSendOKButton
     {
         private FilterPageViewModel _viewModel;
         private View _lastFocusedView = null;

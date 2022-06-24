@@ -14,7 +14,7 @@ using Xamarin.Forms.Xaml;
 namespace OnlineTelevizor.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class QualitiesPage : ContentPage
+    public partial class QualitiesPage : ContentPage, INavigationSelectPreviousItem, INavigationSelectNextItem
     {
         private StreamQualityViewModel _viewModel;
         private IOnlineTelevizorConfiguration _config;

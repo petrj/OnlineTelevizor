@@ -214,18 +214,6 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
-        public bool DebugArrowVisible
-        {
-            get
-            {
-#if ARROWS
-                return true;
-#else
-                return false;
-#endif
-            }
-        }
-
         private async Task AnyKeyPressed(string key)
         {
             MessagingCenter.Send(key, BaseViewModel.MSG_KeyMessage);

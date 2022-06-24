@@ -15,7 +15,7 @@ using Xamarin.Forms.Xaml;
 namespace OnlineTelevizor.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CastRenderersPage : ContentPage
+    public partial class CastRenderersPage : ContentPage, INavigationSelectNextItem, INavigationSelectPreviousItem, INavigationSendOKButton
     {
         private RenderersViewModel _viewModel;
         private MediaPlayer _mediaPlayer;

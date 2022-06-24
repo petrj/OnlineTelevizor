@@ -14,7 +14,7 @@ using Xamarin.Forms.Xaml;
 namespace OnlineTelevizor.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class TimerPage : ContentPage
+    public partial class TimerPage : ContentPage, INavigationSelectPreviousItem, INavigationSelectNextItem
     {
         private IOnlineTelevizorConfiguration _config;
         private ILoggingService _loggingService;
@@ -50,7 +50,17 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        public void IncreaseTime()
+        public async void SelectNextItem()
+        {
+            IncreaseTime();
+        }
+
+        public async void SelectPreviousItem()
+        {
+            DecreaseTime();
+        }
+
+        private void IncreaseTime()
         {
             if (_viewModel.TimerMinutes<50)
             {
@@ -61,7 +71,7 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        public void DecreaseTime()
+        private void DecreaseTime()
         {
             if (_viewModel.TimerMinutes < 50)
             {

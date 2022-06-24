@@ -570,8 +570,6 @@ namespace OnlineTelevizor.Views
                     lowKey == "mediaplayprevious" ||
                     lowKey == "mediaprevious" ||
                     lowKey == "numpad4" ||
-                    lowKey == "left" ||
-                    lowKey == "dpadleft" ||
                     lowKey == "buttonl1" ||
                     lowKey == "del" ||
                     lowKey == "numpad8" ||
@@ -611,7 +609,9 @@ namespace OnlineTelevizor.Views
             if (    lowKey == "pageup" ||
                     lowKey == "dpadup" ||
                     lowKey == "up" ||
-                    lowKey == "w"
+                    lowKey == "w" ||
+                    lowKey == "dpadleft" ||
+                    lowKey == "left"
                )
             {
                 return true;
@@ -648,84 +648,6 @@ namespace OnlineTelevizor.Views
             {
                 // different page on navigation top
 
-                var type = stack[stack.Count - 1].GetType();
-
-                if (type == typeof(CastRenderersPage))
-                {
-                    var renderPage = stack[stack.Count - 1] as CastRenderersPage;
-
-                    if (SelectNextItemKeyDown(lowKey))
-                    {
-                        renderPage.SelectNextItem();
-                    }
-                    else
-                    if (SelectPreviousItemKeyDown(lowKey))
-                    {
-                        renderPage.SelectPreviousItem();
-                    }
-                    else
-                    if (OKKeyDown(lowKey))
-                    {
-                        renderPage.SendOKButton();
-                    }
-                }
-
-                if (type == typeof(TimerPage))
-                {
-                    if (SelectNextItemKeyDown(lowKey))
-                    {
-                        _timerPage.DecreaseTime();
-                    }
-                    else
-                    if (SelectPreviousItemKeyDown(lowKey))
-                    {
-                        _timerPage.IncreaseTime();
-                    }
-                }
-
-                if (type == typeof(FilterPage) && _filterPage != null)
-                {
-                    if (SelectNextItemKeyDown(lowKey))
-                    {
-                        _filterPage.SelectNextItem();
-                    }
-                    else
-                    if (OKKeyDown(lowKey))
-                    {
-                        _filterPage.SendOKButton();
-                    }
-                }
-
-                if (type == typeof(QualitiesPage))
-                {
-                    var qualityPage = stack[stack.Count - 1] as QualitiesPage;
-
-                    if (SelectNextItemKeyDown(lowKey))
-                    {
-                        qualityPage.SelectNextItem();
-                    }
-                    else
-                    if (SelectPreviousItemKeyDown(lowKey))
-                    {
-                        qualityPage.SelectPreviousItem();
-                    }
-                }
-
-                if (type == typeof(SettingsPage))
-                {
-                    var settingsPage = stack[stack.Count - 1] as SettingsPage;
-
-                    if (SelectNextItemKeyDown(lowKey))
-                    {
-                        settingsPage.SelectNextItem();
-                    }
-                    else
-                    if (OKKeyDown(lowKey))
-                    {
-                        settingsPage.SendOKButton();
-                    }
-                }
-
                 var pageOnTop = stack[stack.Count - 1];
 
                 if (pageOnTop is INavigationScrollUpDown)
@@ -738,6 +660,30 @@ namespace OnlineTelevizor.Views
                     if (SelectPreviousItemKeyDown(lowKey))
                     {
                         (pageOnTop as INavigationScrollUpDown).ScrollUp();
+                    }
+                }
+
+                if (pageOnTop is INavigationSelectNextItem)
+                {
+                    if (SelectNextItemKeyDown(lowKey))
+                    {
+                        (pageOnTop as INavigationSelectNextItem).SelectNextItem();
+                    }
+                }
+
+                if (pageOnTop is INavigationSelectPreviousItem)
+                {
+                    if (SelectPreviousItemKeyDown(lowKey))
+                    {
+                        (pageOnTop as INavigationSelectPreviousItem).SelectPreviousItem();
+                    }
+                }
+
+                if (pageOnTop is INavigationSendOKButton)
+                {
+                    if (OKKeyDown(lowKey))
+                    {
+                        (pageOnTop as INavigationSendOKButton).SendOKButton();
                     }
                 }
 

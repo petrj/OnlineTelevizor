@@ -17,7 +17,7 @@ using System.Collections.ObjectModel;
 namespace OnlineTelevizor.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SettingsPage : ContentPage
+    public partial class SettingsPage : ContentPage, INavigationSelectNextItem, INavigationSendOKButton
     {
         private SettingsViewModel _viewModel;
         private IOnlineTelevizorConfiguration _config;
