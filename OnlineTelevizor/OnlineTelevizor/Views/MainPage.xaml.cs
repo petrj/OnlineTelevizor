@@ -38,6 +38,7 @@ namespace OnlineTelevizor.Views
         private DateTime _lastActionOkMenuPopupTime = DateTime.MinValue;
         private bool _firstSelectionAfterStartup = false;
         private string _numberPressed = String.Empty;
+        private bool _resumedWithoutReinitializingVideo = false;
 
         private LibVLC _libVLC = null;
         private MediaPlayer _mediaPlayer;
@@ -469,7 +470,7 @@ namespace OnlineTelevizor.Views
             {
                 if (!ToolbarItems.Contains(ToolbarItemQuality))
                 {
-                    ToolbarItems.Insert(1, ToolbarItemQuality);
+                    ToolbarItems.Insert(2, ToolbarItemQuality);
                 }
             }
 
@@ -1103,7 +1104,18 @@ namespace OnlineTelevizor.Views
             }
 
             // workaround for black screen after resume
-            // TODO: resume video without reinitializing
+
+            var radio = _viewModel.PlayingChannel != null
+                                           && !string.IsNullOrEmpty(_viewModel.PlayingChannel.Type)
+                                           && (_viewModel.PlayingChannel.Type.ToLower() == "radio")
+                                           ? true
+                                           : false;
+
+            if (radio)
+            {
+                _resumedWithoutReinitializingVideo = true;
+                return;
+            }
 
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -1232,6 +1244,12 @@ namespace OnlineTelevizor.Views
                             _media = new Media(_libVLC, channel.Url, FromType.FromLocation);
 
                             videoView.MediaPlayer = _mediaPlayer;
+
+                            if (_resumedWithoutReinitializingVideo)
+                            {
+                                VideoStackLayout.Children.Remove(videoView);
+                                VideoStackLayout.Children.Add(videoView);
+                            }
 
                             NoVideoStackLayout.IsVisible = true;
                             VideoStackLayout.IsVisible = false;

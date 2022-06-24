@@ -155,6 +155,9 @@ namespace OnlineTelevizor.ViewModels
             set
             {
                 _playingState = value;
+
+                OnPropertyChanged(nameof(SelectedChannelEPGTitle));
+                OnPropertyChanged(nameof(SelectedChannelEPGDescription));
             }
         }
 
@@ -980,7 +983,13 @@ namespace OnlineTelevizor.ViewModels
                 if (item == null || item.CurrentEPGItem == null)
                     return String.Empty;
 
-                return item.CurrentEPGItem.Title;
+                if (_playingState != PlayingStateEnum.PlayingInternal)
+                {
+                    return item.CurrentEPGItem.Title;
+                } else
+                {
+                    return item.Name;
+                }
             }
         }
 
@@ -1115,7 +1124,18 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                return _selectedChannelEPGDescription.Trim();
+                if (PlayingState != PlayingStateEnum.PlayingInternal)
+                {
+                    return _selectedChannelEPGDescription.Trim();
+                }
+                else
+                {
+                    var item = SelectedItemSafe;
+                    if (item == null || item.CurrentEPGItem == null)
+                        return String.Empty;
+
+                    return item.CurrentEPGItem.Title;
+                }
             }
             set
             {
