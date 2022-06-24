@@ -69,6 +69,14 @@ namespace SledovaniTVAPI
             }
         }
 
+        public bool AdultLockEnabled
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public DeviceConnection Connection
         {
             get
@@ -586,7 +594,7 @@ namespace SledovaniTVAPI
 
                 if (!string.IsNullOrEmpty(quality))
                 {
-                    ps.Add("quality", quality);                    
+                    ps.Add("quality", quality);
                 }
 
                 var channelsString = await SendRequest("playlist", ps);
@@ -637,7 +645,7 @@ namespace SledovaniTVAPI
                             Type = channelJson["type"].ToString(),
                             LogoUrl = channelJson["logoUrl"].ToString(),
                             Locked = channelJson["locked"].ToString(),
-                            Group = channelJson["group"].ToString()                            
+                            Group = channelJson["group"].ToString()
                         };
 
                         if (channelJson.HasValue("subtitles"))
@@ -646,7 +654,7 @@ namespace SledovaniTVAPI
                             {
                                 if (!subtitleJson.HasValue("url"))
                                 {
-                                    continue;                                    
+                                    continue;
                                 }
 
                                 var subtitleTrack = new SubTitleTrack();

@@ -18,7 +18,6 @@ namespace OnlineTelevizor.ViewModels
     public class SettingsViewModel : BaseViewModel
     {
         private bool _isPruchased;
-        private bool _isFullscreen;
         private TVService _service;
 
         public Command PayCommand { get; set; }
@@ -282,7 +281,7 @@ namespace OnlineTelevizor.ViewModels
             {
                 await CrossInAppBilling.Current.DisconnectAsync();
             }
-        }       
+        }
 
         public int TVAPIIndex
         {

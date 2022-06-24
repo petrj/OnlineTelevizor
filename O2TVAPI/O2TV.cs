@@ -60,6 +60,14 @@ namespace O2TVAPI
             }
         }
 
+        public bool AdultLockEnabled
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public StatusEnum Status
         {
             get

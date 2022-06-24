@@ -102,14 +102,9 @@ namespace OnlineTelevizor.Droid
                 string version = String.Empty;
                 try
                 {
-                    var packageManager = context.PackageManager;
-                    var appInfo = packageManager.GetPackageInfo(context.PackageName, 0);
-                    version = appInfo.LongVersionCode.ToString();
-
-                    _loggingService.Info($"App version: {version}");
+                    version = VersionTracking.CurrentBuild;
                 }
-                catch { }
-
+                catch {}
 
                 var uiModeManager = (UiModeManager)GetSystemService(UiModeService);
                 if (uiModeManager.CurrentModeType == UiMode.TypeTelevision)

@@ -13,6 +13,7 @@ namespace TVAPI
         bool EPGEnabled { get; }
         bool SubtitlesEnabled { get; }
         bool QualityFilterEnabled { get; }
+        bool AdultLockEnabled { get; }
         StatusEnum Status { get; }
         Task Login(bool force = false);
         Task<List<Channel>> GetChannels(string quality = null);

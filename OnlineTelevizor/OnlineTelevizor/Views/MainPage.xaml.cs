@@ -687,10 +687,20 @@ namespace OnlineTelevizor.Views
                     }
                 }
 
-                if (LeavePageKeyDown(lowKey))
+                if (pageOnTop is INavigationSendBackButton)
                 {
-                    // closing page
-                    Navigation.PopAsync();
+                    if (LeavePageKeyDown(lowKey))
+                    {
+                        (pageOnTop as INavigationSendBackButton).SendBackButton();
+                    }
+                }
+                else
+                {
+                    if (LeavePageKeyDown(lowKey))
+                    {
+                        // closing page
+                        Navigation.PopAsync();
+                    }
                 }
 
                 return;

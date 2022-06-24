@@ -299,5 +299,17 @@ namespace OnlineTelevizor.Services
                 return _service.QualityFilterEnabled;
             }
         }
+
+        public bool AdultLockEnabled
+        {
+            get
+            {
+                if (_service == null)
+                    return false;
+
+                return _service.AdultLockEnabled;
+            }
+        }
+
     }
 }

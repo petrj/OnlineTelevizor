@@ -55,6 +55,14 @@ namespace DVBStreamerAPI
             }
         }
 
+        public bool AdultLockEnabled
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public async Task Login(bool force = false)
         {
             _log.Info($"DVBStreamer login");

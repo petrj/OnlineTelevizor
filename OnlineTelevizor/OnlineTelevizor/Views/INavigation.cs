@@ -19,6 +19,11 @@ namespace OnlineTelevizor
         void SendOKButton();
     }
 
+    public interface INavigationSendBackButton
+    {
+        void SendBackButton();
+    }
+
     public interface INavigationScrollUpDown
     {
         void ScrollDown();

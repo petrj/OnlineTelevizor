@@ -17,7 +17,7 @@ using System.Collections.ObjectModel;
 namespace OnlineTelevizor.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SettingsPage : ContentPage, INavigationSelectNextItem, INavigationSendOKButton
+    public partial class SettingsPage : ContentPage, INavigationSelectNextItem, INavigationSendOKButton, INavigationSendBackButton
     {
         private SettingsViewModel _viewModel;
         private IOnlineTelevizorConfiguration _config;
@@ -52,17 +52,6 @@ namespace OnlineTelevizor.Views
                 FontSizePicker.IsVisible = false;
             }
 
-            Appearing += delegate
-            {
-                MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings, async (sender) =>
-                {
-                    if (await _dialogService.Confirm("Při běhu na pozadí je nutné zajistit, aby se aplikace kvůli optimalizaci baterie neukončovala. Přejít do nastavení?"))
-                    {
-                        MessagingCenter.Send<SettingsPage>(this, BaseViewModel.MSG_SetBatterySettings);
-                    }
-                });
-            };
-
             Disappearing += delegate
             {
                 MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings);
@@ -70,9 +59,18 @@ namespace OnlineTelevizor.Views
 
             TVAPIPicker.Unfocused += TVAPIPicker_Unfocused;
             LastChannelAutoPlayPicker.Unfocused += LastChannelAutoPlayPicker_Unfocused;
+            LastChannelAutoPlayPicker.Focused += LastChannelAutoPlayPicker_Focused;
             FontSizePicker.Unfocused += FontSizePicker_Unfocused;
+        }
 
-            PasswordEntry.Unfocused += PasswordEntry_Unfocused;
+        private void LastChannelAutoPlayPicker_Focused(object sender, FocusEventArgs e)
+        {
+            if (_lastFocusedView == ShowAdultChannelsSwitch ||
+                _lastFocusedView == SNEntry ||
+                _lastFocusedView == O2TVPasswordEntry)
+            {
+                _lastFocusedView = LastChannelAutoPlayPicker;
+            }
         }
 
         public string AppVersion
@@ -89,27 +87,24 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        private void PasswordEntry_Unfocused(object sender, FocusEventArgs e)
-        {
-            //if (_viewModel.Config.IsRunningOnTV)
-                FocusView(PinEntry);
-        }
-
         private void FontSizePicker_Unfocused(object sender, FocusEventArgs e)
         {
-            //if (_viewModel.Config.IsRunningOnTV)
-                FocusView(ShowAdultChannelsSwitch);
+            if (_lastFocusedView == FontSizePicker)
+            {
+                FocusView(FullscreenSwitch);
+            }
         }
 
         private void LastChannelAutoPlayPicker_Unfocused(object sender, FocusEventArgs e)
         {
-            //if (_viewModel.Config.IsRunningOnTV)
+            if (_lastFocusedView == LastChannelAutoPlayPicker)
+            {
                 FocusView(FontSizePicker);
+            }
         }
 
         private void TVAPIPicker_Unfocused(object sender, FocusEventArgs e)
         {
-            //if (_viewModel.Config.IsRunningOnTV)
                 switch (_viewModel.Config.TVApi)
                 {
                     case TVAPIEnum.SledovaniTV:
@@ -142,7 +137,17 @@ namespace OnlineTelevizor.Views
 
         protected override void OnAppearing()
         {
+            _loggingService.Debug("Appearing");
+
             base.OnAppearing();
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings, async (sender) =>
+            {
+                if (await _dialogService.Confirm("Při běhu na pozadí je nutné zajistit, aby se aplikace kvůli optimalizaci baterie neukončovala. Přejít do nastavení?"))
+                {
+                    MessagingCenter.Send<SettingsPage>(this, BaseViewModel.MSG_SetBatterySettings);
+                }
+            });
 
 #if DVBSTREAMER
             var dvbStreamerEnabled = true;
@@ -158,6 +163,8 @@ namespace OnlineTelevizor.Views
                 if (TVAPIPicker.Items.Contains("DVB Streamer"))
                     TVAPIPicker.Items.Remove("DVB Streamer");
             }
+
+            _lastFocusedView = null;
         }
 
         private void FocusView(View view)
@@ -173,8 +180,8 @@ namespace OnlineTelevizor.Views
             AboutButton.BackgroundColor = Color.Gray;
             AboutButton.TextColor = Color.Black;
 
-            view.Focus();
             _lastFocusedView = view;
+            view.Focus();
 
             if (view is Button)
             {
@@ -198,11 +205,42 @@ namespace OnlineTelevizor.Views
             }
         }
 
+        public void SendBackButton()
+        {
+            if (_lastFocusedView == TVAPIPicker)
+            {
+                TVAPIPicker.Unfocus();
+            } else
+            if (_lastFocusedView == LastChannelAutoPlayPicker)
+            {
+                LastChannelAutoPlayPicker.Unfocus();
+            }
+            if (_lastFocusedView == FontSizePicker)
+            {
+                FontSizePicker.Unfocus();
+            }
+            else
+            {
+                Navigation.PopAsync();
+            }
+        }
+
         public void SelectNextItem()
         {
-            if (_lastFocusedView == UsernameEntry)
+            if (_lastFocusedView == null)
+            {
+                FocusView(TVAPIPicker);
+            } if (_lastFocusedView == UsernameEntry)
             {
                 FocusView(PasswordEntry);
+            }
+            else if (_lastFocusedView == O2TVUsernameEntry)
+            {
+                FocusView(O2TVPasswordEntry);
+            }
+            else if (_lastFocusedView == DVBStreamerUrlEntry)
+            {
+                FocusView(LastChannelAutoPlayPicker);
             }
             else if (_lastFocusedView == PasswordEntry)
             {
@@ -210,13 +248,9 @@ namespace OnlineTelevizor.Views
             }
             else if (_lastFocusedView == PinEntry)
             {
-                FocusView(LastChannelAutoPlayPicker);
+                FocusView(ShowAdultChannelsSwitch);
             }
-            else if (_lastFocusedView == O2TVUsernameEntry)
-            {
-                FocusView(O2TVPasswordEntry);
-            }
-            else if (_lastFocusedView == SNEntry)
+            else if (_lastFocusedView == ShowAdultChannelsSwitch)
             {
                 FocusView(LastChannelAutoPlayPicker);
             }
@@ -224,11 +258,15 @@ namespace OnlineTelevizor.Views
             {
                 FocusView(LastChannelAutoPlayPicker);
             }
-            else if (_lastFocusedView == DVBStreamerUrlEntry)
+            else if (_lastFocusedView == SNEntry)
             {
                 FocusView(LastChannelAutoPlayPicker);
             }
-            else if (_lastFocusedView == ShowAdultChannelsSwitch)
+            else if (_lastFocusedView == LastChannelAutoPlayPicker)
+            {
+                FocusView(FontSizePicker);
+            }
+            else if (_lastFocusedView == FontSizePicker)
             {
                 FocusView(FullscreenSwitch);
             }
@@ -254,7 +292,7 @@ namespace OnlineTelevizor.Views
             {
                 FocusView(AboutButton);
             }
-            else
+            else if (_lastFocusedView == AboutButton)
             {
                 FocusView(TVAPIPicker);
             }
