@@ -14,7 +14,7 @@ using Xamarin.Forms.Xaml;
 namespace OnlineTelevizor.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class FilterPage : ContentPage, INavigationSelectNextItem, INavigationSendOKButton
+    public partial class FilterPage : ContentPage, INavigationSelectNextItem, INavigationSendOKButton, INavigationSendBackButton
     {
         private FilterPageViewModel _viewModel;
         private View _lastFocusedView = null;
@@ -27,20 +27,53 @@ namespace OnlineTelevizor.Views
 
             GroupPicker.Unfocused += GroupPicker_Unfocused;
             TypePicker.Unfocused += TypePicker_Unfocused;
+            TypePicker.Focused += TypePicker_Focused;
+            GroupPicker.Focused += GroupPicker_Focused;
 
             BindingContext = _viewModel = new FilterPageViewModel(loggingService, config, dialogService, service);
         }
 
+        private void GroupPicker_Focused(object sender, FocusEventArgs e)
+        {
+            _lastFocusedView = GroupPicker;
+        }
+
+        private void TypePicker_Focused(object sender, FocusEventArgs e)
+        {
+            _lastFocusedView = TypePicker;
+        }
+
         private void TypePicker_Unfocused(object sender, FocusEventArgs e)
         {
-            //if (_viewModel.Config.IsRunningOnTV)
-            FocusView(GroupPicker);
+            if (_lastFocusedView == TypePicker)
+            {
+                FocusView(GroupPicker);
+            }
         }
 
         private void GroupPicker_Unfocused(object sender, FocusEventArgs e)
         {
-            //if (_viewModel.Config.IsRunningOnTV)
-            FocusView(ChannelNameEntry);
+            if (_lastFocusedView == GroupPicker)
+            {
+                FocusView(ChannelNameEntry);
+            }
+        }
+
+        public void SendBackButton()
+        {
+            if (_lastFocusedView == TypePicker)
+            {
+                TypePicker.Unfocus();
+            }
+            else
+            if (_lastFocusedView == GroupPicker)
+            {
+                GroupPicker.Unfocus();
+            }
+            else
+            {
+                Navigation.PopAsync();
+            }
         }
 
         protected override void OnAppearing()
@@ -64,10 +97,8 @@ namespace OnlineTelevizor.Views
             RefreshButton.BackgroundColor = Color.Gray;
             RefreshButton.TextColor = Color.Black;
 
-
-            view.Focus();
-
             _lastFocusedView = view;
+            view.Focus();
 
             if (view is Button)
             {
