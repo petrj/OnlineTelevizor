@@ -1949,8 +1949,7 @@ namespace OnlineTelevizor.Views
                     if (_mediaPlayer.IsPlaying &&
                         _viewModel.PlayingChannel != null)
                     {
-                        if (string.IsNullOrEmpty(_viewModel.PlayingChannel.VideoTrackDescription))
-                        {
+
                             foreach (var track in _mediaPlayer.Media.Tracks)
                             {
                                 if (track.TrackType == TrackType.Video)
@@ -1959,7 +1958,6 @@ namespace OnlineTelevizor.Views
                                     break;
                                 }
                             }
-                        }
 
                         if (_viewModel.PlayingChannel.AudioTracks != null &&
                             _viewModel.PlayingChannel.AudioTracks.Count == 0)
