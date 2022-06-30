@@ -144,6 +144,8 @@ namespace OnlineTelevizor.Droid
 
                 SubscribeMessages();
 
+                var input_manager = (InputManager)GetSystemService(Context.InputService);
+
                 LoadApplication(_app);
             } catch (Exception ex)
             {
@@ -424,7 +426,7 @@ namespace OnlineTelevizor.Droid
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
-            System.Diagnostics.Debug.WriteLine($"OnKeyDown: keyCode:{keyCode}, long:{e.IsLongPress}");
+            _loggingService.Debug($"OnKeyDown: keyCode:{keyCode}, long:{e.IsLongPress}");
 
             if (e.IsLongPress)
             {
@@ -434,6 +436,29 @@ namespace OnlineTelevizor.Droid
             MessagingCenter.Send(keyCode.ToString(), BaseViewModel.MSG_KeyMessage);
 
             return base.OnKeyDown(keyCode, e);
+        }
+
+        public override bool OnGenericMotionEvent(MotionEvent e)
+        {
+            // https://github.com/xamarin/monodroid-samples/blob/main/tv/VisualGameController/VisualGameController/FullScreenActivity.cs
+
+            try
+            {
+                int sources = (int)e.Device.Sources;
+
+                if (((sources & (int)InputSourceType.Gamepad) == (int)InputSourceType.Gamepad) ||
+                    ((sources & (int)InputSourceType.Joystick) == (int)InputSourceType.Joystick))
+                {
+                    _loggingService.Debug($"OnGenericMotionEvent: Gamepad/Joystick action");
+                    _loggingService.Debug($"       action : {e.Action.ToString()}");
+                }
+
+            } catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
+
+            return base.OnGenericMotionEvent(e);
         }
 
         private void ShowToastMessage(string message)

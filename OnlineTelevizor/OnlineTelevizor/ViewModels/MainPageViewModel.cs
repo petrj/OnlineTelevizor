@@ -1760,6 +1760,8 @@ namespace OnlineTelevizor.ViewModels
 
             _loggingService.Info($"RefreshEPG");
 
+            if (Channels.Count == 0)
+                return 0;
 
             var epgItemsCountRead = 0;
             try
