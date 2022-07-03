@@ -40,6 +40,7 @@ namespace OnlineTelevizor.Droid
         protected ILoggingService _loggingService;
         NotificationHelper _notificationHelper;
         private static Android.Widget.Toast _instance;
+        private DateTime _lastOnGenericMotionEventTime = DateTime.MinValue;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -444,6 +445,16 @@ namespace OnlineTelevizor.Droid
 
             try
             {
+                if (_lastOnGenericMotionEventTime > DateTime.MinValue &&
+                    (DateTime.Now- _lastOnGenericMotionEventTime).TotalMilliseconds < 100)
+                {
+                    return false;
+                }
+
+                _lastOnGenericMotionEventTime = DateTime.Now;
+
+                _loggingService.Debug($"OnGenericMotionEvent: DownTime: {e.DownTime}");
+
                 int sources = (int)e.Device.Sources;
 
                 if (((sources & (int)InputSourceType.Gamepad) == (int)InputSourceType.Gamepad) ||
@@ -451,6 +462,36 @@ namespace OnlineTelevizor.Droid
                 {
                     _loggingService.Debug($"OnGenericMotionEvent: Gamepad/Joystick action");
                     _loggingService.Debug($"       action : {e.Action.ToString()}");
+
+                    var x = e.GetAxisValue(Axis.X);
+                    var y = e.GetAxisValue(Axis.X);
+
+                    var x1 = e.GetAxisValue(Axis.Z);
+                    var y1 = e.GetAxisValue(Axis.Rz);
+
+                    if (x>0.5 || x1 > 0.5)
+                    {
+                        MessagingCenter.Send("Right", BaseViewModel.MSG_KeyMessage);
+                        return true;
+                    }
+
+                    if (x < -0.5 || x1 < -0.5)
+                    {
+                        MessagingCenter.Send("Left", BaseViewModel.MSG_KeyMessage);
+                        return true;
+                    }
+
+                    if (y > 0.5 || y1 > 0.5)
+                    {
+                        MessagingCenter.Send("Down", BaseViewModel.MSG_KeyMessage);
+                        return true;
+                    }
+
+                    if (y < -0.5 || y1 < -0.5)
+                    {
+                        MessagingCenter.Send("Up", BaseViewModel.MSG_KeyMessage);
+                        return true;
+                    }
                 }
 
             } catch (Exception ex)
