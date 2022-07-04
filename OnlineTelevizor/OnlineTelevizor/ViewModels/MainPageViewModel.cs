@@ -401,6 +401,7 @@ namespace OnlineTelevizor.ViewModels
             string optionCast = "Odeslat ..";
             string optionStopCast = "Zastavit odesílání";
             string optionDetail = "Zobrazit detail ..";
+            string optionShareUrl = "Otevřít odkaz";
             string optionClosePreview = "Stop";
 
             string optionToggleAudioStream = "Změnit zvukovou stopu";
@@ -427,6 +428,7 @@ namespace OnlineTelevizor.ViewModels
             if (item != null)
             {
                 actions.Add(optionDetail);
+                actions.Add(optionShareUrl);
             }
 
             if (item != null && item == PlayingChannel)
@@ -536,6 +538,10 @@ namespace OnlineTelevizor.ViewModels
             else if (selectedvalue == optionDetail)
             {
                 MessagingCenter.Send<MainPageViewModel>(this, BaseViewModel.MSG_ShowDetailMessage);
+            }
+            else if (selectedvalue == optionShareUrl)
+            {
+                MessagingCenter.Send(item.Url, BaseViewModel.MSG_ShareUrl);
             }
             else if (selectedvalue == optionCast)
             {

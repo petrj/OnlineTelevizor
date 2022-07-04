@@ -266,7 +266,7 @@ namespace O2TVAPI
 
                 var headerPostData = GetUnityHeaderData();
 
-                var getChannelsResponse = await SendRequest("https://api.o2tv.cz/unity/api/v1/channels", "GET", null, headerPostData);
+                var getChannelsResponse = await SendRequest("https://api.o2tv.cz/unity/api/v1/channels/", "GET", null, headerPostData);
                 var getChannelsResponseJson = JObject.Parse(getChannelsResponse);
 
                 // https://www.o2tv.cz  +  /assets/images/tv-logos/negative/ct1-hd.png

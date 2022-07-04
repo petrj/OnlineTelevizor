@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
@@ -30,7 +31,21 @@ namespace OnlineTelevizor.UWP
         {
             this.InitializeComponent();
 
-            LoadApplication(new OnlineTelevizor.Views.App(new UWPOnlineTelevizorConfiguration(), new DummyLoggingService()));
+            ILoggingService loggingService = null;
+#if LOGGING
+
+            loggingService = new FileLoggingService(LoggingLevelEnum.Info);
+
+            var path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, $"OnlineTelevizor-{DateTime.Now.ToString("yyyy-MM-dd")}.log");
+
+            (loggingService as FileLoggingService).LogFilename = path;
+            (loggingService as FileLoggingService).WriteToOutput = true;
+
+#else
+            loggingService = new DummyLoggingService();
+#endif
+
+            LoadApplication(new OnlineTelevizor.Views.App(new UWPOnlineTelevizorConfiguration(), loggingService));
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_UriMessage, (url) =>
             {
@@ -45,6 +60,16 @@ namespace OnlineTelevizor.UWP
             MessagingCenter.Subscribe<string>(string.Empty, BaseViewModel.MSG_StopPlayInternalNotificationAndQuit, (sender) =>
             {
                 CoreApplication.Exit();
+            });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_ShareUrl, (url) =>
+            {
+                Xamarin.Forms.Device.BeginInvokeOnMainThread(
+                new Action(
+                 async () =>
+                 {
+                     await Launcher.LaunchUriAsync(new Uri(url));
+                 }));
             });
 
             KeyDown += MainPage_KeyDown;
@@ -89,8 +114,8 @@ namespace OnlineTelevizor.UWP
               new Action(
                   async () =>
                   {
-                      var uri = new Uri($"vlc://openstream/?from=url&url={System.Web.HttpUtility.UrlEncode(url)}");
-                      await Launcher.LaunchUriAsync(uri);
+                      var vlcuri = new Uri($"vlc://openstream/?from=url&url={System.Web.HttpUtility.UrlEncode(url)}");
+                      await Launcher.LaunchUriAsync(vlcuri);
                   }));
         }
     }

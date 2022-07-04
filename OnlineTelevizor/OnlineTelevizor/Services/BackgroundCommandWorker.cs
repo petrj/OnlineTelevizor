@@ -59,7 +59,17 @@ namespace OnlineTelevizor.Services
                     if (loggingService != null)
                         loggingService.Info("Executing command");
 
-                    command.Execute(null);
+                    if (Device.OS == TargetPlatform.Windows)
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            command.Execute(null);
+                        });
+                    }
+                    else
+                    {
+                        command.Execute(null);
+                    }
 
                     if (repeatIntervalSeconds <= 0)
                     {
@@ -88,7 +98,17 @@ namespace OnlineTelevizor.Services
             {
                 Thread.Sleep(delaySeconds * 1000);
 
-                command.Execute(null);
+                if (Device.OS == TargetPlatform.Windows)
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        command.Execute(null);
+                    });
+                }
+                else
+                {
+                    command.Execute(null);
+                }
             });
         }
 

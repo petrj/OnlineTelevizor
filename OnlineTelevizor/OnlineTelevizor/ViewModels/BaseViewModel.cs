@@ -39,6 +39,7 @@ namespace OnlineTelevizor.ViewModels
         public const string MSG_StopPlay = "StopPlay";
         public const string MSG_PlayInPreview = "PlayInPreview";
         public const string MSG_ToastMessage = "ShowToastMessage";
+        public const string MSG_ShareUrl = "Sdílet odkaz";
         public const string MSG_ShowConfiguration = "ShowConfiguration";
         public const string MSG_StartCastNotification = "StartCastNotification";
         public const string MSG_StopCastNotification = "StopCastNotification";

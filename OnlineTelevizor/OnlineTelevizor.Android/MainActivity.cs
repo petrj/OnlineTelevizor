@@ -183,6 +183,14 @@ namespace OnlineTelevizor.Droid
                 ShowToastMessage(message);
             });
 
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_ShareUrl, (url) =>
+            {
+                var intent = new Intent(Intent.ActionView);
+                var uri = Android.Net.Uri.Parse(url);
+                intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
+                Android.App.Application.Context.StartActivity(intent);
+            });
+
             MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_UriMessage, (url) =>
             {
                 var intent = new Intent(Intent.ActionView);
