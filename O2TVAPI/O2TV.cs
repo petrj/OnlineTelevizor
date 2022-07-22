@@ -153,13 +153,11 @@ namespace O2TVAPI
 
             catch (WebException wex)
             {
-                _log.Error(wex, "Error while getting channels");
-                _status = StatusEnum.ConnectionNotAvailable;
+                _log.Error(wex, "Error while getting channel url");
             }
             catch (Exception ex)
             {
                 _log.Error(ex, "Error while getting channels");
-                _status = StatusEnum.GeneralError;
             }
 
             return null;
@@ -379,8 +377,11 @@ namespace O2TVAPI
                         channel.LogoUrl = channelImages[ch];
                     }
 
-                    res.Add(channel);
-                    number++;
+                    if (!string.IsNullOrEmpty(channel.Url))
+                    {
+                        res.Add(channel);
+                        number++;
+                    }
                 }
             }
             catch (WebException wex)

@@ -378,6 +378,27 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public bool ShowAdultChannels
+        {
+            get
+            {
+                return Config.ShowAdultChannels;
+            }
+            set
+            {
+                Config.ShowAdultChannels = value;
+                OnPropertyChanged(nameof(IsPINShowed));
+            }
+        }
+
+        public bool IsPINShowed
+        {
+            get
+            {
+                return Config.ShowAdultChannels;
+            }
+        }
+
         public ChannelItem SelectedChannelItem
         {
             get

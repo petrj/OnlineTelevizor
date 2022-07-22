@@ -244,13 +244,19 @@ namespace OnlineTelevizor.Views
             }
             else if (_lastFocusedView == PasswordEntry)
             {
-                FocusView(PinEntry);
-            }
-            else if (_lastFocusedView == PinEntry)
-            {
                 FocusView(ShowAdultChannelsSwitch);
             }
             else if (_lastFocusedView == ShowAdultChannelsSwitch)
+            {
+                if (_config.ShowAdultChannels)
+                {
+                    FocusView(PinEntry);
+                } else
+                {
+                    FocusView(LastChannelAutoPlayPicker);
+                }
+            }
+            else if (_lastFocusedView == PinEntry)
             {
                 FocusView(LastChannelAutoPlayPicker);
             }
