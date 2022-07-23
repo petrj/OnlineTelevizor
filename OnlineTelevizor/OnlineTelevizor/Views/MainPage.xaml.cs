@@ -93,7 +93,7 @@ namespace OnlineTelevizor.Views
 
         private void _mediaPlayer_Buffering(object sender, MediaPlayerBufferingEventArgs e)
         {
-            _loggingService.Info($"MediaPlayer_Buffering ({e.Cache})");
+            _loggingService.Debug($"MediaPlayer_Buffering ({e.Cache})");
         }
 
         private void _mediaPlayer_Opening(object sender, EventArgs e)
@@ -380,6 +380,16 @@ namespace OnlineTelevizor.Views
         private void MainPage_Disappearing(object sender, EventArgs e)
         {
             _loggingService.Info($"MainPage_Disappearing");
+
+            // workaround for turned off TV when playing
+            try
+            {
+                VideoStackLayout.Children.Remove(videoView);
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
         }
 
         private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
@@ -481,6 +491,8 @@ namespace OnlineTelevizor.Views
                     ToolbarItems.Remove(ToolbarItemHelp);
                 }
             }
+
+            Resume();
         }
 
         private void ScrollViewChannelEPGDescription_Scrolled(object sender, ScrolledEventArgs e)
@@ -1151,7 +1163,7 @@ namespace OnlineTelevizor.Views
 
         private void ShowJustPlayingNotification()
         {
-            _loggingService.Info($"ShowJustPlayingNotification");
+            _loggingService.Debug($"ShowJustPlayingNotification");
 
             bool showCurrent;
             string msg;
@@ -1906,7 +1918,7 @@ namespace OnlineTelevizor.Views
 
         private async Task CheckStream()
         {
-            _loggingService.Info("CheckStream");
+            _loggingService.Debug("CheckStream");
 
             Device.BeginInvokeOnMainThread(() =>
             {

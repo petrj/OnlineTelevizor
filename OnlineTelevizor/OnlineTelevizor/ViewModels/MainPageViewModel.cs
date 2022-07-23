@@ -311,7 +311,7 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task UpdateRecordNotification()
         {
-            _loggingService.Info($"UpdateRecordNotification");
+            _loggingService.Debug($"UpdateRecordNotification");
 
             await Task.Run( async () =>
             {
@@ -1106,7 +1106,7 @@ namespace OnlineTelevizor.ViewModels
 
         private async Task UpdateNotification()
         {
-            _loggingService.Info("UpdateNotification");
+            _loggingService.Debug("UpdateNotification");
 
             if (PlayingChannel != null)
             {
@@ -1803,6 +1803,10 @@ namespace OnlineTelevizor.ViewModels
                         }
                     }
                 }
+            }
+            catch(Exception ex)
+            {
+                _loggingService.Error(ex, "Error while refreshing EPG");
             }
             finally
             {

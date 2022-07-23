@@ -72,7 +72,7 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"OnResume");
 
-            _mainPage.Resume();
+            //_mainPage.Resume();
 
             // refresh only when resume after 1 minute
             if ((DateTime.Now - _lastSleep).TotalMinutes > 1)
