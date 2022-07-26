@@ -1962,14 +1962,19 @@ namespace OnlineTelevizor.Views
                         _viewModel.PlayingChannel != null)
                     {
 
-                            foreach (var track in _mediaPlayer.Media.Tracks)
+                        // there can be more video tracks, but MediaPlayer always returns video track id -1
+                        // ==> detecting video with biggest height
+
+                        var height = (uint)0;
+
+                        foreach (var track in _mediaPlayer.Media.Tracks)
+                        {
+                            if (track.TrackType == TrackType.Video && track.Data.Video.Height > height)
                             {
-                                if (track.TrackType == TrackType.Video)
-                                {
-                                    _viewModel.PlayingChannel.VideoTrackDescription = $"{track.Data.Video.Width}x{track.Data.Video.Height}";
-                                    break;
-                                }
+                                _viewModel.PlayingChannel.VideoTrackDescription = $"{track.Data.Video.Width}x{track.Data.Video.Height}   ";
+                                height = track.Data.Video.Height;
                             }
+                        }
 
                         if (_viewModel.PlayingChannel.AudioTracks != null &&
                             _viewModel.PlayingChannel.AudioTracks.Count == 0)
