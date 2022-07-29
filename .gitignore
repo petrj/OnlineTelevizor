@@ -329,6 +329,8 @@ Temporary Items
 *.apk
 *.apk
 
+*.appx
+
 nuget.exe
 OnlineTelevizor/OnlineTelevizor.UWP/BundleArtifacts
 OnlineTelevizor\OnlineTelevizor.UWP\AppPackages\*
