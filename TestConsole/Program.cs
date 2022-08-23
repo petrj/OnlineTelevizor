@@ -96,20 +96,6 @@ namespace TestConsole
 
                 var channels = await tvService.GetChannels();
 
-                foreach (var ch in channels)
-                {
-                    Console.WriteLine(ch.Name);
-                    Console.WriteLine("  ID     :" + ch.Id);
-                    Console.WriteLine("  EPGID  :" + ch.EPGId);
-                    Console.WriteLine("  Number :" + ch.ChannelNumber);
-                    Console.WriteLine("  Locked :" + ch.Locked);
-                    Console.WriteLine("  Url    :" + ch.Url);
-                    Console.WriteLine("  Type   :" + ch.Type);
-                    Console.WriteLine("  Group  :" + ch.Group);
-                    Console.WriteLine("  LogoUrl:" + ch.LogoUrl);
-                    Console.WriteLine("-----------------------");
-                }
-
                 var qualities = await tvService.GetStreamQualities();
 
                 foreach (var q in qualities)
@@ -123,6 +109,21 @@ namespace TestConsole
 
                     var url = await tvService.GetChannelUrl(ch.Id, "SD");
                     Console.WriteLine($"SD Url    : {url}");
+                }
+
+
+                foreach (var ch in channels)
+                {
+                    Console.WriteLine(ch.Name);
+                    Console.WriteLine("  ID     :" + ch.Id);
+                    Console.WriteLine("  EPGID  :" + ch.EPGId);
+                    Console.WriteLine("  Number :" + ch.ChannelNumber);
+                    Console.WriteLine("  Locked :" + ch.Locked);
+                    Console.WriteLine("  Url    :" + ch.Url);
+                    Console.WriteLine("  Type   :" + ch.Type);
+                    Console.WriteLine("  Group  :" + ch.Group);
+                    Console.WriteLine("  LogoUrl:" + ch.LogoUrl);
+                    Console.WriteLine("-----------------------");
                 }
 
                 /*

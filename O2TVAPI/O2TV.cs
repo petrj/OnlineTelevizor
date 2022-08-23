@@ -709,7 +709,7 @@ namespace O2TVAPI
             header.Add("X-NanguTv-Device-Name", "tvbox");
             header.Add("X-NanguTv-Device-Id", DeviceName);
             header.Add("X-NanguTv-App-Version", "Android#6.4.1");
-            header.Add("Accept-Encoding", "gzip");
+            //header.Add("Accept-Encoding", "gzip");
 
             return header;
         }
