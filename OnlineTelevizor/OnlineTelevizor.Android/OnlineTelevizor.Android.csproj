@@ -117,7 +117,7 @@
       <Version>3.6.6</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.1</Version>
+      <Version>13.0.2</Version>
     </PackageReference>
     <PackageReference Include="NLog">
       <Version>5.0.1</Version>
