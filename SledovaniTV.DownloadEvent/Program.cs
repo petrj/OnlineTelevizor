@@ -102,9 +102,26 @@ namespace SledovaniTVDownloadEvent
 
             Console.WriteLine($"Url: {prgSettings.Url}");
 
-
             var uri = new Uri(prgSettings.Url);
+
+            /* url examples:
+
+                https://sledovanitv.cz/epg/event-new?eventId=extasy_4k%3A20220511dbaeeddff0ea6576470f4717ebe662dd&showActions=1
+                https://sledovanitv.cz/epg/event/nova%3A2023011127714023a46a2e55b7ce2c328e2a8bef
+
+            */
+
             var eventIdParam = HttpUtility.ParseQueryString(uri.Query).Get("eventId");
+
+            if (string.IsNullOrEmpty(eventIdParam) && (uri.LocalPath != null) && (uri.LocalPath.StartsWith("/epg/event/")))
+            {
+                eventIdParam = uri.LocalPath.Substring("/epg/event/".Length);
+            }
+
+            if (string.IsNullOrEmpty(eventIdParam))
+            {
+                throw new Exception("Invalid url");
+            }
 
             Console.WriteLine($"EventId: {eventIdParam}");
 
