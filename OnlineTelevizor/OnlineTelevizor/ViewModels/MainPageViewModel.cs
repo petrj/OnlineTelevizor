@@ -1530,7 +1530,10 @@ namespace OnlineTelevizor.ViewModels
 
             if (_lastRefreshChannelsDelay == 0)
             {
-                MessagingCenter.Send(StatusLabel, BaseViewModel.MSG_ToastMessage);
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    MessagingCenter.Send(StatusLabel, BaseViewModel.MSG_ToastMessage);
+                });
             }
 
             _loggingService.Info($"RefreshWithNotification finished");

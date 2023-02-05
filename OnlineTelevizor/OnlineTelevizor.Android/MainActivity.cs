@@ -563,14 +563,14 @@ namespace OnlineTelevizor.Droid
                         // Landscape
 
                         screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 16.0);
-                        textView.SetMaxLines(4);
+                        textView.SetMaxLines(5);
                     }
                     else
                     {
                         // Portrait
 
                         screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 32.0);
-                        textView.SetMaxLines(4);
+                        textView.SetMaxLines(5);
                     }
 
                     var fontSizeRange = screenHeightRate - minTextSize;
