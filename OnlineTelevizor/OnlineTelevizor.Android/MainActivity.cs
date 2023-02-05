@@ -563,7 +563,7 @@ namespace OnlineTelevizor.Droid
                         // Landscape
 
                         screenHeightRate = Convert.ToInt32(DeviceDisplay.MainDisplayInfo.Height / 16.0);
-                        textView.SetMaxLines(2);
+                        textView.SetMaxLines(4);
                     }
                     else
                     {

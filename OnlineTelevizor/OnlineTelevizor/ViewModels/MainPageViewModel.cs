@@ -1470,7 +1470,13 @@ namespace OnlineTelevizor.ViewModels
                     case StatusEnum.NotInitialized: return "";
                     case StatusEnum.EmptyCredentials: return "Nevyplněny přihlašovací údaje";
                     case StatusEnum.Logged: return GetChannelsStatus;
-                    case StatusEnum.LoginFailed: return $"Chyba přihlášení k IPTV";
+                    case StatusEnum.LoginFailed:
+                        var res = "Chyba přihlášení k IPTV";
+                        if (!string.IsNullOrEmpty(_service.LastErrorDescription))
+                        {
+                            res += $" ({_service.LastErrorDescription})";
+                        }
+                        return res;
                     case StatusEnum.Paired: return $"Uživatel přihlášen";
                     case StatusEnum.PairingFailed: return $"Chybné přihlašovací údaje";
                     case StatusEnum.BadPin: return $"Chybný PIN";

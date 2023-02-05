@@ -311,5 +311,12 @@ namespace OnlineTelevizor.Services
             }
         }
 
+        public string LastErrorDescription
+        {
+            get
+            {
+                return _service.LastErrorDescription;
+            }
+        }
     }
 }
