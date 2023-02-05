@@ -37,6 +37,8 @@ namespace SledovaniTVAPI
             _session = new Session();
         }
 
+        public string LastErrorDescription { get; set; } = String.Empty;
+
         public void SetCredentials(string username, string password, string childLockPIN = null)
         {
             _credentials = new Credentials()
@@ -214,6 +216,7 @@ namespace SledovaniTVAPI
                         _status = StatusEnum.PairingFailed;
                     } else
                     {
+                        LastErrorDescription = devConnJson.GetStringValue("errorMsg");
                         _status = StatusEnum.LoginFailed;
                     }
                 }
@@ -297,6 +300,8 @@ namespace SledovaniTVAPI
 
         public async Task Login(bool force = false)
         {
+            LastErrorDescription = String.Empty;
+
             if (force)
                 _status = StatusEnum.NotInitialized;
 

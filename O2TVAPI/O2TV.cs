@@ -32,6 +32,8 @@ namespace O2TVAPI
             _log = loggingService;
         }
 
+        public string LastErrorDescription { get; set; } = String.Empty;
+
         public DeviceConnection Connection
         {
             get

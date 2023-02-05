@@ -36,6 +36,8 @@ namespace KUKITVAPI
             _connection = new DeviceConnection();
         }
 
+        public string LastErrorDescription { get; set; } = String.Empty;
+
         public DeviceConnection Connection
         {
             get

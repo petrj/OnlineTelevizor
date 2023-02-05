@@ -15,6 +15,7 @@ namespace TVAPI
         bool QualityFilterEnabled { get; }
         bool AdultLockEnabled { get; }
         StatusEnum Status { get; }
+        string LastErrorDescription { get; }
         Task Login(bool force = false);
         Task<List<Channel>> GetChannels(string quality = null);
         Task<List<EPGItem>> GetEPG();

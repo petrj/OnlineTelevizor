@@ -29,7 +29,7 @@ namespace TestConsole
 
 
 
-            var tvService = new O2TV(loggingService);
+            /*var tvService = new O2TV(loggingService);
             if (JSONObject.FileExists("O2TV.credentials.json"))
             {
                 //credentials.json:
@@ -41,6 +41,7 @@ namespace TestConsole
                 var credentials = JSONObject.LoadFromFile<Credentials>("O2TV.credentials.json");
                 tvService.SetConnection(credentials.Username, credentials.Password);
             }
+            */
 
             /*
             var tvService = new KUKITV(loggingService);
@@ -52,22 +53,21 @@ namespace TestConsole
             */
 
 
-            /*
+
             var tvService = new SledovaniTV(loggingService);
             if (JSONObject.FileExists("credentials.json"))
             {
                 var credentials = JSONObject.LoadFromFile<Credentials>("credentials.json");
                 tvService.SetCredentials(credentials.Username, credentials.Password, credentials.ChildLockPIN);
             }
-            */
 
-            /*
+
+
             if (JSONObject.FileExists("connection.json"))
             {
                 var conn = JSONObject.LoadFromFile<DeviceConnection>("connection.json");
                 tvService.SetConnection(conn.deviceId, conn.password);
             }
-            */
 
             /*
                 if (JSONObject.FileExists("dvbStreamer.json"))
@@ -102,15 +102,6 @@ namespace TestConsole
                 {
                     Console.WriteLine($"  Allowed: {q.Allowed}, Id: {q.Id}, Allowed: {q.Name}");
                 }
-
-                foreach (var ch in channels)
-                {
-                    Console.WriteLine(ch.Name);
-
-                    var url = await tvService.GetChannelUrl(ch.Id, "SD");
-                    Console.WriteLine($"SD Url    : {url}");
-                }
-
 
                 foreach (var ch in channels)
                 {

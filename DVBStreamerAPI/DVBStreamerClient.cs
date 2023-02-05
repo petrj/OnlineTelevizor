@@ -23,6 +23,8 @@ namespace DVBStreamerAPI
             _log = loggingService;
         }
 
+        public string LastErrorDescription { get; set; } = String.Empty;
+
         public DeviceConnection Connection
         {
             get
