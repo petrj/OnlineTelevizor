@@ -216,7 +216,10 @@ namespace SledovaniTVAPI
                         _status = StatusEnum.PairingFailed;
                     } else
                     {
-                        LastErrorDescription = devConnJson.GetStringValue("errorMsg");
+                        if (devConnJson.HasValue("errorMsg"))
+                        {
+                            LastErrorDescription = devConnJson.GetStringValue("errorMsg");
+                        }
                         _status = StatusEnum.LoginFailed;
                     }
                 }
