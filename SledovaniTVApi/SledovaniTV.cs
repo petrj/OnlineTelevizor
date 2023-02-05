@@ -199,7 +199,7 @@ namespace SledovaniTVAPI
                 {
                     { "username", _credentials.Username },
                     { "password", _credentials.Password },
-                    { "type", "samsungtv" }
+                    { "type", "androidportable" }  // xbmc, androidportable, samsungtv, androidsmarttv, ios
                 };
 
                 var deviceConnectionString = await SendRequest("create-pairing", ps);
@@ -329,7 +329,9 @@ namespace SledovaniTVAPI
                 return;
             }
 
-            if (!force && _deviceConnection != null && !String.IsNullOrEmpty(_deviceConnection.deviceId))
+            if (!force && _deviceConnection != null &&
+                !String.IsNullOrEmpty(_deviceConnection.deviceId) &&
+                !String.IsNullOrEmpty(_deviceConnection.password))
             {
                 _status = StatusEnum.Paired;
             }
@@ -575,8 +577,8 @@ namespace SledovaniTVAPI
             _log.Info("ResetConnection");
 
             _status = StatusEnum.NotInitialized;
-            _deviceConnection.deviceId = null;
-            _deviceConnection.password = null;
+            //_deviceConnection.deviceId = null;
+            //_deviceConnection.password = null;
             _session.PHPSESSID = null;
         }
 

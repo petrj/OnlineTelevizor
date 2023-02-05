@@ -66,20 +66,19 @@ namespace OnlineTelevizor.Droid
 
 #if LOADCONFIG
             var loaded = _cfg.LoadCredentails("http://localhost:8080/OnlineTelevizor.configuration.json");
-            if (loaded.HasValue)
+            if (loaded != null && loaded.Value)
             {
-                if (loaded.Value)
-                {
                     ShowToastMessage("Configuration loaded from localhost");
-                }
-                else
+            }
+            else
+            {
+                loaded = _cfg.LoadCredentails("http://10.0.0.7/OnlineTelevizor.configuration.json");
+                if (loaded != null && loaded.Value)
                 {
-                    if (_cfg.LoadCredentails("http://10.0.0.7/OnlineTelevizor.configuration.json").Value)
-                    {
-                        ShowToastMessage("Configuration loaded from 10.0.0.7");
-                    }
+                    ShowToastMessage("Configuration loaded from 10.0.0.7");
                 }
             }
+
 #endif
 
 #if LOGGING

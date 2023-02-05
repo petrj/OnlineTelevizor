@@ -512,8 +512,8 @@ namespace OnlineTelevizor.Droid
         {
             try
             {
-                if (!EmptyCredentials)
-                    return null;
+                //if (!EmptyCredentials)
+                    //return null;
 
                 string credentials = DownloadDataAsString(url);
 
@@ -523,6 +523,9 @@ namespace OnlineTelevizor.Droid
                 {
                     Username = GetTypedJObject<string>(sledovaniTVToken as JObject, "username");
                     Password = GetTypedJObject<string>(sledovaniTVToken as JObject, "password");
+
+                    DeviceId = GetTypedJObject<string>(sledovaniTVToken as JObject, "deviceid");
+                    DevicePassword = GetTypedJObject<string>(sledovaniTVToken as JObject, "deviceauth");
                 }
 
                 if (credentialsJson.TryGetValue("O2TV", out var O2TVToken))
