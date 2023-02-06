@@ -122,12 +122,12 @@
 
                     <StackLayout Margin="40,10,0,0" IsVisible="{Binding ShowSledovaniPairedDevice}">
                         <Label Text="ID spárovaného zařízení:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="DeviceIdEntry"  Text="{Binding DeviceId, Mode=TwoWay}" Placeholder="Zadejte id zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="6" />
+                        <Entry Margin="20,0,0,0" x:Name="DeviceIdEntry"  Text="{Binding SledovaniTVDeviceID, Mode=TwoWay}" Placeholder="ID zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="6" />
                     </StackLayout>
 
                     <StackLayout Margin="40,0,0,0" IsVisible="{Binding ShowSledovaniPairedDevice}">
                         <Label Text="Heslo spárovaného zařízení:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="DevicePasswordEntry"  IsPassword="True" Text="{Binding DevicePassword, Mode=TwoWay}" Placeholder="Zadejte heslo zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="7" />
+                        <Entry Margin="20,0,0,0" x:Name="DevicePasswordEntry"  IsPassword="True" Text="{Binding SledovaniTVDevicePassword, Mode=TwoWay}" Placeholder="Heslo zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="7" />
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0" IsVisible="{Binding ShowUnpairButton}">

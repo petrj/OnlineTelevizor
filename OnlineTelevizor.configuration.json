@@ -1,18 +1,19 @@
 {
-	"SledovaniTV": {
-		"username": "email",
-		"password": "password"
-	},
-	"O2TV": {
-		"username": "email",
-		"password": "password"
-	},
-	"KUKI": {
-		"KUKIsn": "kuki2.0_u11yJ76VDiIMhVcEb64ZV114yjxgmS7FlPTg0einfPf8ZHUl23Kgdlno"
-	},
-	"internalPlayer": true,
-	"TVAPI": "SledovaniTV",
-	"fullscreen": true,
-	"fontSize": "Normal",
-	"purchased": false
+    "SledovaniTV": {
+        "username": "email",
+        "password": "password",
+        "deviceid": "1111111111",
+        "deviceauth": "aaaaaaaaaaaaaaaaaaaa"
+    },
+    "O2TV": {
+        "username": "email",
+        "password": "password"
+    },
+    "KUKI": {
+        "KUKIsn": "kuki2.0_u11yJ76VDiIMhVcEb64ZV114yjxgmS7FlPTg0einfPf8ZHUl23Kgdlno"
+    },
+    "internalPlayer": true,
+    "TVAPI": "SledovaniTV",
+    "fullscreen": true,
+    "fontSize": "Normal"
 }

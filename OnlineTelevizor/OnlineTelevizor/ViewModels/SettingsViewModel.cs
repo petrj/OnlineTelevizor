@@ -102,6 +102,32 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
+        public string SledovaniTVDeviceID
+        {
+            get
+            {
+                return Config.DeviceId;
+            }
+            set
+            {
+                Config.DeviceId = value;
+                OnPropertyChanged(nameof(SledovaniTVDeviceID));
+            }
+        }
+
+        public string SledovaniTVDevicePassword
+        {
+            get
+            {
+                return Config.DevicePassword;
+            }
+            set
+            {
+                Config.DevicePassword = value;
+                OnPropertyChanged(nameof(SledovaniTVDevicePassword));
+            }
+        }
+
         public void NotifyFontSizeChange()
         {
             OnPropertyChanged(nameof(FontSizeForCaption));
@@ -163,16 +189,15 @@ namespace OnlineTelevizor.ViewModels
 
         protected async Task DeactivateSledovaniTVDevice()
         {
-            if (await _dialogService.Confirm("Opravdu si přejete deaktivovat toto zařízení?"))
+            if (await _dialogService.Confirm("Opravdu si přejete deaktivovat toto zařízení? Zařízení se při příštím přihlášení aktivuje jako nové zařízení."))
             {
-                Config.DeviceId = string.Empty;
-                Config.DevicePassword = string.Empty;
+                SledovaniTVDeviceID = string.Empty;
+                SledovaniTVDevicePassword = string.Empty;
 
                 OnPropertyChanged(nameof(SledovaniTVPaired));
                 OnPropertyChanged(nameof(ShowUnpairButton));
-                ShowSledovaniPairedDevice = false;
 
-                // TODO: clear deviceID and devicePassword entries
+                ShowSledovaniPairedDevice = false;
             };
         }
 

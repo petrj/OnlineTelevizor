@@ -64,14 +64,6 @@ namespace OnlineTelevizor.Droid
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
-#if LOADCONFIG
-            var loaded = _cfg.LoadCredentails("OnlineTelevizor.configuration.json", true);
-            if (loaded != null && loaded.Value)
-            {
-                    ShowToastMessage("Configuration automatically loaded");
-            }
-#endif
-
 #if LOGGING
             /*
             var fileLoggingService = new FileLoggingService(LoggingLevelEnum.Info);
@@ -87,6 +79,22 @@ namespace OnlineTelevizor.Droid
 #else
             _loggingService = new DummyLoggingService();
 #endif
+
+            try
+            {
+                if (_cfg.EmptyCredentials && System.IO.File.Exists(_cfg.DefaultConfigurationFileName))
+                {
+                    var loaded = _cfg.TryLoadCredentails();
+                    if (loaded != null && loaded.Value)
+                    {
+                        ShowToastMessage("Konfigurace byla načtena ze souboru");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
 
             try
             {

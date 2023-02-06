@@ -401,7 +401,7 @@ namespace OnlineTelevizor.Droid
             return default(T);
         }
 
-        private bool EmptyCredentials
+        public bool EmptyCredentials
         {
             get
             {
@@ -508,14 +508,19 @@ namespace OnlineTelevizor.Droid
             }
         }
 
-        public bool? LoadCredentails(string fileName, bool force)
+        public string DefaultConfigurationFileName
+        {
+            get
+            {
+                return System.IO.Path.Join(OutputDirectory, "OnlineTelevizor.configuration.json");
+            }
+        }
+
+        public bool? TryLoadCredentails()
         {
             try
             {
-                if (!force && !EmptyCredentials)
-                    return null;
-
-                string credentials = System.IO.File.ReadAllText(System.IO.Path.Join(OutputDirectory,fileName));
+                string credentials = System.IO.File.ReadAllText(DefaultConfigurationFileName);
 
                 var credentialsJson = JObject.Parse(credentials);
 
@@ -547,9 +552,6 @@ namespace OnlineTelevizor.Droid
 
                 if (credentialsJson.GetValue("fullscreen") != null)
                     Fullscreen = GetTypedJObject<bool>(credentialsJson, "fullscreen");
-
-                if (credentialsJson.GetValue("purchased") != null)
-                    Purchased = GetTypedJObject<bool>(credentialsJson, "purchased");
 
                 var TVAPIAsString = GetTypedJObject<string>(credentialsJson, "TVAPI");
                 if ((!string.IsNullOrEmpty(TVAPIAsString)) && (Enum.TryParse(typeof(TVAPIEnum), TVAPIAsString, out var api)))
