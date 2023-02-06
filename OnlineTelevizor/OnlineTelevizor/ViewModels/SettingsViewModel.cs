@@ -18,10 +18,12 @@ namespace OnlineTelevizor.ViewModels
     public class SettingsViewModel : BaseViewModel
     {
         private bool _isPruchased;
+        private bool _showSledovaniPairedDevice = false;
         private TVService _service;
 
         public Command PayCommand { get; set; }
         public Command StopStreamCommand { get; set; }
+        public Command DeactivateSledovaniTVDeviceCommand { get; set; }
 
         public Command AboutCommand { get; set; }
 
@@ -41,6 +43,7 @@ namespace OnlineTelevizor.ViewModels
 
             PayCommand = new Command(async () => await Pay());
             StopStreamCommand = new Command(async () => await StopStream());
+            DeactivateSledovaniTVDeviceCommand = new Command(async () => await DeactivateSledovaniTVDevice());
             AboutCommand = new Command(async () => await About());
         }
 
@@ -156,6 +159,21 @@ namespace OnlineTelevizor.ViewModels
         protected async Task StopStream()
         {
             await _service.StopStream();
+        }
+
+        protected async Task DeactivateSledovaniTVDevice()
+        {
+            if (await _dialogService.Confirm("Opravdu si přejete deaktivovat toto zařízení?"))
+            {
+                Config.DeviceId = string.Empty;
+                Config.DevicePassword = string.Empty;
+
+                OnPropertyChanged(nameof(SledovaniTVPaired));
+                OnPropertyChanged(nameof(ShowUnpairButton));
+                ShowSledovaniPairedDevice = false;
+
+                // TODO: clear deviceID and devicePassword entries
+            };
         }
 
         protected async Task About()
@@ -388,6 +406,37 @@ namespace OnlineTelevizor.ViewModels
             {
                 Config.ShowAdultChannels = value;
                 OnPropertyChanged(nameof(IsPINShowed));
+            }
+        }
+
+        public bool SledovaniTVPaired
+        {
+            get
+            {
+                return  !(String.IsNullOrEmpty(Config.DeviceId)) &&
+                        !(String.IsNullOrEmpty(Config.DevicePassword));
+            }
+        }
+
+        public bool ShowSledovaniPairedDevice
+        {
+            get
+            {
+                return _showSledovaniPairedDevice;
+            }
+            set
+            {
+                _showSledovaniPairedDevice = value;
+                OnPropertyChanged(nameof(ShowSledovaniPairedDevice));
+                OnPropertyChanged(nameof(ShowUnpairButton));
+            }
+        }
+
+        public bool ShowUnpairButton
+        {
+            get
+            {
+                return SledovaniTVPaired && ShowSledovaniPairedDevice;
             }
         }
 

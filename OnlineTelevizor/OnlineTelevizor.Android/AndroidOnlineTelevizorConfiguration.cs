@@ -508,11 +508,11 @@ namespace OnlineTelevizor.Droid
             }
         }
 
-        public bool? LoadCredentails(string fileName)
+        public bool? LoadCredentails(string fileName, bool force)
         {
             try
             {
-                if (!EmptyCredentials)
+                if (!force && !EmptyCredentials)
                     return null;
 
                 string credentials = System.IO.File.ReadAllText(System.IO.Path.Join(OutputDirectory,fileName));

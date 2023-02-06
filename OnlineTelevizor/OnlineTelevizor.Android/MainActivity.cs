@@ -65,12 +65,11 @@ namespace OnlineTelevizor.Droid
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
 #if LOADCONFIG
-            var loaded = _cfg.LoadCredentails("OnlineTelevizor.configuration.json");
+            var loaded = _cfg.LoadCredentails("OnlineTelevizor.configuration.json", true);
             if (loaded != null && loaded.Value)
             {
                     ShowToastMessage("Configuration automatically loaded");
             }
-
 #endif
 
 #if LOGGING

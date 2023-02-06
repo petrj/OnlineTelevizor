@@ -38,6 +38,7 @@ namespace OnlineTelevizor.Views
 
             PlayOnBackgroundSwitch.Toggled += PlayOnBackgroundSwitch_Toggled;
             UseInternalPlayerSwitch.Toggled += PlayOnBackgroundSwitch_Toggled;
+            ShowSledovaniPairedDeviceSwitch.Toggled += ShowSledovaniPairedDeviceSwitch_Toggled;
 
             if (Device.RuntimePlatform == Device.UWP)
             {
@@ -120,6 +121,17 @@ namespace OnlineTelevizor.Views
                         FocusView(DVBStreamerUrlEntry);
                         break;
                 }
+        }
+
+        private void ShowSledovaniPairedDeviceSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (!e.Value)
+                return;
+
+            Device.BeginInvokeOnMainThread( async () =>
+            {
+                await _dialogService.Information("Přístupové údaje spárovaného zařízení upravujte jen v případě, že opravdu víte, co děláte. Změna údajů může způsobit deaktivaci zařízení! Zařízení je sice možné znovu aktivovat, počet nových aktivací za měsíc je ale omezen.");
+            });
         }
 
         private void PlayOnBackgroundSwitch_Toggled(object sender, ToggledEventArgs e)
