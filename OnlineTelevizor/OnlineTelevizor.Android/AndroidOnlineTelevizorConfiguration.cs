@@ -508,14 +508,14 @@ namespace OnlineTelevizor.Droid
             }
         }
 
-        public bool? LoadCredentails(string url)
+        public bool? LoadCredentails(string fileName)
         {
             try
             {
-                //if (!EmptyCredentials)
-                    //return null;
+                if (!EmptyCredentials)
+                    return null;
 
-                string credentials = DownloadDataAsString(url);
+                string credentials = System.IO.File.ReadAllText(System.IO.Path.Join(OutputDirectory,fileName));
 
                 var credentialsJson = JObject.Parse(credentials);
 
