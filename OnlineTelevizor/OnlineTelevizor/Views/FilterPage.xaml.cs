@@ -7,156 +7,111 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace OnlineTelevizor.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class FilterPage : ContentPage, INavigationSelectNextItem, INavigationSendOKButton, INavigationSendBackButton
+    public partial class FilterPage : ContentPage, IOnKeyDown
     {
         private FilterPageViewModel _viewModel;
-        private View _lastFocusedView = null;
+        private KeyboardFocusableItemList _focusItems;
+        protected ILoggingService _loggingService;
 
         public FilterPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, TVService service)
         {
             InitializeComponent();
 
             var dialogService = new DialogService(this);
-
-            GroupPicker.Unfocused += GroupPicker_Unfocused;
-            TypePicker.Unfocused += TypePicker_Unfocused;
-            TypePicker.Focused += TypePicker_Focused;
-            GroupPicker.Focused += GroupPicker_Focused;
+            _loggingService = loggingService;
 
             BindingContext = _viewModel = new FilterPageViewModel(loggingService, config, dialogService, service);
+
+            BuildFocusableItems();
         }
 
-        private void GroupPicker_Focused(object sender, FocusEventArgs e)
+        private void BuildFocusableItems()
         {
-            _lastFocusedView = GroupPicker;
+            _focusItems = new KeyboardFocusableItemList();
+
+            _focusItems
+                .AddItem(KeyboardFocusableItem.CreateFrom("Favourite", new List<View>() { FavouriteBoxView, FavouriteSwitch }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("Type", new List<View>() { TypeBoxView, TypePicker }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("Group", new List<View>() { GroupBoxView, GroupPicker }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("Name", new List<View>() { NameBoxView, ChannelNameEntry }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("Refresh", new List<View>() { RefreshButton }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("Clear", new List<View>() { ClearButton }));
+
+            _focusItems.OnItemFocusedEvent += SettingsPage_OnItemFocusedEvent;
         }
 
-        private void TypePicker_Focused(object sender, FocusEventArgs e)
+        public async void OnKeyDown(string key, bool longPress)
         {
-            _lastFocusedView = TypePicker;
-        }
+            _loggingService.Debug($"FilterPage Page OnKeyDown {key}{(longPress ? " (long)" : "")}");
 
-        private void TypePicker_Unfocused(object sender, FocusEventArgs e)
-        {
-            if (_lastFocusedView == TypePicker)
+            var keyAction = KeyboardDeterminer.GetKeyAction(key);
+
+            switch (keyAction)
             {
-                FocusView(GroupPicker);
+                case KeyboardNavigationActionEnum.Down:
+                    _focusItems.FocusNextItem();
+                    break;
+
+                case KeyboardNavigationActionEnum.Up:
+                    _focusItems.FocusPreviousItem();
+                    break;
+
+                case KeyboardNavigationActionEnum.Back:
+                    await Navigation.PopAsync();
+                    break;
+
+                case KeyboardNavigationActionEnum.OK:
+
+                    switch (_focusItems.FocusedItemName)
+                    {
+                        case "Favourite":
+                            FavouriteSwitch.IsToggled = !FavouriteSwitch.IsToggled;
+                            break;
+
+                        case "Name":
+                            ChannelNameEntry.Focus();
+                            break;
+
+                        case "Type":
+                            TypePicker.Focus();
+                            break;
+
+                        case "Group":
+                            GroupPicker.Focus();
+                            break;
+
+                        case "Refresh":
+                            _viewModel.RefreshCommand.Execute(null);
+                            break;
+                        case "Clear":
+                            _viewModel.ClearFilterCommand.Execute(null);
+                            break;
+                    }
+
+                    break;
             }
         }
 
-        private void GroupPicker_Unfocused(object sender, FocusEventArgs e)
+        private void SettingsPage_OnItemFocusedEvent(KeyboardFocusableItemEventArgs args)
         {
-            if (_lastFocusedView == GroupPicker)
-            {
-                FocusView(ChannelNameEntry);
-            }
-        }
-
-        public void SendBackButton()
-        {
-            if (_lastFocusedView == TypePicker)
-            {
-                TypePicker.Unfocus();
-            }
-            else
-            if (_lastFocusedView == GroupPicker)
-            {
-                GroupPicker.Unfocus();
-            }
-            else
-            {
-                Navigation.PopAsync();
-            }
+            // scroll to element
+            MainScrollView.ScrollToAsync(0, args.FocusedItem.MaxYPosition - Height / 2, false);
         }
 
         protected override void OnAppearing()
         {
+            _focusItems.DeFocusAll();
+
             base.OnAppearing();
 
             _viewModel.NotifyFontSizeChange();
             _viewModel.RefreshCommand.Execute(null);
-        }
-
-        private void FocusView(View view)
-        {
-            if (Device.OS == TargetPlatform.Windows)
-            {
-                return;
-            }
-
-            ClearButton.BackgroundColor = Color.Gray;
-            ClearButton.TextColor = Color.Black;
-
-            RefreshButton.BackgroundColor = Color.Gray;
-            RefreshButton.TextColor = Color.Black;
-
-            _lastFocusedView = view;
-            view.Focus();
-
-            if (view is Button)
-            {
-                (view as Button).BackgroundColor = Color.Blue;
-                (view as Button).TextColor = Color.White;
-            }
-        }
-
-        public void SendOKButton()
-        {
-            if (_lastFocusedView == null)
-                return;
-
-            if (_lastFocusedView is Button)
-            {
-                if (_lastFocusedView == ClearButton)
-                    _viewModel.ClearFilterCommand.Execute(null);
-
-                if (_lastFocusedView == RefreshButton)
-                    _viewModel.RefreshCommand.Execute(null);
-            }
-        }
-
-        public void SelectNextItem()
-        {
-            if (_lastFocusedView == FavouriteSwitch)
-            {
-                FocusView(TypePicker);
-            }
-            else
-          if (_lastFocusedView == TypePicker)
-            {
-                FocusView(GroupPicker);
-            }
-            else
-          if (_lastFocusedView == GroupPicker)
-            {
-                FocusView(ChannelNameEntry);
-            }
-            else
-          if (_lastFocusedView == ChannelNameEntry)
-            {
-                FocusView(RefreshButton);
-            }
-            else
-          if (_lastFocusedView == RefreshButton)
-            {
-                FocusView(ClearButton);
-            }
-            else
-          if (_lastFocusedView == ClearButton)
-            {
-                FocusView(FavouriteSwitch);
-            }
-            else
-            {
-                FocusView(FavouriteSwitch);
-            }
         }
     }
 }

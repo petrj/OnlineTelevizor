@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using Android.Support.V4.App;
 using Android.Support.V4.View;
 using Android.Content.Res;
+using Android.InputMethodServices;
 
 namespace OnlineTelevizor.Droid
 {
@@ -41,6 +42,8 @@ namespace OnlineTelevizor.Droid
         NotificationHelper _notificationHelper;
         private static Android.Widget.Toast _instance;
         private DateTime _lastOnGenericMotionEventTime = DateTime.MinValue;
+        private bool _dispatchKeyEventEnabled = false;
+        private DateTime _dispatchKeyEventEnabledAt = DateTime.MaxValue;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -297,6 +300,17 @@ namespace OnlineTelevizor.Droid
                     Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
                 });
             });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_DisableDispatchKeyEvent, (message) =>
+            {
+                _dispatchKeyEventEnabled = false;
+            });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_EnableDispatchKeyEvent, (message) =>
+            {
+                _dispatchKeyEventEnabledAt = DateTime.Now;
+                _dispatchKeyEventEnabled = true;
+            });
         }
 
         protected override void OnDestroy()
@@ -431,6 +445,51 @@ namespace OnlineTelevizor.Droid
             base.OnActivityResult(requestCode, resultCode, data);
         }
 
+        public override bool OnKeyDown(Android.Views.Keycode keyCode, KeyEvent e)
+        {
+            return base.OnKeyDown(keyCode, e);
+        }
+
+        public override bool DispatchKeyEvent(KeyEvent e)
+        {
+            var code = e.KeyCode.ToString();
+            var keyAction = KeyboardDeterminer.GetKeyAction(code);
+            if (e.IsLongPress)
+            {
+                code = $"{BaseViewModel.LongPressPrefix}{code}";
+            }
+
+            if (!_dispatchKeyEventEnabled && keyAction != KeyboardNavigationActionEnum.Unknown)
+            {
+                _loggingService.Debug($"DispatchKeyEvent thrown out: {code}");
+
+                MessagingCenter.Send(code, BaseViewModel.MSG_KeyAction);
+
+                return true;
+            }
+            else
+            {
+                // ignoring ENTER 1 second after DispatchKeyEvent enabled
+
+                var ms = (DateTime.Now - _dispatchKeyEventEnabledAt).TotalMilliseconds;
+
+                if (keyAction == KeyboardNavigationActionEnum.OK && ms < 1000)
+                {
+                    _loggingService.Debug($"DispatchKeyEvent: ignoring ENTER");
+
+                    return true;
+                }
+                else
+                {
+                    _loggingService.Debug($"DispatchKeyEvent: {code}");
+
+                    return base.DispatchKeyEvent(e);
+                }
+            }
+
+        }
+
+        /*
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
             _loggingService.Debug($"OnKeyDown: keyCode:{keyCode}, long:{e.IsLongPress}");
@@ -444,7 +503,9 @@ namespace OnlineTelevizor.Droid
 
             return base.OnKeyDown(keyCode, e);
         }
+        */
 
+        /*
         public override bool OnGenericMotionEvent(MotionEvent e)
         {
             // https://github.com/xamarin/monodroid-samples/blob/main/tv/VisualGameController/VisualGameController/FullScreenActivity.cs
@@ -507,6 +568,7 @@ namespace OnlineTelevizor.Droid
 
             return base.OnGenericMotionEvent(e);
         }
+        */
 
         private void ShowToastMessage(string message)
         {

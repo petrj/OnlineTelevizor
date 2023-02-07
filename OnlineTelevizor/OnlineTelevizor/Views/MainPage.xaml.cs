@@ -39,6 +39,7 @@ namespace OnlineTelevizor.Views
         private bool _firstSelectionAfterStartup = false;
         private string _numberPressed = String.Empty;
         private bool _resumedWithoutReinitializingVideo = false;
+        private Tuple<DateTime, KeyboardNavigationActionEnum> _lastKeyPressed = null;
 
         private LibVLC _libVLC = null;
         private MediaPlayer _mediaPlayer;
@@ -110,14 +111,17 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"Subscribing messages");
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_KeyMessage, (key) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_KeyAction, (key) =>
             {
-                Key(key);
-            });
+                var longPress = false;
+                if (key.StartsWith(BaseViewModel.LongPressPrefix))
+                {
+                    longPress = true;
+                    key = key.Substring(BaseViewModel.LongPressPrefix.Length);
+                    _lastKeyLongPressedTime = DateTime.Now;
+                }
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_KeyLongMessage, (key) =>
-            {
-                _lastKeyLongPressedTime = DateTime.Now;
+                OnKeyDown(key, longPress);
             });
 
             MessagingCenter.Subscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowDetailMessage, (sender) =>
@@ -234,8 +238,8 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"Unsubscribing messages");
 
-            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_KeyMessage);
-            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_KeyLongMessage);
+
+            MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.MSG_KeyAction);
             MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowDetailMessage);
             MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowRenderers);
             MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowTimer);
@@ -570,162 +574,75 @@ namespace OnlineTelevizor.Views
             _viewModel.DoNotScrollToChannel = false;
         }
 
-        private static bool LeavePageKeyDown(string lowKey)
+        public async void OnKeyDown(string key, bool longPress)
         {
-            if (lowKey == "escape" ||
-                    lowKey == "back" ||
-                    lowKey == "numpadsubtract" ||
-                    lowKey == "f4" ||
-                    lowKey == "mediaplaystop" ||
-                    lowKey == "mediastop" ||
-                    lowKey == "a" ||
-                    lowKey == "b" ||
-                    lowKey == "mediaplayprevious" ||
-                    lowKey == "mediaprevious" ||
-                    lowKey == "numpad4" ||
-                    lowKey == "buttonl1" ||
-                    lowKey == "del" ||
-                    lowKey == "numpad8" ||
-                    lowKey == "f3" ||
-                    lowKey == "forwarddel"
-                )
+            _loggingService.Debug($"OnKeyDown {key}");
+
+            var keyAction = KeyboardDeterminer.GetKeyAction(key);
+
+            // prevent multiple key press events
+
+            if (_lastKeyPressed == null)
             {
-                return true;
+                _lastKeyPressed = new Tuple<DateTime, KeyboardNavigationActionEnum>(DateTime.Now, keyAction);
             }
-
-            return false;
-        }
-
-        private static bool SelectNextItemKeyDown(string lowKey)
-        {
-            if (lowKey == "right" ||
-                lowKey == "dpadright" ||
-                lowKey == "mediaplaynext" ||
-                lowKey == "medianext" ||
-                lowKey == "dpaddown" ||
-                lowKey == "pagedown" ||
-                lowKey == "buttonr1" ||
-                lowKey == "down" ||
-                lowKey == "s" ||
-                lowKey == "numpad2" ||
-                lowKey == "f2"
-                )
+            else
             {
-                return true;
+                if ((DateTime.Now - _lastKeyPressed.Item1).TotalMilliseconds < 250 &&
+                    _lastKeyPressed.Item2 == keyAction)
+                {
+                    return; // ignoring event
+                }
+                else
+                {
+                    _lastKeyPressed = new Tuple<DateTime, KeyboardNavigationActionEnum>(DateTime.Now, keyAction);
+                }
             }
-
-            return false;
-        }
-
-        private static bool SelectPreviousItemKeyDown(string lowKey)
-        {
-            if (    lowKey == "pageup" ||
-                    lowKey == "dpadup" ||
-                    lowKey == "up" ||
-                    lowKey == "w" ||
-                    lowKey == "dpadleft" ||
-                    lowKey == "left"
-               )
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool OKKeyDown(string lowKey)
-        {
-            if (lowKey == "f6" ||
-                lowKey == "dpadcenter" ||
-                lowKey == "space" ||
-                lowKey == "enter" ||
-                lowKey == "numpadenter" ||
-                lowKey == "buttonr2"
-               )
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public void Key(string key)
-        {
-            _loggingService.Info($"OnKeyDown {key}");
-            var lowKey = key.ToLower();
-
-            // key events can be consumed only on this MainPage
 
             var stack = Navigation.NavigationStack;
-            if  (stack[stack.Count - 1].GetType() != typeof(MainPage))
+            if (stack[stack.Count - 1].GetType() != typeof(MainPage))
             {
                 // different page on navigation top
 
                 var pageOnTop = stack[stack.Count - 1];
 
-                if (pageOnTop is INavigationScrollUpDown)
+                if (pageOnTop is IOnKeyDown)
                 {
-                    if (SelectNextItemKeyDown(lowKey))
-                    {
-                        (pageOnTop as INavigationScrollUpDown).ScrollDown();
-                    }
-                    else
-                    if (SelectPreviousItemKeyDown(lowKey))
-                    {
-                        (pageOnTop as INavigationScrollUpDown).ScrollUp();
-                    }
-                }
-
-                if (pageOnTop is INavigationSelectNextItem)
-                {
-                    if (SelectNextItemKeyDown(lowKey))
-                    {
-                        (pageOnTop as INavigationSelectNextItem).SelectNextItem();
-                    }
-                }
-
-                if (pageOnTop is INavigationSelectPreviousItem)
-                {
-                    if (SelectPreviousItemKeyDown(lowKey))
-                    {
-                        (pageOnTop as INavigationSelectPreviousItem).SelectPreviousItem();
-                    }
-                }
-
-                if (pageOnTop is INavigationSendOKButton)
-                {
-                    if (OKKeyDown(lowKey))
-                    {
-                        (pageOnTop as INavigationSendOKButton).SendOKButton();
-                    }
-                }
-
-                if (pageOnTop is INavigationSendBackButton)
-                {
-                    if (LeavePageKeyDown(lowKey))
-                    {
-                        (pageOnTop as INavigationSendBackButton).SendBackButton();
-                    }
-                }
-                else
-                {
-                    if (LeavePageKeyDown(lowKey))
-                    {
-                        // closing page
-                        Navigation.PopAsync();
-                    }
+                    (pageOnTop as IOnKeyDown).OnKeyDown(key, longPress);
                 }
 
                 return;
             }
 
-            switch (lowKey)
+            switch (keyAction)
             {
-                case "dpaddown":
-                case "buttonr1":
-                case "down":
-                case "s":
-                case "numpad2":
+                case KeyboardNavigationActionEnum.Down:
+                    await ActionKeyDown(1);
+                    break;
+
+                case KeyboardNavigationActionEnum.Up:
+                    await ActionKeyUp(1);
+                    break;
+
+                case KeyboardNavigationActionEnum.Right:
+                    await ActionKeyRight();
+                    break;
+
+                case KeyboardNavigationActionEnum.Left:
+                    await ActionKeyLeft();
+                    break;
+
+                case KeyboardNavigationActionEnum.Back:
+                    ActionStop(false);
+                    break;
+
+                case KeyboardNavigationActionEnum.OK:
+                    await ActionKeyOK();
+                    break;
+            }
+
+            switch (key.ToLower())
+            {
                 case "f3":
                 case "mediaplaynext":
                 case "medianext":
@@ -733,13 +650,8 @@ namespace OnlineTelevizor.Views
                 case "mediafastforward":
                 case "mediaforward":
                 case "channeldown":
-                    Task.Run(async () => await ActionKeyDown(1));
+                    await ActionKeyDown(1);
                     break;
-                case "dpadup":
-                case "buttonl1":
-                case "up":
-                case "w":
-                case "numpad8":
                 case "f2":
                 case "mediaplayprevious":
                 case "mediaprevious":
@@ -747,51 +659,29 @@ namespace OnlineTelevizor.Views
                 case "mediarewind":
                 case "mediafastrewind":
                 case "channelup":
-                    Task.Run(async () => await ActionKeyUp(1));
+                    await ActionKeyUp(1);
                     break;
                 case "pagedown":
-                    Task.Run(async () => await ActionKeyDown(10));
+                    await ActionKeyDown(10);
                     break;
                 case "pageup":
-                    Task.Run(async () => await ActionKeyUp(10));
+                    await ActionKeyUp(10);
                     break;
-                case "dpadleft":
-                case "left":
-                case "a":
-                case "b":
-                case "numpad4":
                 case "leftbracket":
-                    Task.Run(async () => await ActionKeyLeft());
+                    await ActionKeyLeft();
                     break;
-                case "dpadright":
-                case "right":
-                case "d":
-                case "f":
-                case "numpad6":
                 case "rightbracket":
-                    Task.Run(async () => await ActionKeyRight());
+                    await ActionKeyRight();
                     break;
                 case "f6":
-                case "dpadcenter":
-                case "space":
-                case "buttonr2":
-                case "mediaplay":
-                case "enter":
-                case "numpad5":
-                case "numpadenter":
-                case "buttona":
-                case "buttonstart":
-                case "capslock":
-                case "comma":
-                case "semicolon":
-                case "grave":
-                    Task.Run(async () => await ActionKeyOK());
+                    await ActionKeyOK();
                     break;
                 case "mediaplaypause":
                     if (PlayingState == PlayingStateEnum.Stopped)
                     {
                         ActionPlay(_viewModel.SelectedItemSafe);
-                    } else
+                    }
+                    else
                     {
                         ActionStop(true);
                     }
@@ -801,15 +691,10 @@ namespace OnlineTelevizor.Views
                 case "mediaplaystop":
                     ActionStop(true);
                     break;
-                case "f4":
                 case "f7":
-                case "escape":
                 case "mediapause":
-                case "numpadsubtract":
-                case "del":
                 case "forwarddel": // delete
                 case "delete":
-                case "buttonx":
                 case "altleft":
                 case "minus":
                 case "period":
@@ -927,7 +812,70 @@ namespace OnlineTelevizor.Views
                     }
                     break;
             }
+
         }
+        /*
+
+                // different page on navigation top
+
+                var pageOnTop = stack[stack.Count - 1];
+
+                if (pageOnTop is INavigationScrollUpDown)
+                {
+                    if (SelectNextItemKeyDown(lowKey))
+                    {
+                        (pageOnTop as INavigationScrollUpDown).ScrollDown();
+                    }
+                    else
+                    if (SelectPreviousItemKeyDown(lowKey))
+                    {
+                        (pageOnTop as INavigationScrollUpDown).ScrollUp();
+                    }
+                }
+
+                if (pageOnTop is INavigationSelectNextItem)
+                {
+                    if (SelectNextItemKeyDown(lowKey))
+                    {
+                        (pageOnTop as INavigationSelectNextItem).SelectNextItem();
+                    }
+                }
+
+                if (pageOnTop is INavigationSelectPreviousItem)
+                {
+                    if (SelectPreviousItemKeyDown(lowKey))
+                    {
+                        (pageOnTop as INavigationSelectPreviousItem).SelectPreviousItem();
+                    }
+                }
+
+                if (pageOnTop is INavigationSendOKButton)
+                {
+                    if (OKKeyDown(lowKey))
+                    {
+                        (pageOnTop as INavigationSendOKButton).SendOKButton();
+                    }
+                }
+
+                if (pageOnTop is INavigationSendBackButton)
+                {
+                    if (LeavePageKeyDown(lowKey))
+                    {
+                        (pageOnTop as INavigationSendBackButton).SendBackButton();
+                    }
+                }
+                else
+                {
+                    if (LeavePageKeyDown(lowKey))
+                    {
+                        // closing page
+                        Navigation.PopAsync();
+                    }
+                }
+
+                return;
+            }
+        */
 
         private Dictionary<int,string> GetAudioTracks()
         {
@@ -1878,6 +1826,7 @@ namespace OnlineTelevizor.Views
                 return ((_lastKeyLongPressedTime != DateTime.MinValue) && ((DateTime.Now - _lastKeyLongPressedTime).TotalSeconds < 3));
             }
         }
+
 
         protected override bool OnBackButtonPressed()
         {

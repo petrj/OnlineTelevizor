@@ -135,14 +135,6 @@ namespace OnlineTelevizor.ViewModels
 
             UpdateNotificationCommand = new Command(async () => await UpdateNotification());
 
-            UpCommand = new Command(async (key) => await AnyKeyPressed("up"));
-            DownCommand = new Command(async (key) => await AnyKeyPressed("down"));
-            LeftCommand = new Command(async (key) => await AnyKeyPressed("left"));
-            RightCommand = new Command(async (key) => await AnyKeyPressed("right"));
-
-            OKCommand = new Command(async () => await AnyKeyPressed("enter"));
-            BackCommand = new Command(async () => await AnyKeyPressed("escape"));
-
             StartBackgroundThreads();
         }
 
@@ -215,11 +207,6 @@ namespace OnlineTelevizor.ViewModels
                     return true;
                 }
             }
-        }
-
-        private async Task AnyKeyPressed(string key)
-        {
-            MessagingCenter.Send(key, BaseViewModel.MSG_KeyMessage);
         }
 
         private async Task ShutdownTimer()
