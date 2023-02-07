@@ -239,7 +239,7 @@ namespace OnlineTelevizor.ViewModels
 
                     if (Config.Purchased)
                     {
-                        if (!purchase.IsAcknowledged || !Config.PurchaseTokenSent)
+                        if ((purchase.IsAcknowledged.HasValue && !purchase.IsAcknowledged.Value) || !Config.PurchaseTokenSent)
                         {
                             await AcknowledgePurchase(purchase.PurchaseToken);
                         }
@@ -271,18 +271,20 @@ namespace OnlineTelevizor.ViewModels
 
             try
             {
-                var acknowledged = await CrossInAppBilling.Current.AcknowledgePurchaseAsync(token);
+                var acknowledged = await CrossInAppBilling.Current.FinalizePurchaseAsync(token);
 
-                if (acknowledged)
+                foreach (var purchase in acknowledged)
                 {
-                    Config.PurchaseTokenSent = true;
-                    _loggingService.Info($"Successfully acknowledged");
+                    if (purchase.Success)
+                    {
+                        Config.PurchaseTokenSent = true;
+                        _loggingService.Info($"Successfully acknowledged");
+                    }
+                    else
+                    {
+                        _loggingService.Info($"Acknowledge failed");
+                    }
                 }
-                else
-                {
-                    _loggingService.Info($"Acknowledge failed");
-                }
-
             }
             catch (Exception ex)
             {
