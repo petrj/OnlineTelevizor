@@ -79,7 +79,7 @@
                         <Label  Grid.Row="2" Grid.Column="0" Text="Skupina" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}" />
                         <Picker
                                 Grid.Row="2"
-                                Grid.Column="2"
+                                Grid.Column="1"
                                 Margin="20,0,0,0"
                                 x:Name="GroupPicker"
                                 FontSize="{Binding FontSizeForPicker}"
