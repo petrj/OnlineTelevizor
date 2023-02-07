@@ -131,7 +131,7 @@
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0" IsVisible="{Binding ShowUnpairButton}">
-                        <Button Margin="20,10,0,0" Text="Deaktivovat zařízení" Command="{Binding DeactivateSledovaniTVDeviceCommand}" FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black" TabIndex="8"/>
+                        <Button Margin="20,10,0,0" x:Name="DeactivateButton"  Text="Deaktivovat zařízení" Command="{Binding DeactivateSledovaniTVDeviceCommand}" FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black" TabIndex="8"/>
                     </StackLayout>
 
                 </StackLayout>

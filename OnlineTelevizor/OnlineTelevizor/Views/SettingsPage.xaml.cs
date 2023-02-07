@@ -62,6 +62,12 @@ namespace OnlineTelevizor.Views
             LastChannelAutoPlayPicker.Unfocused += LastChannelAutoPlayPicker_Unfocused;
             LastChannelAutoPlayPicker.Focused += LastChannelAutoPlayPicker_Focused;
             FontSizePicker.Unfocused += FontSizePicker_Unfocused;
+            DeviceIdEntry.Focused += DeviceIdEntry_Focused;
+        }
+
+        private void DeviceIdEntry_Focused(object sender, FocusEventArgs e)
+        {
+            _lastFocusedView = DeviceIdEntry;
         }
 
         private void LastChannelAutoPlayPicker_Focused(object sender, FocusEventArgs e)
@@ -192,13 +198,18 @@ namespace OnlineTelevizor.Views
             AboutButton.BackgroundColor = Color.Gray;
             AboutButton.TextColor = Color.Black;
 
+            DeactivateButton.BackgroundColor = Color.Gray;
+            DeactivateButton.TextColor = Color.Black;
+
             _lastFocusedView = view;
-            view.Focus();
 
             if (view is Button)
             {
                 (view as Button).BackgroundColor = Color.Blue;
                 (view as Button).TextColor = Color.White;
+            } else
+            {
+                view.Focus();
             }
         }
 
@@ -214,6 +225,9 @@ namespace OnlineTelevizor.Views
 
                 if (_lastFocusedView == AboutButton)
                     _viewModel.AboutCommand.Execute(null);
+
+                if (_lastFocusedView == DeactivateButton)
+                    _viewModel.DeactivateSledovaniTVDeviceCommand.Execute(null);
             }
         }
 
@@ -263,12 +277,43 @@ namespace OnlineTelevizor.Views
                 if (_config.ShowAdultChannels)
                 {
                     FocusView(PinEntry);
-                } else
+                }
+                else
+                {
+                    FocusView(ShowSledovaniPairedDeviceSwitch);
+                }
+            }
+            else if (_lastFocusedView == PinEntry)
+            {
+                FocusView(ShowSledovaniPairedDeviceSwitch);
+            }
+            else if (_lastFocusedView == ShowSledovaniPairedDeviceSwitch)
+            {
+                if (_viewModel.ShowSledovaniPairedDevice)
+                {
+                    FocusView(DeviceIdEntry);
+                }
+                else
                 {
                     FocusView(LastChannelAutoPlayPicker);
                 }
             }
-            else if (_lastFocusedView == PinEntry)
+            else if (_lastFocusedView == DeviceIdEntry)
+            {
+                FocusView(DevicePasswordEntry);
+            }
+            else if (_lastFocusedView == DevicePasswordEntry)
+            {
+                if (_viewModel.ShowUnpairButton)
+                {
+                    FocusView(DeactivateButton);
+                }
+                else
+                {
+                    FocusView(LastChannelAutoPlayPicker);
+                }
+            }
+            else if (_lastFocusedView == DeactivateButton)
             {
                 FocusView(LastChannelAutoPlayPicker);
             }
@@ -301,7 +346,8 @@ namespace OnlineTelevizor.Views
                 if (_viewModel.IsPurchased)
                 {
                     FocusView(AboutButton);
-                } else
+                }
+                else
                 {
                     FocusView(PayButton);
                 }
