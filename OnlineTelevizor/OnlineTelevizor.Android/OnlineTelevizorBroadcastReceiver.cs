@@ -14,7 +14,7 @@ using Xamarin.Forms;
 
 namespace OnlineTelevizor.Droid
 {
-    [BroadcastReceiver(Enabled = true)]
+    [BroadcastReceiver(Enabled = true, Exported = true)]
     [IntentFilter(new[] { "net.petrjanousek.net.OnlineTelevizorBroadcastReceiver" })]
     public class OnlineTelevizorBroadcastReceiver : BroadcastReceiver
     {
