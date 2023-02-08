@@ -7,6 +7,7 @@ namespace OnlineTelevizor
     public class KeyboardFocusableItemList
     {
         private KeyboardFocusableItem _focusedItem = null;
+        private string _lastFocusedItemName = null;
 
         public IList<KeyboardFocusableItem> Items { get; set; }
 
@@ -29,6 +30,14 @@ namespace OnlineTelevizor
                     return null;
 
                 return _focusedItem.Name;
+            }
+        }
+
+        public string LastFocusedItemName
+        {
+            get
+            {
+                return _lastFocusedItemName;
             }
         }
 
@@ -177,6 +186,7 @@ namespace OnlineTelevizor
             {
                 _focusedItem = item;
                 item.Focus();
+                _lastFocusedItemName = name;
 
                 // raise event
                 if (OnItemFocusedEvent != null)

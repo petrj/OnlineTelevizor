@@ -31,6 +31,36 @@ namespace OnlineTelevizor.ViewModels
         public GroupFilterItem FirstGroup { get; private set; } = new GroupFilterItem() { Name = "*" };
         public TypeFilterItem FirstType { get; private set; } = new TypeFilterItem() { Name = "*" };
 
+        private bool _toolBarFocused = false;
+
+        public bool ToolBarFocused
+        {
+            get
+            {
+                return _toolBarFocused;
+            }
+            set
+            {
+                _toolBarFocused = value;
+                OnPropertyChanged(nameof(RefreshIcon));
+            }
+        }
+
+        public string RefreshIcon
+        {
+            get
+            {
+                if (ToolBarFocused)
+                {
+                    return "RefreshSelected.png";
+                }
+                else
+                {
+                    return "Refresh.png";
+                }
+            }
+        }
+
         public string FontSizeForPicker
         {
             get

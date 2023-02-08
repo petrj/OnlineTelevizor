@@ -19,6 +19,7 @@ namespace OnlineTelevizor.Views
         private KeyboardFocusableItemList _focusItems;
         protected ILoggingService _loggingService;
 
+
         public FilterPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, TVService service)
         {
             InitializeComponent();
@@ -40,10 +41,22 @@ namespace OnlineTelevizor.Views
                 .AddItem(KeyboardFocusableItem.CreateFrom("Type", new List<View>() { TypeBoxView, TypePicker }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("Group", new List<View>() { GroupBoxView, GroupPicker }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("Name", new List<View>() { NameBoxView, ChannelNameEntry }))
-                .AddItem(KeyboardFocusableItem.CreateFrom("Refresh", new List<View>() { RefreshButton }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("Clear", new List<View>() { ClearButton }));
 
             _focusItems.OnItemFocusedEvent += SettingsPage_OnItemFocusedEvent;
+        }
+
+        public void FocusOrUnfocusToolBar()
+        {
+            _viewModel.ToolBarFocused = !_viewModel.ToolBarFocused;
+
+            if (_viewModel.ToolBarFocused)
+            {
+                _focusItems.DeFocusAll();
+            } else
+            {
+                _focusItems.FocusItem(_focusItems.LastFocusedItemName);
+            }
         }
 
         public async void OnKeyDown(string key, bool longPress)
@@ -54,12 +67,30 @@ namespace OnlineTelevizor.Views
 
             switch (keyAction)
             {
+                case KeyboardNavigationActionEnum.Right:
+                case KeyboardNavigationActionEnum.Left:
+                    FocusOrUnfocusToolBar();
+                    break;
+
                 case KeyboardNavigationActionEnum.Down:
-                    _focusItems.FocusNextItem();
+                    if(_viewModel.ToolBarFocused)
+                    {
+                        FocusOrUnfocusToolBar();
+                    } else
+                    {
+                        _focusItems.FocusNextItem();
+                    }
                     break;
 
                 case KeyboardNavigationActionEnum.Up:
-                    _focusItems.FocusPreviousItem();
+                    if (_viewModel.ToolBarFocused)
+                    {
+                        FocusOrUnfocusToolBar();
+                    }
+                    else
+                    {
+                        _focusItems.FocusPreviousItem();
+                    }
                     break;
 
                 case KeyboardNavigationActionEnum.Back:
@@ -68,6 +99,10 @@ namespace OnlineTelevizor.Views
 
                 case KeyboardNavigationActionEnum.OK:
 
+                    if (_viewModel.ToolBarFocused)
+                    {
+                        _viewModel.RefreshCommand.Execute(null);
+                    } else
                     switch (_focusItems.FocusedItemName)
                     {
                         case "Favourite":
@@ -86,9 +121,6 @@ namespace OnlineTelevizor.Views
                             GroupPicker.Focus();
                             break;
 
-                        case "Refresh":
-                            _viewModel.RefreshCommand.Execute(null);
-                            break;
                         case "Clear":
                             _viewModel.ClearFilterCommand.Execute(null);
                             break;
