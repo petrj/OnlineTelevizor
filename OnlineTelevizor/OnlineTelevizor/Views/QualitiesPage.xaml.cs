@@ -14,20 +14,38 @@ using Xamarin.Forms.Xaml;
 namespace OnlineTelevizor.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class QualitiesPage : ContentPage, INavigationSelectPreviousItem, INavigationSelectNextItem
+    public partial class QualitiesPage : ContentPage, IOnKeyDown
     {
         private StreamQualityViewModel _viewModel;
         private IOnlineTelevizorConfiguration _config;
-
+        protected ILoggingService _loggingService;
 
         public QualitiesPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, TVService service)
         {
             InitializeComponent();
 
             _config = config;
+            _loggingService = loggingService;
             var dialogService = new DialogService(this);
 
             BindingContext = _viewModel = new StreamQualityViewModel(loggingService, config, dialogService, service);
+        }
+
+        private void FocusOrUnfocusToolBar()
+        {
+            _viewModel.ToolBarFocused = !_viewModel.ToolBarFocused;
+
+            if (_viewModel.ToolBarFocused)
+            {
+                _viewModel.SelectedItem = null;
+            }
+            else
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                   _viewModel.SelectQualityByConfg();
+                });
+            }
         }
 
         protected override void OnAppearing()
@@ -40,20 +58,50 @@ namespace OnlineTelevizor.Views
         private async void Quality_Tapped(object sender, ItemTappedEventArgs e)
         {
             await Task.Run(() =>
-           {
-               var qualityItem = e.Item as QualityItem;
-               _config.StreamQuality = qualityItem.Id;
-           });
+            {
+                var qualityItem = e.Item as QualityItem;
+                _config.StreamQuality = qualityItem.Id;
+            });
         }
 
-        public async void SelectNextItem()
+        public async void OnKeyDown(string key, bool longPress)
         {
-            await _viewModel.SelectNextItem();
-        }
+            _loggingService.Debug($"QualitiesPage Page OnKeyDown {key}{(longPress ? " (long)" : "")}");
 
-        public async void SelectPreviousItem()
-        {
-            await _viewModel.SelectPreviousItem();
+            var keyAction = KeyboardDeterminer.GetKeyAction(key);
+
+            switch (keyAction)
+            {
+                case KeyboardNavigationActionEnum.Right:
+                case KeyboardNavigationActionEnum.Left:
+                    FocusOrUnfocusToolBar();
+                    break;
+
+                case KeyboardNavigationActionEnum.Down:
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        await _viewModel.SelectNextItem();
+                    });
+                    break;
+
+                case KeyboardNavigationActionEnum.Up:
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        await _viewModel.SelectPreviousItem();
+                    });
+                    break;
+
+                case KeyboardNavigationActionEnum.OK:
+                    if (_viewModel.ToolBarFocused)
+                    {
+                        _viewModel.RefreshCommand.Execute(null);
+                    }
+                    break;
+
+                case KeyboardNavigationActionEnum.Back:
+                    await Navigation.PopAsync();
+                    break;
+            }
         }
     }
 }

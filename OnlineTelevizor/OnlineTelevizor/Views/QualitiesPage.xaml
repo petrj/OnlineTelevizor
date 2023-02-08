@@ -22,6 +22,22 @@
                 <Setter Property="VerticalOptions" Value="FillAndExpand"/>
             </Style>
 
+
+            <Style x:Key="CaptionLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="HorizontalTextAlignment" Value="Right"/>
+            </Style>
+
+            <Style x:Key="PageBackgroundStyle" TargetType="ScrollView">
+                <Setter Property="BackgroundColor" Value="Black"/>
+            </Style>
+
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -58,10 +74,47 @@
                 </ListView.ItemTemplate>
 
             </ListView>
+
+
+
+        <ScrollView Style="{StaticResource PageBackgroundStyle}" x:Name="MainScrollView">
+
+            <StackLayout>
+
+                <Grid Margin="20,10,20,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40*" />
+                        <ColumnDefinition Width="60*" />
+                    </Grid.ColumnDefinitions>
+
+                    <BoxView x:Name="QualityBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
+
+                    <Label  Grid.Row="0" Grid.Column="0" Text="Kvalita streamu" Style="{DynamicResource CaptionLabelStyle}" FontSize="{Binding FontSizeForLabel}" />
+                    <Picker
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="20,0,0,0"
+                                x:Name="QualityPicker"
+                                FontSize="{Binding FontSizeForPicker}"
+                                SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                                Style="{StaticResource CommonPickerTextStyle}"
+                                ItemsSource="{Binding Qualities}"
+                                Title="Kvalita streamu"/>
+                </Grid>
+            </StackLayout>
+        </ScrollView>
+
     </StackLayout>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="Refresh.png"/>
+        <ToolbarItem Name="ToolbarItemRefresh" Text="Obnovit"  Command="{Binding RefreshCommand}" Icon="{Binding RefreshIcon}"/>
     </ContentPage.ToolbarItems>
 
 </ContentPage>

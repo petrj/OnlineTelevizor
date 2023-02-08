@@ -46,7 +46,7 @@ namespace OnlineTelevizor.Views
             _focusItems.OnItemFocusedEvent += SettingsPage_OnItemFocusedEvent;
         }
 
-        public void FocusOrUnfocusToolBar()
+        private void FocusOrUnfocusToolBar()
         {
             _viewModel.ToolBarFocused = !_viewModel.ToolBarFocused;
 
