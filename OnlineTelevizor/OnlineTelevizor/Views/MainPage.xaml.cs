@@ -643,40 +643,20 @@ namespace OnlineTelevizor.Views
 
             switch (key.ToLower())
             {
-                case "f3":
-                case "mediaplaynext":
-                case "medianext":
                 case "moveend":
                 case "mediafastforward":
                 case "mediaforward":
-                case "channeldown":
-                    await ActionKeyDown(1);
-                    break;
-                case "f2":
-                case "mediaplayprevious":
-                case "mediaprevious":
-                case "movehome":
-                case "mediarewind":
-                case "mediafastrewind":
-                case "channelup":
-                    await ActionKeyUp(1);
-                    break;
                 case "pagedown":
                     await ActionKeyDown(10);
                     break;
+                case "movehome":
+                case "mediarewind":
+                case "mediafastrewind":
                 case "pageup":
                     await ActionKeyUp(10);
                     break;
-                case "leftbracket":
-                    await ActionKeyLeft();
-                    break;
-                case "rightbracket":
-                    await ActionKeyRight();
-                    break;
-                case "f6":
-                    await ActionKeyOK();
-                    break;
                 case "mediaplaypause":
+                case "mediaplaystop":
                     if (PlayingState == PlayingStateEnum.Stopped)
                     {
                         ActionPlay(_viewModel.SelectedItemSafe);
@@ -688,7 +668,6 @@ namespace OnlineTelevizor.Views
                     break;
                 case "mediastop":
                 case "mediaclose":
-                case "mediaplaystop":
                     ActionStop(true);
                     break;
                 case "f7":

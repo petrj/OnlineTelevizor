@@ -99,8 +99,6 @@
                         <Button Grid.Row="4" Grid.Column="1" x:Name="ClearButton" Text="Zrušit všechny filtry" Command="{Binding ClearFilterCommand}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
                 </Grid>
 
-
-
             </StackLayout>
 
         </ScrollView>

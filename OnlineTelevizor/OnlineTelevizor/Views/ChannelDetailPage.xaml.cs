@@ -14,7 +14,7 @@ using Xamarin.Forms.Xaml;
 namespace OnlineTelevizor.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ChannelDetailPage : ContentPage, INavigationScrollUpDown
+    public partial class ChannelDetailPage : ContentPage, IOnKeyDown
     {
         private ChannelDetailViewModel _viewModel;
         private IOnlineTelevizorConfiguration _config;
@@ -39,20 +39,24 @@ namespace OnlineTelevizor.Views
             BindingContext = _viewModel = new ChannelDetailViewModel(loggingService, config, dialogService, service);
         }
 
-        public void ScrollDown()
+        public async void OnKeyDown(string key, bool longPress)
         {
-            Task.Run(async () =>
-            {
-                await DetailScrollView.ScrollToAsync(DetailScrollView.ScrollX, DetailScrollView.ScrollY + 10 + (int)_config.AppFontSize, false);
-            });
-        }
+            var keyAction = KeyboardDeterminer.GetKeyAction(key);
 
-        public void ScrollUp()
-        {
-            Task.Run(async () =>
+            switch (keyAction)
             {
-                await DetailScrollView.ScrollToAsync(DetailScrollView.ScrollX, DetailScrollView.ScrollY - 10 - (int)_config.AppFontSize, false);
-            });
+                case KeyboardNavigationActionEnum.Down:
+                    await DetailScrollView.ScrollToAsync(DetailScrollView.ScrollX, DetailScrollView.ScrollY + 10 * (1 + (int)_config.AppFontSize), false);
+                    break;
+
+                case KeyboardNavigationActionEnum.Up:
+                    await DetailScrollView.ScrollToAsync(DetailScrollView.ScrollX, DetailScrollView.ScrollY - 10 * (1 + (int)_config.AppFontSize), false);
+                    break;
+
+                case KeyboardNavigationActionEnum.Back:
+                    await Navigation.PopAsync();
+                    break;
+            }
         }
     }
 }
