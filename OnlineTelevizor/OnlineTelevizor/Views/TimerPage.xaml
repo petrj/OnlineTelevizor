@@ -7,8 +7,9 @@
     <ContentPage.Resources>
         <ResourceDictionary>
 
-            <Style x:Key="PageBackgroundStyle" TargetType="ScrollView">
+            <Style x:Key="TimerPageStyle" TargetType="StackLayout">
                 <Setter Property="BackgroundColor" Value="Black"/>
+                <Setter Property="VerticalOptions" Value="StartAndExpand"/>
             </Style>
 
             <Style x:Key="CaptionStyle" TargetType="Label">
@@ -33,9 +34,24 @@
 
 
     <ContentPage.Content>
-        <StackLayout Style="{StaticResource PageBackgroundStyle}">
+        <StackLayout Style="{StaticResource TimerPageStyle}">
             <Label Style="{StaticResource CaptionStyle}" Text="{Binding TimerMinutesForLabel}" FontSize="{Binding FontSizeForCaption}"/>
-            <Stepper Style="{StaticResource StepperStyle}" ValueChanged="OnStepperValueChanged"/>
+            <Grid Margin="20,10,20,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25*" />
+                    <ColumnDefinition Width="25*" />
+                    <ColumnDefinition Width="25*" />
+                    <ColumnDefinition Width="25*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Row="0" Grid.Column="1" x:Name="MinusButton" Text="-" Command="{Binding MinusCommand}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
+                <Button Grid.Row="0" Grid.Column="2" x:Name="PlusButton" Text="+" Command="{Binding PlusCommand}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"/>
+            </Grid>
+
         </StackLayout>
+
     </ContentPage.Content>
 </ContentPage>
