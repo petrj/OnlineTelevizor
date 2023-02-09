@@ -23,7 +23,6 @@ namespace OnlineTelevizor.Views
         private Command CheckCastingCommand { get; set; }
         private bool _castingStarted = false;
 
-
         public CastRenderersPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
             InitializeComponent();

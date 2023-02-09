@@ -489,23 +489,6 @@ namespace OnlineTelevizor.Droid
 
         }
 
-        /*
-        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
-        {
-            _loggingService.Debug($"OnKeyDown: keyCode:{keyCode}, long:{e.IsLongPress}");
-
-            if (e.IsLongPress)
-            {
-                MessagingCenter.Send(keyCode.ToString(), BaseViewModel.MSG_KeyLongMessage);
-            }
-
-            MessagingCenter.Send(keyCode.ToString(), BaseViewModel.MSG_KeyMessage);
-
-            return base.OnKeyDown(keyCode, e);
-        }
-        */
-
-        /*
         public override bool OnGenericMotionEvent(MotionEvent e)
         {
             // https://github.com/xamarin/monodroid-samples/blob/main/tv/VisualGameController/VisualGameController/FullScreenActivity.cs
@@ -538,25 +521,25 @@ namespace OnlineTelevizor.Droid
 
                     if (x>0.5 || x1 > 0.5)
                     {
-                        MessagingCenter.Send("Right", BaseViewModel.MSG_KeyMessage);
+                        MessagingCenter.Send("Right", BaseViewModel.MSG_KeyAction);
                         return true;
                     }
 
                     if (x < -0.5 || x1 < -0.5)
                     {
-                        MessagingCenter.Send("Left", BaseViewModel.MSG_KeyMessage);
+                        MessagingCenter.Send("Left", BaseViewModel.MSG_KeyAction);
                         return true;
                     }
 
                     if (y > 0.5 || y1 > 0.5)
                     {
-                        MessagingCenter.Send("Down", BaseViewModel.MSG_KeyMessage);
+                        MessagingCenter.Send("Down", BaseViewModel.MSG_KeyAction);
                         return true;
                     }
 
                     if (y < -0.5 || y1 < -0.5)
                     {
-                        MessagingCenter.Send("Up", BaseViewModel.MSG_KeyMessage);
+                        MessagingCenter.Send("Up", BaseViewModel.MSG_KeyAction);
                         return true;
                     }
                 }
@@ -568,7 +551,6 @@ namespace OnlineTelevizor.Droid
 
             return base.OnGenericMotionEvent(e);
         }
-        */
 
         private void ShowToastMessage(string message)
         {
