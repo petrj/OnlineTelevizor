@@ -28,6 +28,7 @@ namespace OnlineTelevizor.Views
         private FilterPage _filterPage = null;
         private CastRenderersPage _renderersPage;
         private TimerPage _timerPage;
+        private SettingsPage _settingsPage = null;
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private DateTime _lastBackPressedTime = DateTime.MinValue;
@@ -107,8 +108,6 @@ namespace OnlineTelevizor.Views
         public void SubscribeMessages()
         {
             _loggingService.Info($"Subscribing messages");
-
-            UnsubscribeMessages();
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_KeyAction, (key) =>
             {
@@ -236,7 +235,6 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"Unsubscribing messages");
 
-
             MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.MSG_KeyAction);
             MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowDetailMessage);
             MessagingCenter.Unsubscribe<MainPageViewModel>(this, BaseViewModel.MSG_ShowRenderers);
@@ -250,6 +248,11 @@ namespace OnlineTelevizor.Views
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_StopRecord);
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_ToggleAudioStream);
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_ToggleSubtitles);
+
+            if (_settingsPage != null)
+            {
+                _settingsPage.UnsubscribeMessages();
+            }
         }
 
         private async void _timerPage_Disappearing(object sender, EventArgs e)
@@ -1726,17 +1729,20 @@ namespace OnlineTelevizor.Views
             if (IsPageOnTop(typeof(SettingsPage)))
                 return;
 
-            var settingsPage = new SettingsPage(_loggingService, _config, _dialogService, _viewModel.TVService);
-            settingsPage.FillAutoPlayChannels(_viewModel.AllNotFilteredChannels);
-            settingsPage.AppVersion = AppVersion;
-
-            settingsPage.Disappearing += delegate
+            if (_settingsPage == null)
             {
-                _viewModel.ResetConnectionCommand.Execute(null);
-                _viewModel.RefreshCommandWithNotification.Execute(null);
-            };
+                _settingsPage = new SettingsPage(_loggingService, _config, _dialogService, _viewModel.TVService);
+                _settingsPage.FillAutoPlayChannels(_viewModel.AllNotFilteredChannels);
+                _settingsPage.AppVersion = AppVersion;
 
-            await Navigation.PushAsync(settingsPage);
+                _settingsPage.Disappearing += delegate
+                {
+                    _viewModel.ResetConnectionCommand.Execute(null);
+                    _viewModel.RefreshCommandWithNotification.Execute(null);
+                };
+            }
+
+            await Navigation.PushAsync(_settingsPage);
         }
 
         private async void ToolbarItemQuality_Clicked(object sender, EventArgs e)

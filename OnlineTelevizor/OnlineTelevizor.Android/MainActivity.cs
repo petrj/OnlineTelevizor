@@ -317,6 +317,8 @@ namespace OnlineTelevizor.Droid
         {
             _loggingService.Info("Activity destroyed");
 
+            _app.OnDestroy();
+
             base.OnDestroy();
         }
 

@@ -68,7 +68,7 @@ namespace OnlineTelevizor.Views
             });
         }
 
-        ~SettingsPage()
+        public void UnsubscribeMessages()
         {
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings);
         }

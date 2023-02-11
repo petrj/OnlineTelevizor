@@ -34,11 +34,6 @@ namespace OnlineTelevizor.Views
             MainPage = new NavigationPage(_mainPage);
         }
 
-        ~App()
-        {
-            _mainPage.UnsubscribeMessages();
-        }
-
         public string AppVersion
         {
             get
@@ -60,7 +55,6 @@ namespace OnlineTelevizor.Views
             _mainPage.RefreshWithnotification();
         }
 
-
         protected override void OnSleep()
         {
             _loggingService.Info($"OnSleep");
@@ -77,14 +71,17 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"OnResume");
 
-            //_mainPage.Resume();
-
             // refresh only when resume after 1 minute
             if ((DateTime.Now - _lastSleep).TotalMinutes > 1)
             {
                 _mainPage.Reset();
                 _mainPage.Refresh();
             }
+        }
+
+        public void OnDestroy()
+        {
+            _mainPage.UnsubscribeMessages();
         }
     }
 }
