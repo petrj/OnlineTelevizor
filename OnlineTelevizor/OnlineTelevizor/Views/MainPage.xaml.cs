@@ -31,15 +31,12 @@ namespace OnlineTelevizor.Views
 
         private DateTime _lastNumPressedTime = DateTime.MinValue;
         private DateTime _lastBackPressedTime = DateTime.MinValue;
-        private DateTime _lastKeyLongPressedTime = DateTime.MinValue;
         private DateTime _lastToggledAudioStreamTime = DateTime.MinValue;
-        private DateTime _lastPageAppearedTime = DateTime.MinValue;
         private DateTime _lastDetailclickedTime = DateTime.MinValue;
         private DateTime _lastActionOkMenuPopupTime = DateTime.MinValue;
         private bool _firstSelectionAfterStartup = false;
         private string _numberPressed = String.Empty;
         private bool _resumedWithoutReinitializingVideo = false;
-        private Tuple<DateTime, KeyboardNavigationActionEnum> _lastKeyPressed = null;
 
         private LibVLC _libVLC = null;
         private MediaPlayer _mediaPlayer;
@@ -118,7 +115,6 @@ namespace OnlineTelevizor.Views
                 {
                     longPress = true;
                     key = key.Substring(BaseViewModel.LongPressPrefix.Length);
-                    _lastKeyLongPressedTime = DateTime.Now;
                 }
 
                 OnKeyDown(key, longPress);
@@ -471,8 +467,6 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"MainPage_Appearing");
 
-            _lastPageAppearedTime = DateTime.Now;
-
             if (!_viewModel.QualityFilterEnabled)
             {
                 if (ToolbarItems.Contains(ToolbarItemQuality))
@@ -576,28 +570,15 @@ namespace OnlineTelevizor.Views
 
         public async void OnKeyDown(string key, bool longPress)
         {
-            _loggingService.Debug($"OnKeyDown {key}");
+            if (longPress)
+            {
+                _loggingService.Debug($"OnKeyDown - longpress {key}");
+            } else
+            {
+                _loggingService.Debug($"OnKeyDown {key}");
+            }
 
             var keyAction = KeyboardDeterminer.GetKeyAction(key);
-
-            // prevent multiple key press events
-
-            if (_lastKeyPressed == null)
-            {
-                _lastKeyPressed = new Tuple<DateTime, KeyboardNavigationActionEnum>(DateTime.Now, keyAction);
-            }
-            else
-            {
-                if ((DateTime.Now - _lastKeyPressed.Item1).TotalMilliseconds < 250 &&
-                    _lastKeyPressed.Item2 == keyAction)
-                {
-                    return; // ignoring event
-                }
-                else
-                {
-                    _lastKeyPressed = new Tuple<DateTime, KeyboardNavigationActionEnum>(DateTime.Now, keyAction);
-                }
-            }
 
             var stack = Navigation.NavigationStack;
             if (stack[stack.Count - 1].GetType() != typeof(MainPage))
@@ -617,11 +598,11 @@ namespace OnlineTelevizor.Views
             switch (keyAction)
             {
                 case KeyboardNavigationActionEnum.Down:
-                    await ActionKeyDown(1);
+                    await ActionKeyDown(longPress ? 10 : 1);
                     break;
 
                 case KeyboardNavigationActionEnum.Up:
-                    await ActionKeyUp(1);
+                    await ActionKeyUp(longPress ? 10 : 1);
                     break;
 
                 case KeyboardNavigationActionEnum.Right:
@@ -633,11 +614,11 @@ namespace OnlineTelevizor.Views
                     break;
 
                 case KeyboardNavigationActionEnum.Back:
-                    ActionStop(false);
+                    ActionBack(longPress);
                     break;
 
                 case KeyboardNavigationActionEnum.OK:
-                    await ActionKeyOK();
+                    await ActionKeyOK(longPress);
                     break;
             }
 
@@ -1333,15 +1314,15 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        private async Task ActionKeyOK()
+        private async Task ActionKeyOK(bool longPress)
         {
-            _loggingService.Info($"ActionKeyOK (LongPress: {LastKeyLongPressed})");
+            _loggingService.Info($"ActionKeyOK (LongPress: {longPress})");
 
             try
             {
                 if (PlayingState == PlayingStateEnum.PlayingInternal)
                 {
-                    if (LastKeyLongPressed)
+                    if (longPress)
                     {
                         // this event is called immediately after Navigation.PopAsync();
                         if (_lastActionOkMenuPopupTime != DateTime.MinValue && ((DateTime.Now - _lastActionOkMenuPopupTime).TotalSeconds < 2))
@@ -1356,8 +1337,6 @@ namespace OnlineTelevizor.Views
                         {
                             await _viewModel.ShowPopupMenu();
                         });
-
-                        //ToggleAudioStream();
                     }
                     else
                     {
@@ -1798,49 +1777,29 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        private bool LastKeyLongPressed
-        {
-            get
-            {
-                return ((_lastKeyLongPressedTime != DateTime.MinValue) && ((DateTime.Now - _lastKeyLongPressedTime).TotalSeconds < 3));
-            }
-        }
-
-
-        protected override bool OnBackButtonPressed()
+        private void ActionBack(bool longPress)
         {
             _loggingService.Info($"OnBackButtonPressed");
 
-            // this event is called immediately after Navigation.PopAsync();
-            if (_lastPageAppearedTime != DateTime.MinValue && ((DateTime.Now - _lastPageAppearedTime).TotalSeconds < 3))
+            if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
             {
-                // ignoring this event
-                return true;
+                ActionStop(longPress);
+                _lastBackPressedTime = DateTime.MinValue;
+                return;
             }
 
-            if (LastKeyLongPressed)
+            if ((_lastBackPressedTime == DateTime.MinValue) || ((DateTime.Now-_lastBackPressedTime).TotalSeconds>3))
             {
-                return false;
-            }
-
-            if ((_lastBackPressedTime == DateTime.MinValue) || ((DateTime.Now-_lastBackPressedTime).TotalSeconds>5))
-            {
-
-                if (PlayingState == PlayingStateEnum.PlayingInternal || PlayingState == PlayingStateEnum.PlayingInPreview)
+                if (longPress)
                 {
-                    ActionStop(false);
-                    _lastBackPressedTime = DateTime.MinValue;
-                } else
-                if (PlayingState == PlayingStateEnum.Stopped)
-                {
-                    MessagingCenter.Send($"Stiskněte ještě jednou pro ukončení", BaseViewModel.MSG_ToastMessage);
-                    _lastBackPressedTime = DateTime.Now;
+                    MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopPlayInternalNotificationAndQuit);
                 }
 
-                return true;
+                MessagingCenter.Send($"Stiskněte ještě jednou pro ukončení", BaseViewModel.MSG_ToastMessage);
+                _lastBackPressedTime = DateTime.Now;
             } else
             {
-                return false;
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopPlayInternalNotificationAndQuit);
             }
         }
 

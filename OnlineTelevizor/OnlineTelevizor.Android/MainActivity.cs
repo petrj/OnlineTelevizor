@@ -453,6 +453,13 @@ namespace OnlineTelevizor.Droid
         public override bool DispatchKeyEvent(KeyEvent e)
         {
             var code = e.KeyCode.ToString();
+
+            if (e.Action == KeyEventActions.Up)
+            {
+                _loggingService.Debug($"DispatchKeyEvent: {code} consumed (ignoring key up event)");
+                return true;
+            }
+
             var keyAction = KeyboardDeterminer.GetKeyAction(code);
             if (e.IsLongPress)
             {
@@ -461,7 +468,9 @@ namespace OnlineTelevizor.Droid
 
             if (!_dispatchKeyEventEnabled && keyAction != KeyboardNavigationActionEnum.Unknown)
             {
-                _loggingService.Debug($"DispatchKeyEvent thrown out: {code}");
+                //e.DownTime - SystemClock.UptimeMillis()
+
+                _loggingService.Debug($"DispatchKeyEvent: {code} consumed (sending to application, time: {e.EventTime-e.DownTime})");
 
                 MessagingCenter.Send(code, BaseViewModel.MSG_KeyAction);
 
@@ -475,7 +484,7 @@ namespace OnlineTelevizor.Droid
 
                 if (keyAction == KeyboardNavigationActionEnum.OK && ms < 1000)
                 {
-                    _loggingService.Debug($"DispatchKeyEvent: ignoring ENTER");
+                    _loggingService.Debug($"DispatchKeyEvent: {code} consumed (ignoring OK action)");
 
                     return true;
                 }
@@ -486,7 +495,6 @@ namespace OnlineTelevizor.Droid
                     return base.DispatchKeyEvent(e);
                 }
             }
-
         }
 
         public override bool OnGenericMotionEvent(MotionEvent e)

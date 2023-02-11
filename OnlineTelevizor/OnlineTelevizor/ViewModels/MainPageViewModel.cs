@@ -57,8 +57,6 @@ namespace OnlineTelevizor.ViewModels
         private int _animePos = 2;
         private bool _animePosIncreasing = true;
 
-        private bool _notifyRefreshStatus = false;
-
         public enum SelectedPartEnum
         {
             ChannelsList = 0,
@@ -1204,6 +1202,7 @@ namespace OnlineTelevizor.ViewModels
                 async () =>
                 {
                     await _semaphoreSlim.WaitAsync();
+
                     try
                     {
                         if (Channels.Count == 0)
