@@ -53,16 +53,24 @@ namespace OnlineTelevizor.Views
                 FontSizePicker.IsVisible = false;
             }
 
-            Disappearing += delegate
-            {
-                MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings);
-            };
-
             TVAPIPicker.Unfocused += TVAPIPicker_Unfocused;
             LastChannelAutoPlayPicker.Unfocused += LastChannelAutoPlayPicker_Unfocused;
             LastChannelAutoPlayPicker.Focused += LastChannelAutoPlayPicker_Focused;
             FontSizePicker.Unfocused += FontSizePicker_Unfocused;
             DeviceIdEntry.Focused += DeviceIdEntry_Focused;
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings, async (sender) =>
+            {
+                if (await _dialogService.Confirm("Při běhu na pozadí je nutné zajistit, aby se aplikace kvůli optimalizaci baterie neukončovala. Přejít do nastavení?"))
+                {
+                    MessagingCenter.Send<SettingsPage>(this, BaseViewModel.MSG_SetBatterySettings);
+                }
+            });
+        }
+
+        ~SettingsPage()
+        {
+            MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings);
         }
 
         private void DeviceIdEntry_Focused(object sender, FocusEventArgs e)
@@ -158,14 +166,6 @@ namespace OnlineTelevizor.Views
             _loggingService.Debug("Appearing");
 
             base.OnAppearing();
-
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings, async (sender) =>
-            {
-                if (await _dialogService.Confirm("Při běhu na pozadí je nutné zajistit, aby se aplikace kvůli optimalizaci baterie neukončovala. Přejít do nastavení?"))
-                {
-                    MessagingCenter.Send<SettingsPage>(this, BaseViewModel.MSG_SetBatterySettings);
-                }
-            });
 
 #if DVBSTREAMER
             var dvbStreamerEnabled = true;

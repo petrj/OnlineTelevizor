@@ -108,6 +108,8 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"Subscribing messages");
 
+            UnsubscribeMessages();
+
             MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_KeyAction, (key) =>
             {
                 var longPress = false;

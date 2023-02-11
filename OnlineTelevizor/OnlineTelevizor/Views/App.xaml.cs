@@ -29,7 +29,14 @@ namespace OnlineTelevizor.Views
 
             _mainPage = new MainPage(_loggingService, _config);
 
+            _mainPage.SubscribeMessages();
+
             MainPage = new NavigationPage(_mainPage);
+        }
+
+        ~App()
+        {
+            _mainPage.UnsubscribeMessages();
         }
 
         public string AppVersion
@@ -50,9 +57,9 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"OnStart");
 
-            _mainPage.SubscribeMessages();
             _mainPage.RefreshWithnotification();
         }
+
 
         protected override void OnSleep()
         {
@@ -62,8 +69,6 @@ namespace OnlineTelevizor.Views
             {
                 _mainPage.ActionStop(true);
             }
-
-            _mainPage.UnsubscribeMessages();
 
             _lastSleep = DateTime.Now;
         }
@@ -80,8 +85,6 @@ namespace OnlineTelevizor.Views
                 _mainPage.Reset();
                 _mainPage.Refresh();
             }
-
-            _mainPage.SubscribeMessages();
         }
     }
 }
