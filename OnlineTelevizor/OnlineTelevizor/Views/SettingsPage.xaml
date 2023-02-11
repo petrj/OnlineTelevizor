@@ -13,8 +13,10 @@
 
             <Style x:Key="CommonEntryTextStyle" TargetType="Entry">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="BackgroundColor" Value="Black"/>
                 <Setter Property="PlaceholderColor" Value="Gray"/>
+                <Setter Property="HorizontalTextAlignment" Value="Right"/>
+                <Setter Property="BackgroundColor" Value="Black"/>
+                <Setter Property="Margin" Value="3,3,3,3"/>
             </Style>
 
             <Style x:Key="CaptionStyle" TargetType="Label">
@@ -38,7 +40,7 @@
 
             <Style x:Key="CommonPickerTextStyle" TargetType="Picker">
                 <Setter Property="TextColor" Value="White"/>
-                <Setter Property="BackgroundColor" Value="Black"/>
+                <Setter Property="HorizontalTextAlignment" Value="Right"/>
             </Style>
 
         </ResourceDictionary>
@@ -46,92 +48,130 @@
 
     <ContentPage.Content>
 
-        <ScrollView Style="{StaticResource PageBackgroundStyle}">
+        <ScrollView x:Name="SettingsPageScrollView" Style="{StaticResource PageBackgroundStyle}">
 
             <StackLayout>
 
                  <StackLayout Margin="20,10,20,0">
 
-                    <Label Text="Aktivní IPTV:" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}" x:Name="ActiveIPTVLabel"/>
-
-                    <Picker
-                        x:Name="TVAPIPicker"
-                        Margin="20,0,0,0"
-                        FontSize="{Binding FontSizeForPicker}"
-                        Style="{StaticResource CommonPickerTextStyle}"
-                        SelectedIndex="{Binding TVAPIIndex, Mode=TwoWay}"
-                        TabIndex="0"
-                        Title="Aktivní IPTV">
-                        <Picker.Items>
-                            <x:String>SledovaniTV</x:String>
-                            <x:String>Kuki</x:String>
-                            <x:String>O2 TV</x:String>
-                            <x:String>DVB Streamer</x:String>
-                        </Picker.Items>
-                    </Picker>
-
-                </StackLayout>
-
-                <StackLayout Margin="20,10,20,0" IsVisible="{Binding IsSledovaniTVVisible, Mode=TwoWay}">
-
-                    <Label Text="Přístupové údaje SledovaniTV" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-
-                    <StackLayout Margin="20,10,0,0">
-                        <Label Text="Uživatelské jméno (email):" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="UsernameEntry"  Text="{Binding Username, Mode=TwoWay}" Placeholder="Zadejte uživatelské jméno" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="1" />
-                    </StackLayout>
-
-                    <StackLayout Margin="20,0,0,0">
-                        <Label Text="Heslo:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="PasswordEntry"  IsPassword="True" Text="{Binding Password, Mode=TwoWay}" Placeholder="Zadejte heslo" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="2" />
-                    </StackLayout>
-
-                    <Grid Margin="20,10,0,0">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="70*" />
-                            <ColumnDefinition Width="30*" />
+                            <ColumnDefinition Width="40*" />
+                            <ColumnDefinition Width="60*" />
                         </Grid.ColumnDefinitions>
 
-                        <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit kanály pro dospělé" Style="{StaticResource CaptionStyle}"   FontSize="{Binding FontSizeForCaption}"/>
-                        <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowAdultChannelsSwitch" IsToggled="{Binding ShowAdultChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" TabIndex="3"/>
+                        <BoxView x:Name="ActiveIPTVBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
+                        <Label Grid.Row="0" Grid.Column="0" x:Name="ActiveIPTVLabel" Text="Aktivní IPTV:" Style="{DynamicResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                        <Picker
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            x:Name="TVAPIPicker"
+                            Margin="20,0,0,0"
+                            FontSize="{Binding FontSizeForPicker}"
+                            Style="{StaticResource CommonPickerTextStyle}"
+                            SelectedIndex="{Binding TVAPIIndex, Mode=TwoWay}"
+                            Title="Aktivní IPTV">
+                            <Picker.Items>
+                                <x:String>SledovaniTV</x:String>
+                                <x:String>Kuki</x:String>
+                                <x:String>O2 TV</x:String>
+                                <x:String>DVB Streamer</x:String>
+                            </Picker.Items>
+                        </Picker>
 
                     </Grid>
 
-                    <StackLayout Margin="20,0,0,0" IsVisible="{Binding IsPINShowed}">
-                        <Label Text="Rodičovský zámek (PIN):" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Entry Margin="20,0,0,0" WidthRequest="100" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}"  Placeholder="Zadejte PIN" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="4"/>
-                    </StackLayout>
+                    <StackLayout IsVisible="{Binding IsSledovaniTVVisible}">
 
-                    <Grid Margin="20,10,0,0"
-                          x:Name="SledovaniTVPairedDeviceGrid">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="70*" />
-                            <ColumnDefinition Width="30*" />
-                        </Grid.ColumnDefinitions>
+                        <Label Margin="40,10,20,10" Text="Přístupové údaje SledovaniTV" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
 
-                        <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit informace o spárovaném zařízení" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                        <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowSledovaniPairedDeviceSwitch" IsToggled="{Binding ShowSledovaniPairedDevice, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" TabIndex="5"/>
+                        <Grid Margin="60,0,20,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40*" />
+                                <ColumnDefinition Width="60*" />
+                            </Grid.ColumnDefinitions>
 
-                    </Grid>
+                            <BoxView x:Name="SledovaniTVUserNameBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
+                            <Label Grid.Row="0" Grid.Column="0" Text="Uživatelské jméno (email):" Style="{DynamicResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                            <Entry Grid.Row="0" Grid.Column="1" BindingContext="{Binding Config}" x:Name="UsernameEntry"  Text="{Binding Username, Mode=TwoWay}" Placeholder="Zadejte uživatelské jméno" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
 
-                    <StackLayout Margin="40,10,0,0" IsVisible="{Binding ShowSledovaniPairedDevice}">
-                        <Label Text="ID spárovaného zařízení:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Entry Margin="20,0,0,0" x:Name="DeviceIdEntry"  Text="{Binding SledovaniTVDeviceID, Mode=TwoWay}" Placeholder="ID zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="6" />
-                    </StackLayout>
+                            <BoxView x:Name="SledovaniTVPasswordBoxView" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
+                            <Label Grid.Row="1" Grid.Column="0" Text="Heslo:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                            <Entry Grid.Row="1" Grid.Column="1" BindingContext="{Binding Config}" x:Name="PasswordEntry"  IsPassword="True" Text="{Binding Password, Mode=TwoWay}" Placeholder="Zadejte heslo" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
+                        </Grid>
 
-                    <StackLayout Margin="40,0,0,0" IsVisible="{Binding ShowSledovaniPairedDevice}">
-                        <Label Text="Heslo spárovaného zařízení:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
-                        <Entry Margin="20,0,0,0" x:Name="DevicePasswordEntry"  IsPassword="True" Text="{Binding SledovaniTVDevicePassword, Mode=TwoWay}" Placeholder="Heslo zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="7" />
-                    </StackLayout>
+                        <Grid Margin="60,0,20,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="85*" />
+                                <ColumnDefinition Width="15*" />
+                            </Grid.ColumnDefinitions>
 
-                    <StackLayout Margin="20,10,0,0" IsVisible="{Binding ShowUnpairButton}">
-                        <Button Margin="20,10,0,0" x:Name="DeactivateButton"  Text="Deaktivovat zařízení" Command="{Binding DeactivateSledovaniTVDeviceCommand}" FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black" TabIndex="8"/>
+                            <BoxView x:Name="SledovaniTVShowAdultChannelsBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
+                            <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit kanály pro dospělé" Style="{StaticResource CaptionStyle}"   FontSize="{Binding FontSizeForCaption}"/>
+                            <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowAdultChannelsSwitch" IsToggled="{Binding ShowAdultChannels, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                        </Grid>
+
+                        <Grid Margin="60,0,20,0" IsVisible="{Binding IsPINShowed}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40*" />
+                                <ColumnDefinition Width="60*" />
+                            </Grid.ColumnDefinitions>
+
+                            <BoxView x:Name="SledovaniTVPINBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
+                            <Label Grid.Row="0" Grid.Column="0" Text="Rodičovský zámek (PIN):" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                            <Entry Grid.Row="0" Grid.Column="1"  WidthRequest="100" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}" Placeholder="Zadejte PIN" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
+                        </Grid>
+
+                        <Grid Margin="60,0,20,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40*" />
+                                <ColumnDefinition Width="60*" />
+                            </Grid.ColumnDefinitions>
+
+                            <BoxView x:Name="ShowPairedCredentialsBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
+                            <Label  Grid.Row="0" Grid.Column="0" Text="Zobrazit informace o spárovaném zařízení:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                            <Switch Grid.Row="0" Grid.Column="1" x:Name="ShowSledovaniPairedDeviceSwitch" IsToggled="{Binding ShowSledovaniPairedDevice, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                        </Grid>
+
+                        <Label IsVisible="{Binding ShowSledovaniPairedDevice}" Margin="70,10,20,10" Text="Přístupové údaje spárovaného zařízení" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+
+                        <Grid Margin="70,0,20,0" IsVisible="{Binding ShowSledovaniPairedDevice}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40*" />
+                                <ColumnDefinition Width="60*" />
+                            </Grid.ColumnDefinitions>
+
+                            <BoxView x:Name="SledovaniTVDeviceIdBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
+                            <Label Grid.Row="0" Grid.Column="0" Text="ID:" Style="{DynamicResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                            <Entry Grid.Row="0" Grid.Column="1" x:Name="DeviceIdEntry"  Text="{Binding SledovaniTVDeviceID, Mode=TwoWay}" Placeholder="ID zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
+
+                            <BoxView x:Name="SledovaniTVDevicePasswordBoxView" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
+                            <Label Grid.Row="1" Grid.Column="0" Text="Heslo:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                            <Entry Grid.Row="1" Grid.Column="1" x:Name="DevicePasswordEntry" IsPassword="True" Text="{Binding SledovaniTVDevicePassword, Mode=TwoWay}" Placeholder="Heslo zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
+                        </Grid>
+
+                        <Button Margin="70,0,20,0" IsVisible="{Binding ShowUnpairButton}" x:Name="DeactivateButton" Text="Deaktivovat zařízení" Command="{Binding DeactivateSledovaniTVDeviceCommand}" FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black" />
+
                     </StackLayout>
 
                 </StackLayout>
@@ -142,7 +182,7 @@
 
                     <StackLayout Margin="20,10,0,0">
                         <Label Text="S/N zařízení:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="SNEntry"  Text="{Binding KUKIsn, Mode=TwoWay}" Placeholder="Zadejte S/N mobilního zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="9" />
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="SNEntry"  Text="{Binding KUKIsn, Mode=TwoWay}" Placeholder="Zadejte S/N mobilního zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0">
@@ -157,7 +197,7 @@
 
                     <StackLayout Margin="20,10,0,0">
                         <Label Text="Url služby:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="DVBStreamerUrlEntry"  Text="{Binding DVBStreamerUrl, Mode=TwoWay}" Placeholder="Zadejte url služby" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="10" />
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="DVBStreamerUrlEntry"  Text="{Binding DVBStreamerUrl, Mode=TwoWay}" Placeholder="Zadejte url služby" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0">
@@ -165,7 +205,7 @@
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0">
-                        <Button Margin="20,10,0,0" Text="Zastavit stream" Command="{Binding StopStreamCommand}" FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black" TabIndex="11"/>
+                        <Button Margin="20,10,0,0" Text="Zastavit stream" Command="{Binding StopStreamCommand}" FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black" />
                     </StackLayout>
 
                 </StackLayout>
@@ -176,12 +216,12 @@
 
                     <StackLayout Margin="20,10,0,0">
                         <Label Text="Uživatelské jméno (email):" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="O2TVUsernameEntry"  Text="{Binding O2TVUsername, Mode=TwoWay}" Placeholder="Zadejte uživatelské jméno" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="12" />
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="O2TVUsernameEntry"  Text="{Binding O2TVUsername, Mode=TwoWay}" Placeholder="Zadejte uživatelské jméno" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
                     </StackLayout>
 
                     <StackLayout Margin="20,0,0,0">
                         <Label Text="Heslo:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
-                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="O2TVPasswordEntry"  IsPassword="True" Text="{Binding O2TVPassword, Mode=TwoWay}" Placeholder="Zadejte heslo" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" TabIndex="13" />
+                        <Entry Margin="20,0,0,0" BindingContext="{Binding Config}" x:Name="O2TVPasswordEntry"  IsPassword="True" Text="{Binding O2TVPassword, Mode=TwoWay}" Placeholder="Zadejte heslo" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
                     </StackLayout>
 
                 </StackLayout>
@@ -191,7 +231,7 @@
                     <Label Margin="0,0,20,0" Text="Další nastavení" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
 
                     <StackLayout Margin="20,10,0,0">
-                        <Label  Text="Automaticky spustit po startu:"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" TabIndex="14"/>
+                        <Label  Text="Automaticky spustit po startu:"  Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
                         <Picker
                             x:Name="LastChannelAutoPlayPicker"
                             Margin="20,0,0,0"
@@ -205,7 +245,7 @@
                     </StackLayout>
 
                     <StackLayout Margin="20,10,0,0">
-                        <Label  Text="Velikost písma:" x:Name="FontSizeLabel" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" TabIndex="15" />
+                        <Label  Text="Velikost písma:" x:Name="FontSizeLabel" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
                         <Picker
                             x:Name="FontSizePicker"
                             Margin="20,0,0,0"
@@ -237,18 +277,18 @@
                         </Grid.ColumnDefinitions>
 
                         <Label  Grid.Row="0" Grid.Column="0" Text="Celá obrazovka" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" IsVisible="{Binding Config.FullscreenSwitchEnabled}"/>
-                        <Switch Grid.Row="0" Grid.Column="1" x:Name="FullscreenSwitch" IsToggled="{Binding IsFullScreen, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.FullscreenSwitchEnabled}" TabIndex="16"/>
+                        <Switch Grid.Row="0" Grid.Column="1" x:Name="FullscreenSwitch" IsToggled="{Binding IsFullScreen, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.FullscreenSwitchEnabled}" />
 
                         <Label  Grid.Row="1" Grid.Column="0" Text="Interní přehrávač" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" IsVisible="{Binding Config.InternalPlayerSwitchEnabled}"/>
-                        <Switch Grid.Row="1" Grid.Column="1" x:Name="UseInternalPlayerSwitch" IsToggled="{Binding Config.InternalPlayer, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.InternalPlayerSwitchEnabled}" TabIndex="17"/>
+                        <Switch Grid.Row="1" Grid.Column="1" x:Name="UseInternalPlayerSwitch" IsToggled="{Binding Config.InternalPlayer, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.InternalPlayerSwitchEnabled}" />
 
                         <Label  Grid.Row="2" Grid.Column="0" Text="Běh na pozadí" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" IsVisible="{Binding Config.PlayOnBackgroundSwitchEnabled}"/>
-                        <Switch Grid.Row="2" Grid.Column="1" x:Name="PlayOnBackgroundSwitch" IsToggled="{Binding Config.PlayOnBackground, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.PlayOnBackgroundSwitchEnabled}" TabIndex="18"/>
+                        <Switch Grid.Row="2" Grid.Column="1" x:Name="PlayOnBackgroundSwitch" IsToggled="{Binding Config.PlayOnBackground, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.PlayOnBackgroundSwitchEnabled}" />
 
                     </Grid>
 
-                    <Button x:Name="PayButton" Margin="20,10,0,0" Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"  TextColor="Black" TabIndex="19"/>
-                    <Button x:Name="AboutButton" Margin="20,10,0,0" Text="O aplikaci" Command="{Binding AboutCommand}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"  TextColor="Black" TabIndex="20"/>
+                    <Button x:Name="PayButton" Margin="20,10,0,0" Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"  TextColor="Black" />
+                    <Button x:Name="AboutButton" Margin="20,10,0,0" Text="O aplikaci" Command="{Binding AboutCommand}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray"  TextColor="Black" />
 
                 </StackLayout>
 

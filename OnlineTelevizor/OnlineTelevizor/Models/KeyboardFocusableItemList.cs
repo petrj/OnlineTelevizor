@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnlineTelevizor.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,6 +14,8 @@ namespace OnlineTelevizor
 
         public event KeyboardFocusableItemEventDelegate OnItemFocusedEvent;
         public event KeyboardFocusableItemEventDelegate OnItemUnFocusedEvent;
+
+        public KeyboardFocusDirection LastFocusDirection { get; private set; } = KeyboardFocusDirection.UnKnown;
 
         public KeyboardFocusableItem FocusedItem
         {
@@ -72,7 +75,7 @@ namespace OnlineTelevizor
 
             if (_focusedItem == null)
             {
-                FocusItem(Items[0].Name);
+                FocusItem(Items[0].Name, KeyboardFocusDirection.Next);
                 return;
             }
 
@@ -105,7 +108,7 @@ namespace OnlineTelevizor
                 itemToSelect = firstItem;
             }
 
-            FocusItem(itemToSelect.Name);
+            FocusItem(itemToSelect.Name, KeyboardFocusDirection.Next);
         }
 
         public void FocusPreviousItem()
@@ -115,7 +118,7 @@ namespace OnlineTelevizor
 
             if (_focusedItem == null)
             {
-                FocusItem(Items[Items.Count-1].Name);
+                FocusItem(Items[Items.Count-1].Name, KeyboardFocusDirection.Previous);
                 return;
             }
 
@@ -147,35 +150,10 @@ namespace OnlineTelevizor
                 itemToSelect = prevItem; // the last one item in collection
             }
 
-            /*
-
-
-
-                    if (firstItem == null)
-                {
-                    firstItem = item;
-
-                    //
-                }
-
-                if (selectNext)
-                {
-                    itemToSelect = item;
-                    break;
-                }
-
-                if (item == _focusedItem)
-                {
-                    selectNext = true;
-                }*/
-
-
-
-
-            FocusItem(itemToSelect.Name);
+            FocusItem(itemToSelect.Name, KeyboardFocusDirection.Previous);
         }
 
-        public void FocusItem(string name)
+        public void FocusItem(string name, KeyboardFocusDirection focusDirection = KeyboardFocusDirection.UnKnown)
         {
             _focusedItem = null;
             DeFocusAll();
@@ -188,6 +166,8 @@ namespace OnlineTelevizor
                 item.Focus();
                 _lastFocusedItemName = name;
 
+                LastFocusDirection = focusDirection;
+
                 // raise event
                 if (OnItemFocusedEvent != null)
                     OnItemFocusedEvent(new KeyboardFocusableItemEventArgs(item));
@@ -196,6 +176,8 @@ namespace OnlineTelevizor
 
         public void DeFocusAll()
         {
+            LastFocusDirection = KeyboardFocusDirection.UnKnown;
+
             foreach (var item in Items)
             {
                 item.DeFocus();
@@ -218,6 +200,8 @@ namespace OnlineTelevizor
                 if (OnItemUnFocusedEvent != null)
                     OnItemUnFocusedEvent(new KeyboardFocusableItemEventArgs(item));
             }
+
+            LastFocusDirection = KeyboardFocusDirection.UnKnown;
         }
     }
 }

@@ -43,7 +43,7 @@ namespace OnlineTelevizor.Views
                 .AddItem(KeyboardFocusableItem.CreateFrom("Name", new List<View>() { NameBoxView, ChannelNameEntry }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("Clear", new List<View>() { ClearButton }));
 
-            _focusItems.OnItemFocusedEvent += SettingsPage_OnItemFocusedEvent;
+            _focusItems.OnItemFocusedEvent += FilterPage_OnItemFocusedEvent;
         }
 
         private void FocusOrUnfocusToolBar()
@@ -130,7 +130,7 @@ namespace OnlineTelevizor.Views
             }
         }
 
-        private void SettingsPage_OnItemFocusedEvent(KeyboardFocusableItemEventArgs args)
+        private void FilterPage_OnItemFocusedEvent(KeyboardFocusableItemEventArgs args)
         {
             // scroll to element
             MainScrollView.ScrollToAsync(0, args.FocusedItem.MaxYPosition - Height / 2, false);

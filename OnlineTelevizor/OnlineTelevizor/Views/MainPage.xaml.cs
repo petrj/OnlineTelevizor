@@ -18,7 +18,7 @@ using System.Diagnostics;
 
 namespace OnlineTelevizor.Views
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage : ContentPage, IOnKeyDown
     {
         private MainPageViewModel _viewModel;
         private DialogService _dialogService;

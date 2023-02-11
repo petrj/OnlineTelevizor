@@ -13,18 +13,19 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Collections.ObjectModel;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace OnlineTelevizor.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SettingsPage : ContentPage, INavigationSelectNextItem, INavigationSendOKButton, INavigationSendBackButton
+    public partial class SettingsPage : ContentPage, IOnKeyDown
     {
         private SettingsViewModel _viewModel;
         private IOnlineTelevizorConfiguration _config;
         private ILoggingService _loggingService;
         private IDialogService _dialogService;
-        private View _lastFocusedView = null;
         private string _appVersion = String.Empty;
+        private KeyboardFocusableItemList _focusItems;
 
         public SettingsPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
         {
@@ -53,12 +54,6 @@ namespace OnlineTelevizor.Views
                 FontSizePicker.IsVisible = false;
             }
 
-            TVAPIPicker.Unfocused += TVAPIPicker_Unfocused;
-            LastChannelAutoPlayPicker.Unfocused += LastChannelAutoPlayPicker_Unfocused;
-            LastChannelAutoPlayPicker.Focused += LastChannelAutoPlayPicker_Focused;
-            FontSizePicker.Unfocused += FontSizePicker_Unfocused;
-            DeviceIdEntry.Focused += DeviceIdEntry_Focused;
-
             MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings, async (sender) =>
             {
                 if (await _dialogService.Confirm("Při běhu na pozadí je nutné zajistit, aby se aplikace kvůli optimalizaci baterie neukončovala. Přejít do nastavení?"))
@@ -66,26 +61,156 @@ namespace OnlineTelevizor.Views
                     MessagingCenter.Send<SettingsPage>(this, BaseViewModel.MSG_SetBatterySettings);
                 }
             });
+
+            BuildFocusableItems();
+        }
+
+        private void BuildFocusableItems()
+        {
+            _focusItems = new KeyboardFocusableItemList();
+
+            _focusItems
+                .AddItem(KeyboardFocusableItem.CreateFrom("ActiveIPTV", new List<View>() { ActiveIPTVBoxView, TVAPIPicker }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVUserName", new List<View>() { SledovaniTVUserNameBoxView, UsernameEntry }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVPassword", new List<View>() { SledovaniTVPasswordBoxView, PasswordEntry }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVShowAdultChannels", new List<View>() { SledovaniTVShowAdultChannelsBoxView, ShowAdultChannelsSwitch }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVPIN", new List<View>() { SledovaniTVPINBoxView, PinEntry }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("ShowPairedCredentials", new List<View>() { ShowPairedCredentialsBoxView, ShowSledovaniPairedDeviceSwitch }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVDeviceId", new List<View>() { SledovaniTVDeviceIdBoxView, DeviceIdEntry }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVDevicePassword", new List<View>() { SledovaniTVDevicePasswordBoxView, DevicePasswordEntry }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("UnpairDevice", new List<View>() { DeactivateButton }));
+
+            _focusItems.OnItemFocusedEvent += _focusItems_OnItemFocusedEvent;
+
+            _focusItems.OnItemFocusedEvent += SettingsPage_OnItemFocusedEvent;
+        }
+
+        private void _focusItems_OnItemFocusedEvent(KeyboardFocusableItemEventArgs _args)
+        {
+            if (_args.FocusedItem == null)
+                return;
+
+            Action action = null;
+
+            switch (_focusItems.LastFocusDirection)
+            {
+                case KeyboardFocusDirection.Next: action = delegate { _focusItems.FocusNextItem(); }; break;
+                case KeyboardFocusDirection.Previous: action = delegate { _focusItems.FocusPreviousItem(); }; break;
+                default: action = delegate { _args.FocusedItem.DeFocus(); }; break;
+            }
+
+            if
+                (
+                    (_args.FocusedItem.Name == "SledovaniTVUserName" ||
+                    _args.FocusedItem.Name == "SledovaniTVPassword" ||
+                    _args.FocusedItem.Name == "SledovaniTVShowAdultChannels" ||
+                    _args.FocusedItem.Name == "SledovaniTVPIN" ||
+                    _args.FocusedItem.Name == "ShowPairedCredentials" ||
+                    _args.FocusedItem.Name == "SledovaniTVDeviceId" ||
+                    _args.FocusedItem.Name == "SledovaniTVDevicePassword" ||
+                    _args.FocusedItem.Name == "UnpairDevice")
+                    && (!_viewModel.IsSledovaniTVVisible)
+                    )
+            {
+                action();
+                return;
+            }
+
+            switch (_args.FocusedItem.Name)
+            {
+                case "SledovaniTVPIN":
+                    if (!_viewModel.IsPINShowed)
+                    {
+                        action();
+                    }
+                    break;
+
+                case "SledovaniTVDeviceId":
+                case "SledovaniTVDevicePassword":
+                    if (!_viewModel.ShowSledovaniPairedDevice)
+                    {
+                        action();
+                    }
+                    break;
+
+                case "UnpairDevice":
+                    if (!_viewModel.ShowUnpairButton || !_viewModel.ShowSledovaniPairedDevice)
+                    {
+                        action();
+                    }
+                    break;
+            }
+        }
+
+        private void SettingsPage_OnItemFocusedEvent(KeyboardFocusableItemEventArgs args)
+        {
+            // scroll to element
+            SettingsPageScrollView.ScrollToAsync(0, args.FocusedItem.MaxYPosition - Height / 2, false);
+        }
+
+        public async void OnKeyDown(string key, bool longPress)
+        {
+            _loggingService.Debug($"FilterPage Page OnKeyDown {key}{(longPress ? " (long)" : "")}");
+
+            var keyAction = KeyboardDeterminer.GetKeyAction(key);
+
+            switch (keyAction)
+            {
+                case KeyboardNavigationActionEnum.Right:
+                case KeyboardNavigationActionEnum.Down:
+                    _focusItems.FocusNextItem();
+                    break;
+                case KeyboardNavigationActionEnum.Left:
+                case KeyboardNavigationActionEnum.Up:
+                        _focusItems.FocusPreviousItem();
+                    break;
+
+                case KeyboardNavigationActionEnum.Back:
+                    await Navigation.PopAsync();
+                    break;
+
+                case KeyboardNavigationActionEnum.OK:
+                    switch (_focusItems.FocusedItemName)
+                    {
+                        case "ActiveIPTV":
+                            TVAPIPicker.Focus();
+                            break;
+                        case "SledovaniTVShowAdultChannels":
+                            ShowAdultChannelsSwitch.IsToggled = !ShowAdultChannelsSwitch.IsToggled;
+                            break;
+                        case "SledovaniTVUserName":
+                            UsernameEntry.Focus();
+                            break;
+                        case "SledovaniTVPassword":
+                            PasswordEntry.Focus();
+                            break;
+                        case "SledovaniTVPIN":
+                            PinEntry.Focus();
+                            break;
+
+                        case "ShowPairedCredentials":
+                            ShowSledovaniPairedDeviceSwitch.IsToggled = !ShowSledovaniPairedDeviceSwitch.IsToggled;
+                            break;
+
+                        case "SledovaniTVDeviceId":
+                            DeviceIdEntry.Focus();
+                            break;
+
+                        case "SledovaniTVDevicePassword":
+                            DevicePasswordEntry.Focus();
+                            break;
+
+                        case "UnpairDevice":
+                            _viewModel.DeactivateSledovaniTVDeviceCommand.Execute(null);
+                            break;
+                    }
+                    break;
+            }
         }
 
         public void UnsubscribeMessages()
         {
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings);
-        }
-
-        private void DeviceIdEntry_Focused(object sender, FocusEventArgs e)
-        {
-            _lastFocusedView = DeviceIdEntry;
-        }
-
-        private void LastChannelAutoPlayPicker_Focused(object sender, FocusEventArgs e)
-        {
-            if (_lastFocusedView == ShowAdultChannelsSwitch ||
-                _lastFocusedView == SNEntry ||
-                _lastFocusedView == O2TVPasswordEntry)
-            {
-                _lastFocusedView = LastChannelAutoPlayPicker;
-            }
         }
 
         public string AppVersion
@@ -100,41 +225,6 @@ namespace OnlineTelevizor.Views
                 if (_viewModel != null)
                     _viewModel.AppVersion = value;
             }
-        }
-
-        private void FontSizePicker_Unfocused(object sender, FocusEventArgs e)
-        {
-            if (_lastFocusedView == FontSizePicker)
-            {
-                FocusView(FullscreenSwitch);
-            }
-        }
-
-        private void LastChannelAutoPlayPicker_Unfocused(object sender, FocusEventArgs e)
-        {
-            if (_lastFocusedView == LastChannelAutoPlayPicker)
-            {
-                FocusView(FontSizePicker);
-            }
-        }
-
-        private void TVAPIPicker_Unfocused(object sender, FocusEventArgs e)
-        {
-                switch (_viewModel.Config.TVApi)
-                {
-                    case TVAPIEnum.SledovaniTV:
-                        FocusView(UsernameEntry);
-                        break;
-                    case TVAPIEnum.KUKI:
-                        FocusView(SNEntry);
-                        break;
-                    case TVAPIEnum.O2TV:
-                        FocusView(O2TVUsernameEntry);
-                        break;
-                    case TVAPIEnum.DVBStreamer:
-                        FocusView(DVBStreamerUrlEntry);
-                        break;
-                }
         }
 
         private void ShowSledovaniPairedDeviceSwitch_Toggled(object sender, ToggledEventArgs e)
@@ -182,184 +272,137 @@ namespace OnlineTelevizor.Views
                     TVAPIPicker.Items.Remove("DVB Streamer");
             }
 
-            _lastFocusedView = null;
+            _focusItems.DeFocusAll();
         }
 
-        private void FocusView(View view)
-        {
-            if (Device.OS == TargetPlatform.Windows)
-            {
-                return;
-            }
+        //public void SendOKButton()
+        //{
+        //    if (_lastFocusedView == null)
+        //        return;
 
-            PayButton.BackgroundColor = Color.Gray;
-            PayButton.TextColor = Color.Black;
+        //    if (_lastFocusedView is Button)
+        //    {
+        //        if (_lastFocusedView == PayButton)
+        //            _viewModel.PayCommand.Execute(null);
 
-            AboutButton.BackgroundColor = Color.Gray;
-            AboutButton.TextColor = Color.Black;
+        //        if (_lastFocusedView == AboutButton)
+        //            _viewModel.AboutCommand.Execute(null);
 
-            DeactivateButton.BackgroundColor = Color.Gray;
-            DeactivateButton.TextColor = Color.Black;
+        //        if (_lastFocusedView == DeactivateButton)
+        //            _viewModel.DeactivateSledovaniTVDeviceCommand.Execute(null);
+        //    }
+        //}
 
-            _lastFocusedView = view;
 
-            if (view is Button)
-            {
-                (view as Button).BackgroundColor = Color.Blue;
-                (view as Button).TextColor = Color.White;
-            } else
-            {
-                view.Focus();
-            }
-        }
-
-        public void SendOKButton()
-        {
-            if (_lastFocusedView == null)
-                return;
-
-            if (_lastFocusedView is Button)
-            {
-                if (_lastFocusedView == PayButton)
-                    _viewModel.PayCommand.Execute(null);
-
-                if (_lastFocusedView == AboutButton)
-                    _viewModel.AboutCommand.Execute(null);
-
-                if (_lastFocusedView == DeactivateButton)
-                    _viewModel.DeactivateSledovaniTVDeviceCommand.Execute(null);
-            }
-        }
-
-        public void SendBackButton()
-        {
-            if (_lastFocusedView == TVAPIPicker)
-            {
-                TVAPIPicker.Unfocus();
-            } else
-            if (_lastFocusedView == LastChannelAutoPlayPicker)
-            {
-                LastChannelAutoPlayPicker.Unfocus();
-            }
-            if (_lastFocusedView == FontSizePicker)
-            {
-                FontSizePicker.Unfocus();
-            }
-            else
-            {
-                Navigation.PopAsync();
-            }
-        }
-
-        public void SelectNextItem()
-        {
-            if (_lastFocusedView == null)
-            {
-                FocusView(TVAPIPicker);
-            } if (_lastFocusedView == UsernameEntry)
-            {
-                FocusView(PasswordEntry);
-            }
-            else if (_lastFocusedView == O2TVUsernameEntry)
-            {
-                FocusView(O2TVPasswordEntry);
-            }
-            else if (_lastFocusedView == DVBStreamerUrlEntry)
-            {
-                FocusView(LastChannelAutoPlayPicker);
-            }
-            else if (_lastFocusedView == PasswordEntry)
-            {
-                FocusView(ShowAdultChannelsSwitch);
-            }
-            else if (_lastFocusedView == ShowAdultChannelsSwitch)
-            {
-                if (_config.ShowAdultChannels)
-                {
-                    FocusView(PinEntry);
-                }
-                else
-                {
-                    FocusView(ShowSledovaniPairedDeviceSwitch);
-                }
-            }
-            else if (_lastFocusedView == PinEntry)
-            {
-                FocusView(ShowSledovaniPairedDeviceSwitch);
-            }
-            else if (_lastFocusedView == ShowSledovaniPairedDeviceSwitch)
-            {
-                if (_viewModel.ShowSledovaniPairedDevice)
-                {
-                    FocusView(DeviceIdEntry);
-                }
-                else
-                {
-                    FocusView(LastChannelAutoPlayPicker);
-                }
-            }
-            else if (_lastFocusedView == DeviceIdEntry)
-            {
-                FocusView(DevicePasswordEntry);
-            }
-            else if (_lastFocusedView == DevicePasswordEntry)
-            {
-                if (_viewModel.ShowUnpairButton)
-                {
-                    FocusView(DeactivateButton);
-                }
-                else
-                {
-                    FocusView(LastChannelAutoPlayPicker);
-                }
-            }
-            else if (_lastFocusedView == DeactivateButton)
-            {
-                FocusView(LastChannelAutoPlayPicker);
-            }
-            else if (_lastFocusedView == O2TVPasswordEntry)
-            {
-                FocusView(LastChannelAutoPlayPicker);
-            }
-            else if (_lastFocusedView == SNEntry)
-            {
-                FocusView(LastChannelAutoPlayPicker);
-            }
-            else if (_lastFocusedView == LastChannelAutoPlayPicker)
-            {
-                FocusView(FontSizePicker);
-            }
-            else if (_lastFocusedView == FontSizePicker)
-            {
-                FocusView(FullscreenSwitch);
-            }
-            else if (_lastFocusedView == FullscreenSwitch)
-            {
-                FocusView(UseInternalPlayerSwitch);
-            }
-            else if (_lastFocusedView == UseInternalPlayerSwitch)
-            {
-                FocusView(PlayOnBackgroundSwitch);
-            }
-            else if (_lastFocusedView == PlayOnBackgroundSwitch)
-            {
-                if (_viewModel.IsPurchased)
-                {
-                    FocusView(AboutButton);
-                }
-                else
-                {
-                    FocusView(PayButton);
-                }
-            }
-            else if (_lastFocusedView == PayButton)
-            {
-                FocusView(AboutButton);
-            }
-            else if (_lastFocusedView == AboutButton)
-            {
-                FocusView(TVAPIPicker);
-            }
-        }
+        //public void SelectNextItem()
+        //{
+        //    if (_lastFocusedView == null)
+        //    {
+        //        FocusView(TVAPIPicker);
+        //    } if (_lastFocusedView == UsernameEntry)
+        //    {
+        //        FocusView(PasswordEntry);
+        //    }
+        //    else if (_lastFocusedView == O2TVUsernameEntry)
+        //    {
+        //        FocusView(O2TVPasswordEntry);
+        //    }
+        //    else if (_lastFocusedView == DVBStreamerUrlEntry)
+        //    {
+        //        FocusView(LastChannelAutoPlayPicker);
+        //    }
+        //    else if (_lastFocusedView == PasswordEntry)
+        //    {
+        //        FocusView(ShowAdultChannelsSwitch);
+        //    }
+        //    else if (_lastFocusedView == ShowAdultChannelsSwitch)
+        //    {
+        //        if (_config.ShowAdultChannels)
+        //        {
+        //            FocusView(PinEntry);
+        //        }
+        //        else
+        //        {
+        //            FocusView(ShowSledovaniPairedDeviceSwitch);
+        //        }
+        //    }
+        //    else if (_lastFocusedView == PinEntry)
+        //    {
+        //        FocusView(ShowSledovaniPairedDeviceSwitch);
+        //    }
+        //    else if (_lastFocusedView == ShowSledovaniPairedDeviceSwitch)
+        //    {
+        //        if (_viewModel.ShowSledovaniPairedDevice)
+        //        {
+        //            FocusView(DeviceIdEntry);
+        //        }
+        //        else
+        //        {
+        //            FocusView(LastChannelAutoPlayPicker);
+        //        }
+        //    }
+        //    else if (_lastFocusedView == DeviceIdEntry)
+        //    {
+        //        FocusView(DevicePasswordEntry);
+        //    }
+        //    else if (_lastFocusedView == DevicePasswordEntry)
+        //    {
+        //        if (_viewModel.ShowUnpairButton)
+        //        {
+        //            FocusView(DeactivateButton);
+        //        }
+        //        else
+        //        {
+        //            FocusView(LastChannelAutoPlayPicker);
+        //        }
+        //    }
+        //    else if (_lastFocusedView == DeactivateButton)
+        //    {
+        //        FocusView(LastChannelAutoPlayPicker);
+        //    }
+        //    else if (_lastFocusedView == O2TVPasswordEntry)
+        //    {
+        //        FocusView(LastChannelAutoPlayPicker);
+        //    }
+        //    else if (_lastFocusedView == SNEntry)
+        //    {
+        //        FocusView(LastChannelAutoPlayPicker);
+        //    }
+        //    else if (_lastFocusedView == LastChannelAutoPlayPicker)
+        //    {
+        //        FocusView(FontSizePicker);
+        //    }
+        //    else if (_lastFocusedView == FontSizePicker)
+        //    {
+        //        FocusView(FullscreenSwitch);
+        //    }
+        //    else if (_lastFocusedView == FullscreenSwitch)
+        //    {
+        //        FocusView(UseInternalPlayerSwitch);
+        //    }
+        //    else if (_lastFocusedView == UseInternalPlayerSwitch)
+        //    {
+        //        FocusView(PlayOnBackgroundSwitch);
+        //    }
+        //    else if (_lastFocusedView == PlayOnBackgroundSwitch)
+        //    {
+        //        if (_viewModel.IsPurchased)
+        //        {
+        //            FocusView(AboutButton);
+        //        }
+        //        else
+        //        {
+        //            FocusView(PayButton);
+        //        }
+        //    }
+        //    else if (_lastFocusedView == PayButton)
+        //    {
+        //        FocusView(AboutButton);
+        //    }
+        //    else if (_lastFocusedView == AboutButton)
+        //    {
+        //        FocusView(TVAPIPicker);
+        //    }
+        //}
     }
 }
