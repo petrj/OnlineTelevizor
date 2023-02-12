@@ -492,6 +492,8 @@ namespace OnlineTelevizor.Droid
                 }
                 else
                 {
+                    // DispatchKeyEvent enabled (or unknown keyboard nav action)
+
                     _loggingService.Debug($"DispatchKeyEvent: {code}");
 
                     return base.DispatchKeyEvent(e);

@@ -1,19 +1,12 @@
 ﻿using LoggerService;
-using NLog;
-using Plugin.InAppBilling;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.Services;
 using OnlineTelevizor.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Collections.ObjectModel;
-using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace OnlineTelevizor.Views
 {
@@ -79,7 +72,7 @@ namespace OnlineTelevizor.Views
                 .AddItem(KeyboardFocusableItem.CreateFrom("ShowPairedCredentials", new List<View>() { ShowPairedCredentialsBoxView, ShowSledovaniPairedDeviceSwitch }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVDeviceId", new List<View>() { SledovaniTVDeviceIdBoxView, DeviceIdEntry }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVDevicePassword", new List<View>() { SledovaniTVDevicePasswordBoxView, DevicePasswordEntry }))
-                .AddItem(KeyboardFocusableItem.CreateFrom("UnpairDevice", new List<View>() { DeactivateButton }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("UnpairDevice", new List<View>() { SledovaniTVUnpairButton }))
 
                 .AddItem(KeyboardFocusableItem.CreateFrom("KUKISN", new List<View>() { KUKISNBoxView, SNEntry }))
 
@@ -197,7 +190,7 @@ namespace OnlineTelevizor.Views
             Device.BeginInvokeOnMainThread(async () =>
             {
                 // scroll to element
-                SettingsPageScrollView.ScrollToAsync(0, args.FocusedItem.MaxYPosition - Height / 2, false);
+                await SettingsPageScrollView.ScrollToAsync(0, args.FocusedItem.MaxYPosition - args.FocusedItem.Height, false);
             });
         }
 
