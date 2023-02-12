@@ -71,6 +71,7 @@ namespace OnlineTelevizor.Views
 
             _focusItems
                 .AddItem(KeyboardFocusableItem.CreateFrom("ActiveIPTV", new List<View>() { ActiveIPTVBoxView, TVAPIPicker }))
+
                 .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVUserName", new List<View>() { SledovaniTVUserNameBoxView, UsernameEntry }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVPassword", new List<View>() { SledovaniTVPasswordBoxView, PasswordEntry }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVShowAdultChannels", new List<View>() { SledovaniTVShowAdultChannelsBoxView, ShowAdultChannelsSwitch }))
@@ -78,7 +79,24 @@ namespace OnlineTelevizor.Views
                 .AddItem(KeyboardFocusableItem.CreateFrom("ShowPairedCredentials", new List<View>() { ShowPairedCredentialsBoxView, ShowSledovaniPairedDeviceSwitch }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVDeviceId", new List<View>() { SledovaniTVDeviceIdBoxView, DeviceIdEntry }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("SledovaniTVDevicePassword", new List<View>() { SledovaniTVDevicePasswordBoxView, DevicePasswordEntry }))
-                .AddItem(KeyboardFocusableItem.CreateFrom("UnpairDevice", new List<View>() { DeactivateButton }));
+                .AddItem(KeyboardFocusableItem.CreateFrom("UnpairDevice", new List<View>() { DeactivateButton }))
+
+                .AddItem(KeyboardFocusableItem.CreateFrom("KUKISN", new List<View>() { KUKISNBoxView, SNEntry }))
+
+                .AddItem(KeyboardFocusableItem.CreateFrom("DVBStreamerUrl", new List<View>() { DVBStreamerUrlBoxView, DVBStreamerUrlEntry }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("StopStream", new List<View>() { StopStreamButton }))
+
+                .AddItem(KeyboardFocusableItem.CreateFrom("O2Username", new List<View>() { O2UsernameBoxView, O2TVUsernameEntry }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("O2Password", new List<View>() { O2PasswordBoxView, O2TVPasswordEntry }))
+
+                .AddItem(KeyboardFocusableItem.CreateFrom("AutoPlay", new List<View>() { AutoPlayBoxView, LastChannelAutoPlayPicker }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("FontSize", new List<View>() { FontSizeBoxView, FontSizePicker }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("Fullscreen", new List<View>() { FullscreenBoxView, FullscreenSwitch }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("PlayInternal", new List<View>() { PlayInternalBoxView, UseInternalPlayerSwitch }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("PlayOnBackground", new List<View>() { PlayOnBackgroundBoxView, PlayOnBackgroundSwitch }))
+
+                .AddItem(KeyboardFocusableItem.CreateFrom("Pay", new List<View>() { PayButton }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("About", new List<View>() { AboutButton }));
 
             _focusItems.OnItemFocusedEvent += _focusItems_OnItemFocusedEvent;
 
@@ -99,6 +117,38 @@ namespace OnlineTelevizor.Views
                 default: action = delegate { _args.FocusedItem.DeFocus(); }; break;
             }
 
+            if (_args.FocusedItem.Name == "Pay" && (!_viewModel.IsNotPurchased))
+            {
+                action();
+                return;
+            }
+
+            if (_args.FocusedItem.Name == "KUKISN" && (!_viewModel.IsKUKITVVisible))
+            {
+                action();
+                return;
+            }
+
+            if (
+                    (_args.FocusedItem.Name == "O2Username" ||
+                    _args.FocusedItem.Name == "O2Password")
+                    && (!_viewModel.IsO2TVVisible)
+               )
+            {
+                action();
+                return;
+            }
+
+            if (
+                    (_args.FocusedItem.Name == "DVBStreamerUrl" ||
+                    _args.FocusedItem.Name == "StopStream")
+                    && (!_viewModel.IsDVBStreamerVisible)
+               )
+            {
+                action();
+                return;
+            }
+
             if
                 (
                     (_args.FocusedItem.Name == "SledovaniTVUserName" ||
@@ -110,7 +160,7 @@ namespace OnlineTelevizor.Views
                     _args.FocusedItem.Name == "SledovaniTVDevicePassword" ||
                     _args.FocusedItem.Name == "UnpairDevice")
                     && (!_viewModel.IsSledovaniTVVisible)
-                    )
+                )
             {
                 action();
                 return;
@@ -144,8 +194,11 @@ namespace OnlineTelevizor.Views
 
         private void SettingsPage_OnItemFocusedEvent(KeyboardFocusableItemEventArgs args)
         {
-            // scroll to element
-            SettingsPageScrollView.ScrollToAsync(0, args.FocusedItem.MaxYPosition - Height / 2, false);
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                // scroll to element
+                SettingsPageScrollView.ScrollToAsync(0, args.FocusedItem.MaxYPosition - Height / 2, false);
+            });
         }
 
         public async void OnKeyDown(string key, bool longPress)
@@ -187,21 +240,53 @@ namespace OnlineTelevizor.Views
                         case "SledovaniTVPIN":
                             PinEntry.Focus();
                             break;
-
                         case "ShowPairedCredentials":
                             ShowSledovaniPairedDeviceSwitch.IsToggled = !ShowSledovaniPairedDeviceSwitch.IsToggled;
                             break;
-
                         case "SledovaniTVDeviceId":
                             DeviceIdEntry.Focus();
                             break;
-
                         case "SledovaniTVDevicePassword":
                             DevicePasswordEntry.Focus();
                             break;
-
                         case "UnpairDevice":
                             _viewModel.DeactivateSledovaniTVDeviceCommand.Execute(null);
+                            break;
+                        case "KUKISN":
+                            SNEntry.Focus();
+                            break;
+                        case "DVBStreamerUrl":
+                            DVBStreamerUrlEntry.Focus();
+                            break;
+                        case "StopStream":
+                            _viewModel.StopStreamCommand.Execute(null);
+                            break;
+                        case "O2Username":
+                            O2TVUsernameEntry.Focus();
+                            break;
+                        case "O2Password":
+                            O2TVPasswordEntry.Focus();
+                            break;
+                        case "AutoPlay":
+                            LastChannelAutoPlayPicker.Focus();
+                            break;
+                        case "FontSize":
+                            FontSizePicker.Focus();
+                            break;
+                        case "Fullscreen":
+                            FullscreenSwitch.IsToggled = !FullscreenSwitch.IsToggled;
+                            break;
+                        case "PlayInternal":
+                            UseInternalPlayerSwitch.IsToggled = !UseInternalPlayerSwitch.IsToggled;
+                            break;
+                        case "PlayOnBackground":
+                            PlayOnBackgroundSwitch.IsToggled = !PlayOnBackgroundSwitch.IsToggled;
+                            break;
+                        case "Pay":
+                            _viewModel.PayCommand.Execute(null);
+                            break;
+                        case "About":
+                            _viewModel.AboutCommand.Execute(null);
                             break;
                     }
                     break;

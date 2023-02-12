@@ -351,6 +351,7 @@ namespace OnlineTelevizor.ViewModels
                 return Config.TVApi == TVAPIEnum.SledovaniTV;
             }
         }
+
         public bool IsKUKITVVisible
         {
             get

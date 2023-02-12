@@ -41,12 +41,23 @@ namespace OnlineTelevizor
         {
             get
             {
-                if (_maxYPos == -1)
+                ReComputeMaxYPosition();
+                return _maxYPos;
+            }
+        }
+
+        public double Height
+        {
+            get
+            {
+                double h = 0;
+                foreach (var part in Parts)
                 {
-                    ReComputeMaxYPosition();
+                    if (part.Height > h)
+                        h = part.Height;
                 }
 
-                return _maxYPos;
+                return h;
             }
         }
 
@@ -55,7 +66,16 @@ namespace OnlineTelevizor
             double res = 0;
             foreach (var part in Parts)
             {
-                var y = part.Y; var parent = part.ParentView; while (parent != null) { y += parent.Y; parent = parent.ParentView; }
+                var y = part.Y;
+                var parent = part.ParentView;
+                while (parent != null)
+                {
+                    if (parent.IsVisible)
+                    {
+                        y += parent.Y;
+                    }
+                    parent = parent.ParentView;
+                }
 
                 if (y > res)
                     res = y;
