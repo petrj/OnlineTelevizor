@@ -136,6 +136,12 @@ namespace OnlineTelevizor.ViewModels
             OnPropertyChanged(nameof(FontSizeForText));
         }
 
+        public void NotifySledovaniTVDeviceIChange()
+        {
+            OnPropertyChanged(nameof(SledovaniTVDeviceID));
+            OnPropertyChanged(nameof(SledovaniTVDevicePassword));
+        }
+
         public void FillAutoPlayChannels(ObservableCollection<ChannelItem> channels = null)
         {
             AutoPlayChannels.Clear();

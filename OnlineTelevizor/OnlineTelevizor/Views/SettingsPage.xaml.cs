@@ -350,6 +350,8 @@ namespace OnlineTelevizor.Views
                     TVAPIPicker.Items.Remove("DVB Streamer");
             }
 
+            _viewModel.NotifySledovaniTVDeviceIChange();
+
             _focusItems.DeFocusAll();
         }
 
