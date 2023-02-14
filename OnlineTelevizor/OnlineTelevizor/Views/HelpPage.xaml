@@ -73,7 +73,7 @@
                         <Label  Grid.Row="1" Grid.Column="1" Text="Zobrazení názvu následujícího programu" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                         <Label  Grid.Row="2" Grid.Column="0" Text="Dlouhé podržení" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                        <Label  Grid.Row="2" Grid.Column="1" Text="Přepnutí audio stopy" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                        <Label  Grid.Row="2" Grid.Column="1" Text="Zobrazení menu" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                         <Label  Grid.Row="3" Grid.Column="0" Text="Dvojité poklepání" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
                         <Label  Grid.Row="3" Grid.Column="1" Text="Přepnutí mezi náhledem a celou obrazovkou" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
@@ -100,19 +100,19 @@
                     <Label  Text="Klávesy" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForGroupCaption}"/>
 
                     <Label Text="Změna označeného kanálu, navigace v menu" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                    <Label Text="Dolu/Nahoru, R1/L1, W/S, F2/F3, NumPad2/NumPad8, Play Previous/Next, Home/End" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="Dolu/Nahoru, R1/L1, W/S, NumPad2/NumPad8" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                     <Label Text="Další/předchozí kanál (o 10 pozic)" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                    <Label Text="PageUp/PageDown" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="PageUp/PageDown, Home/End, &#x23EA; &#x23E9; " Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                     <Label Text="Navigace v menu" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                    <Label Text="Vlevo/Vpravo, a/d, b/f, NumPad4/NumPad6, Hranaté závorky" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="Vlevo/Vpravo, a/d, b/f, NumPad4/NumPad6, Hranaté závorky, F2/F3,  &#x23EE; &#x23ED;" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                     <Label Text="Spuštění označeného kanálu" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                    <Label Text="OK, Enter, Mezera, Media Play, Button R2/A, NumPad5, Start, F6, Caps lock, Čárka, Středník, Vlnovka" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="OK, Enter, Mezera, Media Play, Button R2, NumPad5, Start, F6, Caps lock, Čárka, Středník, Vlnovka" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                     <Label Text="Změna zvukové stopy" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                    <Label Text="Dlouhé podržení OK/Enter/Mezera/Media Play/Button R2/A/NumPad5/Start/F6/Caps lock/Čárka/Středník/Vlnovka, F12, Modré tlačítko, K, Levý Shift" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="Dlouhé podržení OK/Enter/Mezera/Media Play/Button R2/NumPad5/Start/F6/Caps lock/Čárka/Středník/Vlnovka, F12, Modré tlačítko, K, Levý Shift" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                     <Label Text="Spuštění kanálu dle čísla" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
                     <Label Text="0,1,2,3,4,5,6,7,8,9" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>

@@ -69,6 +69,7 @@ namespace OnlineTelevizor
                 case "delete":
                 case "altleft":
                 case "minus":
+                case "plus":
                 case "period":
                 case "apostrophe":
                 case "buttonselect":
@@ -182,7 +183,6 @@ namespace OnlineTelevizor
         {
             switch (key.ToLower())
             {
-                case "pagedown":
                 case "dpadright":
                 case "right":
                 case "d":
@@ -203,7 +203,6 @@ namespace OnlineTelevizor
             switch (key.ToLower())
             {
                 case "dpadleft":
-                case "pageup":
                 case "left":
                 case "a":
                 case "b":
