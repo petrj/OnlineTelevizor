@@ -138,16 +138,16 @@
 
                         <Grid x:Name="SledovaniTVPINGrid" Margin="30,10,0,0" IsVisible="{Binding IsPINShowed}">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40*" />
-                                <ColumnDefinition Width="60*" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <BoxView x:Name="SledovaniTVPINBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
+                            <BoxView x:Name="SledovaniTVPINBoxView" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Transparent"/>
                             <Label Grid.Row="0" Grid.Column="0" Text="Rodičovský zámek (PIN)" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                            <Entry Grid.Row="0" Grid.Column="1"  WidthRequest="100" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}" Placeholder="Zadejte PIN" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
+                            <Entry Grid.Row="1" Grid.Column="1"  WidthRequest="100" BindingContext="{Binding Config}" x:Name="PinEntry" Text="{Binding ChildLockPIN, Mode=TwoWay}" Placeholder="Zadejte PIN" IsPassword="True" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
                         </Grid>
 
                         <Grid x:Name="SledovaniTVShowPairedGrid" Margin="30,0,0,0">
@@ -155,8 +155,8 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40*" />
-                                <ColumnDefinition Width="60*" />
+                                <ColumnDefinition Width="80*" />
+                                <ColumnDefinition Width="20*" />
                             </Grid.ColumnDefinitions>
 
                             <BoxView x:Name="ShowPairedCredentialsBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
