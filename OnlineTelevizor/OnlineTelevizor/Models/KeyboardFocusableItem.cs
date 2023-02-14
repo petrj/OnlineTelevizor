@@ -102,7 +102,7 @@ namespace OnlineTelevizor
                 } else
                 if (part is Picker picker)
                 {
-                    picker.BackgroundColor = Color.FromHex("#303F9F");
+                    //picker.BackgroundColor = Color.FromHex("#303F9F");
                 }
                 else
                 if (part is Entry entry)
@@ -137,7 +137,7 @@ namespace OnlineTelevizor
                 else
                 if (part is Picker picker)
                 {
-                    picker.BackgroundColor = Color.Transparent;
+                    //picker.BackgroundColor = Color.Transparent;
                 }
                 else
                 if (part is Entry entry)
