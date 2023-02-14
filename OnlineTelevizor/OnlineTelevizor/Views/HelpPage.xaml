@@ -95,7 +95,7 @@
 
                 </StackLayout>
 
-                <StackLayout Margin="10,20,20,0">
+                <StackLayout Margin="10,20,20,20">
 
                     <Label  Text="Klávesy" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForGroupCaption}"/>
 

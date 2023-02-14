@@ -102,7 +102,7 @@ namespace OnlineTelevizor.UWP
 
             if (sendKey)
             {
-                MessagingCenter.Send(e.Key.ToString(), BaseViewModel.MSG_KeyMessage);
+                MessagingCenter.Send(e.Key.ToString(), BaseViewModel.MSG_KeyAction);
                 e.Handled = true;
             }
 

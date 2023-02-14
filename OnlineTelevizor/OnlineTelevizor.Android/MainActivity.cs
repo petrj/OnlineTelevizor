@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using Android.Support.V4.App;
 using Android.Support.V4.View;
 using Android.Content.Res;
+using Android.InputMethodServices;
 
 namespace OnlineTelevizor.Droid
 {
@@ -41,6 +42,8 @@ namespace OnlineTelevizor.Droid
         NotificationHelper _notificationHelper;
         private static Android.Widget.Toast _instance;
         private DateTime _lastOnGenericMotionEventTime = DateTime.MinValue;
+        private bool _dispatchKeyEventEnabled = false;
+        private DateTime _dispatchKeyEventEnabledAt = DateTime.MaxValue;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -297,11 +300,24 @@ namespace OnlineTelevizor.Droid
                     Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
                 });
             });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_DisableDispatchKeyEvent, (message) =>
+            {
+                _dispatchKeyEventEnabled = false;
+            });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_EnableDispatchKeyEvent, (message) =>
+            {
+                _dispatchKeyEventEnabledAt = DateTime.Now;
+                _dispatchKeyEventEnabled = true;
+            });
         }
 
         protected override void OnDestroy()
         {
             _loggingService.Info("Activity destroyed");
+
+            _app.OnDestroy();
 
             base.OnDestroy();
         }
@@ -431,18 +447,58 @@ namespace OnlineTelevizor.Droid
             base.OnActivityResult(requestCode, resultCode, data);
         }
 
-        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        public override bool OnKeyDown(Android.Views.Keycode keyCode, KeyEvent e)
         {
-            _loggingService.Debug($"OnKeyDown: keyCode:{keyCode}, long:{e.IsLongPress}");
+            return base.OnKeyDown(keyCode, e);
+        }
 
-            if (e.IsLongPress)
+        public override bool DispatchKeyEvent(KeyEvent e)
+        {
+            var code = e.KeyCode.ToString();
+
+            if (e.Action == KeyEventActions.Up)
             {
-                MessagingCenter.Send(keyCode.ToString(), BaseViewModel.MSG_KeyLongMessage);
+                _loggingService.Debug($"DispatchKeyEvent: {code} consumed (ignoring key up event)");
+                return true;
             }
 
-            MessagingCenter.Send(keyCode.ToString(), BaseViewModel.MSG_KeyMessage);
+            var keyAction = KeyboardDeterminer.GetKeyAction(code);
+            if (e.IsLongPress)
+            {
+                code = $"{BaseViewModel.LongPressPrefix}{code}";
+            }
 
-            return base.OnKeyDown(keyCode, e);
+            if (!_dispatchKeyEventEnabled && keyAction != KeyboardNavigationActionEnum.Unknown)
+            {
+                //e.DownTime - SystemClock.UptimeMillis()
+
+                _loggingService.Debug($"DispatchKeyEvent: {code} consumed (sending to application, time: {e.EventTime-e.DownTime})");
+
+                MessagingCenter.Send(code, BaseViewModel.MSG_KeyAction);
+
+                return true;
+            }
+            else
+            {
+                // ignoring ENTER 1 second after DispatchKeyEvent enabled
+
+                var ms = (DateTime.Now - _dispatchKeyEventEnabledAt).TotalMilliseconds;
+
+                if (keyAction == KeyboardNavigationActionEnum.OK && ms < 1000)
+                {
+                    _loggingService.Debug($"DispatchKeyEvent: {code} consumed (ignoring OK action)");
+
+                    return true;
+                }
+                else
+                {
+                    // DispatchKeyEvent enabled (or unknown keyboard nav action)
+
+                    _loggingService.Debug($"DispatchKeyEvent: {code}");
+
+                    return base.DispatchKeyEvent(e);
+                }
+            }
         }
 
         public override bool OnGenericMotionEvent(MotionEvent e)
@@ -477,25 +533,25 @@ namespace OnlineTelevizor.Droid
 
                     if (x>0.5 || x1 > 0.5)
                     {
-                        MessagingCenter.Send("Right", BaseViewModel.MSG_KeyMessage);
+                        MessagingCenter.Send("Right", BaseViewModel.MSG_KeyAction);
                         return true;
                     }
 
                     if (x < -0.5 || x1 < -0.5)
                     {
-                        MessagingCenter.Send("Left", BaseViewModel.MSG_KeyMessage);
+                        MessagingCenter.Send("Left", BaseViewModel.MSG_KeyAction);
                         return true;
                     }
 
                     if (y > 0.5 || y1 > 0.5)
                     {
-                        MessagingCenter.Send("Down", BaseViewModel.MSG_KeyMessage);
+                        MessagingCenter.Send("Down", BaseViewModel.MSG_KeyAction);
                         return true;
                     }
 
                     if (y < -0.5 || y1 < -0.5)
                     {
-                        MessagingCenter.Send("Up", BaseViewModel.MSG_KeyMessage);
+                        MessagingCenter.Send("Up", BaseViewModel.MSG_KeyAction);
                         return true;
                     }
                 }

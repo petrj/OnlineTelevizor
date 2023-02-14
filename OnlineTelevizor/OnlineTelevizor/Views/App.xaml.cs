@@ -29,6 +29,8 @@ namespace OnlineTelevizor.Views
 
             _mainPage = new MainPage(_loggingService, _config);
 
+            _mainPage.SubscribeMessages();
+
             MainPage = new NavigationPage(_mainPage);
         }
 
@@ -50,7 +52,6 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"OnStart");
 
-            _mainPage.SubscribeMessages();
             _mainPage.RefreshWithnotification();
         }
 
@@ -63,8 +64,6 @@ namespace OnlineTelevizor.Views
                 _mainPage.ActionStop(true);
             }
 
-            _mainPage.UnsubscribeMessages();
-
             _lastSleep = DateTime.Now;
         }
 
@@ -72,16 +71,17 @@ namespace OnlineTelevizor.Views
         {
             _loggingService.Info($"OnResume");
 
-            //_mainPage.Resume();
-
             // refresh only when resume after 1 minute
             if ((DateTime.Now - _lastSleep).TotalMinutes > 1)
             {
                 _mainPage.Reset();
                 _mainPage.Refresh();
             }
+        }
 
-            _mainPage.SubscribeMessages();
+        public void OnDestroy()
+        {
+            _mainPage.UnsubscribeMessages();
         }
     }
 }

@@ -20,6 +20,8 @@ namespace OnlineTelevizor.ViewModels
         protected ILoggingService _loggingService;
         protected IDialogService _dialogService;
 
+        public const string LongPressPrefix = "LongPress:";
+
         public const string MSG_UriMessage = "LaunchUriMessage";
         public const string MSG_EnableFullScreen = "EnableFullScreen";
         public const string MSG_DisableFullScreen = "DisableFullScreen";
@@ -28,8 +30,9 @@ namespace OnlineTelevizor.ViewModels
         public const string MSG_UpdateInternalNotification = "UpdateInternalNotification";
         public const string MSG_StopPlayInternalNotification = "StopPlayInternalNotification";
         public const string MSG_StopPlayInternalNotificationAndQuit = "StopPlayInternalNotificationAndQuit";
-        public const string MSG_KeyMessage = "KeyDownMessage";
-        public const string MSG_KeyLongMessage = "KeyLongMessage";
+
+        public const string MSG_KeyAction = "KeyAction ";
+
         public const string MSG_ShowDetailMessage = "ShowDetailMessage";
         public const string MSG_ShowRenderers = "ShowRenderers";
         public const string MSG_ShowTimer = "ShowTimer";
@@ -53,6 +56,9 @@ namespace OnlineTelevizor.ViewModels
         public const string MSG_CheckBatterySettings = "CheckBatterySettings";
         public const string MSG_RequestBatterySettings = "RequestBatterySettings";
         public const string MSG_SetBatterySettings = "SetBatterySettings ";
+
+        public const string MSG_DisableDispatchKeyEvent = "DisableDispatchKeyEvent ";
+        public const string MSG_EnableDispatchKeyEvent = "EnableDispatchKeyEvent ";
 
         public IOnlineTelevizorConfiguration Config { get; set; }
 

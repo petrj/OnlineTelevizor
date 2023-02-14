@@ -54,8 +54,6 @@
 
     <ContentPage.Content>
 
-
-
             <StackLayout Margin="20,10,10,0">
 
                 <Grid>
@@ -106,7 +104,6 @@
             <Label Text="{Binding VideoDescription}"  Style="{DynamicResource VideoDescriptionTextStyle}" FontSize="{Binding FontSizeForVideoDescription}"/>
 
         </StackLayout>
-
 
     </ContentPage.Content>
 

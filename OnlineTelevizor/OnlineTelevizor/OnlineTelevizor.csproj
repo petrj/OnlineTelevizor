@@ -13,17 +13,17 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>DVBSTREAMER</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - Live Player|AnyCPU'">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>DVBSTREAMER</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants></DefineConstants>
+    <DefineConstants>DVBSTREAMER</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,12 +31,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibVLCSharp" Version="3.6.6" />
-    <PackageReference Include="LibVLCSharp.Forms" Version="3.6.6" />
+    <PackageReference Include="LibVLCSharp" Version="3.6.7" />
+    <PackageReference Include="LibVLCSharp.Forms" Version="3.6.7" />
     <PackageReference Include="Plugin.InAppBilling" Version="6.7.0" />
     <PackageReference Include="Plugin.Permissions" Version="6.0.1" />
-    <PackageReference Include="VideoLAN.LibVLC.Android" Version="3.2.0.1" />
-    <PackageReference Include="Xamarin.CommunityToolkit" Version="1.3.1" />
+    <PackageReference Include="VideoLAN.LibVLC.Android" Version="3.5.3" />
+    <PackageReference Include="Xamarin.CommunityToolkit" Version="2.0.5" />
     <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2291" />

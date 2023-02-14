@@ -57,8 +57,6 @@ namespace OnlineTelevizor.ViewModels
         private int _animePos = 2;
         private bool _animePosIncreasing = true;
 
-        private bool _notifyRefreshStatus = false;
-
         public enum SelectedPartEnum
         {
             ChannelsList = 0,
@@ -135,14 +133,6 @@ namespace OnlineTelevizor.ViewModels
 
             UpdateNotificationCommand = new Command(async () => await UpdateNotification());
 
-            UpCommand = new Command(async (key) => await AnyKeyPressed("up"));
-            DownCommand = new Command(async (key) => await AnyKeyPressed("down"));
-            LeftCommand = new Command(async (key) => await AnyKeyPressed("left"));
-            RightCommand = new Command(async (key) => await AnyKeyPressed("right"));
-
-            OKCommand = new Command(async () => await AnyKeyPressed("enter"));
-            BackCommand = new Command(async () => await AnyKeyPressed("escape"));
-
             StartBackgroundThreads();
         }
 
@@ -215,11 +205,6 @@ namespace OnlineTelevizor.ViewModels
                     return true;
                 }
             }
-        }
-
-        private async Task AnyKeyPressed(string key)
-        {
-            MessagingCenter.Send(key, BaseViewModel.MSG_KeyMessage);
         }
 
         private async Task ShutdownTimer()
@@ -1217,6 +1202,7 @@ namespace OnlineTelevizor.ViewModels
                 async () =>
                 {
                     await _semaphoreSlim.WaitAsync();
+
                     try
                     {
                         if (Channels.Count == 0)

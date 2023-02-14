@@ -4,6 +4,8 @@ using OnlineTelevizor.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -11,10 +13,19 @@ namespace OnlineTelevizor.ViewModels
     {
         private decimal _timerMinutes = 0;
 
+        public Command MinusCommand { get; set; }
+        public Command PlusCommand { get; set; }
+
         public TimerPageViewModel(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService)
         : base(loggingService, config, dialogService)
         {
+            MinusCommand = new Command(async () => await AddMinutes(-5));
+            PlusCommand = new Command(async () => await AddMinutes(+5));
+        }
 
+        private async Task AddMinutes(int m)
+        {
+            TimerMinutes += m;
         }
 
         public decimal TimerMinutes
@@ -48,7 +59,6 @@ namespace OnlineTelevizor.ViewModels
                 return $"Vypnout za {_timerMinutes.ToString("#0")} minut";
             }
         }
-
 
         public string FontSizeForCaption
         {
