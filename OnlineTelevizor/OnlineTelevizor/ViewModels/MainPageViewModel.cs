@@ -1249,6 +1249,36 @@ namespace OnlineTelevizor.ViewModels
                 });
         }
 
+        public async Task SelectFirstOrLastChannel(bool first)
+        {
+            _loggingService.Info($"Selecting last channel");
+
+            await Task.Run(
+                async () =>
+                {
+                    await _semaphoreSlim.WaitAsync();
+
+                    try
+                    {
+                        if (Channels.Count == 0)
+                            return;
+
+                        if (first)
+                        {
+                            SelectedItem = Channels[0];
+                        }
+                        else
+                        {
+                            SelectedItem = Channels[Channels.Count - 1];
+                        }
+                    }
+                    finally
+                    {
+                        _semaphoreSlim.Release();
+                    };
+                });
+        }
+
         public async Task SelectPreviousChannel(int step = 1)
         {
             _loggingService.Info($"Selecting previous channel (step {step})");

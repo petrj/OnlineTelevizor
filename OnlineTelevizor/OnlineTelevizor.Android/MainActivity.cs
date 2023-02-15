@@ -468,17 +468,7 @@ namespace OnlineTelevizor.Droid
                 code = $"{BaseViewModel.LongPressPrefix}{code}";
             }
 
-            if (!_dispatchKeyEventEnabled && keyAction != KeyboardNavigationActionEnum.Unknown)
-            {
-                //e.DownTime - SystemClock.UptimeMillis()
-
-                _loggingService.Debug($"DispatchKeyEvent: {code} consumed (sending to application, time: {e.EventTime-e.DownTime})");
-
-                MessagingCenter.Send(code, BaseViewModel.MSG_KeyAction);
-
-                return true;
-            }
-            else
+            if (_dispatchKeyEventEnabled)
             {
                 // ignoring ENTER 1 second after DispatchKeyEvent enabled
 
@@ -486,17 +476,40 @@ namespace OnlineTelevizor.Droid
 
                 if (keyAction == KeyboardNavigationActionEnum.OK && ms < 1000)
                 {
-                    _loggingService.Debug($"DispatchKeyEvent: {code} consumed (ignoring OK action)");
+                    _loggingService.Debug($"DispatchKeyEvent: {code} -> ignoring OK action");
 
                     return true;
                 }
                 else
                 {
-                    // DispatchKeyEvent enabled (or unknown keyboard nav action)
-
-                    _loggingService.Debug($"DispatchKeyEvent: {code}");
-
+                    _loggingService.Debug($"DispatchKeyEvent: {code} -> sending to ancestor");
+#if DEBUG
+                    ShowToastMessage($"<{code}>");
+#endif
                     return base.DispatchKeyEvent(e);
+                }
+            }
+            else
+            {
+                if (keyAction != KeyboardNavigationActionEnum.Unknown)
+                {
+                    _loggingService.Debug($"DispatchKeyEvent: {code} -> sending to application, time: {e.EventTime - e.DownTime}");
+
+                    MessagingCenter.Send(code, BaseViewModel.MSG_KeyAction);
+
+                    return true;
+
+                }
+                else
+                {
+                    // unknown key
+
+                    _loggingService.Debug($"DispatchKeyEvent: {code} -> unknown key sending to ancestor");
+#if DEBUG
+                    ShowToastMessage($"<{code}>");
+#endif
+                    return base.DispatchKeyEvent(e);
+
                 }
             }
         }

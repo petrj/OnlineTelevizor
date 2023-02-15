@@ -629,13 +629,19 @@ namespace OnlineTelevizor.Views
 
             switch (key.ToLower())
             {
+                case "end":
                 case "moveend":
+                    await ActionFirstOrLast(false);
+                    break;
+                case "home":
+                case "movehome":
+                    await ActionFirstOrLast(true);
+                    break;
                 case "mediafastforward":
                 case "mediaforward":
                 case "pagedown":
                     await ActionKeyDown(10);
                     break;
-                case "movehome":
                 case "mediarewind":
                 case "mediafastrewind":
                 case "pageup":
@@ -766,81 +772,8 @@ namespace OnlineTelevizor.Views
                 case "shiftleft":
                     ToggleAudioStream(null);
                     break;
-                default:
-                    {
-#if UNBOUNDKEYS
-                        if (lowKey != "back" && lowKey != "volumeup" && lowKey != "volumedown")
-                        {
-                            MessagingCenter.Send($"Unbound key: {key}", BaseViewModel.MSG_ToastMessage);
-                        }
-#endif
-                    }
-                    break;
             }
-
         }
-        /*
-
-                // different page on navigation top
-
-                var pageOnTop = stack[stack.Count - 1];
-
-                if (pageOnTop is INavigationScrollUpDown)
-                {
-                    if (SelectNextItemKeyDown(lowKey))
-                    {
-                        (pageOnTop as INavigationScrollUpDown).ScrollDown();
-                    }
-                    else
-                    if (SelectPreviousItemKeyDown(lowKey))
-                    {
-                        (pageOnTop as INavigationScrollUpDown).ScrollUp();
-                    }
-                }
-
-                if (pageOnTop is INavigationSelectNextItem)
-                {
-                    if (SelectNextItemKeyDown(lowKey))
-                    {
-                        (pageOnTop as INavigationSelectNextItem).SelectNextItem();
-                    }
-                }
-
-                if (pageOnTop is INavigationSelectPreviousItem)
-                {
-                    if (SelectPreviousItemKeyDown(lowKey))
-                    {
-                        (pageOnTop as INavigationSelectPreviousItem).SelectPreviousItem();
-                    }
-                }
-
-                if (pageOnTop is INavigationSendOKButton)
-                {
-                    if (OKKeyDown(lowKey))
-                    {
-                        (pageOnTop as INavigationSendOKButton).SendOKButton();
-                    }
-                }
-
-                if (pageOnTop is INavigationSendBackButton)
-                {
-                    if (LeavePageKeyDown(lowKey))
-                    {
-                        (pageOnTop as INavigationSendBackButton).SendBackButton();
-                    }
-                }
-                else
-                {
-                    if (LeavePageKeyDown(lowKey))
-                    {
-                        // closing page
-                        Navigation.PopAsync();
-                    }
-                }
-
-                return;
-            }
-        */
 
         private Dictionary<int,string> GetAudioTracks()
         {
@@ -1200,7 +1133,7 @@ namespace OnlineTelevizor.Views
                         catch (Exception ex)
                         {
                             _loggingService.Error(ex, "PlayStream general error");
-                            MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
+                            //MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
                         }
                     });
                 }
@@ -1211,7 +1144,7 @@ namespace OnlineTelevizor.Views
             } catch (Exception ex)
             {
                 _loggingService.Error(ex, "PlayStream general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
+                //MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1266,7 +1199,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionTap general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
+                //MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1303,7 +1236,7 @@ namespace OnlineTelevizor.Views
                         catch (Exception ex)
                         {
                             _loggingService.Error(ex, "ActionStop general error");
-                            MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
+                            //MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
                         }
                     });
                 }
@@ -1315,7 +1248,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionStop general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
+                //MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1411,7 +1344,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionKeyOK general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
+                //MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1462,7 +1395,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionKeyLeft general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
+                //MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1513,7 +1446,28 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionKeyRight general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
+                //MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
+            }
+        }
+
+        private async Task ActionFirstOrLast(bool first)
+        {
+            _loggingService.Info($"ActionFirstOrLast");
+
+            try
+            {
+                if (PlayingState != PlayingStateEnum.PlayingInternal)
+                {
+                    if (_viewModel.SelectedPart == SelectedPartEnum.ChannelsList)
+                    {
+                        await _viewModel.SelectFirstOrLastChannel(first);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex, "ActionFirstOrLast general error");
+                //MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1553,7 +1507,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionKeyDown general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
+                //MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 
@@ -1591,7 +1545,7 @@ namespace OnlineTelevizor.Views
             catch (Exception ex)
             {
                 _loggingService.Error(ex, "ActionKeyUp general error");
-                MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
+                //MessagingCenter.Send($"Chyba: {ex.Message}", BaseViewModel.MSG_ToastMessage);
             }
         }
 

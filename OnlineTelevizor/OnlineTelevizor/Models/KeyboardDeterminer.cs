@@ -51,10 +51,12 @@ namespace OnlineTelevizor
         {
             switch (key.ToLower())
             {
+                case "end":
                 case "moveend":
                 case "mediafastforward":
                 case "mediaforward":
                 case "pagedown":
+                case "home":
                 case "movehome":
                 case "mediarewind":
                 case "mediafastrewind":
