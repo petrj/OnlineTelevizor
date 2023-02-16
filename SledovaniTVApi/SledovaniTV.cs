@@ -599,7 +599,9 @@ namespace SledovaniTVAPI
                 {
                     { "format", "androidtv" },
                     { "PHPSESSID", _session.PHPSESSID },
-                    { "subtitles", "1" }
+                    { "subtitles", "1" },
+                    //{ "lang", "cs" },
+                    //{ "capabilities", "webvtt,adaptive2,h265" }
                 };
 
                 if (!string.IsNullOrEmpty(quality))

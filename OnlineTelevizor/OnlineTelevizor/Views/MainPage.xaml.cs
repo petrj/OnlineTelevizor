@@ -1,20 +1,14 @@
 ﻿using LoggerService;
-using SledovaniTVAPI;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.Services;
 using OnlineTelevizor.ViewModels;
-using OnlineTelevizor.Views;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Threading;
 using static OnlineTelevizor.ViewModels.MainPageViewModel;
 using LibVLCSharp.Shared;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
 
 namespace OnlineTelevizor.Views
 {

@@ -47,7 +47,7 @@
 
                     <Label Text="Gesta během přehrávání" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForGroupCaption}"/>
 
-                    <Label  Text="- gesta použitelná na video či logo kanálu pro interní přehrávač" Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForNote}"/>
+                    <Label  Text="- gesta použitelná na video či náhled videa" Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForNote}"/>
 
                     <Grid Margin="0,10,0,0">
                         <Grid.RowDefinitions>
@@ -99,38 +99,43 @@
 
                     <Label  Text="Klávesy" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForGroupCaption}"/>
 
-                    <Label Text="Změna označeného kanálu, navigace v menu" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="Změna označeného kanálu, navigace v aplikaci" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
                     <Label Text="Dolu/Nahoru, R1/L1, W/S, NumPad2/NumPad8" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="Vlevo/Vpravo, A/D, B/F, NumPad4/NumPad6, Hranaté závorky, F2/F3,  &#x23EE; &#x23ED;" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                     <Label Text="Další/předchozí kanál (o 10 pozic)" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                    <Label Text="PageUp/PageDown, Home/End, &#x23EA; &#x23E9; " Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="PageUp/PageDown, &#x23EA; &#x23E9; " Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
-                    <Label Text="Navigace v menu" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                    <Label Text="Vlevo/Vpravo, a/d, b/f, NumPad4/NumPad6, Hranaté závorky, F2/F3,  &#x23EE; &#x23ED;" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="První/poslední kanál" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="Home/End" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                     <Label Text="Spuštění označeného kanálu" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                    <Label Text="OK, Enter, Mezera, Media Play, Button R2, NumPad5, Start, F6, Caps lock, Čárka, Středník, Vlnovka" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="OK, Enter, Mezera, Media Play, R2, NumPad5, Start, F6, Caps lock, Čárka, Středník, Vlnovka" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
-                    <Label Text="Změna zvukové stopy" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                    <Label Text="Dlouhé podržení OK/Enter/Mezera/Media Play/Button R2/NumPad5/Start/F6/Caps lock/Čárka/Středník/Vlnovka, F12, Modré tlačítko, K, Levý Shift" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="Zobrazení menu" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="Dlouhé podržení OK/Enter/Mezera/Media Play/R2/NumPad5/Start/F6/Caps lock/Čárka/Středník/Vlnovka" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="Guide, Info, L2, I, G, F1,F8, Menu, Tab, NumPad+, Rovnítko, Lomítka, Insert" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                     <Label Text="Spuštění kanálu dle čísla" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
                     <Label Text="0,1,2,3,4,5,6,7,8,9" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
-                    <Label Text="Stop" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                    <Label Text="F4,F7, Escape, Back, Media Pause/Stop/Close, NumPad-, Delete, button X, Left Alt, Tečka, Apostrof" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="Stop/zpět" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="F4,F7, Escape, Back, Media Pause/Stop/Close, NumPad-, Delete, button X/Select, Left alt, Tečka, Apostrof" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                     <Label Text="Obnova načtených kanálů" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                    <Label Text="F5, NumPad0, F10, Zelené tlačítko" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="F5, F10, NumPad0, Zelené tlačítko" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
-                    <Label Text="Zobrazení názvu právě probíhajícího programu při přehrávání, zobrazení menu vybraného kanálu pokud neprobíhá přehrávání" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
-                    <Label Text="Guide, Info, button L2, I, G, F1,F8, Menu, Tab, NumPad+, Rovnítko, Lomítka, Insert" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+                    <Label Text="Zobrazení názvu probíhajícího nebo následujíchího programu při přehrávání" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="Guide, Info, L2, I, G, F1,F8, Menu, Tab, NumPad+, Rovnítko, Lomítka, Insert" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
-                    <Label Text="Spuštění předchozího kanálu při přehrávání" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="Spuštění předchozího kanálu během přehrávání" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
                     <Label Text="Vlevo" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                     <Label Text="Spuštění/zastavení nahrávání" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
                     <Label Text="Červené tlačítko, F9, R, Record" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
+
+                    <Label Text="Změna zvukové stopy" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
+                    <Label Text="Modré tlačítko, F12, K, Levý shift" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
 
                     <Label Text="Přidání do/odebrání z oblíbených" Style="{StaticResource CaptionStyle}"  FontSize="{Binding FontSizeForCaption}"/>
                     <Label Text="Žluté tlačítko, F11, L" Style="{StaticResource TextStyle}"  FontSize="{Binding FontSizeForText}"/>
