@@ -26,6 +26,8 @@ using Android.Support.V4.App;
 using Android.Support.V4.View;
 using Android.Content.Res;
 using Android.InputMethodServices;
+using AndroidX.ConstraintLayout.Core.Widgets.Analyzer;
+using System.IO;
 
 namespace OnlineTelevizor.Droid
 {
@@ -175,6 +177,40 @@ namespace OnlineTelevizor.Droid
             }
 
             return false;
+        }
+
+        private async void MakeScreenShot()
+        {
+            try
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    var screenshot = await Screenshot.CaptureAsync();
+                    var stream = await screenshot.OpenReadAsync();
+
+                    var c = 0;
+                    string fileName = null;
+
+                    do
+                    {
+                        c++;
+                        fileName = System.IO.Path.Combine(_cfg.OutputDirectory, $"screenshot{c.ToString().PadLeft(5, '0')}.png");
+                    }
+                    while (System.IO.File.Exists(fileName));
+
+                    using (FileStream fs = File.Open(fileName, FileMode.CreateNew))
+                    {
+                        await stream.CopyToAsync(fs);
+                        await fs.FlushAsync();
+                    }
+
+                    ShowToastMessage($"Snímek obrazovky uložen do souboru {fileName}");
+                });
+            } catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+                ShowToastMessage($"Snímek obrazovky se nezdařil");
+            }
         }
 
         private void SubscribeMessages()
@@ -462,6 +498,14 @@ namespace OnlineTelevizor.Droid
                 return true;
             }
 
+            if (e.IsNumLockOn &&
+                code != null &&
+                code.ToLower().StartsWith("numpad") &&
+                code.Length>6)
+            {
+                code = code.Substring(6);
+            }
+
             var keyAction = KeyboardDeterminer.GetKeyAction(code);
             if (e.IsLongPress)
             {
@@ -483,9 +527,6 @@ namespace OnlineTelevizor.Droid
                 else
                 {
                     _loggingService.Debug($"DispatchKeyEvent: {code} -> sending to ancestor");
-#if DEBUG
-                    ShowToastMessage($"<{code}>");
-#endif
                     return base.DispatchKeyEvent(e);
                 }
             }
@@ -493,12 +534,20 @@ namespace OnlineTelevizor.Droid
             {
                 if (keyAction != KeyboardNavigationActionEnum.Unknown)
                 {
+                    // screenshot (except VideoView)
+                    //if (code.ToLower() == "p")
+                    //{
+                    //    MakeScreenShot();
+
+                    //    _loggingService.Debug($"DispatchKeyEvent: {code} -> saving screenshot");
+                    //    return true;
+                    //}
+
                     _loggingService.Debug($"DispatchKeyEvent: {code} -> sending to application, time: {e.EventTime - e.DownTime}");
 
                     MessagingCenter.Send(code, BaseViewModel.MSG_KeyAction);
 
                     return true;
-
                 }
                 else
                 {

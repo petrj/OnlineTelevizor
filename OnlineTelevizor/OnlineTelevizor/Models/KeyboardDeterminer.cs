@@ -143,6 +143,7 @@ namespace OnlineTelevizor
                 case "k":
                 case "leftshift":
                 case "shiftleft":
+                case "p":
                     return true;
                 default:
                     return false;
