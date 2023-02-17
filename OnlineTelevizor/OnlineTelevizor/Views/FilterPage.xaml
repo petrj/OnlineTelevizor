@@ -44,7 +44,7 @@
 
         <ScrollView Style="{StaticResource PageBackgroundStyle}" x:Name="MainScrollView">
 
-            <StackLayout x:Name="MainStackLayout" Margin="10,10,10,10">
+            <StackLayout x:Name="MainStackLayout" Margin="10,10,10,20">
 
                 <Grid Margin="0,0,0,0">
                     <Grid.RowDefinitions>

@@ -43,7 +43,7 @@
 
             <StackLayout>
 
-                 <StackLayout Margin="10,10,20,0">
+                <StackLayout Margin="10,10,10,0">
 
                     <Label Text="Gesta během přehrávání" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForGroupCaption}"/>
 
@@ -95,7 +95,7 @@
 
                 </StackLayout>
 
-                <StackLayout Margin="10,20,20,20">
+                <StackLayout Margin="10,10,10,20">
 
                     <Label  Text="Klávesy" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForGroupCaption}"/>
 

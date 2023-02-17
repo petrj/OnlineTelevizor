@@ -56,7 +56,7 @@
 
             <ScrollView x:Name="SettingsPageScrollView" Style="{StaticResource PageBackgroundStyle}">
 
-                <StackLayout x:Name="MainStackLayout" Margin="10,10,10,10">
+                <StackLayout x:Name="MainStackLayout" Margin="10,10,10,20">
 
                     <Grid Margin="0,0,0,0"
                           x:Name="ActiveIPTVGrid">

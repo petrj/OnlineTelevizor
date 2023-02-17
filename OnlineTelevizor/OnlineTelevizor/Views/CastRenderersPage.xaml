@@ -41,7 +41,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <StackLayout Margin="20,10,20,0">
+    <StackLayout Margin="10,10,10,2">
 
         <Label Text="Dostupná zařízení:" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForText}"/>
 

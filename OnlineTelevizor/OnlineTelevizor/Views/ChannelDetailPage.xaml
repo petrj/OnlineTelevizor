@@ -54,7 +54,7 @@
 
     <ContentPage.Content>
 
-            <StackLayout Margin="20,10,10,0">
+            <StackLayout Margin="10,10,10,20">
 
                 <Grid>
                     <Grid.RowDefinitions>
