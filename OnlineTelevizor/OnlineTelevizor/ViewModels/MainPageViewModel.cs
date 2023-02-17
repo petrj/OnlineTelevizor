@@ -428,14 +428,16 @@ namespace OnlineTelevizor.ViewModels
                 }
             }
 
-            if (PlayingState == PlayingStateEnum.PlayingInPreview)
-            {
-                actions.Add(optionClosePreview);
-            }
-
             if (item != null && item == PlayingChannel)
             {
-                actions.Add(optionStop);
+                if (PlayingState == PlayingStateEnum.PlayingInPreview)
+                {
+                    actions.Add(optionClosePreview);
+                }
+                if (PlayingState == PlayingStateEnum.PlayingInternal)
+                {
+                    actions.Add(optionStop);
+                }
             }
 
             if (PlayingChannel != null &&
