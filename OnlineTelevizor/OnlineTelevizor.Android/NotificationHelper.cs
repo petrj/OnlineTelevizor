@@ -52,7 +52,8 @@ namespace OnlineTelevizor.Droid
         {
             var notificationIntent = Application.Context.PackageManager?.GetLaunchIntentForPackage(Application.Context.PackageName);
             notificationIntent.SetFlags(ActivityFlags.SingleTop);
-            var pendingIntent = PendingIntent.GetActivity(Application.Context, notificationId, notificationIntent, PendingIntentFlags.CancelCurrent);
+            var pendingIntentFlags = PendingIntentFlags.CancelCurrent | PendingIntentFlags.Immutable;
+            var pendingIntent = PendingIntent.GetActivity(Application.Context, notificationId, notificationIntent, pendingIntentFlags);
 
             var stopIntent = new Intent(Application.Context, typeof(OnlineTelevizorBroadcastReceiver));
             stopIntent.SetAction("Stop");
@@ -61,7 +62,7 @@ namespace OnlineTelevizor.Droid
                 Application.Context,
                 notificationId,
                 stopIntent,
-                PendingIntentFlags.CancelCurrent
+                pendingIntentFlags
             );
 
             var quitIntent = new Intent(Application.Context, typeof(OnlineTelevizorBroadcastReceiver));
@@ -70,7 +71,7 @@ namespace OnlineTelevizor.Droid
                 Application.Context,
                 notificationId,
                 quitIntent,
-                PendingIntentFlags.CancelCurrent
+                pendingIntentFlags
             );
 
             var notificationBuilder = new NotificationCompat.Builder(ApplicationContext, _channelId)
@@ -94,7 +95,8 @@ namespace OnlineTelevizor.Droid
         {
             var notificationIntent = Application.Context.PackageManager?.GetLaunchIntentForPackage(Application.Context.PackageName);
             notificationIntent.SetFlags(ActivityFlags.SingleTop);
-            var pendingIntent = PendingIntent.GetActivity(Application.Context, notificationId, notificationIntent, PendingIntentFlags.CancelCurrent);
+            var pendingIntentFlags = PendingIntentFlags.CancelCurrent | PendingIntentFlags.Immutable;
+            var pendingIntent = PendingIntent.GetActivity(Application.Context, notificationId, notificationIntent, pendingIntentFlags);
 
             var stopIntent = new Intent(Application.Context, typeof(OnlineTelevizorBroadcastReceiver));
             stopIntent.SetAction("StopRecord");
@@ -103,7 +105,7 @@ namespace OnlineTelevizor.Droid
                 Application.Context,
                 notificationId,
                 stopIntent,
-                PendingIntentFlags.CancelCurrent
+                pendingIntentFlags
             );
 
             var notificationBuilder = new NotificationCompat.Builder(ApplicationContext, _channelId)

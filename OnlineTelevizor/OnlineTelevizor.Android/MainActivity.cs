@@ -183,29 +183,27 @@ namespace OnlineTelevizor.Droid
         {
             try
             {
-                Device.BeginInvokeOnMainThread(async () =>
+                var screenshot = await Screenshot.CaptureAsync();
+                var stream = await screenshot.OpenReadAsync();
+
+                var c = 0;
+                string fileName = null;
+
+                do
                 {
-                    var screenshot = await Screenshot.CaptureAsync();
-                    var stream = await screenshot.OpenReadAsync();
+                    c++;
+                    fileName = System.IO.Path.Combine(_cfg.OutputDirectory, $"screenshot{c.ToString().PadLeft(5, '0')}.png");
+                }
+                while (System.IO.File.Exists(fileName));
 
-                    var c = 0;
-                    string fileName = null;
+                using (FileStream fs = File.Open(fileName, FileMode.CreateNew))
+                {
+                    await stream.CopyToAsync(fs);
+                    await fs.FlushAsync();
+                }
 
-                    do
-                    {
-                        c++;
-                        fileName = System.IO.Path.Combine(_cfg.OutputDirectory, $"screenshot{c.ToString().PadLeft(5, '0')}.png");
-                    }
-                    while (System.IO.File.Exists(fileName));
+                ShowToastMessage($"Snímek obrazovky uložen do souboru {fileName}");
 
-                    using (FileStream fs = File.Open(fileName, FileMode.CreateNew))
-                    {
-                        await stream.CopyToAsync(fs);
-                        await fs.FlushAsync();
-                    }
-
-                    ShowToastMessage($"Snímek obrazovky uložen do souboru {fileName}");
-                });
             } catch (Exception ex)
             {
                 _loggingService.Error(ex);
@@ -534,15 +532,16 @@ namespace OnlineTelevizor.Droid
             {
                 if (keyAction != KeyboardNavigationActionEnum.Unknown)
                 {
+#if DEBUG
                     // screenshot (except VideoView)
-                    //if (code.ToLower() == "p")
-                    //{
-                    //    MakeScreenShot();
+                    if (code.ToLower() == "p")
+                    {
+                        MakeScreenShot();
 
-                    //    _loggingService.Debug($"DispatchKeyEvent: {code} -> saving screenshot");
-                    //    return true;
-                    //}
-
+                        _loggingService.Debug($"DispatchKeyEvent: {code} -> saving screenshot");
+                        return true;
+                    }
+#endif
                     _loggingService.Debug($"DispatchKeyEvent: {code} -> sending to application, time: {e.EventTime - e.DownTime}");
 
                     MessagingCenter.Send(code, BaseViewModel.MSG_KeyAction);
@@ -558,7 +557,6 @@ namespace OnlineTelevizor.Droid
                     ShowToastMessage($"<{code}>");
 #endif
                     return base.DispatchKeyEvent(e);
-
                 }
             }
         }
