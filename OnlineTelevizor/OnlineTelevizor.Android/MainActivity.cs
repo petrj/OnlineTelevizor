@@ -330,6 +330,7 @@ namespace OnlineTelevizor.Droid
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
+                    StopRecordNotification();
                     StopPlayingNotification();
                     Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
                 });
