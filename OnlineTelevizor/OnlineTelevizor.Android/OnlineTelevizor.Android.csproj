@@ -48,6 +48,7 @@
     <AndroidKeyStore>false</AndroidKeyStore>
     <AndroidSigningStorePass>
     </AndroidSigningStorePass>
+    <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
