@@ -31,8 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibVLCSharp" Version="3.6.7" />
-    <PackageReference Include="LibVLCSharp.Forms" Version="3.6.7" />
+    <PackageReference Include="LibVLCSharp" Version="3.7.0" />
+    <PackageReference Include="LibVLCSharp.Forms" Version="3.7.0" />
     <PackageReference Include="Plugin.InAppBilling" Version="6.7.0" />
     <PackageReference Include="Plugin.Permissions" Version="6.0.1" />
     <PackageReference Include="VideoLAN.LibVLC.Android" Version="3.5.3" />
