@@ -1824,6 +1824,16 @@ namespace OnlineTelevizor.Views
                         {
                             _viewModel.PlayingChannel.AudioTracks = GetAudioTracks();
                         }
+
+
+                        foreach (var desc in _mediaPlayer.SpuDescription)
+                        {
+                            if (desc.Id >= 0)
+                            {
+
+                            }
+                        }
+
                     }
 
                 } catch (Exception ex)

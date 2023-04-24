@@ -31,8 +31,7 @@ using System.IO;
 
 namespace OnlineTelevizor.Droid
 {
-    [Activity(Label = "OnlineTelevizor", Icon = "@drawable/Icon", Theme = "@style/MainTheme", MainLauncher = true, Exported = true, Banner = "@drawable/banner", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    [IntentFilter(new[] { Intent.ActionMain }, Categories = new[] { Intent.CategoryLauncher, Intent.CategoryLeanbackLauncher })]
+    [Activity(Name = "net.petrjanousek.OnlineTelevizor.MainActivity", Label = "Online Televizor", Icon = "@drawable/Icon", Theme = "@style/MainTheme", MainLauncher = false, Exported = false, Banner = "@drawable/banner", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, InputManager.IInputDeviceListener
     {
         private App _app;
