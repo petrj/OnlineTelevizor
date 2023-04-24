@@ -617,7 +617,7 @@ namespace OnlineTelevizor.ViewModels
 
                 var selectedAudioTrack = await _dialogService.Select(menu, "Volba audio stopy", "Zrušit");
 
-                if (selectedAudioTrack != null)
+                if (selectedAudioTrack != null && menuTitleToTrackId.ContainsKey(selectedAudioTrack))
                 {
                     MessagingCenter.Send<string>(menuTitleToTrackId[selectedAudioTrack].ToString(), BaseViewModel.MSG_ToggleAudioStreamId);
                 }
