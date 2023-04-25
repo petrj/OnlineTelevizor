@@ -575,5 +575,50 @@ namespace OnlineTelevizor.Droid
         }
 
         public bool IsRunningOnTV { get; set; } = false;
+
+        public int RemoteAccessServicePort
+        {
+            get
+            {
+                var port = GetPersistingSettingValue<int>("RemoteAccessServicePort");
+                if (port == default(int))
+                {
+                    port = 49152;
+                }
+
+                return port;
+            }
+            set
+            {
+                SavePersistingSettingValue<int>("RemoteAccessServicePort", value);
+            }
+        }
+
+        public string RemoteAccessServiceSecurityKey
+        {
+            get
+            {
+                var key = GetPersistingSettingValue<string>("RemoteAccessServiceSecurityKey");
+                if (key == default(string))
+                {
+                    key = "OnlineTelevizor";
+                }
+
+                return key;
+            }
+            set { SavePersistingSettingValue<string>("RemoteAccessServiceSecurityKey", value); }
+        }
+
+        public bool AllowRemoteAccessService
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("AllowRemoteAccessService");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("AllowRemoteAccessService", value);
+            }
+        }
     }
 }

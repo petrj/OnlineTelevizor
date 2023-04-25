@@ -497,5 +497,50 @@ namespace OnlineTelevizor.UWP
             }
             set { }
         }
+
+        public int RemoteAccessServicePort
+        {
+            get
+            {
+                var port = GetSettingValue<int>("RemoteAccessServicePort");
+                if (port == default(int))
+                {
+                    port = 49152;
+                }
+
+                return port;
+            }
+            set
+            {
+                SaveSettingValue<int>("RemoteAccessServicePort", value);
+            }
+        }
+
+        public string RemoteAccessServiceSecurityKey
+        {
+            get
+            {
+                var key = GetSettingValue<string>("RemoteAccessServiceSecurityKey");
+                if (key == default(string))
+                {
+                    key = "OnlineTelevizor";
+                }
+
+                return key;
+            }
+            set { SaveSettingValue<string>("RemoteAccessServiceSecurityKey", value); }
+        }
+
+        public bool AllowRemoteAccessService
+        {
+            get
+            {
+                return GetSettingValue<bool>("AllowRemoteAccessService");
+            }
+            set
+            {
+                SaveSettingValue<bool>("AllowRemoteAccessService", value);
+            }
+        }
     }
 }

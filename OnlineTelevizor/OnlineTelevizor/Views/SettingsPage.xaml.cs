@@ -88,6 +88,10 @@ namespace OnlineTelevizor.Views
                 .AddItem(KeyboardFocusableItem.CreateFrom("PlayInternal", new List<View>() { PlayInternalBoxView, UseInternalPlayerSwitch }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("PlayOnBackground", new List<View>() { PlayOnBackgroundBoxView, PlayOnBackgroundSwitch }))
 
+                .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessEnabled", new List<View>() { RemoteAccessEnabledBoxView, RemoteAccessSwitch }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessPort", new List<View>() { RemoteAccessPortBoxView, PortEntry }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessSecurityKey", new List<View>() { RemoteAccessSecurityKeyBoxView, SecurityKeyEntry }))
+
                 .AddItem(KeyboardFocusableItem.CreateFrom("Pay", new List<View>() { PayButton }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("About", new List<View>() { AboutButton }));
 
@@ -126,6 +130,16 @@ namespace OnlineTelevizor.Views
                     (_args.FocusedItem.Name == "O2Username" ||
                     _args.FocusedItem.Name == "O2Password")
                     && (!_viewModel.IsO2TVVisible)
+               )
+            {
+                action();
+                return;
+            }
+
+            if (
+                    (_args.FocusedItem.Name == "RemoteAccessPort" ||
+                    _args.FocusedItem.Name == "RemoteAccessSecurityKey")
+                    && (!_config.AllowRemoteAccessService)
                )
             {
                 action();
@@ -275,6 +289,17 @@ namespace OnlineTelevizor.Views
                         case "PlayOnBackground":
                             PlayOnBackgroundSwitch.IsToggled = !PlayOnBackgroundSwitch.IsToggled;
                             break;
+
+                        case "RemoteAccessEnabled":
+                            RemoteAccessSwitch.IsToggled = !RemoteAccessSwitch.IsToggled;
+                            break;
+                        case "RemoteAccessPort":
+                            PortEntry.Focus();
+                            break;
+                        case "RemoteAccessSecurityKey":
+                            SecurityKeyEntry.Focus();
+                            break;
+
                         case "Pay":
                             _viewModel.PayCommand.Execute(null);
                             break;

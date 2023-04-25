@@ -39,6 +39,8 @@ namespace OnlineTelevizor.Views
 
         private Size _lastAllocatedSize = new Size(-1, -1);
 
+        private RemoteAccessService _remoteAccessService = null;
+
         private DateTime _lastSingleClicked = DateTime.MinValue;
 
         private ChannelItem[] _lastPlayedChannels = new ChannelItem[2];
@@ -487,6 +489,15 @@ namespace OnlineTelevizor.Views
                 {
                     ToolbarItems.Remove(ToolbarItemHelp);
                 }
+            }
+
+            if (_remoteAccessService == null && _config.AllowRemoteAccessService)
+            {
+                Task.Run(() =>
+                {
+                    _remoteAccessService = new RemoteAccessService(_loggingService);
+                    _remoteAccessService.StartListening(_config.RemoteAccessServicePort, _config.RemoteAccessServiceSecurityKey);
+                });
             }
 
             Resume();

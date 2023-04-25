@@ -496,5 +496,20 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(SelectedChannelItem));
             }
         }
+
+        public bool AllowRemoteAccessService
+        {
+            get
+            {
+                return Config.AllowRemoteAccessService;
+            }
+            set
+            {
+                Config.AllowRemoteAccessService = value;
+
+                OnPropertyChanged(nameof(Config));
+            }
+        }
+
     }
 }
