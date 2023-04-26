@@ -1687,6 +1687,7 @@ namespace OnlineTelevizor.Views
                 {
                     _viewModel.ResetConnectionCommand.Execute(null);
                     _viewModel.RefreshCommandWithNotification.Execute(null);
+                    MessagingCenter.Send(String.Empty, BaseViewModel.MSG_ReFreshRemoteAccessService);
                 };
             }
 

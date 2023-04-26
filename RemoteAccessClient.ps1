@@ -61,4 +61,14 @@ $msgEnter = @"
 #Send-TCPMessage -Port 49152 -Endpoint 10.0.0.231 -message  $msg
 #Send-TCPMessage -Port 49152 -Endpoint 10.18.15.101 -message  $msg
 #Send-TCPMessage -Port 49152 -Endpoint 192.168.28.242 -message  $msgDown
-Send-TCPMessage -Port 49152 -Endpoint 192.168.28.242 -message  $msgDown
+#Send-TCPMessage -Port 49152 -Endpoint 192.168.28.231 -message  $msgDown
+
+$msg = @"
+{
+ "securityKey":"OnlineTelevizor",
+ "command":"keyDown",
+ "commandArg1":"Tab"
+}
+"@
+
+Send-TCPMessage -Port 49152 -Endpoint 10.0.0.231 -message  $msg

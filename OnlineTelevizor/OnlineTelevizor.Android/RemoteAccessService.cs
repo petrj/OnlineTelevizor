@@ -13,39 +13,33 @@ using Xamarin.Forms;
 using Android.App;
 using System.Threading;
 using Android.InputMethodServices;
+using System.ComponentModel;
 
 namespace OnlineTelevizor.Services
 {
     public class RemoteAccessService
     {
-        // https://stackoverflow.com/questions/50689842/how-to-make-sockets-work-in-xamarin
+        private BackgroundWorker _worker;
 
         private ILoggingService _loggingService;
 
         private const int BufferSize = 1024;
+        private string _ip;
+        private int _port;
+        private string _securityKey;
 
         public RemoteAccessService(ILoggingService loggingService)
         {
             _loggingService = loggingService;
+
+            _worker = new BackgroundWorker();
+            _worker.WorkerSupportsCancellation = true;
+            _worker.DoWork += _worker_DoWork;
         }
 
-        private void SendKey(string code)
+        private void _worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            _loggingService.Debug($"[RAS]:   command keyDown: {code}");
-
-            Android.Views.Keycode keyCode;
-            if (Enum.TryParse<Android.Views.Keycode>(code, out keyCode))
-            {
-                new Instrumentation().SendKeyDownUpSync(keyCode);
-            } else
-            {
-                _loggingService.Info($"[RAS]: invalid key code {code}");
-            }
-        }
-
-        public void StartListening(string ip, int port, string securityKey)
-        {
-            _loggingService.Info("[RAS]: Starting Remote Access Service");
+            _loggingService.Info("[RAS]: Starting Remote Access Service background thread");
 
             try
             {
@@ -54,18 +48,19 @@ namespace OnlineTelevizor.Services
 
                 IPAddress ipAddress;
 
-                if (string.IsNullOrEmpty(ip))
+                if (string.IsNullOrEmpty(_ip))
                 {
                     var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
                     ipAddress = ipHostInfo.AddressList[0];
-                } else
+                }
+                else
                 {
-                    ipAddress = IPAddress.Parse(ip);
+                    ipAddress = IPAddress.Parse(_ip);
                 }
 
-                _loggingService.Info($"[RAS]: Endpoint: {ip}:{port}");
+                _loggingService.Info($"[RAS]: Endpoint: {_ip}:{_port}");
 
-                IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
+                IPEndPoint localEndPoint = new IPEndPoint(ipAddress, _port);
 
                 // Create a TCP/IP socket.
 
@@ -74,10 +69,10 @@ namespace OnlineTelevizor.Services
                     listener.Bind(localEndPoint);
                     listener.Listen(10);
 
-                    MessagingCenter.Send($"Vzdálené ovládání aktivováno ({ipAddress.ToString()}:{port})", BaseViewModel.MSG_ToastMessage);
+                    MessagingCenter.Send($"Vzdálené ovládání aktivováno ({ipAddress.ToString()}:{_port})", BaseViewModel.MSG_ToastMessage);
 
                     // Start listening for connections.
-                    while (true)
+                    while (!_worker.CancellationPending)
                     {
                         // Program is suspended while waiting for an incoming connection.
                         using (var handler = listener.Accept())
@@ -103,10 +98,11 @@ namespace OnlineTelevizor.Services
                             {
                                 var message = JsonConvert.DeserializeObject<RemoteAccessMessage>(data);
 
-                                if (message.securityKey != securityKey)
+                                if (message.securityKey != _securityKey)
                                 {
                                     _loggingService.Info("[RAS]: invalid security key");
-                                } else
+                                }
+                                else
                                 {
                                     switch (message.command)
                                     {
@@ -122,7 +118,8 @@ namespace OnlineTelevizor.Services
                                 }
 
 
-                            } catch (Exception ex)
+                            }
+                            catch (Exception ex)
                             {
                                 _loggingService.Info("[RAS]: unknown message");
                             }
@@ -133,10 +130,61 @@ namespace OnlineTelevizor.Services
                         }
                     }
                 }
-            } catch (Exception ex)
+            }
+            catch (ThreadAbortException)
+            {
+                e.Cancel = true;
+                Thread.ResetAbort();
+            }
+            catch (Exception ex)
             {
                 _loggingService.Error(ex, "[RAS]");
             }
+        }
+
+        private void SendKey(string code)
+        {
+            _loggingService.Debug($"[RAS]:   command keyDown: {code}");
+
+            Android.Views.Keycode keyCode;
+            if (Enum.TryParse<Android.Views.Keycode>(code, out keyCode))
+            {
+                new Instrumentation().SendKeyDownUpSync(keyCode);
+            }
+            else
+            {
+                _loggingService.Info($"[RAS]: invalid key code {code}");
+            }
+        }
+
+        public bool IsBusy
+        {
+            get
+            {
+                return _worker.IsBusy;
+            }
+        }
+
+        public void StartListening(string ip, int port, string securityKey)
+        {
+            if (_worker.IsBusy)
+                return;
+
+            _ip = ip;
+            _port = port;
+            _securityKey = securityKey;
+
+            _worker.RunWorkerAsync();
+        }
+
+        public void StopListening()
+        {
+            if (!_worker.IsBusy)
+                return;
+
+            _worker.CancelAsync();
+
+            MessagingCenter.Send($"Vzdálené ovládání deaktivováno", BaseViewModel.MSG_ToastMessage);
         }
     }
 }

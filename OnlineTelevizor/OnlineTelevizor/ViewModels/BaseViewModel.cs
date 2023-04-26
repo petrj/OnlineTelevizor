@@ -55,8 +55,10 @@ namespace OnlineTelevizor.ViewModels
         public const string MSG_CheckBatterySettings = "CheckBatterySettings";
         public const string MSG_RequestBatterySettings = "RequestBatterySettings";
         public const string MSG_SetBatterySettings = "SetBatterySettings ";
-        public const string MSG_DisableDispatchKeyEvent = "DisableDispatchKeyEvent ";
-        public const string MSG_EnableDispatchKeyEvent = "EnableDispatchKeyEvent ";
+        public const string MSG_DisableDispatchKeyEvent = "DisableDispatchKeyEvent";
+        public const string MSG_EnableDispatchKeyEvent = "EnableDispatchKeyEvent";
+
+        public const string MSG_ReFreshRemoteAccessService = "ReFreshRemoteAccessService";
 
         public IOnlineTelevizorConfiguration Config { get; set; }
 

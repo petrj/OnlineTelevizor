@@ -623,7 +623,7 @@ namespace OnlineTelevizor.Droid
                     }
                     catch
                     {
-                        ip = String.Empty;
+                        ip = "192.168.1.10";
                     }
                 }
 

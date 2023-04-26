@@ -37,6 +37,7 @@ namespace OnlineTelevizor.Droid
     {
         private App _app;
         private AndroidOnlineTelevizorConfiguration _cfg;
+        private RemoteAccessService _remoteAccessService;
 
         private int _defaultUiOptions;
         private int _fullscreenUiOptions;
@@ -149,6 +150,13 @@ namespace OnlineTelevizor.Droid
                 SubscribeMessages();
 
                 var input_manager = (InputManager)GetSystemService(Context.InputService);
+
+                _remoteAccessService = new RemoteAccessService(_loggingService);
+
+                if (_cfg.AllowRemoteAccessService)
+                {
+                    _remoteAccessService.StartListening(_cfg.RemoteAccessServiceIP, _cfg.RemoteAccessServicePort, _cfg.RemoteAccessServiceSecurityKey);
+                }
 
                 LoadApplication(_app);
             } catch (Exception ex)
@@ -347,15 +355,21 @@ namespace OnlineTelevizor.Droid
                 _dispatchKeyEventEnabled = true;
             });
 
-
-            if (_cfg.AllowRemoteAccessService)
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_ReFreshRemoteAccessService, (message) =>
             {
-                Task.Run(() =>
+                if (_cfg.AllowRemoteAccessService)
                 {
-                    var remoteAccessService = new RemoteAccessService(_loggingService);
-                    remoteAccessService.StartListening(_cfg.RemoteAccessServiceIP, _cfg.RemoteAccessServicePort, _cfg.RemoteAccessServiceSecurityKey);
-                });
-            }
+                    if (_remoteAccessService.IsBusy)
+                    {
+                        _remoteAccessService.StopListening();
+                    }
+
+                    _remoteAccessService.StartListening(_cfg.RemoteAccessServiceIP, _cfg.RemoteAccessServicePort, _cfg.RemoteAccessServiceSecurityKey);
+                } else
+                {
+                    _remoteAccessService.StopListening();
+                }
+            });
         }
 
         protected override void OnDestroy()

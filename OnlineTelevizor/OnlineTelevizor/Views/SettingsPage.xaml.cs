@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.Net;
 
 namespace OnlineTelevizor.Views
 {
@@ -33,6 +35,8 @@ namespace OnlineTelevizor.Views
             PlayOnBackgroundSwitch.Toggled += PlayOnBackgroundSwitch_Toggled;
             UseInternalPlayerSwitch.Toggled += PlayOnBackgroundSwitch_Toggled;
             ShowSledovaniPairedDeviceSwitch.Toggled += ShowSledovaniPairedDeviceSwitch_Toggled;
+            IPEntry.Unfocused += IPEntry_Unfocused;
+            PortEntry.Unfocused += PortEntry_Unfocused;
 
             if (Device.RuntimePlatform == Device.UWP)
             {
@@ -56,6 +60,47 @@ namespace OnlineTelevizor.Views
             });
 
             BuildFocusableItems();
+        }
+
+        private async void PortEntry_Unfocused(object sender, FocusEventArgs e)
+        {
+            if (PortEntry.Text == null || string.IsNullOrEmpty(PortEntry.Text))
+            {
+                await _dialogService.Information("Port musí být vyplněn");
+                PortEntry.Text = "49152";
+                return;
+            }
+
+            int port;
+            if (!int.TryParse(PortEntry.Text, out port))
+            {
+                await _dialogService.Information("Neplatné číslo portu");
+                PortEntry.Text = "49152";
+                return;
+            }
+
+            if (port<0 || port > 65535)
+            {
+                await _dialogService.Information("Neplatné číslo portu");
+                PortEntry.Text = "49152";
+            }
+        }
+
+        private async void IPEntry_Unfocused(object sender, FocusEventArgs e)
+        {
+            if (IPEntry.Text == null || string.IsNullOrEmpty(IPEntry.Text))
+            {
+                await _dialogService.Information("IP adresa nemůže být prázdná");
+                try
+                {
+                    var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+                    IPEntry.Text = ipHostInfo.AddressList[0].ToString();
+                }
+                catch
+                {
+                    IPEntry.Text = "192.168.1.10";
+                }
+            }
         }
 
         private void BuildFocusableItems()
