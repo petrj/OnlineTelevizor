@@ -89,6 +89,7 @@ namespace OnlineTelevizor.Views
                 .AddItem(KeyboardFocusableItem.CreateFrom("PlayOnBackground", new List<View>() { PlayOnBackgroundBoxView, PlayOnBackgroundSwitch }))
 
                 .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessEnabled", new List<View>() { RemoteAccessEnabledBoxView, RemoteAccessSwitch }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessIP", new List<View>() { RemoteAccessIPBoxView, IPEntry }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessPort", new List<View>() { RemoteAccessPortBoxView, PortEntry }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessSecurityKey", new List<View>() { RemoteAccessSecurityKeyBoxView, SecurityKeyEntry }))
 
@@ -138,7 +139,8 @@ namespace OnlineTelevizor.Views
 
             if (
                     (_args.FocusedItem.Name == "RemoteAccessPort" ||
-                    _args.FocusedItem.Name == "RemoteAccessSecurityKey")
+                    _args.FocusedItem.Name == "RemoteAccessSecurityKey" ||
+                    _args.FocusedItem.Name == "RemoteAccessIP")
                     && (!_config.AllowRemoteAccessService)
                )
             {
@@ -299,6 +301,10 @@ namespace OnlineTelevizor.Views
                         case "RemoteAccessSecurityKey":
                             SecurityKeyEntry.Focus();
                             break;
+                        case "RemoteAccessIP":
+                            IPEntry.Focus();
+                            break;
+
 
                         case "Pay":
                             _viewModel.PayCommand.Execute(null);

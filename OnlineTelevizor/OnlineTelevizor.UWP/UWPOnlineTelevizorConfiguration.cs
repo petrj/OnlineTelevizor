@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -541,6 +542,29 @@ namespace OnlineTelevizor.UWP
             {
                 SaveSettingValue<bool>("AllowRemoteAccessService", value);
             }
+        }
+
+        public string RemoteAccessServiceIP
+        {
+            get
+            {
+                var ip = GetSettingValue<string>("RemoteAccessServiceIP");
+                if (ip == default(string))
+                {
+                    try
+                    {
+                        var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+                        ip = ipHostInfo.AddressList[0].ToString();
+                    }
+                    catch
+                    {
+                        ip = String.Empty;
+                    }
+                }
+
+                return ip;
+            }
+            set { SaveSettingValue<string>("RemoteAccessServiceIP", value); }
         }
     }
 }

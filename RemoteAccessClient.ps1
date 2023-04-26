@@ -1,29 +1,29 @@
-﻿Function Send-TCPMessage { 
+﻿Function Send-TCPMessage {
 # https://riptutorial.com/powershell/example/18118/tcp-sender
-    Param ( 
+    Param (
             [Parameter(Mandatory=$true, Position=0)]
-            [ValidateNotNullOrEmpty()] 
-            [string] 
+            [ValidateNotNullOrEmpty()]
+            [string]
             $EndPoint
-        , 
+        ,
             [Parameter(Mandatory=$true, Position=1)]
             [int]
             $Port
-        , 
+        ,
             [Parameter(Mandatory=$true, Position=2)]
             [string]
             $Message
-    ) 
+    )
     Process {
         try
         {
-            # Setup connection 
-            $IP = [System.Net.Dns]::GetHostAddresses($EndPoint) 
-            $Address = [System.Net.IPAddress]::Parse($IP) 
-            $Socket = New-Object System.Net.Sockets.TCPClient($Address,$Port) 
-    
-            # Setup stream wrtier 
-            $Stream = $Socket.GetStream() 
+            # Setup connection
+            $IP = [System.Net.Dns]::GetHostAddresses($EndPoint)
+            $Address = [System.Net.IPAddress]::Parse($IP)
+            $Socket = New-Object System.Net.Sockets.TCPClient($Address,$Port)
+
+            # Setup stream wrtier
+            $Stream = $Socket.GetStream()
             $Writer = New-Object System.IO.StreamWriter($Stream)
 
             # Write message to stream
@@ -31,18 +31,26 @@
                 $Writer.WriteLine($_)
                 $Writer.Flush()
             }
-    
+
             # Close connection and stream
             $Stream.Close()
             $Socket.Close()
-        } catch 
+        } catch
         {
             Write-Host $_.Exception
         }
     }
 }
 
-$msg = @"
+$msgDown = @"
+{
+ "securityKey":"OnlineTelevizor",
+ "command":"keyDown",
+ "commandArg1":"DpadDown"
+}
+"@
+
+$msgEnter = @"
 {
  "securityKey":"OnlineTelevizor",
  "command":"keyDown",
@@ -50,4 +58,7 @@ $msg = @"
 }
 "@
 
-Send-TCPMessage -Port 49152 -Endpoint 10.0.0.231 -message  $msg
+#Send-TCPMessage -Port 49152 -Endpoint 10.0.0.231 -message  $msg
+#Send-TCPMessage -Port 49152 -Endpoint 10.18.15.101 -message  $msg
+#Send-TCPMessage -Port 49152 -Endpoint 192.168.28.242 -message  $msgDown
+Send-TCPMessage -Port 49152 -Endpoint 192.168.28.242 -message  $msgDown

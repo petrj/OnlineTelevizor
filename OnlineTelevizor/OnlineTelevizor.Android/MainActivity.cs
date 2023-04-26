@@ -28,6 +28,7 @@ using Android.Content.Res;
 using Android.InputMethodServices;
 using AndroidX.ConstraintLayout.Core.Widgets.Analyzer;
 using System.IO;
+using System.Threading;
 
 namespace OnlineTelevizor.Droid
 {
@@ -345,6 +346,16 @@ namespace OnlineTelevizor.Droid
                 _dispatchKeyEventEnabledAt = DateTime.Now;
                 _dispatchKeyEventEnabled = true;
             });
+
+
+            if (_cfg.AllowRemoteAccessService)
+            {
+                Task.Run(() =>
+                {
+                    var remoteAccessService = new RemoteAccessService(_loggingService);
+                    remoteAccessService.StartListening(_cfg.RemoteAccessServiceIP, _cfg.RemoteAccessServicePort, _cfg.RemoteAccessServiceSecurityKey);
+                });
+            }
         }
 
         protected override void OnDestroy()

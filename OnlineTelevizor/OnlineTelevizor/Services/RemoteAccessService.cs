@@ -10,6 +10,9 @@ using OnlineTelevizor.Models;
 using LibVLCSharp.Shared;
 using OnlineTelevizor.ViewModels;
 using Xamarin.Forms;
+using Android.App;
+using System.Threading;
+using Android.InputMethodServices;
 
 namespace OnlineTelevizor.Services
 {
@@ -26,7 +29,21 @@ namespace OnlineTelevizor.Services
             _loggingService = loggingService;
         }
 
-        public void StartListening(int port, string securityKey)
+        private void SendKey(string code)
+        {
+            _loggingService.Debug($"[RAS]:   command keyDown: {code}");
+
+            Android.Views.Keycode keyCode;
+            if (Enum.TryParse<Android.Views.Keycode>(code, out keyCode))
+            {
+                new Instrumentation().SendKeyDownUpSync(keyCode);
+            } else
+            {
+                _loggingService.Info($"[RAS]: invalid key code {code}");
+            }
+        }
+
+        public void StartListening(string ip, int port, string securityKey)
         {
             _loggingService.Info("[RAS]: Starting Remote Access Service");
 
@@ -35,10 +52,18 @@ namespace OnlineTelevizor.Services
                 // Data buffer for incoming data.
                 var bytes = new Byte[BufferSize];
 
-                var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-                var ipAddress = ipHostInfo.AddressList[0];
+                IPAddress ipAddress;
 
-                _loggingService.Info($"[RAS]: Endpoint: {ipAddress.ToString()}:{port}");
+                if (string.IsNullOrEmpty(ip))
+                {
+                    var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+                    ipAddress = ipHostInfo.AddressList[0];
+                } else
+                {
+                    ipAddress = IPAddress.Parse(ip);
+                }
+
+                _loggingService.Info($"[RAS]: Endpoint: {ip}:{port}");
 
                 IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
 
@@ -48,6 +73,8 @@ namespace OnlineTelevizor.Services
                 {
                     listener.Bind(localEndPoint);
                     listener.Listen(10);
+
+                    MessagingCenter.Send($"Vzdálené ovládání aktivováno ({ipAddress.ToString()}:{port})", BaseViewModel.MSG_ToastMessage);
 
                     // Start listening for connections.
                     while (true)
@@ -84,8 +111,7 @@ namespace OnlineTelevizor.Services
                                     switch (message.command)
                                     {
                                         case "keyDown":
-                                            _loggingService.Debug($"[RAS]:   command keyDown: {message.commandArg1}");
-                                            MessagingCenter.Send(message.commandArg1, BaseViewModel.MSG_KeyAction);
+                                            SendKey(message.commandArg1);
                                             break;
                                         default:
                                             _loggingService.Debug($"[RAS]:   unknown command: {message.command}");

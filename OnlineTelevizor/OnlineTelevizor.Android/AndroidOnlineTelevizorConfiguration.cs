@@ -609,6 +609,29 @@ namespace OnlineTelevizor.Droid
             set { SavePersistingSettingValue<string>("RemoteAccessServiceSecurityKey", value); }
         }
 
+        public string RemoteAccessServiceIP
+        {
+            get
+            {
+                var ip = GetPersistingSettingValue<string>("RemoteAccessServiceIP");
+                if (ip == default(string))
+                {
+                    try
+                    {
+                        var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+                        ip = ipHostInfo.AddressList[0].ToString();
+                    }
+                    catch
+                    {
+                        ip = String.Empty;
+                    }
+                }
+
+                return ip;
+            }
+            set { SavePersistingSettingValue<string>("RemoteAccessServiceIP", value); }
+        }
+
         public bool AllowRemoteAccessService
         {
             get

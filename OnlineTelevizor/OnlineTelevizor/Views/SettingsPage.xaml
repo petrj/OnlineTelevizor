@@ -368,18 +368,24 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100*" />
                             </Grid.ColumnDefinitions>
 
-                            <BoxView x:Name="RemoteAccessPortBoxView" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Transparent"/>
-                            <Label  Grid.Row="0" Grid.Column="0" Text="Port" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
-                            <Entry  Grid.Row="1" Grid.Column="0" x:Name="PortEntry" Text="{Binding Config.RemoteAccessServicePort, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}" Keyboard="Numeric" />
+                            <BoxView x:Name="RemoteAccessIPBoxView" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Transparent"/>
+                            <Label  Grid.Row="0" Grid.Column="0" Text="IP" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                            <Entry  Grid.Row="1" Grid.Column="0" x:Name="IPEntry" Text="{Binding Config.RemoteAccessServiceIP, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}" Keyboard="Url" />
 
-                            <BoxView x:Name="RemoteAccessSecurityKeyBoxView" Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Transparent"/>
-                            <Label  Grid.Row="2" Grid.Column="0" Text="Bezpečnostní klíč" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                            <Entry Grid.Row="3" Grid.Column="0"  x:Name="SecurityKeyEntry" Text="{Binding Config.RemoteAccessServiceSecurityKey, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}" />
+                            <BoxView x:Name="RemoteAccessPortBoxView" Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Transparent"/>
+                            <Label  Grid.Row="2" Grid.Column="0" Text="Port" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                            <Entry  Grid.Row="3" Grid.Column="0" x:Name="PortEntry" Text="{Binding Config.RemoteAccessServicePort, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}" Keyboard="Numeric" />
+
+                            <BoxView x:Name="RemoteAccessSecurityKeyBoxView" Grid.Row="4" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Transparent"/>
+                            <Label  Grid.Row="4" Grid.Column="0" Text="Bezpečnostní klíč" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                            <Entry Grid.Row="5" Grid.Column="0"  x:Name="SecurityKeyEntry" Text="{Binding Config.RemoteAccessServiceSecurityKey, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}" />
                         </Grid>
                         <Label IsVisible="{Binding Config.AllowRemoteAccessService}" Margin="30,10,0,0" Text="Po změně parametrů vzdáleného ovládání je nunté restartovat aplikaci" Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForText}"/>
 

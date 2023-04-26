@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.452
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SledovaniTVAPI", "SledovaniTVApi\SledovaniTVAPI.csproj", "{95468A7C-4400-4101-9A39-166F058B5B0B}"
 EndProject
@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{E7015148
 		Clear.bat = Clear.bat
 		Clear.ps1 = Clear.ps1
 		OnlineTelevizor.configuration.json = OnlineTelevizor.configuration.json
+		RemoteAccessClient.ps1 = RemoteAccessClient.ps1
 		ResizeIconImage.ps1 = ResizeIconImage.ps1
 		ResizeLauncherImage.ps1 = ResizeLauncherImage.ps1
 		undo_pending_changes_and_get_latest_version.sh = undo_pending_changes_and_get_latest_version.sh
