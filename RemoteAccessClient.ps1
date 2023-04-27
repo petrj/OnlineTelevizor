@@ -1,24 +1,29 @@
-﻿Function Send-TCPMessage {
-# https://riptutorial.com/powershell/example/18118/tcp-sender
-    Param (
+﻿Function Send-TCPMessage 
+{
+    # https://riptutorial.com/powershell/example/18118/tcp-sender
+    Param 
+    (
+            [Parameter(Mandatory=$true, ValueFromPipeline = $true)]
+            [ValidateNotNullOrEmpty()]
+            [string]
+            $Message,
+
             [Parameter(Mandatory=$true, Position=0)]
             [ValidateNotNullOrEmpty()]
             [string]
-            $EndPoint
-        ,
+            $IP,
+        
             [Parameter(Mandatory=$true, Position=1)]
             [int]
-            $Port
-        ,
-            [Parameter(Mandatory=$true, Position=2)]
-            [string]
-            $Message
+            $Port        
+            
     )
-    Process {
+    Process 
+    {
         try
         {
             # Setup connection
-            $IP = [System.Net.Dns]::GetHostAddresses($EndPoint)
+            $IP = [System.Net.Dns]::GetHostAddresses($IP)
             $Address = [System.Net.IPAddress]::Parse($IP)
             $Socket = New-Object System.Net.Sockets.TCPClient($Address,$Port)
 
@@ -42,6 +47,67 @@
     }
 }
 
+Function Encrypt-Message 
+{
+    Param 
+    (
+            [Parameter(Mandatory=$true, ValueFromPipeline = $true)]
+            [ValidateNotNullOrEmpty()]
+            [string]
+            $PLaintText,
+
+            [Parameter(Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]
+            $Key       
+            
+    )
+    Process
+    {
+        $iv = [System.Byte[]]::CreateInstance([System.Byte],16)
+
+        if ($key.Length -lt 32)
+        {
+            $key = $key.PadRight(32, "*")
+        }
+        if ($key.Length -gt 32)
+        {
+            $key = $key.Substring(0,32)
+        }
+
+        try
+        {
+            $aes = [System.Security.Cryptography.Aes]::Create()
+            $plainTextBytes = [System.Text.Encoding]::UTF8.GetBytes($PLaintText);
+
+            $aes.Key = [System.Text.Encoding]::UTF8.GetBytes($Key)
+            $aes.IV = $iv
+
+            $encryptor = $aes.CreateEncryptor($aes.Key, $aes.IV);
+
+            $memoryStream = new-object System.IO.MemoryStream
+             
+            $mode = [System.Security.Cryptography.CryptoStreamMode]::Write
+            $cryptoStream = new-object System.Security.Cryptography.CryptoStream($memoryStream, $encryptor, $mode)
+
+            $cryptoStream.Write($plainTextBytes, 0, $plainTextBytes.Length)
+
+            $cryptoStream.FlushFinalBlock();
+
+            $array = $memoryStream.ToArray();
+
+            return [System.Convert]::ToBase64String($array);
+
+        } finally
+        {
+            $aes.Dispose()
+            $memoryStream.Dispose()
+            $cryptoStream.Dispose()
+        }
+    }
+}
+
+
 $msgDown = @"
 {
  "securityKey":"OnlineTelevizor",
@@ -58,17 +124,12 @@ $msgEnter = @"
 }
 "@
 
-#Send-TCPMessage -Port 49152 -Endpoint 10.0.0.231 -message  $msg
-#Send-TCPMessage -Port 49152 -Endpoint 10.18.15.101 -message  $msg
-#Send-TCPMessage -Port 49152 -Endpoint 192.168.28.242 -message  $msgDown
-#Send-TCPMessage -Port 49152 -Endpoint 192.168.28.231 -message  $msgDown
-
 $msg = @"
 {
  "securityKey":"OnlineTelevizor",
  "command":"keyDown",
- "commandArg1":"DpadDown"
+ "commandArg1":"Escape"
 }
 "@
 
-Send-TCPMessage -Port 49152 -Endpoint 192.168.29.253 -message  $msg
+$msg | Encrypt-Message  -Key "OnlineTelevizor"  | Send-TCPMessage -Port 49152 -IP 192.168.29.253 

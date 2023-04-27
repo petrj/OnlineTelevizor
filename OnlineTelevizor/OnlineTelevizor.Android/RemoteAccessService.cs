@@ -108,7 +108,9 @@ namespace OnlineTelevizor.Services
 
                             try
                             {
-                                var message = JsonConvert.DeserializeObject<RemoteAccessMessage>(data);
+                                var decryptedData = CryptographyService.DecryptString(_securityKey, data);
+
+                                var message = JsonConvert.DeserializeObject<RemoteAccessMessage>(decryptedData);
 
                                 if (message.securityKey != _securityKey)
                                 {
@@ -129,14 +131,16 @@ namespace OnlineTelevizor.Services
                                     }
                                 }
 
-
                             }
                             catch (Exception ex)
                             {
                                 _loggingService.Info("[RAS]: unknown message");
                             }
 
-                            handler.Send(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(responseMessage)));
+                            var response = JsonConvert.SerializeObject(responseMessage);
+                            var responseEncrypted = CryptographyService.EncryptString(_securityKey, response);
+
+                            handler.Send(Encoding.ASCII.GetBytes(responseEncrypted));
                             handler.Shutdown(SocketShutdown.Both);
                             handler.Close();
                         }
