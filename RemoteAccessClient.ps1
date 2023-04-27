@@ -27,7 +27,7 @@
             $Address = [System.Net.IPAddress]::Parse($IP)
             $Socket = New-Object System.Net.Sockets.TCPClient($Address,$Port)
 
-            # Setup stream wrtier
+            # Setup stream writer
             $Stream = $Socket.GetStream()
             $Writer = New-Object System.IO.StreamWriter($Stream)
 
@@ -35,7 +35,7 @@
             $Message | % {
                 $Writer.WriteLine($_)
                 $Writer.Flush()
-            }
+            }           
 
             # Close connection and stream
             $Stream.Close()
@@ -43,6 +43,54 @@
         } catch
         {
             Write-Host $_.Exception
+        }
+    }
+}
+
+Function Decrypt-Message
+{
+    Param 
+    (
+            [Parameter(Mandatory=$true, ValueFromPipeline = $true)]
+            [ValidateNotNullOrEmpty()]
+            [string]
+            $CipherText,
+
+            [Parameter(Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]
+            $Key       
+            
+    )
+    Process
+    {
+        if ($key.Length -lt 32)
+        {
+            $key = $key.PadRight(32, "*")
+        }
+        if ($key.Length -gt 32)
+        {
+            $key = $key.Substring(0,32)
+        }
+
+        try
+        {
+            $iv = [System.Byte[]]::CreateInstance([System.Byte],16)
+            $buffer = [System.Convert]::FromBase64String($CipherText)
+
+            $aes = [System.Security.Cryptography.Aes]::Create()
+            $aes.Key = [System.Text.Encoding]::UTF8.GetBytes($Key)
+            $aes.IV = $iv
+
+            $decryptor = $aes.CreateDecryptor($aes.Key, $aes.IV)
+
+            $result = $decryptor.TransformFinalBlock($buffer, 0, $buffer.Length)
+            return [System.Text.Encoding]::UTF8.GetString($result)
+        
+        } finally
+        {
+            $aes.Dispose()
+            $decryptor.Dispose()
         }
     }
 }
@@ -128,8 +176,8 @@ $msg = @"
 {
  "securityKey":"OnlineTelevizor",
  "command":"keyDown",
- "commandArg1":"Escape"
+ "commandArg1":"DpadDown"
 }
 "@
 
-$msg | Encrypt-Message  -Key "OnlineTelevizor"  | Send-TCPMessage -Port 49152 -IP 192.168.29.253 
+$msg | Encrypt-Message  -Key "OnlineTelevizor"  | Send-TCPMessage -Port 49152 -IP 10.0.0.231
