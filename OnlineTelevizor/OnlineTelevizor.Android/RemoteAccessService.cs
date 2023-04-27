@@ -37,6 +37,18 @@ namespace OnlineTelevizor.Services
             _worker.DoWork += _worker_DoWork;
         }
 
+        public bool ParamsChanged(string ip, int port, string securityKey)
+        {
+            if (ip != _ip ||
+                port != _port ||
+                securityKey != _securityKey)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private void _worker_DoWork(object sender, DoWorkEventArgs e)
         {
             _loggingService.Info("[RAS]: Starting Remote Access Service background thread");
@@ -177,14 +189,17 @@ namespace OnlineTelevizor.Services
             _worker.RunWorkerAsync();
         }
 
-        public void StopListening()
+        public void StopListening(bool silent)
         {
             if (!_worker.IsBusy)
                 return;
 
             _worker.CancelAsync();
 
-            MessagingCenter.Send($"Vzdálené ovládání deaktivováno", BaseViewModel.MSG_ToastMessage);
+            if (!silent)
+            {
+                MessagingCenter.Send($"Vzdálené ovládání deaktivováno", BaseViewModel.MSG_ToastMessage);
+            }
         }
     }
 }

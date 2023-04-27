@@ -357,17 +357,23 @@ namespace OnlineTelevizor.Droid
 
             MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_ReFreshRemoteAccessService, (message) =>
             {
-                if (_cfg.AllowRemoteAccessService)
-                {
+               if (_cfg.AllowRemoteAccessService)
+               {
                     if (_remoteAccessService.IsBusy)
                     {
-                        _remoteAccessService.StopListening();
+                        if (_remoteAccessService.ParamsChanged(_cfg.RemoteAccessServiceIP, _cfg.RemoteAccessServicePort, _cfg.RemoteAccessServiceSecurityKey))
+                        {
+                            _remoteAccessService.StopListening(true);
+                            _remoteAccessService.StartListening(_cfg.RemoteAccessServiceIP, _cfg.RemoteAccessServicePort, _cfg.RemoteAccessServiceSecurityKey);
+                        }
+                    } else
+                    {
+                        _remoteAccessService.StartListening(_cfg.RemoteAccessServiceIP, _cfg.RemoteAccessServicePort, _cfg.RemoteAccessServiceSecurityKey);
                     }
 
-                    _remoteAccessService.StartListening(_cfg.RemoteAccessServiceIP, _cfg.RemoteAccessServicePort, _cfg.RemoteAccessServiceSecurityKey);
                 } else
                 {
-                    _remoteAccessService.StopListening();
+                    _remoteAccessService.StopListening(false);
                 }
             });
         }

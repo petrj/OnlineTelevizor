@@ -67,8 +67,8 @@ $msg = @"
 {
  "securityKey":"OnlineTelevizor",
  "command":"keyDown",
- "commandArg1":"Tab"
+ "commandArg1":"DpadDown"
 }
 "@
 
-Send-TCPMessage -Port 49152 -Endpoint 10.0.0.231 -message  $msg
+Send-TCPMessage -Port 49152 -Endpoint 192.168.29.253 -message  $msg
