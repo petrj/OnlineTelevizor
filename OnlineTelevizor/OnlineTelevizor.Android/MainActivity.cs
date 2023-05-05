@@ -37,7 +37,6 @@ namespace OnlineTelevizor.Droid
     {
         private App _app;
         private AndroidOnlineTelevizorConfiguration _cfg;
-        private RemoteAccessService _remoteAccessService;
 
         private int _defaultUiOptions;
         private int _fullscreenUiOptions;
@@ -150,13 +149,6 @@ namespace OnlineTelevizor.Droid
                 SubscribeMessages();
 
                 var input_manager = (InputManager)GetSystemService(Context.InputService);
-
-                _remoteAccessService = new RemoteAccessService(_loggingService);
-
-                if (_cfg.AllowRemoteAccessService)
-                {
-                    _remoteAccessService.StartListening(_cfg.RemoteAccessServiceIP, _cfg.RemoteAccessServicePort, _cfg.RemoteAccessServiceSecurityKey);
-                }
 
                 LoadApplication(_app);
             } catch (Exception ex)
@@ -355,26 +347,9 @@ namespace OnlineTelevizor.Droid
                 _dispatchKeyEventEnabled = true;
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_ReFreshRemoteAccessService, (message) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_RemoteKeyAction, (code) =>
             {
-               if (_cfg.AllowRemoteAccessService)
-               {
-                    if (_remoteAccessService.IsBusy)
-                    {
-                        if (_remoteAccessService.ParamsChanged(_cfg.RemoteAccessServiceIP, _cfg.RemoteAccessServicePort, _cfg.RemoteAccessServiceSecurityKey))
-                        {
-                            _remoteAccessService.StopListening(true);
-                            _remoteAccessService.StartListening(_cfg.RemoteAccessServiceIP, _cfg.RemoteAccessServicePort, _cfg.RemoteAccessServiceSecurityKey);
-                        }
-                    } else
-                    {
-                        _remoteAccessService.StartListening(_cfg.RemoteAccessServiceIP, _cfg.RemoteAccessServicePort, _cfg.RemoteAccessServiceSecurityKey);
-                    }
-
-                } else
-                {
-                    _remoteAccessService.StopListening(false);
-                }
+                SendRemoteKey(code);
             });
         }
 
@@ -498,6 +473,21 @@ namespace OnlineTelevizor.Droid
             catch (Exception ex)
             {
                 _loggingService.Error(ex);
+            }
+        }
+
+        private void SendRemoteKey(string code)
+        {
+            _loggingService.Debug($"SendRemoteKey: {code}");
+
+            Android.Views.Keycode keyCode;
+            if (Enum.TryParse<Android.Views.Keycode>(code, out keyCode))
+            {
+                new Instrumentation().SendKeyDownUpSync(keyCode);
+            }
+            else
+            {
+                _loggingService.Info("SendRemoteKey: invalid key code");
             }
         }
 

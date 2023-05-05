@@ -33,7 +33,7 @@
 
             # Write message to stream
             $Message | % {
-                $Writer.WriteLine($_)
+                $Writer.Write($_)
                 $Writer.Flush()
             }           
 
@@ -155,6 +155,7 @@ Function Encrypt-Message
     }
 }
 
+$TerminateString = "b9fb065b-dee4-4b1e-b8b4-b0c82556380c"
 
 $msgDown = @"
 {
@@ -180,4 +181,9 @@ $msg = @"
 }
 "@
 
-$msg | Encrypt-Message  -Key "OnlineTelevizor"  | Send-TCPMessage -Port 49152 -IP 10.0.0.231
+
+
+$encryptedMessage = $msg | Encrypt-Message  -Key "OnlineTelevizor"  
+$encryptedMessage
+$encryptedMessage += $TerminateString
+$encryptedMessage | Send-TCPMessage -Port 49152 -IP 10.0.0.231

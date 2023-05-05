@@ -4,7 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace OnlineTelevizor.Services
+namespace RemoteAccess
 {
     public static class CryptographyService
     {
