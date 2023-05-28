@@ -362,6 +362,49 @@ namespace OnlineTelevizor.Views
             }
         }
 
+        public void OnTextSent(string text)
+        {
+            switch (_focusItems.FocusedItemName)
+            {
+                case "SledovaniTVUserName":
+                    UsernameEntry.Text = text;
+                    break;
+                case "SledovaniTVPassword":
+                    PasswordEntry.Text = text;
+                    break;
+                case "SledovaniTVPIN":
+                    PinEntry.Text = text;
+                    break;
+                case "SledovaniTVDeviceId":
+                    DeviceIdEntry.Text = text;
+                    break;
+                case "SledovaniTVDevicePassword":
+                    DevicePasswordEntry.Text = text;
+                    break;
+                case "KUKISN":
+                    SNEntry.Text = text;
+                    break;
+                case "DVBStreamerUrl":
+                    DVBStreamerUrlEntry.Text = text;
+                    break;
+                case "O2Username":
+                    O2TVUsernameEntry.Text = text;
+                    break;
+                case "O2Password":
+                    O2TVPasswordEntry.Text = text;
+                    break;
+                case "RemoteAccessPort":
+                    PortEntry.Text = text;
+                    break;
+                case "RemoteAccessSecurityKey":
+                    SecurityKeyEntry.Text = text;
+                    break;
+                case "RemoteAccessIP":
+                    IPEntry.Text = text;
+                    break;
+            }
+        }
+
         public void UnsubscribeMessages()
         {
             MessagingCenter.Unsubscribe<string>(this, BaseViewModel.MSG_RequestBatterySettings);

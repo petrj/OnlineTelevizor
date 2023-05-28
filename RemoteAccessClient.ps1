@@ -1,7 +1,7 @@
-﻿Function Send-TCPMessage 
+﻿Function Send-TCPMessage
 {
     # https://riptutorial.com/powershell/example/18118/tcp-sender
-    Param 
+    Param
     (
             [Parameter(Mandatory=$true, ValueFromPipeline = $true)]
             [ValidateNotNullOrEmpty()]
@@ -12,13 +12,13 @@
             [ValidateNotNullOrEmpty()]
             [string]
             $IP,
-        
+
             [Parameter(Mandatory=$true, Position=1)]
             [int]
-            $Port        
-            
+            $Port
+
     )
-    Process 
+    Process
     {
         try
         {
@@ -35,7 +35,7 @@
             $Message | % {
                 $Writer.Write($_)
                 $Writer.Flush()
-            }           
+            }
 
             # Close connection and stream
             $Stream.Close()
@@ -49,7 +49,7 @@
 
 Function Decrypt-Message
 {
-    Param 
+    Param
     (
             [Parameter(Mandatory=$true, ValueFromPipeline = $true)]
             [ValidateNotNullOrEmpty()]
@@ -59,8 +59,8 @@ Function Decrypt-Message
             [Parameter(Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]
-            $Key       
-            
+            $Key
+
     )
     Process
     {
@@ -86,7 +86,7 @@ Function Decrypt-Message
 
             $result = $decryptor.TransformFinalBlock($buffer, 0, $buffer.Length)
             return [System.Text.Encoding]::UTF8.GetString($result)
-        
+
         } finally
         {
             $aes.Dispose()
@@ -95,9 +95,9 @@ Function Decrypt-Message
     }
 }
 
-Function Encrypt-Message 
+Function Encrypt-Message
 {
-    Param 
+    Param
     (
             [Parameter(Mandatory=$true, ValueFromPipeline = $true)]
             [ValidateNotNullOrEmpty()]
@@ -107,8 +107,8 @@ Function Encrypt-Message
             [Parameter(Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]
-            $Key       
-            
+            $Key
+
     )
     Process
     {
@@ -134,7 +134,7 @@ Function Encrypt-Message
             $encryptor = $aes.CreateEncryptor($aes.Key, $aes.IV);
 
             $memoryStream = new-object System.IO.MemoryStream
-             
+
             $mode = [System.Security.Cryptography.CryptoStreamMode]::Write
             $cryptoStream = new-object System.Security.Cryptography.CryptoStream($memoryStream, $encryptor, $mode)
 
@@ -183,7 +183,9 @@ $msg = @"
 
 
 
-$encryptedMessage = $msg | Encrypt-Message  -Key "OnlineTelevizor"  
+$encryptedMessage = $msg | Encrypt-Message  -Key "OnlineTelevizor"
 $encryptedMessage
 $encryptedMessage += $TerminateString
-$encryptedMessage | Send-TCPMessage -Port 49152 -IP 10.0.0.231
+#$encryptedMessage | Send-TCPMessage -Port 49152 -IP 10.0.0.231
+
+$encryptedMessage | Send-TCPMessage -Port 41414 -IP 10.0.0.2

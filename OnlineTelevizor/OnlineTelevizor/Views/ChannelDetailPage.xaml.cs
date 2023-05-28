@@ -58,5 +58,10 @@ namespace OnlineTelevizor.Views
                     break;
             }
         }
+
+        public void OnTextSent(string text)
+        {
+
+        }
     }
 }

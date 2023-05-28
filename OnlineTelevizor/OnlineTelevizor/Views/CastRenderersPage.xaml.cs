@@ -114,6 +114,11 @@ namespace OnlineTelevizor.Views
             }
         }
 
+        public void OnTextSent(string text)
+        {
+
+        }
+
         private async void Renderer_Tapped(object sender, ItemTappedEventArgs e)
         {
             await Render(e.Item as RendererItem);

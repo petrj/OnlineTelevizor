@@ -96,6 +96,10 @@ namespace OnlineTelevizor.Views
             {
                 MessagingCenter.Send(message.commandArg1, BaseViewModel.MSG_RemoteKeyAction);
             }
+            if (message.command == "sendText")
+            {
+                OnTextSent(message.commandArg1);
+            }
         }
 
         private void _mediaPlayer_Buffering(object sender, MediaPlayerBufferingEventArgs e)
@@ -781,6 +785,27 @@ namespace OnlineTelevizor.Views
                     ToggleAudioStream(null);
                     break;
             }
+        }
+
+        public void OnTextSent(string text)
+        {
+            Device.BeginInvokeOnMainThread(delegate
+                {
+                    var stack = Navigation.NavigationStack;
+                    if (stack[stack.Count - 1].GetType() != typeof(MainPage))
+                    {
+                        // different page on navigation top
+
+                        var pageOnTop = stack[stack.Count - 1];
+
+                        if (pageOnTop is IOnKeyDown)
+                        {
+                            (pageOnTop as IOnKeyDown).OnTextSent(text);
+                        }
+
+                        return;
+                    }
+            });
         }
 
         private Dictionary<int,string> GetAudioTracks()

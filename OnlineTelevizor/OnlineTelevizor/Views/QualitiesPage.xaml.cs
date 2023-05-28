@@ -42,7 +42,7 @@ namespace OnlineTelevizor.Views
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                   _viewModel.SelectQualityByConfg();
+                    _viewModel.SelectQualityByConfg();
                 });
             }
         }
@@ -101,6 +101,10 @@ namespace OnlineTelevizor.Views
                     await Navigation.PopAsync();
                     break;
             }
+        }
+
+        public void OnTextSent(string text)
+        {
         }
     }
 }

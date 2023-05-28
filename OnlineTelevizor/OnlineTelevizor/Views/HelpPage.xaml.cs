@@ -6,6 +6,7 @@ using OnlineTelevizor.Services;
 using OnlineTelevizor.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using System.Threading.Tasks;
 
 namespace OnlineTelevizor.Views
 {
@@ -47,6 +48,10 @@ namespace OnlineTelevizor.Views
                     await Navigation.PopAsync();
                     break;
             }
+        }
+
+        public void OnTextSent(string text)
+        {
         }
     }
 }
