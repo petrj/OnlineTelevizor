@@ -1,17 +1,13 @@
 ﻿using LoggerService;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.Services;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Xamarin.Forms;
+using Plugin.InAppBilling;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
-using System.Text.RegularExpressions;
-using Plugin.InAppBilling;
-using System.IO;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -30,7 +26,8 @@ namespace OnlineTelevizor.ViewModels
         public const string MSG_UpdateInternalNotification = "UpdateInternalNotification";
         public const string MSG_StopPlayInternalNotification = "StopPlayInternalNotification";
         public const string MSG_StopPlayInternalNotificationAndQuit = "StopPlayInternalNotificationAndQuit";
-        public const string MSG_KeyAction = "KeyAction ";
+        public const string MSG_KeyAction = "KeyAction";
+        public const string MSG_RemoteKeyAction = "RemoteKeyAction";
         public const string MSG_ShowDetailMessage = "ShowDetailMessage";
         public const string MSG_ShowRenderers = "ShowRenderers";
         public const string MSG_ShowTimer = "ShowTimer";
@@ -54,8 +51,8 @@ namespace OnlineTelevizor.ViewModels
         public const string MSG_CheckBatterySettings = "CheckBatterySettings";
         public const string MSG_RequestBatterySettings = "RequestBatterySettings";
         public const string MSG_SetBatterySettings = "SetBatterySettings ";
-        public const string MSG_DisableDispatchKeyEvent = "DisableDispatchKeyEvent ";
-        public const string MSG_EnableDispatchKeyEvent = "EnableDispatchKeyEvent ";
+        public const string MSG_DisableDispatchKeyEvent = "DisableDispatchKeyEvent";
+        public const string MSG_EnableDispatchKeyEvent = "EnableDispatchKeyEvent";
 
         public IOnlineTelevizorConfiguration Config { get; set; }
 

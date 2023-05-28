@@ -9,6 +9,7 @@ using Xamarin.Forms;
 using System.Threading;
 using static OnlineTelevizor.ViewModels.MainPageViewModel;
 using LibVLCSharp.Shared;
+using RemoteAccess;
 
 namespace OnlineTelevizor.Views
 {
@@ -18,6 +19,7 @@ namespace OnlineTelevizor.Views
         private DialogService _dialogService;
         private IOnlineTelevizorConfiguration _config;
         private ILoggingService _loggingService;
+        private RemoteAccessService _remoteAccessService;
 
         private FilterPage _filterPage = null;
         private CastRenderersPage _renderersPage;
@@ -79,9 +81,25 @@ namespace OnlineTelevizor.Views
 
             CheckStreamCommand = new Command(async () => await CheckStream());
 
+            _remoteAccessService = new RemoteAccessService(_loggingService);
+
             Reset();
 
             BackgroundCommandWorker.RegisterCommand(CheckStreamCommand, "CheckStreamCommand", 3, 2);
+
+            RestartRemoteAccessService();
+        }
+
+        private void OnMessageReceived(RemoteAccessMessage message)
+        {
+            if (message.command == "keyDown")
+            {
+                MessagingCenter.Send(message.commandArg1, BaseViewModel.MSG_RemoteKeyAction);
+            }
+            if (message.command == "sendText")
+            {
+                OnTextSent(message.commandArg1);
+            }
         }
 
         private void _mediaPlayer_Buffering(object sender, MediaPlayerBufferingEventArgs e)
@@ -767,6 +785,27 @@ namespace OnlineTelevizor.Views
                     ToggleAudioStream(null);
                     break;
             }
+        }
+
+        public void OnTextSent(string text)
+        {
+            Device.BeginInvokeOnMainThread(delegate
+                {
+                    var stack = Navigation.NavigationStack;
+                    if (stack[stack.Count - 1].GetType() != typeof(MainPage))
+                    {
+                        // different page on navigation top
+
+                        var pageOnTop = stack[stack.Count - 1];
+
+                        if (pageOnTop is IOnKeyDown)
+                        {
+                            (pageOnTop as IOnKeyDown).OnTextSent(text);
+                        }
+
+                        return;
+                    }
+            });
         }
 
         private Dictionary<int,string> GetAudioTracks()
@@ -1687,10 +1726,37 @@ namespace OnlineTelevizor.Views
                 {
                     _viewModel.ResetConnectionCommand.Execute(null);
                     _viewModel.RefreshCommandWithNotification.Execute(null);
+
+                    RestartRemoteAccessService();
                 };
             }
 
             await Navigation.PushAsync(_settingsPage);
+        }
+
+        private void RestartRemoteAccessService()
+        {
+            if (_config.AllowRemoteAccessService)
+            {
+                if (_remoteAccessService.IsBusy)
+                {
+                    if (_remoteAccessService.ParamsChanged(_config.RemoteAccessServiceIP, _config.RemoteAccessServicePort, _config.RemoteAccessServiceSecurityKey))
+                    {
+                        _remoteAccessService.StopListening();
+                        _remoteAccessService.SetConnection(_config.RemoteAccessServiceIP, _config.RemoteAccessServicePort, _config.RemoteAccessServiceSecurityKey);
+                        _remoteAccessService.StartListening(OnMessageReceived);
+                    }
+                }
+                else
+                {
+                    _remoteAccessService.SetConnection(_config.RemoteAccessServiceIP, _config.RemoteAccessServicePort, _config.RemoteAccessServiceSecurityKey);
+                    _remoteAccessService.StartListening(OnMessageReceived);
+                }
+            }
+            else
+            {
+                _remoteAccessService.StopListening();
+            }
         }
 
         private async void ToolbarItemQuality_Clicked(object sender, EventArgs e)

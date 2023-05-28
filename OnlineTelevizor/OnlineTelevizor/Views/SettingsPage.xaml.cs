@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.Net;
 
 namespace OnlineTelevizor.Views
 {
@@ -33,6 +35,8 @@ namespace OnlineTelevizor.Views
             PlayOnBackgroundSwitch.Toggled += PlayOnBackgroundSwitch_Toggled;
             UseInternalPlayerSwitch.Toggled += PlayOnBackgroundSwitch_Toggled;
             ShowSledovaniPairedDeviceSwitch.Toggled += ShowSledovaniPairedDeviceSwitch_Toggled;
+            IPEntry.Unfocused += IPEntry_Unfocused;
+            PortEntry.Unfocused += PortEntry_Unfocused;
 
             if (Device.RuntimePlatform == Device.UWP)
             {
@@ -56,6 +60,47 @@ namespace OnlineTelevizor.Views
             });
 
             BuildFocusableItems();
+        }
+
+        private async void PortEntry_Unfocused(object sender, FocusEventArgs e)
+        {
+            if (PortEntry.Text == null || string.IsNullOrEmpty(PortEntry.Text))
+            {
+                await _dialogService.Information("Port musí být vyplněn");
+                PortEntry.Text = "49152";
+                return;
+            }
+
+            int port;
+            if (!int.TryParse(PortEntry.Text, out port))
+            {
+                await _dialogService.Information("Neplatné číslo portu");
+                PortEntry.Text = "49152";
+                return;
+            }
+
+            if (port<0 || port > 65535)
+            {
+                await _dialogService.Information("Neplatné číslo portu");
+                PortEntry.Text = "49152";
+            }
+        }
+
+        private async void IPEntry_Unfocused(object sender, FocusEventArgs e)
+        {
+            if (IPEntry.Text == null || string.IsNullOrEmpty(IPEntry.Text))
+            {
+                await _dialogService.Information("IP adresa nemůže být prázdná");
+                try
+                {
+                    var ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+                    IPEntry.Text = ipHostInfo.AddressList[0].ToString();
+                }
+                catch
+                {
+                    IPEntry.Text = "192.168.1.10";
+                }
+            }
         }
 
         private void BuildFocusableItems()
@@ -87,6 +132,11 @@ namespace OnlineTelevizor.Views
                 .AddItem(KeyboardFocusableItem.CreateFrom("Fullscreen", new List<View>() { FullscreenBoxView, FullscreenSwitch }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("PlayInternal", new List<View>() { PlayInternalBoxView, UseInternalPlayerSwitch }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("PlayOnBackground", new List<View>() { PlayOnBackgroundBoxView, PlayOnBackgroundSwitch }))
+
+                .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessEnabled", new List<View>() { RemoteAccessEnabledBoxView, RemoteAccessSwitch }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessIP", new List<View>() { RemoteAccessIPBoxView, IPEntry }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessPort", new List<View>() { RemoteAccessPortBoxView, PortEntry }))
+                .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessSecurityKey", new List<View>() { RemoteAccessSecurityKeyBoxView, SecurityKeyEntry }))
 
                 .AddItem(KeyboardFocusableItem.CreateFrom("Pay", new List<View>() { PayButton }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("About", new List<View>() { AboutButton }));
@@ -126,6 +176,17 @@ namespace OnlineTelevizor.Views
                     (_args.FocusedItem.Name == "O2Username" ||
                     _args.FocusedItem.Name == "O2Password")
                     && (!_viewModel.IsO2TVVisible)
+               )
+            {
+                action();
+                return;
+            }
+
+            if (
+                    (_args.FocusedItem.Name == "RemoteAccessPort" ||
+                    _args.FocusedItem.Name == "RemoteAccessSecurityKey" ||
+                    _args.FocusedItem.Name == "RemoteAccessIP")
+                    && (!_config.AllowRemoteAccessService)
                )
             {
                 action();
@@ -275,6 +336,21 @@ namespace OnlineTelevizor.Views
                         case "PlayOnBackground":
                             PlayOnBackgroundSwitch.IsToggled = !PlayOnBackgroundSwitch.IsToggled;
                             break;
+
+                        case "RemoteAccessEnabled":
+                            RemoteAccessSwitch.IsToggled = !RemoteAccessSwitch.IsToggled;
+                            break;
+                        case "RemoteAccessPort":
+                            PortEntry.Focus();
+                            break;
+                        case "RemoteAccessSecurityKey":
+                            SecurityKeyEntry.Focus();
+                            break;
+                        case "RemoteAccessIP":
+                            IPEntry.Focus();
+                            break;
+
+
                         case "Pay":
                             _viewModel.PayCommand.Execute(null);
                             break;
@@ -282,6 +358,49 @@ namespace OnlineTelevizor.Views
                             _viewModel.AboutCommand.Execute(null);
                             break;
                     }
+                    break;
+            }
+        }
+
+        public void OnTextSent(string text)
+        {
+            switch (_focusItems.FocusedItemName)
+            {
+                case "SledovaniTVUserName":
+                    UsernameEntry.Text = text;
+                    break;
+                case "SledovaniTVPassword":
+                    PasswordEntry.Text = text;
+                    break;
+                case "SledovaniTVPIN":
+                    PinEntry.Text = text;
+                    break;
+                case "SledovaniTVDeviceId":
+                    DeviceIdEntry.Text = text;
+                    break;
+                case "SledovaniTVDevicePassword":
+                    DevicePasswordEntry.Text = text;
+                    break;
+                case "KUKISN":
+                    SNEntry.Text = text;
+                    break;
+                case "DVBStreamerUrl":
+                    DVBStreamerUrlEntry.Text = text;
+                    break;
+                case "O2Username":
+                    O2TVUsernameEntry.Text = text;
+                    break;
+                case "O2Password":
+                    O2TVPasswordEntry.Text = text;
+                    break;
+                case "RemoteAccessPort":
+                    PortEntry.Text = text;
+                    break;
+                case "RemoteAccessSecurityKey":
+                    SecurityKeyEntry.Text = text;
+                    break;
+                case "RemoteAccessIP":
+                    IPEntry.Text = text;
                     break;
             }
         }

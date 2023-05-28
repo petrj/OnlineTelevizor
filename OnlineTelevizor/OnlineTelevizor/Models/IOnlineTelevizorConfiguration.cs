@@ -44,6 +44,11 @@ namespace OnlineTelevizor.Models
 
         bool IsRunningOnTV { get; set; }
 
+        string RemoteAccessServiceIP { get; set; }
+        int RemoteAccessServicePort { get; set; }
+        string RemoteAccessServiceSecurityKey { get; set; }
+        bool AllowRemoteAccessService { get; set; }
+
         /// <summary>
         /// -1    : no chanel
         /// 0     : last channel

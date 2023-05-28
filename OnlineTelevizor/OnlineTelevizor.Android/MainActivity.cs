@@ -28,6 +28,7 @@ using Android.Content.Res;
 using Android.InputMethodServices;
 using AndroidX.ConstraintLayout.Core.Widgets.Analyzer;
 using System.IO;
+using System.Threading;
 
 namespace OnlineTelevizor.Droid
 {
@@ -345,6 +346,11 @@ namespace OnlineTelevizor.Droid
                 _dispatchKeyEventEnabledAt = DateTime.Now;
                 _dispatchKeyEventEnabled = true;
             });
+
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_RemoteKeyAction, (code) =>
+            {
+                SendRemoteKey(code);
+            });
         }
 
         protected override void OnDestroy()
@@ -467,6 +473,21 @@ namespace OnlineTelevizor.Droid
             catch (Exception ex)
             {
                 _loggingService.Error(ex);
+            }
+        }
+
+        private void SendRemoteKey(string code)
+        {
+            _loggingService.Debug($"SendRemoteKey: {code}");
+
+            Android.Views.Keycode keyCode;
+            if (Enum.TryParse<Android.Views.Keycode>(code, out keyCode))
+            {
+                new Instrumentation().SendKeyDownUpSync(keyCode);
+            }
+            else
+            {
+                _loggingService.Info("SendRemoteKey: invalid key code");
             }
         }
 

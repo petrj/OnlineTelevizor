@@ -348,6 +348,46 @@
                             <Switch Grid.Row="2" Grid.Column="1" x:Name="PlayOnBackgroundSwitch" IsToggled="{Binding Config.PlayOnBackground, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.PlayOnBackgroundSwitchEnabled}" />
                         </Grid>
 
+                        <Grid Margin="10,10,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80*" />
+                                <ColumnDefinition Width="20*" />
+                            </Grid.ColumnDefinitions>
+
+                            <BoxView x:Name="RemoteAccessEnabledBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
+                            <Label Grid.Row="0" Grid.Column="0" Text="Povolit vzdálené ovládání" Style="{DynamicResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                            <Switch Grid.Row="0" Grid.Column="1" x:Name="RemoteAccessSwitch" IsToggled="{Binding AllowRemoteAccessService, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                        </Grid>
+
+                        <Grid Margin="60,10,0,0" IsVisible="{Binding Config.AllowRemoteAccessService}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100*" />
+                            </Grid.ColumnDefinitions>
+
+                            <BoxView x:Name="RemoteAccessIPBoxView" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Transparent"/>
+                            <Label  Grid.Row="0" Grid.Column="0" Text="IP" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                            <Entry  Grid.Row="1" Grid.Column="0" x:Name="IPEntry" Text="{Binding Config.RemoteAccessServiceIP, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}" Keyboard="Url" />
+
+                            <BoxView x:Name="RemoteAccessPortBoxView" Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Transparent"/>
+                            <Label  Grid.Row="2" Grid.Column="0" Text="Port" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                            <Entry  Grid.Row="3" Grid.Column="0" x:Name="PortEntry" Text="{Binding Config.RemoteAccessServicePort, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}" Keyboard="Numeric" />
+
+                            <BoxView x:Name="RemoteAccessSecurityKeyBoxView" Grid.Row="4" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Transparent"/>
+                            <Label  Grid.Row="4" Grid.Column="0" Text="Bezpečnostní klíč" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
+                            <Entry Grid.Row="5" Grid.Column="0"  x:Name="SecurityKeyEntry" Text="{Binding Config.RemoteAccessServiceSecurityKey, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}" />
+                        </Grid>
+
                         <Button x:Name="PayButton" Margin="0,20,0,0" Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black" />
                         <Button x:Name="AboutButton" Margin="0,10,0,0" Text="O aplikaci" Command="{Binding AboutCommand}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black" />
 

@@ -130,6 +130,16 @@ namespace OnlineTelevizor.Views
             }
         }
 
+        public void OnTextSent(string text)
+        {
+            switch (_focusItems.FocusedItemName)
+            {
+                case "Name":
+                    ChannelNameEntry.Text = text;
+                    break;
+            }
+        }
+
         private void FilterPage_OnItemFocusedEvent(KeyboardFocusableItemEventArgs args)
         {
             // scroll to element

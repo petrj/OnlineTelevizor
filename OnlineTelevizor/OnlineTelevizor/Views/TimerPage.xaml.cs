@@ -79,6 +79,10 @@ namespace OnlineTelevizor.Views
             }
         }
 
+        public void OnTextSent(string text)
+        {
+        }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();
