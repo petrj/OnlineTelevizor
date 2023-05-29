@@ -6,6 +6,8 @@ namespace RemoteAccess
 {
     public class RemoteAccessMessage
     {
+        public string sender { get; set; }
+
         public string command { get; set; }
 
         public string commandArg1 { get; set; }
