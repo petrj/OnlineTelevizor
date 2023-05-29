@@ -1744,13 +1744,13 @@ namespace OnlineTelevizor.Views
                     {
                         _remoteAccessService.StopListening();
                         _remoteAccessService.SetConnection(_config.RemoteAccessServiceIP, _config.RemoteAccessServicePort, _config.RemoteAccessServiceSecurityKey);
-                        _remoteAccessService.StartListening(OnMessageReceived);
+                        _remoteAccessService.StartListening(OnMessageReceived, BaseViewModel.DeviceFriendlyName);
                     }
                 }
                 else
                 {
                     _remoteAccessService.SetConnection(_config.RemoteAccessServiceIP, _config.RemoteAccessServicePort, _config.RemoteAccessServiceSecurityKey);
-                    _remoteAccessService.StartListening(OnMessageReceived);
+                    _remoteAccessService.StartListening(OnMessageReceived, BaseViewModel.DeviceFriendlyName);
                 }
             }
             else

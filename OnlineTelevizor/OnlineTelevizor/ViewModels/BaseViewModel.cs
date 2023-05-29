@@ -67,6 +67,14 @@ namespace OnlineTelevizor.ViewModels
             Config = config;
         }
 
+        public static string DeviceFriendlyName
+        {
+            get
+            {
+                return $"{Xamarin.Essentials.DeviceInfo.Manufacturer} {Xamarin.Essentials.DeviceInfo.Model}";
+            }
+        }
+
         public static int GetScaledSize(IOnlineTelevizorConfiguration Config, int normalSize)
         {
             switch (Config.AppFontSize)

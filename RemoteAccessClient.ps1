@@ -189,4 +189,4 @@ $encryptedMessage
 $encryptedMessage += $TerminateString
 #$encryptedMessage | Send-TCPMessage -Port 49152 -IP 10.0.0.231
 
-$encryptedMessage | Send-TCPMessage -Port 49151 -IP 192.168.28.242
+$encryptedMessage | Send-TCPMessage -Port 49151 -IP 192.168.1.170

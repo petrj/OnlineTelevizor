@@ -23,6 +23,7 @@ namespace RemoteAccess
         private string _ip;
         private int _port;
         private string _securityKey;
+        private string _serverSenderName;
 
         private Action<RemoteAccessMessage> _messageReceived = null;
 
@@ -73,6 +74,8 @@ namespace RemoteAccess
                         // Program is suspended while waiting for an incoming connection.
                         using (var handler = listener.Accept())
                         {
+                            IPAddress clientIP = ((IPEndPoint)handler.RemoteEndPoint).Address;
+
                             string data = null;
 
                             while (true)
@@ -95,6 +98,7 @@ namespace RemoteAccess
                                 var decryptedData = CryptographyService.DecryptString(_securityKey, messageString);
 
                                 var message = JsonConvert.DeserializeObject<RemoteAccessMessage>(decryptedData);
+                                message.senderIP = clientIP.ToString();
 
                                 if (_messageReceived != null)
                                 {
@@ -116,7 +120,8 @@ namespace RemoteAccess
                                     var responseMessage = new RemoteAccessMessage()
                                     {
                                         command = "responseStatus",
-                                        commandArg1 = "OK"
+                                        commandArg1 = "OK",
+                                        sender = _serverSenderName
                                     };
                                     var response = JsonConvert.SerializeObject(responseMessage);
                                     var responseEncrypted = CryptographyService.EncryptString(_securityKey, response);
@@ -176,11 +181,12 @@ namespace RemoteAccess
             return true;
         }
 
-        public void StartListening(Action<RemoteAccessMessage> messageReceived)
+        public void StartListening(Action<RemoteAccessMessage> messageReceived, string serverSenderName)
         {
             if (_worker.IsBusy)
                 return;
 
+            _serverSenderName = serverSenderName;
             _messageReceived = messageReceived;
 
             _worker.RunWorkerAsync();

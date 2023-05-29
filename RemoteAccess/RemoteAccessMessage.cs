@@ -7,6 +7,7 @@ namespace RemoteAccess
     public class RemoteAccessMessage
     {
         public string sender { get; set; }
+        public string senderIP { get; set; }
 
         public string command { get; set; }
 
