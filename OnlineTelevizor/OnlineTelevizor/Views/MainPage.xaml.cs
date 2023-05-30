@@ -49,6 +49,8 @@ namespace OnlineTelevizor.Views
 
         public string AppVersion { get; set; } = String.Empty;
 
+        private List<string> _remoteDevicesConnected = new List<string>();
+
         public MainPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config)
         {
             _config = config;
@@ -92,6 +94,22 @@ namespace OnlineTelevizor.Views
 
         private void OnMessageReceived(RemoteAccessMessage message)
         {
+            if (message == null)
+                return;
+
+            var senderFriendlyName = message.GetSenderFriendlyName();
+            if (!_remoteDevicesConnected.Contains(senderFriendlyName))
+            {
+                _remoteDevicesConnected.Add(senderFriendlyName);
+                var msg = "Zahájeno vzdálené ovládání";
+                if (!string.IsNullOrEmpty(senderFriendlyName))
+                {
+                    msg += $" ({senderFriendlyName})";
+                }
+
+                MessagingCenter.Send(msg, BaseViewModel.MSG_ToastMessage);
+            }
+
             if (message.command == "keyDown")
             {
                 MessagingCenter.Send(message.commandArg1, BaseViewModel.MSG_RemoteKeyAction);

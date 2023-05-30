@@ -175,7 +175,7 @@ $msgEnter = @"
 
 $msg = @"
 {
- "sender":"Powershell console",
+ "sender":"Powershell ISE",
  "securityKey":"OnlineTelevizor",
  "command":"keyDown",
  "commandArg1":"DpadDown"

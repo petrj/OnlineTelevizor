@@ -18,5 +18,25 @@ namespace RemoteAccess
         {
             return $"Message: Command: {command}  arg1: {commandArg1}  arg2: {commandArg2}";
         }
+
+        public string GetSenderFriendlyName()
+        {
+            if (sender != null && senderIP != null)
+            {
+                return $"{sender}, IP {senderIP}";
+            }
+
+            if (sender != null)
+            {
+                return $"{sender}";
+            }
+
+            if (senderIP != null)
+            {
+                return $"IP {senderIP}";
+            }
+
+            return null;
+        }
     }
 }
