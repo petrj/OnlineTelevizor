@@ -383,7 +383,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties XamarinHotReloadXFormsNugetUpgradeInfoBarOnlineTelevizorAndroidHideInfoBar="True" TriggeredFromHotReload="False" />
+      <UserProperties TriggeredFromHotReload="False" XamarinHotReloadXFormsNugetUpgradeInfoBarOnlineTelevizorAndroidHideInfoBar="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
