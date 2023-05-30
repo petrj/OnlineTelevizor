@@ -15,31 +15,56 @@
 
             [Parameter(Mandatory=$true, Position=1)]
             [int]
-            $Port
+            $Port,
 
+            [Parameter(Mandatory=$false, Position=2)]
+            [string]$TerminateString = "b9fb065b-dee4-4b1e-b8b4-b0c82556380c"
     )
     Process
     {
         try
         {
-            # Setup connection
-            $IP = [System.Net.Dns]::GetHostAddresses($IP)
-            $Address = [System.Net.IPAddress]::Parse($IP)
-            $Socket = New-Object System.Net.Sockets.TCPClient($Address,$Port)
+         # Setup connection
 
-            # Setup stream writer
-            $Stream = $Socket.GetStream()
-            $Writer = New-Object System.IO.StreamWriter($Stream)
+            $BufferSize = 1024;
+            $bytes = [System.Array]::CreateInstance([byte],$BufferSize)
+            $ipAddress = [System.Net.IPAddress]::Parse($IP)
 
-            # Write message to stream
-            $Message | % {
-                $Writer.Write($_)
-                $Writer.Flush()
-            }
+            $remoteEndPoint = New-Object System.Net.IPEndPoint($ipAddress, $Port);            
+            
+            $sender = New-Object System.Net.Sockets.Socket($ipAddress.AddressFamily, [System.Net.Sockets.SocketType]::Stream, [System.Net.Sockets.ProtocolType]::Tcp)
 
-            # Close connection and stream
-            $Stream.Close()
-            $Socket.Close()
+         # connect and send data
+
+            $sender.Connect($remoteEndPoint)
+
+            $senderIP =  $sender.RemoteEndPoint.Address.ToString()
+            
+            $bytesSent = $sender.Send( [System.Text.encoding]::ASCII.GetBytes($Message));
+            $bytesSent += $sender.Send( [System.Text.encoding]::ASCII.GetBytes($TerminateString));
+
+         # receive response
+
+            $data = [String]::Empty
+
+            while ($true)
+            {
+                $bytes = [System.Array]::CreateInstance([byte],$BufferSize)
+                $bytesRec = $sender.Receive($bytes);
+                $data += [System.Text.encoding]::ASCII.GetString($bytes, 0, $bytesRec);
+                if ($data.IndexOf($TerminateString) -gt -1)
+                {
+                    break;
+                }
+            }    
+
+            $responseMessage = $data.Substring(0, $data.Length - $TerminateString.Length);
+
+            $sender.Shutdown([System.Net.Sockets.SocketShutdown]::Both);
+            $sender.Close();
+
+            return $responseMessage;            
+
         } catch
         {
             Write-Host $_.Exception
@@ -185,8 +210,4 @@ $msg = @"
 
 
 $encryptedMessage = $msg | Encrypt-Message  -Key "OnlineTelevizor"
-$encryptedMessage
-$encryptedMessage += $TerminateString
-#$encryptedMessage | Send-TCPMessage -Port 49152 -IP 10.0.0.231
-
-$encryptedMessage | Send-TCPMessage -Port 49151 -IP 192.168.1.170
+$encryptedMessage | Send-TCPMessage -Port 49151 -IP 192.168.28.242 | Decrypt-Message -Key "OnlineTelevizor"
