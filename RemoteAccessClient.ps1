@@ -175,6 +175,7 @@ $msgEnter = @"
 
 $msg = @"
 {
+ "sender":"Powershell ISE",
  "securityKey":"OnlineTelevizor",
  "command":"keyDown",
  "commandArg1":"DpadDown"
@@ -188,4 +189,4 @@ $encryptedMessage
 $encryptedMessage += $TerminateString
 #$encryptedMessage | Send-TCPMessage -Port 49152 -IP 10.0.0.231
 
-$encryptedMessage | Send-TCPMessage -Port 41414 -IP 10.0.0.2
+$encryptedMessage | Send-TCPMessage -Port 49151 -IP 192.168.1.170

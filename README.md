@@ -23,6 +23,7 @@ Android, UWP a iOS aplikace pro příjem TV a rádia pomocí služeb:
 - volba zvukové stopy
 - uživatelsky definovatelné oblíbené kanály
 - časovač vypnutí
+- podpora vzdáleného ovládání z jiného zařízení
 
 #### EN
 Android, UWP and iOS application for playing internet TV and radio through czech IPTV services
@@ -45,6 +46,7 @@ Android, UWP and iOS application for playing internet TV and radio through czech
 - switching audio track
 - user defined favourite channels
 - application shutdown timer
+- remote access from other device
 
 <img src="https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Screenshot.png" width="400" alt="Screenshot"/>
 <img src="https://raw.github.com/petrj/OnlineTelevizor/master/Graphics/Screenshot2.png" width="400" alt="Screenshot2"/>
