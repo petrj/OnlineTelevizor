@@ -409,7 +409,7 @@
                                         <TapGestureRecognizer Tapped="OnRemoteTelevizorLabelTapped" NumberOfTapsRequired="1" />
                                     </Image.GestureRecognizers>
                                 </Image>
-                                <Label Grid.Row="0" Grid.Column="0" Text="Ke vydálenému ovládání využijte aplikaci" Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForText}"/>
+                                <Label Grid.Row="0" Grid.Column="0" Text="Ke vzdálenému ovládání využijte aplikaci" Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForText}"/>
                                 <Label Grid.Row="1" Grid.Column="0" Text="Remote Televizor" Style="{StaticResource LinkStyle}" FontSize="{Binding FontSizeForText}" >
                                     <Label.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="OnRemoteTelevizorLabelTapped" NumberOfTapsRequired="1" />
