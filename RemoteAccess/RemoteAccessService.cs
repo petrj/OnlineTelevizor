@@ -21,6 +21,10 @@ namespace RemoteAccess
 
         private const int BufferSize = 1024;
         private const int ConnectTimeoutMS = 2000;
+        private const int ReceiveTimeoutMS = 2000;
+        private const int SendTimeoutMS = 2000;
+        private const int MaxMessageSize = 1000000;
+
         private const string TerminateString = "b9fb065b-dee4-4b1e-b8b4-b0c82556380c";
         private string _ip;
         private int _port;
@@ -89,6 +93,10 @@ namespace RemoteAccess
                                 {
                                     break;
                                 }
+                                if (data.Length > MaxMessageSize)
+                                {
+                                    break;
+                                }
                             }
 
                             var messageString = data.Substring(0,data.Length-TerminateString.Length);
@@ -127,6 +135,8 @@ namespace RemoteAccess
                                     };
                                     var response = JsonConvert.SerializeObject(responseMessage);
                                     var responseEncrypted = CryptographyService.EncryptString(_securityKey, response);
+
+                                    handler.SendTimeout = SendTimeoutMS;
 
                                     handler.Send(Encoding.ASCII.GetBytes(responseEncrypted));
                                     handler.Send(Encoding.ASCII.GetBytes(TerminateString));
@@ -204,7 +214,7 @@ namespace RemoteAccess
 
         public async Task<RemoteAccessMessage> SendMessage(RemoteAccessMessage message)
         {
-            _loggingService.Info($"Sending: {message}");
+            _loggingService.Info($"[RAS] Sending: {message}");
 
             var bytes = new Byte[BufferSize];
 
@@ -230,34 +240,48 @@ namespace RemoteAccess
 
                         // Receive response
 
+                        sender.ReceiveTimeout = ReceiveTimeoutMS;
+
                         string data = null;
 
                         while (true)
                         {
                             bytes = new byte[BufferSize];
                             int bytesRec = sender.Receive(bytes);
+                            if (bytesRec == 0)
+                            {
+                                _loggingService.Info($"[RAS] No byte received!");
+                                break;
+                            }
                             data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
                             if (data.IndexOf(TerminateString) > -1)
+                            {
+                                break;
+                            }
+                            if (data.Length > MaxMessageSize)
                             {
                                 break;
                             }
                         }
 
                         RemoteAccessMessage responseMessage = null;
-                        try
+                        if (data != null)
                         {
-                            var messageString = data.Substring(0, data.Length - TerminateString.Length);
+                            try
+                            {
+                                var messageString = data.Substring(0, data.Length - TerminateString.Length);
 
-                            var decryptedData = CryptographyService.DecryptString(_securityKey, messageString);
+                                var decryptedData = CryptographyService.DecryptString(_securityKey, messageString);
 
-                            responseMessage = JsonConvert.DeserializeObject<RemoteAccessMessage>(decryptedData);
+                                responseMessage = JsonConvert.DeserializeObject<RemoteAccessMessage>(decryptedData);
 
-                            _loggingService.Info($"Response: {responseMessage}");
+                                _loggingService.Info($"[RAS] Response: {responseMessage}");
 
-                        }
-                        catch (Exception ex)
-                        {
-                            _loggingService.Error(ex, "[RAS]: error reading message response");
+                            }
+                            catch (Exception ex)
+                            {
+                                _loggingService.Error(ex, "[RAS]: error reading message response");
+                            }
                         }
 
                         sender.Shutdown(SocketShutdown.Both);
@@ -268,7 +292,7 @@ namespace RemoteAccess
                     else
                     {
                         // Connection attempt timed out
-                        _loggingService.Info($"Timeout");
+                        _loggingService.Info($"[RAS] Timeout");
                         return null;
                     }
 
