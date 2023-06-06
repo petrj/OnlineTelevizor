@@ -26,7 +26,13 @@
 
             <Style x:Key="NoteStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="Gray"/>
-                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="VerticalTextAlignment" Value="Start"/>
+            </Style>
+
+            <Style x:Key="LinkStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="#41b3ff"/>
+                <Setter Property="VerticalTextAlignment" Value="Start"/>
+                <Setter Property="HorizontalTextAlignment" Value="Start"/>
             </Style>
 
             <Style x:Key="GroupCaptionStyle" TargetType="Label">
@@ -370,6 +376,7 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100*" />
@@ -386,6 +393,30 @@
                             <BoxView x:Name="RemoteAccessSecurityKeyBoxView" Grid.Row="4" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Transparent"/>
                             <Label  Grid.Row="4" Grid.Column="0" Text="Bezpečnostní klíč" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
                             <Entry Grid.Row="5" Grid.Column="0"  x:Name="SecurityKeyEntry" Text="{Binding Config.RemoteAccessServiceSecurityKey, Mode=TwoWay}" Style="{StaticResource CommonEntryTextStyle}" />
+
+                            <Grid Grid.Row="6" Grid.Column="0" >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="70*" />
+                                    <RowDefinition Height="30*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50*" />
+                                    <ColumnDefinition Width="50*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Image Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Source="RemoteTelevizor" Aspect="AspectFit" VerticalOptions="Start">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnRemoteTelevizorLabelTapped" NumberOfTapsRequired="1" />
+                                    </Image.GestureRecognizers>
+                                </Image>
+                                <Label Grid.Row="0" Grid.Column="0" Text="Ke vydálenému ovládání využijte aplikaci" Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForText}"/>
+                                <Label Grid.Row="1" Grid.Column="0" Text="Remote Televizor" Style="{StaticResource LinkStyle}" FontSize="{Binding FontSizeForText}" >
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnRemoteTelevizorLabelTapped" NumberOfTapsRequired="1" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+
+                            </Grid>
                         </Grid>
 
                         <Button x:Name="PayButton" Margin="0,20,0,0" Text="Získat plnou verzi" Command="{Binding PayCommand}" IsVisible="{Binding IsNotPurchased}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black" />

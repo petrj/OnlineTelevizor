@@ -9,6 +9,8 @@ using Xamarin.Forms.Xaml;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Net;
+using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace OnlineTelevizor.Views
 {
@@ -472,6 +474,11 @@ namespace OnlineTelevizor.Views
             _viewModel.NotifySledovaniTVDeviceIChange();
 
             _focusItems.DeFocusAll();
+        }
+
+        private void OnRemoteTelevizorLabelTapped(object sender, EventArgs e)
+        {
+            Task.Run(async () => await Launcher.OpenAsync("https://play.google.com/store/apps/details?id=net.petrjanousek.RemoteTelevizor"));
         }
     }
 }

@@ -154,6 +154,7 @@
     <Content Include="Rec.png" />
     <Content Include="Refresh.png" />
     <Content Include="RefreshSelected.png" />
+    <Content Include="RemoteTelevizor.png" />
     <Content Include="Settings.png" />
     <Content Include="Assets\SmallTile.scale-100.png" />
     <Content Include="Assets\SmallTile.scale-200.png" />

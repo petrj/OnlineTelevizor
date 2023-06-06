@@ -231,5 +231,6 @@
     <BundleResource Include="Resources\Help.png" />
     <BundleResource Include="Resources\HelpSelected.png" />
     <BundleResource Include="Resources\Minimize.png" />
+    <BundleResource Include="Resources\RemoteTelevizor.png" />
   </ItemGroup>
 </Project>
