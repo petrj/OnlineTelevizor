@@ -9,7 +9,6 @@ using Xamarin.Forms;
 using System.Threading;
 using static OnlineTelevizor.ViewModels.MainPageViewModel;
 using LibVLCSharp.Shared;
-using RemoteAccess;
 
 namespace OnlineTelevizor.Views
 {
@@ -19,7 +18,7 @@ namespace OnlineTelevizor.Views
         private DialogService _dialogService;
         private IOnlineTelevizorConfiguration _config;
         private ILoggingService _loggingService;
-        private RemoteAccessService _remoteAccessService;
+        private RemoteAccessService.RemoteAccessService _remoteAccessService;
 
         private FilterPage _filterPage = null;
         private CastRenderersPage _renderersPage;
@@ -83,7 +82,7 @@ namespace OnlineTelevizor.Views
 
             CheckStreamCommand = new Command(async () => await CheckStream());
 
-            _remoteAccessService = new RemoteAccessService(_loggingService);
+            _remoteAccessService = new RemoteAccessService.RemoteAccessService(_loggingService);
 
             Reset();
 
@@ -92,7 +91,7 @@ namespace OnlineTelevizor.Views
             RestartRemoteAccessService();
         }
 
-        private void OnMessageReceived(RemoteAccessMessage message)
+        private void OnMessageReceived(RemoteAccessService.RemoteAccessMessage message)
         {
             if (message == null)
                 return;

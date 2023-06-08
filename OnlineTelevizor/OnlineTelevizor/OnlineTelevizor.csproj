@@ -33,10 +33,10 @@
   <ItemGroup>
     <PackageReference Include="LibVLCSharp" Version="3.7.0" />
     <PackageReference Include="LibVLCSharp.Forms" Version="3.7.0" />
-    <PackageReference Include="LoggerService" Version="1.0.0" />
+    <PackageReference Include="LoggerService" Version="1.0.2" />
     <PackageReference Include="Plugin.InAppBilling" Version="6.7.0" />
     <PackageReference Include="Plugin.Permissions" Version="6.0.1" />
-    <PackageReference Include="RemoteAccess" Version="1.0.1" />
+    <PackageReference Include="RemoteAccessService" Version="1.0.4" />
     <PackageReference Include="VideoLAN.LibVLC.Android" Version="3.5.3" />
     <PackageReference Include="Xamarin.CommunityToolkit" Version="2.0.5" />
     <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
