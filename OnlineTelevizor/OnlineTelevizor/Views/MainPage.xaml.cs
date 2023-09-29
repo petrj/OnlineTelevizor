@@ -33,6 +33,7 @@ namespace OnlineTelevizor.Views
         private bool _firstSelectionAfterStartup = false;
         private string _numberPressed = String.Empty;
         private bool _resumedWithoutReinitializingVideo = false;
+        private bool _lastTimeHome = false;
 
         private LibVLC _libVLC = null;
         private MediaPlayer _mediaPlayer;
@@ -964,6 +965,40 @@ namespace OnlineTelevizor.Views
                 {
                     Task.Run(async () =>
                     {
+                        if (_numberPressed == "0")
+                        {
+                            switch (_viewModel.PlayingState)
+                            {
+                                case PlayingStateEnum.PlayingInternal:
+                                    await ActionKeyLeft();
+                                    break;
+                                case PlayingStateEnum.PlayingInPreview:
+                                    _viewModel.SelectedItem = _viewModel.PlayingChannel;
+                                    ActionPlay(_viewModel.PlayingChannel);
+                                    break;
+                                case PlayingStateEnum.Stopped:
+                                    if (_viewModel.StandingOnEnd)
+                                    {
+                                        await ActionFirstOrLast(true);
+                                        _lastTimeHome = true;
+                                    }
+                                    else
+                                    if (_viewModel.StandingOnStart)
+                                    {
+                                        await ActionFirstOrLast(false);
+                                        _lastTimeHome = false;
+                                    }
+                                    else
+                                    {
+                                        await ActionFirstOrLast(_lastTimeHome);
+                                        _lastTimeHome = !_lastTimeHome;
+                                    }
+                                    break;
+                            };
+
+                            return;
+                        }
+
                         await _viewModel.SelectChannelByNumber(_numberPressed);
 
                         var item = _viewModel.SelectedItemSafe;
