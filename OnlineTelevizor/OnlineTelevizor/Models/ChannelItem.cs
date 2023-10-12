@@ -28,13 +28,16 @@ namespace OnlineTelevizor.Models
                 Group = channel.Group
             };
 
-            foreach (var track in channel.SubTitles)
+            if (channel.SubTitles != null)
             {
-                ch.Subtitles.Add(new SubTitleTrack
+                foreach (var track in channel.SubTitles)
                 {
-                    Title = track.Title,
-                    Url = track.Url
-                });
+                    ch.Subtitles.Add(new SubTitleTrack
+                    {
+                        Title = track.Title,
+                        Url = track.Url
+                    });
+                }
             }
 
             return ch;
