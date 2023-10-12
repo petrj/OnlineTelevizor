@@ -195,16 +195,6 @@ namespace OnlineTelevizor.Views
                 return;
             }
 
-            if (
-                    (_args.FocusedItem.Name == "DVBStreamerUrl" ||
-                    _args.FocusedItem.Name == "StopStream")
-                    && (!_viewModel.IsDVBStreamerVisible)
-               )
-            {
-                action();
-                return;
-            }
-
             if
                 (
                     (_args.FocusedItem.Name == "SledovaniTVUserName" ||
@@ -455,21 +445,6 @@ namespace OnlineTelevizor.Views
             _loggingService.Debug("Appearing");
 
             base.OnAppearing();
-
-#if DVBSTREAMER
-            var dvbStreamerEnabled = true;
-#else
-            var dvbStreamerEnabled = false;
-#endif
-
-            if (!dvbStreamerEnabled)
-            {
-                if (_config.TVApi == TVAPIEnum.DVBStreamer)
-                    _viewModel.TVAPIIndex = 0;
-
-                if (TVAPIPicker.Items.Contains("DVB Streamer"))
-                    TVAPIPicker.Items.Remove("DVB Streamer");
-            }
 
             _viewModel.NotifySledovaniTVDeviceIChange();
 

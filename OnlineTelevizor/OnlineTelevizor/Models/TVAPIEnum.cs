@@ -9,6 +9,6 @@ namespace OnlineTelevizor.Models
         SledovaniTV = 0,
         KUKI = 1,
         O2TV = 2,
-        DVBStreamer = 3
+        Demo = 3
     }
 }

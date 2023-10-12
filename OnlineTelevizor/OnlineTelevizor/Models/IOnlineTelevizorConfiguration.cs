@@ -19,8 +19,6 @@ namespace OnlineTelevizor.Models
         string O2TVUsername { get; set; }
         string O2TVPassword { get; set; }
 
-        string DVBStreamerUrl { get; set; }
-
         //  user settings
         string StreamQuality { get; set; }
         string ChannelFilterGroup { get; set; }

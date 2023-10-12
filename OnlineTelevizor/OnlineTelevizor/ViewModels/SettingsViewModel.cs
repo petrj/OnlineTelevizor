@@ -345,7 +345,7 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(TVAPIIndex));
                 OnPropertyChanged(nameof(IsSledovaniTVVisible));
                 OnPropertyChanged(nameof(IsKUKITVVisible));
-                OnPropertyChanged(nameof(IsDVBStreamerVisible));
+                OnPropertyChanged(nameof(IsDemoVisible));
                 OnPropertyChanged(nameof(IsO2TVVisible));
             }
         }
@@ -366,11 +366,11 @@ namespace OnlineTelevizor.ViewModels
             }
         }
 
-        public bool IsDVBStreamerVisible
+        public bool IsDemoVisible
         {
             get
             {
-                return Config.TVApi == TVAPIEnum.DVBStreamer;
+                return Config.TVApi == TVAPIEnum.Demo;
             }
         }
 

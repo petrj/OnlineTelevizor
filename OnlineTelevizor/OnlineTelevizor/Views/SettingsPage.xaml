@@ -88,7 +88,7 @@
                                 <x:String>SledovaniTV</x:String>
                                 <x:String>Kuki</x:String>
                                 <x:String>O2 TV</x:String>
-                                <x:String>DVB Streamer</x:String>
+                                <x:String>Demo</x:String>
                             </Picker.Items>
                         </Picker>
                     </Grid>

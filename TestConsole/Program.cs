@@ -7,7 +7,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using DVBStreamerAPI;
 using KUKITVAPI;
 using LoggerService;
 using Newtonsoft.Json.Linq;
