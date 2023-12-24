@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
+using TVAPI;
 using Xamarin.Forms;
 
 namespace OnlineTelevizor.Droid
@@ -50,18 +51,6 @@ namespace OnlineTelevizor.Droid
             set
             {
                 SavePersistingSettingValue<string>("O2TVPassword", value);
-            }
-        }
-
-        public string DVBStreamerUrl
-        {
-            get
-            {
-                return GetPersistingSettingValue<string>("DVBStreamerUrl");
-            }
-            set
-            {
-                SavePersistingSettingValue<string>("DVBStreamerUrl", value);
             }
         }
 
@@ -405,6 +394,8 @@ namespace OnlineTelevizor.Droid
         {
             get
             {
+
+        return true;
                 return
                     String.IsNullOrEmpty(Username) &&
                     String.IsNullOrEmpty(Password) &&
@@ -516,7 +507,7 @@ namespace OnlineTelevizor.Droid
             }
         }
 
-        public bool? TryLoadCredentails()
+        public bool? TryLoadConfiguration()
         {
             try
             {
@@ -563,6 +554,13 @@ namespace OnlineTelevizor.Droid
                 if ((!string.IsNullOrEmpty(fontSizeAsString)) && (Enum.TryParse(typeof(AppFontSizeEnum), fontSizeAsString, out var fs)))
                 {
                     AppFontSize = (AppFontSizeEnum)fs;
+                }
+
+                if (credentialsJson.TryGetValue("Demo", out var demoToken))
+                {
+                    DemoCustomChannelUrl = GetTypedJObject<string>(demoToken as JObject, "url");
+                    DemoCustomChannelName = GetTypedJObject<string>(demoToken as JObject, "name");
+                    DemoCustomChannelType = GetTypedJObject<string>(demoToken as JObject, "type");
                 }
 
                 return true;
@@ -642,6 +640,24 @@ namespace OnlineTelevizor.Droid
             {
                 SavePersistingSettingValue<bool>("AllowRemoteAccessService", value);
             }
+        }
+
+        public string DemoCustomChannelUrl
+        {
+            get { return GetPersistingSettingValue<string>("DemoCustomChannelUrl"); }
+            set { SavePersistingSettingValue<string>("DemoCustomChannelUrl", value); }
+        }
+
+        public string DemoCustomChannelName
+        {
+            get { return GetPersistingSettingValue<string>("DemoCustomChannelName"); }
+            set { SavePersistingSettingValue<string>("DemoCustomChannelName", value); }
+        }
+
+        public string DemoCustomChannelType
+        {
+            get { return GetPersistingSettingValue<string>("DemoCustomChannelType"); }
+            set { SavePersistingSettingValue<string>("DemoCustomChannelType", value); }
         }
     }
 }

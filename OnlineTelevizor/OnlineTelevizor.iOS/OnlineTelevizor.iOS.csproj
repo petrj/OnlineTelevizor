@@ -168,6 +168,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\..\TVAPI\TVAPI.csproj">
+      <Project>{E5102B85-87A1-4ABC-B720-CB97925266FB}</Project>
+      <Name>TVAPI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OnlineTelevizor\OnlineTelevizor.csproj">
       <Project>{1C88A6B6-008C-4573-846D-0F0C4261FC32}</Project>
       <Name>OnlineTelevizor</Name>

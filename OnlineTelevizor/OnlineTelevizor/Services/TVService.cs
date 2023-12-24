@@ -47,6 +47,12 @@ namespace OnlineTelevizor.Services
                     break;
                 case TVAPIEnum.Demo:
                     _service = new Demo(_log);
+
+                    if (!string.IsNullOrEmpty(_config.DemoCustomChannelName) &&
+                        !string.IsNullOrEmpty(_config.DemoCustomChannelUrl))
+                    {
+                        (_service as Demo).AddCustomChannel(_config.DemoCustomChannelName, _config.DemoCustomChannelUrl, _config.DemoCustomChannelType);
+                    }
                     break;
                 case TVAPIEnum.O2TV:
                     _service = new O2TV(_log);

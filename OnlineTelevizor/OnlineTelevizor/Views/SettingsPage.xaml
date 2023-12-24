@@ -196,6 +196,13 @@
 
                     </StackLayout>
 
+                    <!-- Demo -->
+                    <StackLayout x:Name="DemoStackLayout" IsVisible="{Binding IsDemoVisible, Mode=TwoWay}" >
+
+                        <Label Margin="30,10,0,0" Text="Demo slouží pouze pro demonstraci chodu aplikace" Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForText}"/>
+
+                    </StackLayout>
+
                     <!-- KUKI -->
                     <StackLayout x:Name="KukiTVStackLayout" IsVisible="{Binding IsKUKITVVisible, Mode=TwoWay}" >
 
@@ -216,31 +223,6 @@
                         </Grid>
 
                         <Label Margin="30,10,0,0" Text="S/N zařízení je možné získat v nastavení mobilní aplikace Kuki (Nastavení/Informace o zařízení/Sériové číslo), případně se dá najít v cookies webového prohlížeče. Příklad: kuki2.0_BWACfndNJcJ6fF8Eb0IYbT8v8QRqaLjoY3x1GI1MLJlWWyl4s7UrKSjg" Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForText}"/>
-
-                    </StackLayout>
-
-                    <!-- DVB Streamer -->
-                    <StackLayout x:Name="DVBStreamerTVStackLayout" IsVisible="{Binding IsDVBStreamerVisible, Mode=TwoWay}" >
-
-                        <Label Margin="10,10,0,0" Text="Přístupové údaje pro DVB Streamer" Style="{StaticResource GroupCaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-
-                        <Grid Margin="30,10,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto" />
-                                <RowDefinition Height="auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <BoxView x:Name="DVBStreamerUrlBoxView" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Transparent"/>
-                            <Label Grid.Row="0" Grid.Column="0"  Text="Url služby" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}"/>
-                            <Entry Grid.Row="1" Grid.Column="0" BindingContext="{Binding Config}" x:Name="DVBStreamerUrlEntry"  Text="{Binding DVBStreamerUrl, Mode=TwoWay}"  Placeholder="Zadejte url služby"  Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
-                        </Grid>
-
-                        <Label Margin="30,10,0,0" Text="Příklad: http://10.0.0.2:8090" Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForText}"/>
-
-                        <Button Margin="30,10,0,0" x:Name="StopStreamButton" Text="Zastavit stream" Command="{Binding StopStreamCommand}" FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black" />
 
                     </StackLayout>
 

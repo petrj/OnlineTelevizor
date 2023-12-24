@@ -227,6 +227,10 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.14" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\TVAPI\TVAPI.csproj">
+      <Project>{E5102B85-87A1-4ABC-B720-CB97925266FB}</Project>
+      <Name>TVAPI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OnlineTelevizor\OnlineTelevizor.csproj">
       <Project>{1CF633D0-9550-4EB5-A2FE-973E1990018E}</Project>
       <Name>OnlineTelevizor</Name>

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using LoggerService;
 using OnlineTelevizor.Models;
+using TVAPI;
 using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -95,18 +96,6 @@ namespace OnlineTelevizor.UWP
             set
             {
                 SaveSettingValue<string>("O2TVPassword", value);
-            }
-        }
-
-        public string DVBStreamerUrl
-        {
-            get
-            {
-                return GetSettingValue<string>("DVBStreamerUrl");
-            }
-            set
-            {
-                SaveSettingValue<string>("DVBStreamerUrl", value);
             }
         }
 
@@ -565,6 +554,24 @@ namespace OnlineTelevizor.UWP
                 return ip;
             }
             set { SaveSettingValue<string>("RemoteAccessServiceIP", value); }
+        }
+
+        public string DemoCustomChannelUrl
+        {
+            get { return GetSettingValue<string>("DemoCustomChannelUrl"); }
+            set { SaveSettingValue<string>("DemoCustomChannelUrl", value); }
+        }
+
+        public string DemoCustomChannelName
+        {
+            get { return GetSettingValue<string>("DemoCustomChannelName"); }
+            set { SaveSettingValue<string>("DemoCustomChannelName", value); }
+        }
+
+        public string DemoCustomChannelType
+        {
+            get { return GetSettingValue<string>("DemoCustomChannelType"); }
+            set { SaveSettingValue<string>("DemoCustomChannelType", value); }
         }
     }
 }

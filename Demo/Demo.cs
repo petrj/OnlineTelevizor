@@ -11,9 +11,97 @@ namespace DemoTVAPI
     {
         private ILoggingService _log;
 
+        private List<Channel> _channels = new List<Channel>();
+        private List<EPGItem> _epg = new List<EPGItem>();
+
         public Demo(ILoggingService loggingService)
         {
             _log = loggingService;
+
+            _channels = new List<Channel>()
+                    {
+                        new Channel()
+                        {
+                             Name = "Big Buck Bunny",
+                             EPGId = "1",
+                             Id = "1",
+                             ChannelNumber = "1",
+                             Group = "Anime",
+                             error = null,
+                             Locked = "none",
+                             LogoUrl = null,
+                             status = null,
+                             SubTitles = null,
+                             Type = "Video",
+                             Url = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                        },
+                        new Channel()
+                        {
+                             Name = "Radio Beat",
+                             EPGId = "2",
+                             Id = "2",
+                             ChannelNumber = "2",
+                             Group = "Rock music",
+                             error = null,
+                             Locked = "none",
+                             LogoUrl = null,
+                             status = null,
+                             SubTitles = null,
+                             Type = "Radio",
+                             Url = "https://stream.rcs.revma.com/3d47nqvb938uv"
+                        }
+                    };
+
+            _epg = new List<EPGItem>()
+                   {
+                        new EPGItem()
+                        {
+                             ChannelId = "1",
+                             Description = "Big Buck Bunny tells the story of a giant rabbit with a heart bigger than himself. When one sunny day three rodents rudely harass him, something snaps... and the rabbit ain't no bunny anymore! In the typical cartoon tradition he prepares the nasty rodents a comical revenge.\n\nLicensed under the Creative Commons Attribution license\nhttp://www.bigbuckbunny.org",
+                             EPGId = "1",
+                             error = null,
+                             Start = DateTime.Now.Date,
+                             Finish = DateTime.Now.Date.AddDays(1),
+                             Title = "Rabbit story"
+                        },
+                        new EPGItem()
+                        {
+                             ChannelId = "2",
+                             Description = "Live stream rádia Beat",
+                             EPGId = "1",
+                             error = null,
+                             Start = DateTime.Now.Date,
+                             Finish = DateTime.Now.Date.AddDays(1),
+                             Title = "První bigbít u nás"
+                        }
+                   };
+        }
+
+        public void AddCustomChannel(string name, string url, string tp = "Video")
+        {
+            var c = (_channels.Count + 1).ToString();
+
+            if (string.IsNullOrEmpty(tp))
+            {
+                tp = "Video";
+            }
+
+            _channels.Add(
+            new Channel()
+            {
+                Name = name,
+                EPGId = c,
+                Id = c,
+                ChannelNumber = c,
+                Group = "Custom",
+                error = null,
+                Locked = "none",
+                LogoUrl = null,
+                status = null,
+                SubTitles = null,
+                Type = tp,
+                Url = url
+            });
         }
 
         public DeviceConnection Connection
@@ -26,7 +114,7 @@ namespace DemoTVAPI
 
         public bool EPGEnabled
         {
-            get { return false; }
+            get { return true; }
         }
 
         public bool SubtitlesEnabled
@@ -59,43 +147,49 @@ namespace DemoTVAPI
             return Task.Run(
                () =>
                {
-                   return new List<Channel>()
-                    {
-                        new Channel()
-                        {
-                             Name = "Big Buck Bunny",
-                             EPGId = "1",
-                             Id = "1",
-                             ChannelNumber = "1",
-                             Group = "Anime",
-                             error = null,
-                             Locked = "none",
-                             LogoUrl = null,
-                             status = null,
-                             SubTitles = null,
-                             Type = "Video",
-                             Url = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                        }
-                    };
+                   return _channels;
                });
         }
 
-        public Task<Dictionary<string, List<EPGItem>>> GetChannelsEPG()
+        public async Task<Dictionary<string, List<EPGItem>>> GetChannelsEPG()
         {
-            //throw new NotImplementedException();
-            return null;
+            var res = new Dictionary<string, List<EPGItem>>();
+
+            var channels = await GetChannels();
+            var epg = await GetEPG();
+
+            foreach (var channel in channels)
+            {
+                res.Add(channel.Id, new List<EPGItem>());
+
+                foreach (var epgItem in epg)
+                {
+                    if (epgItem.ChannelId == channel.Id)
+                    {
+                        res[channel.Id].Add(epgItem);
+                    }
+                }
+            }
+
+            return res;
         }
 
         public Task<List<EPGItem>> GetEPG()
         {
-            //throw new NotImplementedException();
-            return null;
+            return Task.Run(
+              () =>
+              {
+                  return _epg;
+              });
         }
 
         public Task<string> GetEPGItemDescription(EPGItem epgItem)
         {
-            //throw new NotImplementedException();
-            return null;
+            return Task.Run(
+            () =>
+            {
+                return epgItem.Description;
+            });
         }
 
         public Task<List<Quality>> GetStreamQualities()

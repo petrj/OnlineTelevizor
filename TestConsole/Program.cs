@@ -68,14 +68,6 @@ namespace TestConsole
                 tvService.SetConnection(conn.deviceId, conn.password);
             }
 
-            /*
-                if (JSONObject.FileExists("dvbStreamer.json"))
-                {
-                    var conn = JSONObject.LoadFromFile<DeviceConnection>("dvbStreamer.json");
-                    tvService.SetConnection(conn.deviceId, null);
-                }
-            */
-
             Task.Run(
             async () =>
             {

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TVAPI;
 
 namespace OnlineTelevizor.Models
 {
@@ -74,5 +75,9 @@ namespace OnlineTelevizor.Models
         string OutputDirectory { get; }
 
         long UsableSpace { get; }
+
+        string DemoCustomChannelUrl { get; set; }
+        string DemoCustomChannelName { get; set; }
+        string DemoCustomChannelType { get; set; }
     }
 }

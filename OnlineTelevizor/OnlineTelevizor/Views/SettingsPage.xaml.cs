@@ -123,9 +123,6 @@ namespace OnlineTelevizor.Views
 
                 .AddItem(KeyboardFocusableItem.CreateFrom("KUKISN", new List<View>() { KUKISNBoxView, SNEntry }))
 
-                .AddItem(KeyboardFocusableItem.CreateFrom("DVBStreamerUrl", new List<View>() { DVBStreamerUrlBoxView, DVBStreamerUrlEntry }))
-                .AddItem(KeyboardFocusableItem.CreateFrom("StopStream", new List<View>() { StopStreamButton }))
-
                 .AddItem(KeyboardFocusableItem.CreateFrom("O2Username", new List<View>() { O2UsernameBoxView, O2TVUsernameEntry }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("O2Password", new List<View>() { O2PasswordBoxView, O2TVPasswordEntry }))
 
@@ -301,9 +298,6 @@ namespace OnlineTelevizor.Views
                         case "KUKISN":
                             SNEntry.Focus();
                             break;
-                        case "DVBStreamerUrl":
-                            DVBStreamerUrlEntry.Focus();
-                            break;
                         case "StopStream":
                             _viewModel.StopStreamCommand.Execute(null);
                             break;
@@ -375,9 +369,6 @@ namespace OnlineTelevizor.Views
                     break;
                 case "KUKISN":
                     SNEntry.Text = text;
-                    break;
-                case "DVBStreamerUrl":
-                    DVBStreamerUrlEntry.Text = text;
                     break;
                 case "O2Username":
                     O2TVUsernameEntry.Text = text;

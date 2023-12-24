@@ -90,7 +90,7 @@ namespace OnlineTelevizor.Droid
             {
                 if (_cfg.EmptyCredentials && System.IO.File.Exists(_cfg.DefaultConfigurationFileName))
                 {
-                    var loaded = _cfg.TryLoadCredentails();
+                    var loaded = _cfg.TryLoadConfiguration();
                     if (loaded != null && loaded.Value)
                     {
                         ShowToastMessage("Konfigurace byla načtena ze souboru");
