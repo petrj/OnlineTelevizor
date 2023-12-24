@@ -508,6 +508,14 @@ namespace OnlineTelevizor.Droid
             return base.OnKeyDown(keyCode, e);
         }
 
+        public override bool DispatchGenericMotionEvent(MotionEvent ev)
+        {
+            _loggingService.Info($"DispatchGenericMotionEvent: {ev.Action}");
+
+            return base.DispatchGenericMotionEvent(ev);
+            //return true;  this will disable mouse
+        }
+
         public override bool DispatchKeyEvent(KeyEvent e)
         {
             var code = e.KeyCode.ToString();

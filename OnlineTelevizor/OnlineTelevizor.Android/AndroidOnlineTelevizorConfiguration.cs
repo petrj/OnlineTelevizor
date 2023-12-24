@@ -394,8 +394,6 @@ namespace OnlineTelevizor.Droid
         {
             get
             {
-
-        return true;
                 return
                     String.IsNullOrEmpty(Username) &&
                     String.IsNullOrEmpty(Password) &&

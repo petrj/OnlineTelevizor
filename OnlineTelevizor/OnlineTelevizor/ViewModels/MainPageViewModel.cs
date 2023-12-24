@@ -701,12 +701,7 @@ namespace OnlineTelevizor.ViewModels
                 var alreadySelectedItem = SelectedItemSafe;
                 if (alreadySelectedItem != ch)
                 {
-                    var rmb = DoNotScrollToChannel;
-                    DoNotScrollToChannel = true;
-
                     SelectedItemSafe = ch;
-
-                    DoNotScrollToChannel = rmb;
                 } else
                 {
                     await ShowPopupMenu(ch);

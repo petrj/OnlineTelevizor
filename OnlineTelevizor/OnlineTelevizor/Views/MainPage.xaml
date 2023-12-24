@@ -140,7 +140,6 @@
                       x:Name="ChannelsListView"
                       ItemsSource="{Binding Channels}"
                       CachingStrategy="RecycleElement"
-                      IsPullToRefreshEnabled="True"
                       RefreshCommand="{Binding RefreshCommandWithNotification}"
                       IsRefreshing="{Binding IsBusy}"
                       Style="{StaticResource ListViewStyle}"
