@@ -510,11 +510,6 @@ namespace OnlineTelevizor.Droid
 
         public override bool DispatchGenericMotionEvent(MotionEvent ev)
         {
-            if (ev.Action != MotionEventActions.HoverMove)
-            {
-                _loggingService.Info($"DispatchGenericMotionEvent: {ev.Action}");
-            }
-
             if (ev.Action == MotionEventActions.PointerIndexShift)
             {
                 _loggingService.Info($"Wheel action axis: {ev.GetAxisValue(Axis.Vscroll)}");  // https://developer.android.com/reference/android/view/MotionEvent
@@ -522,14 +517,22 @@ namespace OnlineTelevizor.Droid
                 if (ev.GetAxisValue(Axis.Vscroll) <= 0)
                 {
                     MessagingCenter.Send("down", BaseViewModel.MSG_KeyAction);
-                } else
+                }
+                else
                 {
                     MessagingCenter.Send("up", BaseViewModel.MSG_KeyAction);
                 }
 
                 return true; // disable further mouse wheel event propagation
+            }
+            else
+            if (ev.Action == MotionEventActions.HoverMove)
+            {
+                return base.DispatchGenericMotionEvent(ev);
             } else
             {
+                _loggingService.Info($"DispatchGenericMotionEvent: {ev.Action}");
+
                 return base.DispatchGenericMotionEvent(ev);
             }
         }
