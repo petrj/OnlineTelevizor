@@ -1273,6 +1273,11 @@ namespace OnlineTelevizor.Views
                     if (PlayingState == PlayingStateEnum.PlayingInPreview)
                     {
                         PlayingState = PlayingStateEnum.PlayingInternal;
+
+                        if  (_viewModel.SelectedItem.Id != _viewModel.PlayingChannel.Id)
+                        {
+                            _viewModel.SelectedItem = _viewModel.PlayingChannel;
+                        }
                     }
                     else
                     if (PlayingState == PlayingStateEnum.PlayingInternal)
