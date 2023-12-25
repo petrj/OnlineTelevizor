@@ -701,6 +701,7 @@ namespace OnlineTelevizor.ViewModels
                 var alreadySelectedItem = SelectedItemSafe;
                 if (alreadySelectedItem != ch)
                 {
+                    SelectedItemSafe = null;
                     SelectedItemSafe = ch;
                 } else
                 {

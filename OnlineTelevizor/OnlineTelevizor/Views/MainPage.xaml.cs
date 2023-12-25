@@ -574,7 +574,7 @@ namespace OnlineTelevizor.Views
 
         private void ChannelsListView_Scrolled(object sender, ScrolledEventArgs e)
         {
-            _loggingService.Debug($"ChannelsListView_Scrolled");
+            _loggingService.Debug($"ChannelsListView_Scrolled (ScrollY: {e.ScrollY})");
 
             // workaround for de-highlighting selected item after scroll on startup
             if (_firstSelectionAfterStartup)

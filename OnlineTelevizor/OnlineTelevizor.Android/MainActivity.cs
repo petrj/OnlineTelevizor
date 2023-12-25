@@ -510,10 +510,28 @@ namespace OnlineTelevizor.Droid
 
         public override bool DispatchGenericMotionEvent(MotionEvent ev)
         {
-            _loggingService.Info($"DispatchGenericMotionEvent: {ev.Action}");
+            if (ev.Action != MotionEventActions.HoverMove)
+            {
+                _loggingService.Info($"DispatchGenericMotionEvent: {ev.Action}");
+            }
 
-            return base.DispatchGenericMotionEvent(ev);
-            //return true;  this will disable mouse
+            if (ev.Action == MotionEventActions.PointerIndexShift)
+            {
+                _loggingService.Info($"Wheel action axis: {ev.GetAxisValue(Axis.Vscroll)}");  // https://developer.android.com/reference/android/view/MotionEvent
+
+                if (ev.GetAxisValue(Axis.Vscroll) <= 0)
+                {
+                    MessagingCenter.Send("down", BaseViewModel.MSG_KeyAction);
+                } else
+                {
+                    MessagingCenter.Send("up", BaseViewModel.MSG_KeyAction);
+                }
+
+                return true; // disable further mouse wheel event propagation
+            } else
+            {
+                return base.DispatchGenericMotionEvent(ev);
+            }
         }
 
         public override bool DispatchKeyEvent(KeyEvent e)
