@@ -8,7 +8,7 @@ using Android.Util;
 namespace OnlineTelevizor.Droid
 {
     [Activity(Name= "net.petrjanousek.OnlineTelevizor.SplashActivity", Label = "Online Televizor", Theme = "@style/SplashTheme", Icon = "@drawable/icon", Banner = "@drawable/banner", MainLauncher = true, NoHistory = true, Exported = true)]
-    [IntentFilter(new[] { Intent.ActionMain }, Categories = new[] { Intent.CategoryLauncher })]
+    [IntentFilter(new[] { Intent.ActionMain }, AutoVerify = true, Categories = new[] { Intent.CategoryLeanbackLauncher })]
     public class SplashActivity : AppCompatActivity
     {
         public override void OnCreate(Bundle savedInstanceState, PersistableBundle persistentState)
