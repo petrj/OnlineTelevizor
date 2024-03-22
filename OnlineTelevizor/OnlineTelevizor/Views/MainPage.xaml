@@ -5,7 +5,7 @@
              x:Class="OnlineTelevizor.Views.MainPage"
              x:Name="ContentPage"
              BackgroundColor="Black"
-             NavigationPage.TitleIcon="Icon.png"
+             NavigationPage.TitleIcon="Icon512x512.png"
              xmlns:vlc="clr-namespace:LibVLCSharp.Forms.Shared;assembly=LibVLCSharp.Forms"
              xmlns:local2="clr-namespace:OnlineTelevizor" xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:xct="http://xamarin.com/schemas/2020/toolkit">

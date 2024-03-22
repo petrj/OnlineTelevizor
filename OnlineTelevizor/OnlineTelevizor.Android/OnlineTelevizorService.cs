@@ -14,7 +14,7 @@ using Xamarin.Forms;
 
 namespace OnlineTelevizor.Droid
 {
-    [Service(Label = "OnlineTelevizorService", Icon = "@drawable/Icon")]
+    [Service(Label = "OnlineTelevizorService", Icon = "@drawable/icon")]
     public class OnlineTelevizorService : Service
     {
         public override IBinder OnBind(Intent intent)

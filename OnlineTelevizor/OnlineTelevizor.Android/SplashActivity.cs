@@ -7,7 +7,7 @@ using Android.Util;
 
 namespace OnlineTelevizor.Droid
 {
-    [Activity(Name= "net.petrjanousek.OnlineTelevizor.SplashActivity", Label = "Online Televizor", Theme = "@style/SplashTheme", Banner = "@drawable/banner", MainLauncher = true, NoHistory = true, Exported = true)]
+    [Activity(Name= "net.petrjanousek.OnlineTelevizor.SplashActivity", Label = "Online Televizor", Theme = "@style/SplashTheme", Icon = "@drawable/icon", Banner = "@drawable/banner", MainLauncher = true, NoHistory = true, Exported = true)]
     [IntentFilter(new[] { Intent.ActionMain }, Categories = new[] { Intent.CategoryLauncher })]
     public class SplashActivity : AppCompatActivity
     {
