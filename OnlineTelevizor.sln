@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{E7015148
 		Clear.bat = Clear.bat
 		Clear.ps1 = Clear.ps1
 		OnlineTelevizor.configuration.json = OnlineTelevizor.configuration.json
+		PushConfigToDevice.bat = PushConfigToDevice.bat
 		RemoteAccessClient.ps1 = RemoteAccessClient.ps1
 		ResizeIconImage.ps1 = ResizeIconImage.ps1
 		ResizeLauncherImage.ps1 = ResizeLauncherImage.ps1
@@ -39,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "O2TVAPI", "O2TVAPI\O2TVAPI.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVAPIs", "TVAPIs", "{DD72B7D2-8B87-43AA-B013-08E493435D56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{45DAAB2F-867E-4EC4-AC13-C97EC7A3684C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo", "Demo\Demo.csproj", "{45DAAB2F-867E-4EC4-AC13-C97EC7A3684C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
