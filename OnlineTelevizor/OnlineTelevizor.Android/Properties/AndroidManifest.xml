@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="net.petrjanousek.OnlineTelevizor" android:installLocation="preferExternal" android:versionCode="73" android:versionName="73.0">
-	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="33" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="net.petrjanousek.OnlineTelevizor" android:installLocation="preferExternal" android:versionCode="74" android:versionName="74.0">
+	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="34" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<application android:label="OnlineTelevizor" android:icon="@drawable/icon" android:banner="@drawable/banner"></application>
 	<uses-feature android:name="android.hardware.usb.host" />
 	<uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 	<uses-permission android:name="com.android.vending.BILLING" />
 	<uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-  <uses-feature android:name="android.software.leanback" android:required="true" />
 </manifest>

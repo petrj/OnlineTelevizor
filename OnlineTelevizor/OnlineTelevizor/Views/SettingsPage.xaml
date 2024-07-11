@@ -187,7 +187,7 @@
 
                             <BoxView x:Name="SledovaniTVDevicePasswordBoxView" Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Transparent"/>
                             <Label Grid.Row="2" Grid.Column="0" Text="Heslo" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
-                            <Entry Grid.Row="3" Grid.Column="0" x:Name="DevicePasswordEntry" IsPassword="True" Text="{Binding SledovaniTVDevicePassword, Mode=TwoWay}" Placeholder="Heslo zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
+                            <Entry Grid.Row="3" Grid.Column="0" x:Name="DevicePasswordEntry" Text="{Binding SledovaniTVDevicePassword, Mode=TwoWay}" Placeholder="Heslo zařízení" Style="{StaticResource CommonEntryTextStyle}" FontSize="{Binding FontSizeForEntry}" />
                         </Grid>
 
                         <Label x:Name="SledovaniTVPairedDeviceNoteLabel" Margin="60,10,0,0" IsVisible="{Binding ShowSledovaniPairedDevice}" Text="Id a heslo zařízení se dají najít v cookies webového prohlížeče." Style="{StaticResource NoteStyle}" FontSize="{Binding FontSizeForText}"/>

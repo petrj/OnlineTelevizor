@@ -48,7 +48,7 @@
     <AndroidKeyStore>false</AndroidKeyStore>
     <AndroidSigningStorePass>
     </AndroidSigningStorePass>
-    <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+    <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidUseAapt2>true</AndroidUseAapt2>
@@ -119,10 +119,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LibVLCSharp">
-      <Version>3.8.2</Version>
+      <Version>3.8.5</Version>
     </PackageReference>
     <PackageReference Include="LibVLCSharp.Forms">
-      <Version>3.8.2</Version>
+      <Version>3.8.5</Version>
     </PackageReference>
     <PackageReference Include="LoggerService">
       <Version>1.0.4</Version>
