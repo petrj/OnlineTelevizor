@@ -440,6 +440,9 @@ namespace OnlineTelevizor.Views
             _viewModel.NotifySledovaniTVDeviceIChange();
 
             _focusItems.DeFocusAll();
+
+            // workaround for focusing first element in scrollview after page has appeared. User then cannot show popup on Focus() !
+            FullscreenSwitch.Focus();
         }
 
         private void OnRemoteTelevizorLabelTapped(object sender, EventArgs e)
