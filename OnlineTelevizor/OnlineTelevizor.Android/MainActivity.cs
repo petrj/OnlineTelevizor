@@ -33,7 +33,7 @@ using System.Threading;
 namespace OnlineTelevizor.Droid
 {
     [Activity(Name = "net.petrjanousek.OnlineTelevizor.MainActivity", Label = "Online Televizor", Icon = "@drawable/icon", Banner = "@drawable/banner", Theme = "@style/MainTheme", MainLauncher = false, Exported = false, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    [IntentFilter(new[] { Intent.ActionView, Intent.ActionDefault }, Categories = new[] { Intent.CategoryDefault, Intent.CategoryLeanbackLauncher })]
+    [IntentFilter(new[] { Intent.ActionView, Intent.ActionDefault }, Categories = new[] { Intent.CategoryDefault })]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, InputManager.IInputDeviceListener
     {
         private App _app;
