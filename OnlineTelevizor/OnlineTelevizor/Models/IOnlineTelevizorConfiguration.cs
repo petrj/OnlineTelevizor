@@ -58,14 +58,6 @@ namespace OnlineTelevizor.Models
 
         AppFontSizeEnum AppFontSize { get; set; }
 
-        bool Purchased { get; set; }
-
-        bool PurchaseTokenSent { get; set; }
-
-        bool NotPurchased { get; }
-
-        string PurchaseProductId { get; }
-
         bool DebugMode { get; set; }
 
         // private cached login credentailes

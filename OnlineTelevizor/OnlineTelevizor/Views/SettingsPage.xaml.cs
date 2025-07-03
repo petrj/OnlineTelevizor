@@ -137,7 +137,6 @@ namespace OnlineTelevizor.Views
                 .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessPort", new List<View>() { RemoteAccessPortBoxView, PortEntry }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessSecurityKey", new List<View>() { RemoteAccessSecurityKeyBoxView, SecurityKeyEntry }))
 
-                .AddItem(KeyboardFocusableItem.CreateFrom("Pay", new List<View>() { PayButton }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("About", new List<View>() { AboutButton }));
 
             _focusItems.OnItemFocusedEvent += _focusItems_OnItemFocusedEvent;
@@ -157,12 +156,6 @@ namespace OnlineTelevizor.Views
                 case KeyboardFocusDirection.Next: action = delegate { _focusItems.FocusNextItem(); }; break;
                 case KeyboardFocusDirection.Previous: action = delegate { _focusItems.FocusPreviousItem(); }; break;
                 default: action = delegate { _args.FocusedItem.DeFocus(); }; break;
-            }
-
-            if (_args.FocusedItem.Name == "Pay" && (!_viewModel.IsNotPurchased))
-            {
-                action();
-                return;
             }
 
             if (_args.FocusedItem.Name == "KUKISN" && (!_viewModel.IsKUKITVVisible))
@@ -334,11 +327,6 @@ namespace OnlineTelevizor.Views
                             break;
                         case "RemoteAccessIP":
                             IPEntry.Focus();
-                            break;
-
-
-                        case "Pay":
-                            _viewModel.PayCommand.Execute(null);
                             break;
                         case "About":
                             _viewModel.AboutCommand.Execute(null);

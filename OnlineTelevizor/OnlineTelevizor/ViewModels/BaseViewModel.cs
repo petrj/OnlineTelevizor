@@ -1,7 +1,6 @@
 ﻿using LoggerService;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.Services;
-using Plugin.InAppBilling;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using System;
@@ -197,108 +196,6 @@ namespace OnlineTelevizor.ViewModels
         }
 
         #endregion
-
-
-        protected async Task<InAppBillingPurchase> GetPurchase()
-        {
-            var purchases = await CrossInAppBilling.Current.GetPurchasesAsync(ItemType.InAppPurchase);
-            foreach (var purchase in purchases)
-            {
-                if (purchase.ProductId == Config.PurchaseProductId)
-                {
-                    return purchase;
-                }
-            }
-
-            return null;
-        }
-
-        public async Task CheckPurchase()
-        {
-            _loggingService.Info($"Checking purchase");
-
-#if DEBUG
-    return; // no check in debug mode, purchased state is managed by configuration
-#endif
-
-            try
-            {
-                // contacting service
-
-                var connected = await CrossInAppBilling.Current.ConnectAsync();
-
-                if (!connected)
-                {
-                    _loggingService.Info($"Connection to AppBilling service failed");
-                    //await _dialogService.Information("Nepodařilo se ověřit stav zaplacení plné verze.");
-                    return;
-                }
-
-                var purchase = await GetPurchase();
-                if (purchase != null)
-                {
-                    if (purchase.State == PurchaseState.Purchased)
-                    {
-                        Config.Purchased = true;
-                    } else
-                    {
-                        Config.Purchased = false;
-                    }
-
-                    if (Config.Purchased)
-                    {
-                        if ((purchase.IsAcknowledged.HasValue && !purchase.IsAcknowledged.Value) || !Config.PurchaseTokenSent)
-                        {
-                            await AcknowledgePurchase(purchase.PurchaseToken);
-                        }
-
-                        _loggingService.Info($"App purchased (InAppBillingPurchase)");
-
-                        _loggingService.Info($"Purchase AutoRenewing: {purchase.AutoRenewing}");
-                        _loggingService.Info($"Purchase Payload: {purchase.Payload}");
-                        _loggingService.Info($"Purchase PurchaseToken: {purchase.PurchaseToken}");
-                        _loggingService.Info($"Purchase State: {purchase.State}");
-                        _loggingService.Info($"Purchase TransactionDateUtc: {purchase.TransactionDateUtc}");
-                        _loggingService.Info($"Purchase ConsumptionState: {purchase.ConsumptionState}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _loggingService.Error(ex, "Error while checking purchase");
-            }
-            finally
-            {
-                await CrossInAppBilling.Current.DisconnectAsync();
-            }
-        }
-
-        protected async Task AcknowledgePurchase(string token)
-        {
-            _loggingService.Info($"Acknowledge purchase token: {token}");
-
-            try
-            {
-                var acknowledged = await CrossInAppBilling.Current.FinalizePurchaseAsync(token);
-
-                foreach (var purchase in acknowledged)
-                {
-                    if (purchase.Success)
-                    {
-                        Config.PurchaseTokenSent = true;
-                        _loggingService.Info($"Successfully acknowledged");
-                    }
-                    else
-                    {
-                        _loggingService.Info($"Acknowledge failed");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _loggingService.Error(ex, "Acknowledge error");
-            }
-        }
 
         public async Task Play(ChannelItem channel)
         {

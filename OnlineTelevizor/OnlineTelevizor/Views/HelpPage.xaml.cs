@@ -1,5 +1,4 @@
 ﻿using LoggerService;
-using Plugin.InAppBilling;
 using OnlineTelevizor.Models;
 using OnlineTelevizor.Services;
 using OnlineTelevizor.ViewModels;

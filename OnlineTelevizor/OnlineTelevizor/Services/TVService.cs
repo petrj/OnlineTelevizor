@@ -196,42 +196,6 @@ namespace OnlineTelevizor.Services
                             // unknown Locked state
                         }
 
-                        if (!_config.Purchased)
-                        {
-                            // channel filter
-
-                            if (_config.TVApi == TVAPIEnum.SledovaniTV)
-                            {
-                                if (!(
-                                        (ch.Id == "ct24") ||
-                                        (ch.Id == "ct2") ||
-                                        (ch.Id == "radio_country") ||
-                                        (ch.Id == "fireplace") ||
-                                        (ch.Id == "retro") ||
-                                        (ch.Id == "nasatv")
-                                        ))
-                                    continue;
-                            }
-
-                            if (_config.TVApi == TVAPIEnum.KUKI)
-                            {
-                                if (!(
-                                        (ch.Id == "ct2hd") ||
-                                        (ch.Id == "seznam") ||
-                                        (ch.Id == "kinosvet") ||
-                                        (ch.Id == "croradiozurnal") ||
-                                        (ch.Id == "radiojunior")
-                                        ))
-                                    continue;
-                            }
-
-                            if (_config.TVApi == TVAPIEnum.O2TV)
-                            {
-                                if (channelIndex > 5)
-                                    continue;
-                            }
-                        }
-
                         channelIndex++;
 
                         var channelItem = ChannelItem.CreateFromChannel(ch);
