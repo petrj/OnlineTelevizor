@@ -325,6 +325,9 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
+                if (Config.TVApi == TVAPIEnum.Demo)
+                    return false;
+
                 if (Config.TVApi == TVAPIEnum.SledovaniTV &&
                     String.IsNullOrEmpty(Config.Username) &&
                     String.IsNullOrEmpty(Config.Password))
