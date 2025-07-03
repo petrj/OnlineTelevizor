@@ -280,48 +280,6 @@ namespace OnlineTelevizor.iOS
             }
         }
 
-        public bool Purchased
-        {
-            get
-            {
-                return true;
-            }
-            set
-            { }
-        }
-
-        public bool PurchaseTokenSent
-        {
-            get
-            {
-                return true;
-            }
-            set
-            {
-
-            }
-        }
-
-        public string PurchaseToken
-        {
-            get
-            {
-                return null;
-            }
-            set
-            {
-
-            }
-        }
-
-        public bool NotPurchased
-        {
-            get
-            {
-                return !Purchased;
-            }
-        }
-
         public bool DebugMode
         {
             get
@@ -371,14 +329,6 @@ namespace OnlineTelevizor.iOS
             set
             {
                 SavePersistingSettingValue<string>("StreamQuality", value);
-            }
-        }
-
-        public string PurchaseProductId
-        {
-            get
-            {
-                return "onlinetelevizor.full";
             }
         }
 

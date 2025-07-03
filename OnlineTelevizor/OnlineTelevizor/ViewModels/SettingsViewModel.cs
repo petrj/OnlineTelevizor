@@ -7,9 +7,6 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Plugin.Permissions;
-using Plugin.Permissions.Abstractions;
-using Plugin.InAppBilling;
 using System.Collections.ObjectModel;
 using System.Reflection;
 
@@ -21,7 +18,6 @@ namespace OnlineTelevizor.ViewModels
         private bool _showSledovaniPairedDevice = false;
         private TVService _service;
 
-        public Command PayCommand { get; set; }
         public Command StopStreamCommand { get; set; }
         public Command DeactivateSledovaniTVDeviceCommand { get; set; }
 
@@ -39,9 +35,6 @@ namespace OnlineTelevizor.ViewModels
             _dialogService = dialogService;
             Config = config;
 
-            IsPurchased = Config.Purchased;
-
-            PayCommand = new Command(async () => await Pay());
             StopStreamCommand = new Command(async () => await StopStream());
             DeactivateSledovaniTVDeviceCommand = new Command(async () => await DeactivateSledovaniTVDevice());
             AboutCommand = new Command(async () => await About());
@@ -219,117 +212,7 @@ namespace OnlineTelevizor.ViewModels
                 sb.AppendLine($"Verze: {AppVersion}");
             }
 
-            _loggingService.Info($"Checking purchase");
-            try
-            {
-                // contacting service
-
-                var connected = await CrossInAppBilling.Current.ConnectAsync();
-
-                if (connected)
-                {
-                    // check InAppBillingPurchase
-
-                    var purchase = await GetPurchase();
-                    if (purchase != null &&  purchase.State == PurchaseState.Purchased)
-                    {
-                        sb.AppendLine("");
-                        sb.AppendLine("");
-                        sb.AppendLine($"Zakoupena plná verze");
-                        sb.AppendLine("");
-                        sb.AppendLine($"Datum : {purchase.TransactionDateUtc}");
-                        sb.AppendLine($"Id objednávky: {purchase.Id}");
-                    }
-                    if (purchase != null && purchase.State == PurchaseState.PaymentPending)
-                    {
-                        sb.AppendLine("");
-                        sb.AppendLine("");
-                        sb.AppendLine($"Plná verze zakoupena,");
-                        sb.AppendLine($"čeká se na potvrzení platby");
-                        sb.AppendLine("");
-                        sb.AppendLine("");
-                        sb.AppendLine($"Id objednávky: {purchase.Id}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _loggingService.Error(ex, "Error while checking purchase");
-            }
-            finally
-            {
-                await CrossInAppBilling.Current.DisconnectAsync();
-            }
-
             await _dialogService.Information(sb.ToString(), "Online Televizor");
-        }
-
-        protected async Task Pay()
-        {
-
-#if DEBUG
-    Config.Purchased = true;
-    Config.PurchaseTokenSent = true;
-    IsPurchased = true;
-#endif
-
-            try
-            {
-                _loggingService.Info($"Paying product id: {Config.PurchaseProductId}");
-
-                var connected = await CrossInAppBilling.Current.ConnectAsync();
-
-                if (!connected)
-                {
-                    _loggingService.Info($"Connection to AppBilling service failed");
-                    await _dialogService.Information("Připojení k platební službě selhalo.");
-                    return;
-                }
-
-                var purchase = await CrossInAppBilling.Current.PurchaseAsync(Config.PurchaseProductId, ItemType.InAppPurchase);
-                if (purchase == null)
-                {
-                    _loggingService.Info($"Not purchased");
-                    //await _dialogService.Information("Platba nebyla uskutečněna.");
-                }
-                else
-                {
-                    _loggingService.Info($"Purchase OK");
-
-                    _loggingService.Info($"Purchase Id: {purchase.Id}");
-                    _loggingService.Info($"Purchase Token: {purchase.PurchaseToken}");
-                    _loggingService.Info($"Purchase State: {purchase.State.ToString()}");
-                    _loggingService.Info($"Purchase Date: {purchase.TransactionDateUtc.ToString()}");
-                    _loggingService.Info($"Purchase Payload: {purchase.Payload}");
-                    _loggingService.Info($"Purchase ConsumptionState: {purchase.ConsumptionState.ToString()}");
-                    _loggingService.Info($"Purchase AutoRenewing: {purchase.AutoRenewing}");
-
-                    if (purchase.State == PurchaseState.Purchased)
-                    {
-                        Config.Purchased = true;
-                        Config.PurchaseTokenSent = false;
-
-                        await AcknowledgePurchase(purchase.PurchaseToken);
-
-                        IsPurchased = true;
-                    } else if (purchase.State == PurchaseState.PaymentPending)
-                    {
-                        await _dialogService.Information($"Platba byla úspěšně provedena, čeká se na její potvrzení.{Environment.NewLine}Kontrola potvrzení platby proběhne po případném znovu spuštění aplikace.");
-                    } else
-                    {
-                        await _dialogService.Information($"Při provedení platby došlo k chybě.");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                //await _dialogService.Information("Platba se nezdařila.");
-                _loggingService.Error(ex, "Payment failed");
-            }
-            finally
-            {
-                await CrossInAppBilling.Current.DisconnectAsync();
-            }
         }
 
         public int TVAPIIndex
@@ -395,36 +278,6 @@ namespace OnlineTelevizor.ViewModels
                 OnPropertyChanged(nameof(AppFontSizeIndex));
 
                 NotifyFontSizeChange();
-            }
-        }
-
-        public bool IsNotPurchased
-        {
-            get
-            {
-                return !IsPurchased;
-            }
-            set
-            {
-                IsPurchased = !value;
-
-                OnPropertyChanged(nameof(IsNotPurchased));
-                OnPropertyChanged(nameof(IsPurchased));
-            }
-        }
-
-        public bool IsPurchased
-        {
-            get
-            {
-                return _isPruchased;
-            }
-            set
-            {
-                _isPruchased = value;
-
-                OnPropertyChanged(nameof(IsNotPurchased));
-                OnPropertyChanged(nameof(IsPurchased));
             }
         }
 

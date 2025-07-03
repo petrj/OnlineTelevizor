@@ -264,38 +264,6 @@ namespace OnlineTelevizor.UWP
             }
         }
 
-        public bool Purchased
-        {
-            get
-            {
-                return true;
-            }
-            set
-            {
-
-            }
-        }
-
-        public bool PurchaseTokenSent
-        {
-            get
-            {
-                return true;
-            }
-            set
-            {
-
-            }
-        }
-
-        public bool NotPurchased
-        {
-            get
-            {
-                return !Purchased;
-            }
-        }
-
         public bool DebugMode
         {
             get
@@ -345,14 +313,6 @@ namespace OnlineTelevizor.UWP
             set
             {
                 SaveSettingValue<string>("StreamQuality", value);
-            }
-        }
-
-        public string PurchaseProductId
-        {
-            get
-            {
-                return "onlinetelevizor.full";
             }
         }
 

@@ -228,39 +228,6 @@ namespace OnlineTelevizor.Droid
             }
         }
 
-        public bool Purchased
-        {
-            get
-            {
-                return GetPersistingSettingValue<bool>("Purchased");
-            }
-            set
-            {
-                SavePersistingSettingValue<bool>("Purchased", value);
-            }
-        }
-
-
-        public bool PurchaseTokenSent
-        {
-            get
-            {
-                return GetPersistingSettingValue<bool>("PurchaseTokenSent");
-            }
-            set
-            {
-                SavePersistingSettingValue<bool>("PurchaseTokenSent", value);
-            }
-        }
-
-        public bool NotPurchased
-        {
-            get
-            {
-                return !Purchased;
-            }
-        }
-
         public bool DebugMode
         {
             get
@@ -295,14 +262,6 @@ namespace OnlineTelevizor.Droid
             set
             {
                 SavePersistingSettingValue<string>("StreamQuality", value);
-            }
-        }
-
-        public string PurchaseProductId
-        {
-            get
-            {
-                return "onlinetelevizor.full";
             }
         }
 

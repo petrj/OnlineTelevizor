@@ -8,7 +8,6 @@ using Android.OS;
 using OnlineTelevizor.Services;
 using OnlineTelevizor.Views;
 using Plugin.Permissions;
-using Plugin.InAppBilling;
 using Xamarin.Forms;
 using OnlineTelevizor.ViewModels;
 using OnlineTelevizor.Models;
@@ -178,38 +177,6 @@ namespace OnlineTelevizor.Droid
             }
 
             return false;
-        }
-
-        private async void MakeScreenShot()
-        {
-            try
-            {
-                var screenshot = await Screenshot.CaptureAsync();
-                var stream = await screenshot.OpenReadAsync();
-
-                var c = 0;
-                string fileName = null;
-
-                do
-                {
-                    c++;
-                    fileName = System.IO.Path.Combine(_cfg.OutputDirectory, $"screenshot{c.ToString().PadLeft(5, '0')}.png");
-                }
-                while (System.IO.File.Exists(fileName));
-
-                using (FileStream fs = File.Open(fileName, FileMode.CreateNew))
-                {
-                    await stream.CopyToAsync(fs);
-                    await fs.FlushAsync();
-                }
-
-                ShowToastMessage($"Snímek obrazovky uložen do souboru {fileName}");
-
-            } catch (Exception ex)
-            {
-                _loggingService.Error(ex);
-                ShowToastMessage($"Snímek obrazovky se nezdařil");
-            }
         }
 
         private void SubscribeMessages()
@@ -583,16 +550,6 @@ namespace OnlineTelevizor.Droid
             {
                 if (keyAction != KeyboardNavigationActionEnum.Unknown)
                 {
-#if DEBUG
-                    // screenshot (except VideoView)
-                    if (code.ToLower() == "p")
-                    {
-                        MakeScreenShot();
-
-                        _loggingService.Debug($"DispatchKeyEvent: {code} -> saving screenshot");
-                        return true;
-                    }
-#endif
                     _loggingService.Debug($"DispatchKeyEvent: {code} -> sending to application, time: {e.EventTime - e.DownTime}");
 
                     MessagingCenter.Send(code, BaseViewModel.MSG_KeyAction);

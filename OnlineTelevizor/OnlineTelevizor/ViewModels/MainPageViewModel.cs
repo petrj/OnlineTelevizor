@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Threading;
-using Plugin.InAppBilling;
 using TVAPI;
 using System.ComponentModel;
 using System.Net;
@@ -79,7 +78,6 @@ namespace OnlineTelevizor.ViewModels
         public Command RefreshChannelsCommand { get; set; }
         public Command RefreshEPGCommand { get; set; }
         public Command ResetConnectionCommand { get; set; }
-        public Command CheckPurchaseCommand { get; set; }
 
         public Command LongPressCommand { get; set; }
         public Command ShortPressCommand { get; set; }
@@ -109,8 +107,6 @@ namespace OnlineTelevizor.ViewModels
 
             RefreshCommand = new Command(async () => await Refresh());
             RefreshCommandWithNotification = new Command(async () => await RefreshWithNotification());
-
-            CheckPurchaseCommand = new Command(async () => await CheckPurchase());
 
             RefreshEPGCommand = new Command(async () => await RefreshEPG());
 
@@ -785,12 +781,6 @@ namespace OnlineTelevizor.ViewModels
 
             if (recordStart)
             {
-                if (!Config.Purchased)
-                {
-                    await _dialogService.Information("Nahrávání je funkční jen v plné verzi");
-                    return;
-                }
-
                 var freespace = Config.UsableSpace;
                 var freespaceGB = Convert.ToInt64(freespace / 1000000000);
 
@@ -1506,9 +1496,6 @@ namespace OnlineTelevizor.ViewModels
             {
                 string status = String.Empty;
 
-                if (!Config.Purchased)
-                    status = "Verze zdarma. ";
-
                 if (_notFilteredChannelsCount == 0)
                 {
                     return $"{status}Není k dispozici žádný kanál";
@@ -1556,8 +1543,6 @@ namespace OnlineTelevizor.ViewModels
         private async Task Refresh()
         {
             _loggingService.Info($"Refresh");
-
-            await CheckPurchase();
 
             if (await CheckEmptyCredentials())
             {
