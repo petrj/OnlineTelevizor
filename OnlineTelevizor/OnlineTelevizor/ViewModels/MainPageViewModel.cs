@@ -1945,13 +1945,12 @@ namespace OnlineTelevizor.ViewModels
 
         public async Task<bool> CheckEmptyCredentials()
         {
-
             if (!_emptyCredentialsChecked && EmptyCredentials)
             {
                 await _dialogService.ConfirmSingleButton("Nejsou vyplněny přihlašovací údaje" +
                     Environment.NewLine +
                     Environment.NewLine +
-                    "Pro sledování živého vysílání je nutné být uživatelem SledovaniTV, Kuki nebo O2 TV a v nastavení musí být vyplněny odpovídající přihlašovací údaje k těmto službám.",
+                    "Pro sledování živého vysílání je nutné být uživatelem SledovaniTV nebo Kuki a v nastavení musí být vyplněny odpovídající přihlašovací údaje k těmto službám.",
                     "Online Televizor", "Přejít do nastavení");
 
                 _emptyCredentialsChecked = true;

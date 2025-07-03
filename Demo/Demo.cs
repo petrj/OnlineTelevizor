@@ -49,6 +49,21 @@ namespace DemoTVAPI
                              SubTitles = null,
                              Type = "Radio",
                              Url = "https://stream.rcs.revma.com/3d47nqvb938uv"
+                        },
+                        new Channel()
+                        {
+                             Name = "Český rozhlas Plus",
+                             EPGId = "3",
+                             Id = "3",
+                             ChannelNumber = "3",
+                             Group = "Český rozhlas",
+                             error = null,
+                             Locked = "none",
+                             LogoUrl = null,
+                             status = null,
+                             SubTitles = null,
+                             Type = "Radio",
+                             Url = "http://amp.cesnet.cz:8000/cro-plus.ogg"
                         }
                     };
 
@@ -73,6 +88,16 @@ namespace DemoTVAPI
                              Start = DateTime.Now.Date,
                              Finish = DateTime.Now.Date.AddDays(1),
                              Title = "První bigbít u nás"
+                        },
+                        new EPGItem()
+                        {
+                             ChannelId = "3",
+                             Description = "Live stream rádia Plus",
+                             EPGId = "1",
+                             error = null,
+                             Start = DateTime.Now.Date,
+                             Finish = DateTime.Now.Date.AddDays(1),
+                             Title = "Analyticko-publicistická stanice"
                         }
                    };
         }

@@ -8,7 +8,7 @@ namespace OnlineTelevizor.Models
     {
         SledovaniTV = 0,
         KUKI = 1,
-        O2TV = 2,
-        Demo = 3
+        Demo = 2,
+        O2TV = 3
     }
 }
