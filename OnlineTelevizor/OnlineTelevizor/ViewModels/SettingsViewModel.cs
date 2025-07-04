@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using Xamarin.Essentials;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -202,17 +203,8 @@ namespace OnlineTelevizor.ViewModels
 
         protected async Task About()
         {
-            var sb = new StringBuilder();
-
-            sb.AppendLine("");
-            sb.AppendLine($"Autor: Petr Janoušek");
-
-            if (!string.IsNullOrEmpty(AppVersion))
-            {
-                sb.AppendLine($"Verze: {AppVersion}");
-            }
-
-            await _dialogService.Information(sb.ToString(), "Online Televizor");
+            var uri = new Uri("https://onlinetelevizor.petrjanousek.net");
+            await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
         }
 
         public int TVAPIIndex
