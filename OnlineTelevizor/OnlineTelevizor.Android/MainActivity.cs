@@ -252,8 +252,7 @@ namespace OnlineTelevizor.Droid
             }
             catch (Exception ex)
             {
-                // Oprávnění už může být uděleno nebo došlo k chybě
-                Console.WriteLine($"[SAF] Error restoring permission: {ex.Message}");
+                _loggingService.Error(ex, "RestorePersistedPermission failed");
             }
         }
 

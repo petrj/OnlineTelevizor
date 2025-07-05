@@ -550,5 +550,11 @@ namespace OnlineTelevizor.UWP
             get { return null; }
             set {  }
         }
+
+        public string SDCardPathUri
+        {
+            get { return null; }
+            set { }
+        }
     }
 }
