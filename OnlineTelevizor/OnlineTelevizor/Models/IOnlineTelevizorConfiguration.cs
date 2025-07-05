@@ -43,6 +43,8 @@ namespace OnlineTelevizor.Models
 
         bool IsRunningOnTV { get; set; }
 
+        bool WriteToSDCard { get; set; }
+
         string RemoteAccessServiceIP { get; set; }
         int RemoteAccessServicePort { get; set; }
         string RemoteAccessServiceSecurityKey { get; set; }

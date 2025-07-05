@@ -36,6 +36,7 @@ namespace OnlineTelevizor.Views
 
             PlayOnBackgroundSwitch.Toggled += PlayOnBackgroundSwitch_Toggled;
             UseInternalPlayerSwitch.Toggled += PlayOnBackgroundSwitch_Toggled;
+            WriteToSDCardSwitch.Toggled += WriteToSDCardSwitch_Toggled;
             ShowSledovaniPairedDeviceSwitch.Toggled += ShowSledovaniPairedDeviceSwitch_Toggled;
             IPEntry.Unfocused += IPEntry_Unfocused;
             PortEntry.Unfocused += PortEntry_Unfocused;
@@ -61,7 +62,23 @@ namespace OnlineTelevizor.Views
                 }
             });
 
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_SDCardPermissionsGranted, async (sender) =>
+            {
+                _viewModel.AllowWriteToSDCard();
+            });
+
             BuildFocusableItems();
+        }
+
+        private void WriteToSDCardSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (e.Value)
+            {
+                _viewModel.RequestWriteToSDCard();
+            } else
+            {
+                _viewModel.NotifyConfigChanged();
+            }
         }
 
         private async void PortEntry_Unfocused(object sender, FocusEventArgs e)
@@ -131,6 +148,8 @@ namespace OnlineTelevizor.Views
                 .AddItem(KeyboardFocusableItem.CreateFrom("Fullscreen", new List<View>() { FullscreenBoxView, FullscreenSwitch }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("PlayInternal", new List<View>() { PlayInternalBoxView, UseInternalPlayerSwitch }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("PlayOnBackground", new List<View>() { PlayOnBackgroundBoxView, PlayOnBackgroundSwitch }))
+
+                .AddItem(KeyboardFocusableItem.CreateFrom("WriteToSDCard", new List<View>() { WriteToSDCardBoxView, WriteToSDCardSwitch }))
 
                 .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessEnabled", new List<View>() { RemoteAccessEnabledBoxView, RemoteAccessSwitch }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessIP", new List<View>() { RemoteAccessIPBoxView, IPEntry }))
@@ -314,6 +333,9 @@ namespace OnlineTelevizor.Views
                             break;
                         case "PlayOnBackground":
                             PlayOnBackgroundSwitch.IsToggled = !PlayOnBackgroundSwitch.IsToggled;
+                            break;
+                        case "WriteToSDCard":
+                            WriteToSDCardSwitch.IsToggled = !WriteToSDCardSwitch.IsToggled;
                             break;
 
                         case "RemoteAccessEnabled":

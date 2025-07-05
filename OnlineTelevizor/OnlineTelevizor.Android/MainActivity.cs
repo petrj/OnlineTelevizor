@@ -28,6 +28,8 @@ using Android.InputMethodServices;
 using AndroidX.ConstraintLayout.Core.Widgets.Analyzer;
 using System.IO;
 using System.Threading;
+using Android.Support.V4.Content;
+using Android;
 
 namespace OnlineTelevizor.Droid
 {
@@ -46,6 +48,8 @@ namespace OnlineTelevizor.Droid
         private DateTime _lastOnGenericMotionEventTime = DateTime.MinValue;
         private bool _dispatchKeyEventEnabled = false;
         private DateTime _dispatchKeyEventEnabledAt = DateTime.MaxValue;
+
+        const int RequestStorageId = 111; // just a random number for storage permissions request
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -157,6 +161,36 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        void RequestStoragePermission()
+        {
+            int sdkInt = (int)Build.VERSION.SdkInt;
+
+            if (sdkInt >= 30)
+            {
+                // Android 11+ (API 30+)
+                ShowToastMessage("Android 11+ vyžaduje Storage Access Framework pro přístup na SD kartu.");
+            }
+            else
+            {
+                //Xamarin.Essentials.Permissions.RequestAsync<Permissions.StorageWrite>();
+                //Xamarin.Essentials.Permissions.RequestAsync<Permissions.StorageRead>();
+
+                if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.WriteExternalStorage) != Permission.Granted)
+                {
+                    ActivityCompat.RequestPermissions(this,
+                        new string[]
+                        {
+                            Manifest.Permission.WriteExternalStorage,
+                            Manifest.Permission.ReadExternalStorage
+                        },RequestStorageId);
+                }
+                else
+                {
+                    MessagingCenter.Send(String.Empty, BaseViewModel.MSG_SDCardPermissionsGranted);
+                }
+            }
+        }
+
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
             _loggingService.Error(e.Exception, "TaskScheduler_UnobservedTaskException");
@@ -181,6 +215,11 @@ namespace OnlineTelevizor.Droid
 
         private void SubscribeMessages()
         {
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_RequestSDCardPermissions, (message) =>
+            {
+                RequestStoragePermission();
+            });
+
             MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_ToastMessage, (message) =>
             {
                 ShowToastMessage(message);
@@ -463,6 +502,18 @@ namespace OnlineTelevizor.Droid
         {
             PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            if (requestCode == RequestStorageId)
+            {
+                if (grantResults.Length > 0 && grantResults[0] == Permission.Granted)
+                {
+                    MessagingCenter.Send(String.Empty, BaseViewModel.MSG_SDCardPermissionsGranted);
+                }
+                else
+                {
+                    ShowToastMessage("Oprávnění pro zápis na SD kartu bylo odmítnuto.");
+                }
+            }
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)

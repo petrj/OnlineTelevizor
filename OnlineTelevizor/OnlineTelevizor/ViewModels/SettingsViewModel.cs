@@ -10,6 +10,7 @@ using Xamarin.Forms;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using Xamarin.Essentials;
+using OnlineTelevizor.Views;
 
 namespace OnlineTelevizor.ViewModels
 {
@@ -63,7 +64,8 @@ namespace OnlineTelevizor.ViewModels
                 if (value)
                 {
                     MessagingCenter.Send(String.Empty, BaseViewModel.MSG_EnableFullScreen);
-                } else
+                }
+                else
                 {
                     MessagingCenter.Send(String.Empty, BaseViewModel.MSG_DisableFullScreen);
                 }
@@ -290,7 +292,7 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                return  !(String.IsNullOrEmpty(Config.DeviceId)) &&
+                return !(String.IsNullOrEmpty(Config.DeviceId)) &&
                         !(String.IsNullOrEmpty(Config.DevicePassword));
             }
         }
@@ -352,9 +354,30 @@ namespace OnlineTelevizor.ViewModels
             {
                 Config.AllowRemoteAccessService = value;
 
-                OnPropertyChanged(nameof(Config));
+                NotifyConfigChanged();
             }
         }
 
+        public void RequestWriteToSDCard()
+        {
+            // automatically diable write to sd card until permissions granted
+            Config.WriteToSDCard = false;
+
+            // check SD card permissions
+            MessagingCenter.Send(String.Empty, BaseViewModel.MSG_RequestSDCardPermissions);
+
+            NotifyConfigChanged();
+        }
+
+        public void AllowWriteToSDCard()
+        {
+            Config.WriteToSDCard = true;
+            NotifyConfigChanged();
+        }
+
+        public void NotifyConfigChanged()
+        {
+            OnPropertyChanged(nameof(Config));
+        }
     }
 }

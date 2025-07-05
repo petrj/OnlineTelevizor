@@ -52,6 +52,8 @@ namespace OnlineTelevizor.ViewModels
         public const string MSG_SetBatterySettings = "SetBatterySettings ";
         public const string MSG_DisableDispatchKeyEvent = "DisableDispatchKeyEvent";
         public const string MSG_EnableDispatchKeyEvent = "EnableDispatchKeyEvent";
+        public const string MSG_RequestSDCardPermissions = "RequestSDCardPermissions";
+        public const string MSG_SDCardPermissionsGranted = "SDCardPermissionsGranted";
 
         public IOnlineTelevizorConfiguration Config { get; set; }
 

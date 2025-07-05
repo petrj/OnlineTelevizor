@@ -335,7 +335,13 @@ namespace OnlineTelevizor.ViewModels
         {
             _loggingService.Info($"_recordingBackgroundWorker_DoWork started");
 
+
             var outputFileName = Path.Combine(Config.OutputDirectory, $"{_recordingChannel.Name} {DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss")}.ts");
+
+            if (!Directory.Exists(Config.OutputDirectory))
+            {
+                System.IO.Directory.CreateDirectory(Config.OutputDirectory);
+            }
 
             using (var libvlc = new LibVLC())
             using (var mediaPlayer = new MediaPlayer(libvlc))
