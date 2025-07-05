@@ -61,6 +61,17 @@ namespace OnlineTelevizor.Services
             }
         }
 
+        public void UpdateConnection()
+        {
+            switch (_config.TVApi)
+            {
+                case TVAPIEnum.SledovaniTV:
+
+                    _config.DeviceId = _service.Connection.deviceId;
+                    _config.DevicePassword = _service.Connection.password;
+                    break;
+            }
+        }
 
         public async Task<Dictionary<string, List<EPGItem>>>  GetEPG()
         {
@@ -217,12 +228,17 @@ namespace OnlineTelevizor.Services
 
             _adultChannelsUnlocked = false;
 
-            _config.DeviceId = null;
-            _config.DevicePassword = null;
+            //_config.DeviceId = null;
+            //_config.DevicePassword = null;
 
             InitTVService();
 
             await _service.Login();
+
+            if (Status == StatusEnum.Logged)
+            {
+                UpdateConnection();
+            }
         }
 
         public StatusEnum Status

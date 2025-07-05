@@ -41,6 +41,7 @@ namespace OnlineTelevizor.Models
 
         bool PlayOnBackground { get; set; }
         bool PlayOnBackgroundSwitchEnabled { get; }
+        bool SDCardOptionsEnabled { get; }
 
         bool IsRunningOnTV { get; set; }
 

@@ -206,6 +206,14 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        public bool SDCardOptionsEnabled
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public string LastChannelNumber
         {
             get

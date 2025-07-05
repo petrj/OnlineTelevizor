@@ -213,12 +213,15 @@ namespace SledovaniTVAPI
                 {
                     if ((devConnJson.HasValue("error")) && (devConnJson.GetStringValue("error") == "bad login"))
                     {
+                        _log.Info($"Pairing failed - bad login");
                         _status = StatusEnum.PairingFailed;
                     } else
                     {
                         if (devConnJson.HasValue("errorMsg"))
                         {
                             LastErrorDescription = devConnJson.GetStringValue("errorMsg");
+
+                            _log.Info($"Login failed - {LastErrorDescription}");
                         }
                         _status = StatusEnum.LoginFailed;
                     }
@@ -351,7 +354,7 @@ namespace SledovaniTVAPI
 
             await DeviceLogin();
 
-            if (!force && Status == StatusEnum.LoginFailed)
+            if (Status == StatusEnum.LoginFailed)
             {
                 // bad device connection ? Pairing again
                 await CreatePairing();
@@ -577,8 +580,7 @@ namespace SledovaniTVAPI
             _log.Info("ResetConnection");
 
             _status = StatusEnum.NotInitialized;
-            //_deviceConnection.deviceId = null;
-            //_deviceConnection.password = null;
+
             _session.PHPSESSID = null;
         }
 

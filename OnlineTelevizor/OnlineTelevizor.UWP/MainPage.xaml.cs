@@ -42,7 +42,7 @@ namespace OnlineTelevizor.UWP
             (loggingService as FileLoggingService).WriteToOutput = true;
 
 #else
-            loggingService = new DummyLoggingService();
+            loggingService = new BasicLoggingService();
 #endif
 
             LoadApplication(new OnlineTelevizor.Views.App(new UWPOnlineTelevizorConfiguration(), loggingService));
@@ -114,8 +114,8 @@ namespace OnlineTelevizor.UWP
               new Action(
                   async () =>
                   {
-                      var vlcuri = new Uri($"vlc://openstream/?from=url&url={System.Web.HttpUtility.UrlEncode(url)}");
-                      await Launcher.LaunchUriAsync(vlcuri);
+                      var uri = new Uri($"vlc://openstream/?from=url&url={System.Web.HttpUtility.UrlEncode(url)}");
+                      await Launcher.LaunchUriAsync(uri);
                   }));
         }
     }

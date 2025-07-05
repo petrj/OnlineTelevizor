@@ -556,5 +556,13 @@ namespace OnlineTelevizor.UWP
             get { return null; }
             set { }
         }
+
+        public bool SDCardOptionsEnabled
+        {
+            get
+            {
+                return false;
+            }
+        }
     }
 }

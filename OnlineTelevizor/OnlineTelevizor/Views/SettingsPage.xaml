@@ -320,9 +320,9 @@
 
                         <Grid Margin="0,10,0,0">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="80*" />
@@ -330,7 +330,7 @@
                             </Grid.ColumnDefinitions>
 
                             <BoxView x:Name="FullscreenBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
-                            <Label Grid.Row="0" Grid.Column="0" Text="Celá obrazovka" Style="{DynamicResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
+                            <Label Grid.Row="0" Grid.Column="0" Text="Celá obrazovka" Style="{DynamicResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" IsVisible="{Binding Config.FullscreenSwitchEnabled}"/>
                             <Switch Grid.Row="0" Grid.Column="1" x:Name="FullscreenSwitch" IsToggled="{Binding IsFullScreen, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.FullscreenSwitchEnabled}" />
 
                             <BoxView x:Name="PlayInternalBoxView" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
@@ -367,8 +367,8 @@
                             <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Config.OutputDirectory}" Style="{DynamicResource LabelStyle}" FontSize="{Binding FontSizeForLabel}" />
 
                             <BoxView x:Name="WriteToSDCardBoxView" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
-                            <Label Grid.Row="2" Grid.Column="0" Text="Nahrávat na SD kartu" Style="{DynamicResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" />
-                            <Switch Grid.Row="2" Grid.Column="1" x:Name="WriteToSDCardSwitch" IsToggled="{Binding Config.WriteToSDCard, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" />
+                            <Label Grid.Row="2" Grid.Column="0" Text="Nahrávat na SD kartu" Style="{DynamicResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" IsVisible="{Binding Config.SDCardOptionsEnabled}"/>
+                            <Switch Grid.Row="2" Grid.Column="1" x:Name="WriteToSDCardSwitch" IsToggled="{Binding Config.WriteToSDCard, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.SDCardOptionsEnabled}"/>
                         </Grid>
 
                         <Grid Margin="0,10,0,0">
