@@ -1151,6 +1151,7 @@ namespace OnlineTelevizor.ViewModels
                 try
                 {
                     SelectedItem = value;
+                    OnPropertyChanged(nameof(SelectedItem));
                 }
                 finally
                 {
@@ -1316,6 +1317,7 @@ namespace OnlineTelevizor.ViewModels
                     finally
                     {
                         _semaphoreSlim.Release();
+                        OnPropertyChanged(nameof(SelectedItem));
                     };
                 });
         }

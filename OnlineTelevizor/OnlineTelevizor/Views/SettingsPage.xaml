@@ -401,7 +401,7 @@
                             </Grid>
                         </Grid>
 
-                       <Button x:Name="AboutButton" Margin="0,10,0,0" Text="O aplikaci" Command="{Binding AboutCommand}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black" />
+                        <Button x:Name="AboutButton" Margin="0,10,0,0" Text="www.onlinetelevizor.eu" Command="{Binding AboutCommand}"  FontSize="{Binding FontSizeForEntry}" BackgroundColor="Gray" TextColor="Black" />
 
                     </StackLayout>
 
