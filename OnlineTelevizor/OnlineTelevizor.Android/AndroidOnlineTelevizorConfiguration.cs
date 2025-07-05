@@ -1,6 +1,7 @@
 ﻿using Android.Content;
 using Android.OS.Storage;
 using Android.Preferences;
+using Android.Provider;
 using Android.Support.Transitions;
 using Java.Util;
 using LibVLCSharp.Shared;
@@ -403,6 +404,30 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        public string SDCardPath
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("SDCardPath");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("SDCardPath", value);
+            }
+        }
+
+        public string SDCardPathUri
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("SDCardPathUri");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("SDCardPathUri", value);
+            }
+        }
+
         public string OutputDirectory
         {
             get
@@ -413,6 +438,11 @@ namespace OnlineTelevizor.Droid
                 } else
                 {
                     // external storage :
+
+                    if (!String.IsNullOrEmpty(SDCardPath))
+                    {
+                        return SDCardPath;
+                    }
 
                     var externalPath = "";
 

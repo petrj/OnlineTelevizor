@@ -62,9 +62,9 @@ namespace OnlineTelevizor.Views
                 }
             });
 
-            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_SDCardPermissionsGranted, async (sender) =>
+            MessagingCenter.Subscribe<string>(this, BaseViewModel.MSG_SDCardPermissionsGranted, async (path) =>
             {
-                _viewModel.AllowWriteToSDCard();
+                _viewModel.AllowWriteToSDCard(path);
             });
 
             BuildFocusableItems();
@@ -72,6 +72,8 @@ namespace OnlineTelevizor.Views
 
         private void WriteToSDCardSwitch_Toggled(object sender, ToggledEventArgs e)
         {
+            _loggingService.Info("WriteToSDCardSwitch_Toggled");
+
             if (e.Value)
             {
                 _viewModel.RequestWriteToSDCard();

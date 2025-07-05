@@ -1,3 +1,1 @@
-@cd /d %~dp0
-
 adb push OnlineTelevizor.configuration.json /storage/emulated/0/Android/media/net.petrjanousek.OnlineTelevizor/

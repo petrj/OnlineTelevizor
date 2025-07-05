@@ -30,6 +30,8 @@ using System.IO;
 using System.Threading;
 using Android.Support.V4.Content;
 using Android;
+using Android.Provider;
+using static AndroidX.Activity.Result.Contract.ActivityResultContracts;
 
 namespace OnlineTelevizor.Droid
 {
@@ -49,7 +51,9 @@ namespace OnlineTelevizor.Droid
         private bool _dispatchKeyEventEnabled = false;
         private DateTime _dispatchKeyEventEnabledAt = DateTime.MaxValue;
 
-        const int RequestStorageId = 111; // just a random number for storage permissions request
+        // just a random numbers
+        const int RequestStorageId = 111;
+        const int RequestFolderAccessId = 2000;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -154,6 +158,8 @@ namespace OnlineTelevizor.Droid
 
                 var input_manager = (InputManager)GetSystemService(Context.InputService);
 
+                RestorePersistedPermission();
+
                 LoadApplication(_app);
             } catch (Exception ex)
             {
@@ -161,14 +167,31 @@ namespace OnlineTelevizor.Droid
             }
         }
 
-        void RequestStoragePermission()
+
+        private void LaunchFolderPicker()
+        {
+            try
+            {
+                var intent = new Intent(Intent.ActionOpenDocumentTree);
+                intent.AddFlags(ActivityFlags.GrantPersistableUriPermission);
+                intent.AddFlags(ActivityFlags.GrantReadUriPermission);
+                intent.AddFlags(ActivityFlags.GrantWriteUriPermission);
+                StartActivityForResult(intent, RequestFolderAccessId);
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex, "LaunchFolderPicker failed");
+            }
+        }
+
+        private void RequestStoragePermission()
         {
             int sdkInt = (int)Build.VERSION.SdkInt;
 
             if (sdkInt >= 30)
             {
                 // Android 11+ (API 30+)
-                ShowToastMessage("Android 11+ vyžaduje Storage Access Framework pro přístup na SD kartu.");
+                LaunchFolderPicker();
             }
             else
             {
@@ -211,6 +234,27 @@ namespace OnlineTelevizor.Droid
             }
 
             return false;
+        }
+
+        private void RestorePersistedPermission()
+        {
+            try
+            {
+                if (_cfg.SDCardPathUri == null)
+                    return;
+
+                var uri = Android.Net.Uri.Parse(_cfg.SDCardPathUri);
+
+                ContentResolver.TakePersistableUriPermission(
+                    uri,
+                    ActivityFlags.GrantReadUriPermission | ActivityFlags.GrantWriteUriPermission
+                );
+            }
+            catch (Exception ex)
+            {
+                // Oprávnění už může být uděleno nebo došlo k chybě
+                Console.WriteLine($"[SAF] Error restoring permission: {ex.Message}");
+            }
         }
 
         private void SubscribeMessages()
@@ -516,9 +560,52 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+
+        private string GetFullPathFromTreeUri(Android.Net.Uri treeUri)
+        {
+            var docId = DocumentsContract.GetTreeDocumentId(treeUri);
+            // např. "primary:Download" nebo "XXXX-XXXX:MyFolder"
+
+            string[] split = docId.Split(':');
+            if (split.Length < 2)
+                return null;
+
+            string type = split[0];
+            string relativePath = split[1];
+
+            if (type.Equals("primary", StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{Android.OS.Environment.ExternalStorageDirectory}/{relativePath}";
+            }
+            else
+            {
+                // pravděpodobný mount point pro SD kartu
+                return $"/storage/{type}/{relativePath}";
+            }
+        }
+
+
         protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == RequestFolderAccessId && resultCode == Result.Ok && data != null)
+            {
+                Android.Net.Uri treeUri = data.Data;
+
+                _loggingService.Info($"Setting External directory: {treeUri.ToString()}");
+
+                var takeFlags = data.Flags & (ActivityFlags.GrantReadUriPermission | ActivityFlags.GrantWriteUriPermission);
+                ContentResolver.TakePersistableUriPermission(treeUri, takeFlags);
+
+                _cfg.SDCardPathUri = treeUri.ToString();
+
+                var path = GetFullPathFromTreeUri(treeUri);
+
+                _loggingService.Info($"full path directory: {path}");
+
+                MessagingCenter.Send(path, BaseViewModel.MSG_SDCardPermissionsGranted);
+            }
         }
 
         public override bool OnKeyDown(Android.Views.Keycode keyCode, KeyEvent e)

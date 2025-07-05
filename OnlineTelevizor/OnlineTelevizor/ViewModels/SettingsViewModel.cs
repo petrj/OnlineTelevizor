@@ -17,6 +17,7 @@ namespace OnlineTelevizor.ViewModels
     public class SettingsViewModel : BaseViewModel
     {
         private bool _isPruchased;
+        private bool _requestWriteToSDCardDisabled = false;
         private bool _showSledovaniPairedDevice = false;
         private TVService _service;
 
@@ -360,6 +361,11 @@ namespace OnlineTelevizor.ViewModels
 
         public void RequestWriteToSDCard()
         {
+            if (_requestWriteToSDCardDisabled)
+                return;
+
+            _loggingService.Info("RequestWriteToSDCard");
+
             // automatically diable write to sd card until permissions granted
             Config.WriteToSDCard = false;
 
@@ -369,10 +375,22 @@ namespace OnlineTelevizor.ViewModels
             NotifyConfigChanged();
         }
 
-        public void AllowWriteToSDCard()
+        public void AllowWriteToSDCard(string path)
         {
-            Config.WriteToSDCard = true;
-            NotifyConfigChanged();
+            _loggingService.Info($"AllowWriteToSDCard: {path}");
+
+            try
+            {
+                _requestWriteToSDCardDisabled = true;
+
+                Config.WriteToSDCard = true;
+                Config.SDCardPath = path; // Android11 stores path to SD Card folder here
+
+                NotifyConfigChanged();
+            } finally
+            {
+                _requestWriteToSDCardDisabled = false;
+            }
         }
 
         public void NotifyConfigChanged()
