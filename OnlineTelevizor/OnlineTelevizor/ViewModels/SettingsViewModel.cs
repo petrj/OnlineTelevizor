@@ -10,12 +10,14 @@ using Xamarin.Forms;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using Xamarin.Essentials;
+using OnlineTelevizor.Views;
 
 namespace OnlineTelevizor.ViewModels
 {
     public class SettingsViewModel : BaseViewModel
     {
         private bool _isPruchased;
+        private bool _requestWriteToSDCardDisabled = false;
         private bool _showSledovaniPairedDevice = false;
         private TVService _service;
 
@@ -63,7 +65,8 @@ namespace OnlineTelevizor.ViewModels
                 if (value)
                 {
                     MessagingCenter.Send(String.Empty, BaseViewModel.MSG_EnableFullScreen);
-                } else
+                }
+                else
                 {
                     MessagingCenter.Send(String.Empty, BaseViewModel.MSG_DisableFullScreen);
                 }
@@ -290,7 +293,7 @@ namespace OnlineTelevizor.ViewModels
         {
             get
             {
-                return  !(String.IsNullOrEmpty(Config.DeviceId)) &&
+                return !(String.IsNullOrEmpty(Config.DeviceId)) &&
                         !(String.IsNullOrEmpty(Config.DevicePassword));
             }
         }
@@ -352,9 +355,47 @@ namespace OnlineTelevizor.ViewModels
             {
                 Config.AllowRemoteAccessService = value;
 
-                OnPropertyChanged(nameof(Config));
+                NotifyConfigChanged();
             }
         }
 
+        public void RequestWriteToSDCard()
+        {
+            if (_requestWriteToSDCardDisabled)
+                return;
+
+            _loggingService.Info("RequestWriteToSDCard");
+
+            // automatically diable write to sd card until permissions granted
+            Config.WriteToSDCard = false;
+
+            // check SD card permissions
+            MessagingCenter.Send(String.Empty, BaseViewModel.MSG_RequestSDCardPermissions);
+
+            NotifyConfigChanged();
+        }
+
+        public void AllowWriteToSDCard(string path)
+        {
+            _loggingService.Info($"AllowWriteToSDCard: {path}");
+
+            try
+            {
+                _requestWriteToSDCardDisabled = true;
+
+                Config.WriteToSDCard = true;
+                Config.SDCardPath = path; // Android11 stores path to SD Card folder here
+
+                NotifyConfigChanged();
+            } finally
+            {
+                _requestWriteToSDCardDisabled = false;
+            }
+        }
+
+        public void NotifyConfigChanged()
+        {
+            OnPropertyChanged(nameof(Config));
+        }
     }
 }

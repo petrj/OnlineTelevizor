@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TVAPI;
+using Xamarin.Forms.PlatformConfiguration;
 
 namespace OnlineTelevizor.Models
 {
@@ -42,6 +43,10 @@ namespace OnlineTelevizor.Models
         bool PlayOnBackgroundSwitchEnabled { get; }
 
         bool IsRunningOnTV { get; set; }
+
+        bool WriteToSDCard { get; set; }
+        string SDCardPath { get; set; }
+        string SDCardPathUri { get; set; }
 
         string RemoteAccessServiceIP { get; set; }
         int RemoteAccessServicePort { get; set; }

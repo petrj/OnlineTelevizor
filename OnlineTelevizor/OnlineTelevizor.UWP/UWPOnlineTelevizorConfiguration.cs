@@ -533,5 +533,22 @@ namespace OnlineTelevizor.UWP
             get { return GetSettingValue<string>("DemoCustomChannelType"); }
             set { SaveSettingValue<string>("DemoCustomChannelType", value); }
         }
+
+        public bool WriteToSDCard
+        {
+            get
+            {
+                return false;
+            }
+            set
+            {
+            }
+        }
+
+        public string SDCardPath
+        {
+            get { return null; }
+            set {  }
+        }
     }
 }

@@ -1,5 +1,10 @@
 ﻿using Android.Content;
+using Android.OS.Storage;
 using Android.Preferences;
+using Android.Provider;
+using Android.Support.Transitions;
+using Java.Util;
+using LibVLCSharp.Shared;
 using LoggerService;
 using Newtonsoft.Json.Linq;
 using OnlineTelevizor.Models;
@@ -8,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using TVAPI;
 using Xamarin.Forms;
@@ -362,10 +368,12 @@ namespace OnlineTelevizor.Droid
             }
         }
 
-        public string OutputDirectory
+        private string InternalStorageDirectory
         {
             get
             {
+                // internal storage :
+
                 try
                 {
                     // internal storage - always writable directory
@@ -392,6 +400,99 @@ namespace OnlineTelevizor.Droid
                     var dir = Android.App.Application.Context.GetExternalFilesDir("");
 
                     return dir.AbsolutePath;
+                }
+            }
+        }
+
+        public string SDCardPath
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("SDCardPath");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("SDCardPath", value);
+            }
+        }
+
+        public string SDCardPathUri
+        {
+            get
+            {
+                return GetPersistingSettingValue<string>("SDCardPathUri");
+            }
+            set
+            {
+                SavePersistingSettingValue<string>("SDCardPathUri", value);
+            }
+        }
+
+        public string OutputDirectory
+        {
+            get
+            {
+                if (!WriteToSDCard)
+                {
+                    return InternalStorageDirectory;
+                } else
+                {
+                    // external storage :
+
+                    if (!String.IsNullOrEmpty(SDCardPath))
+                    {
+                        return SDCardPath;
+                    }
+
+                    var externalPath = "";
+
+                    try
+                    {
+                        var context = Android.App.Application.Context;
+                        var storageManager = (Android.OS.Storage.StorageManager)context.GetSystemService(Android.Content.Context.StorageService);
+
+                        var volumeList = (Java.Lang.Object[])storageManager.Class.GetDeclaredMethod("getVolumeList").Invoke(storageManager);
+
+                        var list = new List<string>();
+
+                        foreach (var storage in volumeList)
+                        {
+                            if (storage is StorageVolume volume)
+                            {
+                                if (volume.IsPrimary || volume.IsEmulated || !volume.IsRemovable)
+                                {
+                                    continue;
+                                }
+
+                                // first external device
+                                externalPath = volume.Directory.AbsolutePath;
+                                break;
+                            }
+                        }
+                    } catch (Exception ex)
+                    {
+                        // fallback for older API:
+
+                        var dirs = Android.App.Application.Context.GetExternalFilesDirs(null);
+                        foreach (var dir in dirs)
+                        {
+                            if (dir.ToString().StartsWith("/storage/emulated/"))
+                            {
+                                continue;
+                            }
+
+                            // first external device
+                            externalPath = dir.ToString();
+                            break;
+                        }
+                    }
+
+                    //if (externalPath.EndsWith("files"))
+                    //{
+                    //    externalPath = externalPath.Substring(0, externalPath.Length - 5); // remove "files" from the end
+                    //}
+
+                    return externalPath;
                 }
             }
         }
@@ -456,11 +557,23 @@ namespace OnlineTelevizor.Droid
             }
         }
 
+        public bool WriteToSDCard
+        {
+            get
+            {
+                return GetPersistingSettingValue<bool>("WriteToSDCard");
+            }
+            set
+            {
+                SavePersistingSettingValue<bool>("WriteToSDCard", value);
+            }
+        }
+
         public string DefaultConfigurationFileName
         {
             get
             {
-                return System.IO.Path.Join(OutputDirectory, "OnlineTelevizor.configuration.json");
+                return System.IO.Path.Join(InternalStorageDirectory, "OnlineTelevizor.configuration.json");
             }
         }
 

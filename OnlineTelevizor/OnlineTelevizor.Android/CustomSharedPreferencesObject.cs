@@ -38,6 +38,10 @@ namespace OnlineTelevizor.Droid
                 {
                     _prefsEditor.PutInt(key, Convert.ToInt32(value));
                 }
+                if (typeof(T) == typeof(Android.Net.Uri))
+                {
+                    _prefsEditor.PutString(key, value.ToString());
+                }
 
                 _prefsEditor.Commit();
 
