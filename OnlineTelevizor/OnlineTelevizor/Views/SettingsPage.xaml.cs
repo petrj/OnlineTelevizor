@@ -23,6 +23,7 @@ namespace OnlineTelevizor.Views
         private IDialogService _dialogService;
         private string _appVersion = String.Empty;
         private KeyboardFocusableItemList _focusItems;
+        private bool _doNotHandleFullScreen = false;
 
         public SettingsPage(ILoggingService loggingService, IOnlineTelevizorConfiguration config, IDialogService dialogService, TVService service)
         {
@@ -38,6 +39,7 @@ namespace OnlineTelevizor.Views
             UseInternalPlayerSwitch.Toggled += PlayOnBackgroundSwitch_Toggled;
             WriteToSDCardSwitch.Toggled += WriteToSDCardSwitch_Toggled;
             ShowSledovaniPairedDeviceSwitch.Toggled += ShowSledovaniPairedDeviceSwitch_Toggled;
+            FullscreenSwitch.Toggled += FullscreenSwitch_Toggled;
             IPEntry.Unfocused += IPEntry_Unfocused;
             PortEntry.Unfocused += PortEntry_Unfocused;
 
@@ -68,6 +70,30 @@ namespace OnlineTelevizor.Views
             });
 
             BuildFocusableItems();
+        }
+
+        private async void FullscreenSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (_doNotHandleFullScreen)
+            {
+                return;
+            }
+
+            _doNotHandleFullScreen = true;
+
+            try
+            {
+                if (!await _dialogService.Confirm("Změna nastavení se plně projeví až po restartu. Ukončit aplikaci?"))
+                {
+                    return;
+                }
+
+                MessagingCenter.Send<string>(string.Empty, BaseViewModel.MSG_StopPlayInternalNotificationAndQuit);
+            }
+            finally
+            {
+                _doNotHandleFullScreen = false;
+            }
         }
 
         private void WriteToSDCardSwitch_Toggled(object sender, ToggledEventArgs e)

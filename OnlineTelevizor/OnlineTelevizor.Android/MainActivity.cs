@@ -42,8 +42,6 @@ namespace OnlineTelevizor.Droid
         private App _app;
         private AndroidOnlineTelevizorConfiguration _cfg;
 
-        private int _defaultUiOptions;
-        private int _fullscreenUiOptions;
         protected ILoggingService _loggingService;
         NotificationHelper _notificationHelper;
         private static Android.Widget.Toast _instance;
@@ -60,6 +58,17 @@ namespace OnlineTelevizor.Droid
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 
+            _cfg = new AndroidOnlineTelevizorConfiguration();
+
+            if (Build.VERSION.SdkInt < BuildVersionCodes.R || _cfg.Fullscreen) // R = API 30
+            {
+                SetTheme(Resource.Style.MainTheme); // API 29 or below
+            }
+            else
+            {
+                SetTheme(Resource.Style.MainTheme30);   // API 30+
+            }
+
             base.OnCreate(savedInstanceState);
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -75,7 +84,7 @@ namespace OnlineTelevizor.Droid
             var context = Platform.AppContext;
             var activity = Platform.CurrentActivity;
 
-            _cfg = new AndroidOnlineTelevizorConfiguration();
+
 
 #if LOGGING
             /*
@@ -132,15 +141,6 @@ namespace OnlineTelevizor.Droid
                 // prevent sleep:
                 Window window = (Forms.Context as Activity).Window;
                 window.AddFlags(WindowManagerFlags.KeepScreenOn);
-
-                // https://stackoverflow.com/questions/39248138/how-to-hide-bottom-bar-of-android-back-home-in-xamarin-forms
-                _defaultUiOptions = (int)Window.DecorView.SystemUiVisibility;
-
-                _fullscreenUiOptions = _defaultUiOptions;
-                _fullscreenUiOptions |= (int)SystemUiFlags.LowProfile;
-                _fullscreenUiOptions |= (int)SystemUiFlags.Fullscreen;
-                _fullscreenUiOptions |= (int)SystemUiFlags.HideNavigation;
-                _fullscreenUiOptions |= (int)SystemUiFlags.ImmersiveSticky;
 
                 if (_cfg.Fullscreen)
                 {
@@ -513,11 +513,25 @@ namespace OnlineTelevizor.Droid
             {
                 if (on)
                 {
-                    Window.DecorView.SystemUiVisibility = (StatusBarVisibility)_fullscreenUiOptions;
+                    _loggingService.Info("Enabling full screen mode");
+
+                    Window.DecorView.SystemUiVisibility = (StatusBarVisibility)(
+                    SystemUiFlags.Fullscreen |
+                    SystemUiFlags.HideNavigation |
+                    SystemUiFlags.ImmersiveSticky);
+
+                    Window.DecorView.WindowInsetsController
+                        .Hide(WindowInsets.Type.StatusBars());
                 }
                 else
                 {
-                    Window.DecorView.SystemUiVisibility = (StatusBarVisibility)_defaultUiOptions;
+                    _loggingService.Info("Disabling full screen mode");
+
+                    Window.ClearFlags(WindowManagerFlags.Fullscreen);
+                    Window.DecorView.SystemUiVisibility = StatusBarVisibility.Visible;
+
+                    Window.DecorView.WindowInsetsController
+                        .Show(WindowInsets.Type.StatusBars());
                 };
             }
             catch (Exception ex)
