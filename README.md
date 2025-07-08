@@ -16,7 +16,7 @@ Android, UWP a iOS aplikace pro příjem TV a rádia pomocí služeb:
 - v Android zařízení se pro přehrávání používá nainstalovaná externí aplikace, případně interní přehrávač (libVLCSharp)
 - v UWP a iOS se pro přehrávání používá VLC
 - pouze živé vysílání
-- možnost nahrávání streamu do souboru (pouze pro Android a jen do interního úložiště)
+- možnost nahrávání streamu do souboru
 - podporován Android 5.1 a vyšší (architektury: armeabi, armeabi-v7a, x86, x86_x64, arm64-v8a) + Android TV
 - možnost odeslat obraz do Chromecastu nebo kompatibilního zařízení
 - volba zvukové stopy
@@ -38,7 +38,7 @@ Android, UWP and iOS application for playing internet TV and radio through czech
 - in Android using installed external player or internal player based on libVLCSharp
 - in UWP and iOS using VLC player 
 - only live broadcasting
-- possibility to record stream to file (for Android and only to internal storage)
+- possibility to record stream to file
 - supported Android 5.1 and higher (architectures: armeabi, armeabi-v7a, x86, x86_x64, arm64-v8a) + Android TV
 - Chromecast support
 - switching audio track
