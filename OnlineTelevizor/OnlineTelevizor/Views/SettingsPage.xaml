@@ -329,9 +329,9 @@
                                 <ColumnDefinition Width="20*" />
                             </Grid.ColumnDefinitions>
 
-                            <BoxView x:Name="FullscreenBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
+                            <BoxView x:Name="FullscreenBoxView" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent" IsVisible="{Binding Config.FullscreenSwitchEnabled}"/>
                             <Label Grid.Row="0" Grid.Column="0" Text="Celá obrazovka" Style="{DynamicResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" IsVisible="{Binding Config.FullscreenSwitchEnabled}"/>
-                            <Switch Grid.Row="0" Grid.Column="1" x:Name="FullscreenSwitch" IsToggled="{Binding IsFullScreen, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.FullscreenSwitchEnabled}" />
+                            <Switch Grid.Row="0" Grid.Column="1" x:Name="FullscreenSwitch" IsToggled="{Binding IsFullScreen, Mode=TwoWay}" Style="{StaticResource CommonSwitchTextStyle}" IsVisible="{Binding Config.FullscreenSwitchEnabled}"/>
 
                             <BoxView x:Name="PlayInternalBoxView" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent"/>
                             <Label  Grid.Row="1" Grid.Column="0" Text="Interní přehrávač" Style="{StaticResource CaptionStyle}" FontSize="{Binding FontSizeForCaption}" IsVisible="{Binding Config.InternalPlayerSwitchEnabled}"/>

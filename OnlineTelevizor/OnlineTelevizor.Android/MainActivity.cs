@@ -60,7 +60,7 @@ namespace OnlineTelevizor.Droid
 
             _cfg = new AndroidOnlineTelevizorConfiguration();
 
-            if (Build.VERSION.SdkInt < BuildVersionCodes.R || _cfg.Fullscreen) // R = API 30
+            if (Build.VERSION.SdkInt < BuildVersionCodes.R || _cfg.Fullscreen || !_cfg.FullscreenSwitchEnabled) // R = API 30
             {
                 SetTheme(Resource.Style.MainTheme); // API 29 or below
             }

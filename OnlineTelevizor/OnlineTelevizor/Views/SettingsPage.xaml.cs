@@ -173,7 +173,9 @@ namespace OnlineTelevizor.Views
 
                 .AddItem(KeyboardFocusableItem.CreateFrom("AutoPlay", new List<View>() { AutoPlayBoxView, LastChannelAutoPlayPicker }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("FontSize", new List<View>() { FontSizeBoxView, FontSizePicker }))
+
                 .AddItem(KeyboardFocusableItem.CreateFrom("Fullscreen", new List<View>() { FullscreenBoxView, FullscreenSwitch }))
+
                 .AddItem(KeyboardFocusableItem.CreateFrom("PlayInternal", new List<View>() { PlayInternalBoxView, UseInternalPlayerSwitch }))
                 .AddItem(KeyboardFocusableItem.CreateFrom("PlayOnBackground", new List<View>() { PlayOnBackgroundBoxView, PlayOnBackgroundSwitch }))
 
@@ -185,6 +187,11 @@ namespace OnlineTelevizor.Views
                 .AddItem(KeyboardFocusableItem.CreateFrom("RemoteAccessSecurityKey", new List<View>() { RemoteAccessSecurityKeyBoxView, SecurityKeyEntry }))
 
                 .AddItem(KeyboardFocusableItem.CreateFrom("About", new List<View>() { AboutButton }));
+
+            if (!_config.FullscreenSwitchEnabled)
+            {
+                _focusItems.Items.Remove(_focusItems.GetItemByName("Fullscreen"));
+            }
 
             _focusItems.OnItemFocusedEvent += _focusItems_OnItemFocusedEvent;
 

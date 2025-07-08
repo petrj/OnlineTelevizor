@@ -182,7 +182,7 @@ namespace OnlineTelevizor.Droid
         {
             get
             {
-                return true;
+                return false;
             }
         }
 
