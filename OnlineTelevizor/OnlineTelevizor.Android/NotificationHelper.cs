@@ -1,132 +1,100 @@
 ﻿using Android.App;
 using Android.Content;
-using Android.Graphics;
 using Android.OS;
-using Android.Runtime;
-using Android.Support.V4.App;
-using Android.Views;
-using Android.Widget;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using OnlineTelevizor.Droid;
+using AndroidX.Core.App;
 
-namespace OnlineTelevizor.Droid
+public class NotificationHelper : ContextWrapper
 {
-    // https://github.com/xamarin/monodroid-samples
-    public class NotificationHelper : ContextWrapper
+    public const string ChannelId = "default_channel";
+    private const string ChannelName = "Default Channel";
+
+    NotificationManager _notificationManager;
+
+    private NotificationManager NotificationManager =>
+        _notificationManager ??= (NotificationManager)GetSystemService(NotificationService);
+
+    public NotificationHelper(Context context) : base(context)
     {
-        public const string _channelId = "default";
-        public const int noti_channel_default = 2131165200;
-        NotificationManager _notificationManager;
-
-        private NotificationManager NotificationManager
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
         {
-            get
+            var channel = new NotificationChannel(ChannelId, ChannelName, NotificationImportance.Low)
             {
-                if (_notificationManager == null)
-                {
-                    _notificationManager = (NotificationManager)GetSystemService(NotificationService);
-                }
-                return _notificationManager;
-            }
+                LockscreenVisibility = NotificationVisibility.Public
+            };
+
+            // Set only the first time — must reinstall app to change settings
+            channel.EnableVibration(false);
+            channel.SetSound(null, null);
+
+            NotificationManager.CreateNotificationChannel(channel);
         }
+    }
 
-        public NotificationHelper(Context context) : base(context)
-        {
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
-            {
-                // Notification channels are new in API 26 (and not a part of the
-                // support library). There is no need to create a notification
-                // channel on older versions of Android.
+    public void ShowPlayNotification(int notificationId, string title, string body, string detail)
+    {
+        var launchIntent = Application.Context.PackageManager?.GetLaunchIntentForPackage(Application.Context.PackageName);
+        launchIntent?.SetFlags(ActivityFlags.SingleTop | ActivityFlags.ClearTop);
 
-                var channel = new NotificationChannel(_channelId, GetString(noti_channel_default), NotificationImportance.Low);
-                channel.LockscreenVisibility = NotificationVisibility.Public;
-                channel.SetVibrationPattern(new long[] { 0, 0 });
-                channel.SetSound(null, null);
-                NotificationManager.CreateNotificationChannel(channel);
-            }
-        }
+        var pendingIntentFlags = PendingIntentFlags.CancelCurrent | PendingIntentFlags.Immutable;
+        var contentPendingIntent = PendingIntent.GetActivity(Application.Context, notificationId, launchIntent, pendingIntentFlags);
 
-        public void ShowPlayNotification(int notificationId, string title, string body, string detail)
-        {
-            var notificationIntent = Application.Context.PackageManager?.GetLaunchIntentForPackage(Application.Context.PackageName);
-            notificationIntent.SetFlags(ActivityFlags.SingleTop);
-            var pendingIntentFlags = PendingIntentFlags.CancelCurrent | PendingIntentFlags.Immutable;
-            var pendingIntent = PendingIntent.GetActivity(Application.Context, notificationId, notificationIntent, pendingIntentFlags);
+        // STOP ACTION
+        var stopIntent = new Intent(Application.Context, typeof(OnlineTelevizorBroadcastReceiver)).SetAction("Stop");
+        var stopPendingIntent = PendingIntent.GetBroadcast(Application.Context, notificationId + 1000, stopIntent, pendingIntentFlags);
 
-            var stopIntent = new Intent(Application.Context, typeof(OnlineTelevizorBroadcastReceiver));
-            stopIntent.SetAction("Stop");
+        // QUIT ACTION
+        var quitIntent = new Intent(Application.Context, typeof(OnlineTelevizorBroadcastReceiver)).SetAction("Quit");
+        var quitPendingIntent = PendingIntent.GetBroadcast(Application.Context, notificationId + 2000, quitIntent, pendingIntentFlags);
 
-            var stopPendingIntent = PendingIntent.GetBroadcast(
-                Application.Context,
-                notificationId,
-                stopIntent,
-                pendingIntentFlags
-            );
+        var notification = new NotificationCompat.Builder(ApplicationContext, ChannelId)
+            .SetContentTitle(body)
+            .SetContentText(detail)
+            .SetSubText(title)
+            .SetSmallIcon(Resource.Drawable.SmallIcon)
+            .SetAutoCancel(false)
+            .SetOngoing(true)
+            .SetSound(null)
+            .SetVibrate(new long[] { 0 })
+            .AddAction(new NotificationCompat.Action(Resource.Drawable.Stop, "Zastavit přehrávání", stopPendingIntent))
+            .AddAction(new NotificationCompat.Action(Resource.Drawable.Quit, "Ukončit", quitPendingIntent))
+            .SetVisibility(NotificationCompat.VisibilityPublic)
+            .SetContentIntent(contentPendingIntent)
+            .Build();
 
-            var quitIntent = new Intent(Application.Context, typeof(OnlineTelevizorBroadcastReceiver));
-            quitIntent.SetAction("Quit");
-            var quitPendingIntent = PendingIntent.GetBroadcast(
-                Application.Context,
-                notificationId,
-                quitIntent,
-                pendingIntentFlags
-            );
+        NotificationManager.Notify(notificationId, notification);
+    }
 
-            var notificationBuilder = new NotificationCompat.Builder(ApplicationContext, _channelId)
-                     .SetContentTitle(body)
-                     .SetContentText(detail)
-                     .SetSubText(title)
-                     .SetSmallIcon(Resource.Drawable.SmallIcon)
-                     .SetAutoCancel(false)
-                     .SetOngoing(true)
-                     .SetSound(null)
-                     .SetVibrate(new long[] { 0, 0 })
-                     .AddAction(new NotificationCompat.Action(Resource.Drawable.Stop, "Zastavit přehrávání", stopPendingIntent))
-                     .AddAction(new NotificationCompat.Action(Resource.Drawable.Quit, "Ukončit", quitPendingIntent))
-                     .SetVisibility((int)NotificationVisibility.Public)
-                     .SetContentIntent(pendingIntent);
+    public void ShowRecordNotification(int notificationId, string title, string body, string detail)
+    {
+        var launchIntent = Application.Context.PackageManager?.GetLaunchIntentForPackage(Application.Context.PackageName);
+        launchIntent?.SetFlags(ActivityFlags.SingleTop | ActivityFlags.ClearTop);
 
-            NotificationManager.Notify(notificationId, notificationBuilder.Build());
-        }
+        var pendingIntentFlags = PendingIntentFlags.CancelCurrent | PendingIntentFlags.Immutable;
+        var contentPendingIntent = PendingIntent.GetActivity(Application.Context, notificationId, launchIntent, pendingIntentFlags);
 
-        public void ShowRecordNotification(int notificationId, string title, string body, string detail)
-        {
-            var notificationIntent = Application.Context.PackageManager?.GetLaunchIntentForPackage(Application.Context.PackageName);
-            notificationIntent.SetFlags(ActivityFlags.SingleTop);
-            var pendingIntentFlags = PendingIntentFlags.CancelCurrent | PendingIntentFlags.Immutable;
-            var pendingIntent = PendingIntent.GetActivity(Application.Context, notificationId, notificationIntent, pendingIntentFlags);
+        var stopIntent = new Intent(Application.Context, typeof(OnlineTelevizorBroadcastReceiver)).SetAction("StopRecord");
+        var stopPendingIntent = PendingIntent.GetBroadcast(Application.Context, notificationId + 1000, stopIntent, pendingIntentFlags);
 
-            var stopIntent = new Intent(Application.Context, typeof(OnlineTelevizorBroadcastReceiver));
-            stopIntent.SetAction("StopRecord");
+        var notification = new NotificationCompat.Builder(ApplicationContext, ChannelId)
+            .SetContentTitle(body)
+            .SetContentText(detail)
+            .SetSubText(title)
+            .SetSmallIcon(Resource.Drawable.SmallIcon)
+            .SetAutoCancel(false)
+            .SetOngoing(true)
+            .SetSound(null)
+            .SetVibrate(new long[] { 0 })
+            .AddAction(new NotificationCompat.Action(Resource.Drawable.Stop, "Zastavit nahrávání", stopPendingIntent))
+            .SetVisibility(NotificationCompat.VisibilityPublic)
+            .SetContentIntent(contentPendingIntent)
+            .Build();
 
-            var stopPendingIntent = PendingIntent.GetBroadcast(
-                Application.Context,
-                notificationId,
-                stopIntent,
-                pendingIntentFlags
-            );
+        NotificationManager.Notify(notificationId, notification);
+    }
 
-            var notificationBuilder = new NotificationCompat.Builder(ApplicationContext, _channelId)
-                     .SetContentTitle(body)
-                     .SetContentText(detail)
-                     .SetSubText(title)
-                     .SetSmallIcon(Resource.Drawable.SmallIcon)
-                     .SetAutoCancel(false)
-                     .SetOngoing(true)
-                     .SetSound(null)
-                     .SetVibrate(new long[] { 0, 0 })
-                     .AddAction(new NotificationCompat.Action(Resource.Drawable.Stop, "Zastavit nahrávání", stopPendingIntent))
-                     .SetVisibility((int)NotificationVisibility.Public)
-                     .SetContentIntent(pendingIntent);
-
-            NotificationManager.Notify(notificationId, notificationBuilder.Build());
-        }
-
-        public void CloseNotification(int notificationId)
-        {
-            NotificationManager.Cancel(notificationId);
-        }
+    public void CloseNotification(int notificationId)
+    {
+        NotificationManager.Cancel(notificationId);
     }
 }

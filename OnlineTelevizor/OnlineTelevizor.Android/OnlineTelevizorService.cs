@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Arch.Lifecycle;
 using Android.Content;
+using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -14,7 +15,7 @@ using Xamarin.Forms;
 
 namespace OnlineTelevizor.Droid
 {
-    [Service(Label = "OnlineTelevizorService", Icon = "@drawable/icon")]
+    [Service(Label = "OnlineTelevizorService", Icon = "@drawable/icon", ForegroundServiceType = ForegroundService.TypeMediaPlayback)]
     public class OnlineTelevizorService : Service
     {
         public override IBinder OnBind(Intent intent)
