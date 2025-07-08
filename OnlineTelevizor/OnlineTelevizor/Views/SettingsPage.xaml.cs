@@ -186,6 +186,11 @@ namespace OnlineTelevizor.Views
 
                 .AddItem(KeyboardFocusableItem.CreateFrom("About", new List<View>() { AboutButton }));
 
+            if (!_config.FullscreenSwitchEnabled)
+            {
+                _focusItems.Items.Remove(_focusItems.GetItemByName("Fullscreen"));
+            }
+
             _focusItems.OnItemFocusedEvent += _focusItems_OnItemFocusedEvent;
 
             _focusItems.OnItemFocusedEvent += SettingsPage_OnItemFocusedEvent;
