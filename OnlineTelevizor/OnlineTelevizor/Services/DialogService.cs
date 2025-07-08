@@ -39,6 +39,6 @@ namespace OnlineTelevizor.Services
         {
             var dp = DialogPage == null ? Application.Current.MainPage : DialogPage;
             return await dp.DisplayActionSheet(title, cancel, null, options.ToArray());
-        }        
+        }
     }
 }
